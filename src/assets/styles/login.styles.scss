@@ -1,0 +1,97 @@
+@import "./index.styles.scss";
+
+.login {
+  &__page {
+    background: linear-gradient(
+      120deg,
+      rgba(229, 229, 229, 1) 10%,
+      rgba(204, 164, 224, 1) 39%,
+      rgba(229, 229, 229, 1) 78%
+    );
+    background-repeat: none;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  &__wrapper {
+    background: transparent;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: space-between;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 13px -6px,
+      rgba(0, 0, 0, 0.14) 0px 20px 31px 3px,
+      rgba(0, 0, 0, 0.12) 0px 8px 38px 7px;
+    padding: 20px;
+  }
+
+  @media (max-width: 768px) {
+    &__wrapper {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__logoWrapper {
+    border-radius: 10px 0px 0px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__logo {
+      width: clamp(100px, 30vw, 300px);
+    }
+  }
+
+  &__formWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & &__form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+
+      & input {
+        padding: 10px;
+        width: 100%;
+      }
+
+      &__signIn {
+        background-color: $secondary;
+        color: white;
+        width: 50%;
+        &:hover {
+          background-color: $secondary-hover;
+        }
+      }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+
+    & img {
+      width: 50px;
+    }
+
+    & p {
+      font-size: 14px;
+      color: rgb(36, 52, 72);
+      text-align: center;
+    }
+  }
+}
