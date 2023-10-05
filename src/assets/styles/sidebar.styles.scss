@@ -1,0 +1,60 @@
+@import "./index.styles.scss";
+
+.sidebar {
+  width: 300px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.5 ease;
+  position: relative;
+  background: white;
+  box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
+
+  &__logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+
+    & img {
+      width: 150px;
+    }
+  }
+
+  &__navigation {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+
+    & &__button {
+      color: $secondary;
+      border-radius: 10px;
+
+      &__icon {
+        color: $secondary;
+      }
+    }
+
+    & &__button.active {
+      background-color: $primary;
+    }
+
+    & &__subButton {
+      color: $secondary;
+      border-radius: 10px;
+      margin-left: 20px;
+
+      &__icon {
+        color: $secondary;
+      }
+    }
+
+    & &__subButton.active {
+      background-color: $secondary;
+    }
+
+    & .active {
+      color: white;
+    }
+  }
+}

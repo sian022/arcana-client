@@ -1,0 +1,18 @@
+@import "./index.styles.scss";
+
+.navbar {
+  position: sticky;
+  height: 50px;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+
+  &__endButtons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+}

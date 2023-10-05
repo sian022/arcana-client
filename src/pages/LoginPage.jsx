@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { setFullname, setToken } from '../features/authentication/reducers/loginSlice'
+import { setPermissisons } from '../features/authentication/reducers/permissionsSlice'
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -28,7 +30,11 @@ function LoginPage() {
 
   const submitHandler = async (data) => {
     try {
-      const res = await postLogin(data)
+      const res = await postLogin(data).unwrap()
+      console.log(res)
+      dispatch(setFullname(res.data.fullname))
+      dispatch(setToken(res.data.token))
+      dispatch(setPermissisons(res.data.permission))
       navigate("/")
     } catch (err) {
       alert(err.message)

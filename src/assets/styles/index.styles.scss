@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;700&family=Raleway&display=swap");
+
 $primary: #544d91;
 $secondary: #243448;
 $secondary-hover: #1c2a38;
@@ -6,6 +8,38 @@ $error: #f30737;
 $success: #00b894;
 $warning: #f1c40f;
 
+:root {
+  font-family: Montserrat, sans-serif;
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    // background: #243448;
+    background: #766bb9;
+  }
+
+  /* On hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  /* On active (click) */
+  ::-webkit-scrollbar-thumb:active {
+    background: #777;
+  }
+}
+
 body {
   margin: 0;
+}
+
+a {
+  text-decoration: none;
 }

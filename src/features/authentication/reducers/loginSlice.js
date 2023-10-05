@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import CryptoJS from "crypto-js";
-import { saltkey } from "../../../app/saltkey";
+import { saltkey } from "../../../utils/saltkey";
+
 const storedFullname = sessionStorage.getItem("fullname");
 
 export const loginSlice = createSlice({
@@ -11,7 +12,7 @@ export const loginSlice = createSlice({
   },
   reducers: {
     setFullname: (state, action) => {
-      state.token = action.payload;
+      state.fullname = action.payload;
       sessionStorage.setItem("fullname", action.payload);
     },
     setToken: (state, action) => {
@@ -24,3 +25,5 @@ export const loginSlice = createSlice({
     },
   },
 });
+
+export const { setFullname, setToken } = loginSlice.actions;

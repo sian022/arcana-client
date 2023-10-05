@@ -1,0 +1,15 @@
+.mainLayout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+
+  &__headerAndContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    &__content {
+      margin: 20px;
+    }
+  }
+}

@@ -24,7 +24,9 @@ export const theme = createTheme({
       main: colorSchemes.light.error,
     },
   },
-
+  typography: {
+    fontFamily: null,
+  },
   components: {
     MuiInputBase: {
       styleOverrides: {
