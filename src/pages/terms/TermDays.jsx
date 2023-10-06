@@ -7,7 +7,7 @@ import { Box } from "@mui/material";
 function TermDays() {
   return (
     <Box className="commonPageLayout">
-      <PageHeaderAdd pageTitle="Products" />
+      <PageHeaderAdd pageTitle="Term Days" />
       <CommonTable mapData={dummyTableData} />
     </Box>
   );
