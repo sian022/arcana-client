@@ -1,0 +1,55 @@
+@import "./index.styles.scss";
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 15px;
+  align-items: center;
+
+  &__title {
+    font-weight: bold;
+    font-size: 30px;
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.addRowButtons {
+  font-size: 11px;
+  color: white;
+  background-color: $secondary;
+  border-width: 1px white;
+  border-color: $secondary;
+  height: 30px;
+
+  &:hover {
+    background-color: $primary;
+  }
+
+  &:disabled {
+    background-color: #6c5982;
+    border: none;
+
+    &.MuiButtonBase-root:disabled {
+      cursor: not-allowed;
+      pointer-events: auto;
+    }
+  }
+}
+
+.commonPageLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

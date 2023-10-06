@@ -23,6 +23,9 @@ export const theme = createTheme({
     error: {
       main: colorSchemes.light.error,
     },
+    white: {
+      main: "#FFFFFF",
+    },
   },
   typography: {
     fontFamily: null,

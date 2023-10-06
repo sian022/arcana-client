@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, InputAdornment, Typography, TextField } from '@mui/material'
+import { Box, Button, IconButton, InputAdornment, Typography, TextField, CircularProgress } from '@mui/material'
 import React, { useState } from 'react'
 import '../assets/styles/login.styles.scss'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
@@ -10,6 +10,8 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setFullname, setToken } from '../features/authentication/reducers/loginSlice'
 import { setPermissisons } from '../features/authentication/reducers/permissionsSlice'
+import MisLogo from '../assets/images/MIS-logo.png'
+import SystemLogoName from '../assets/images/SystemLogoName.png'
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -28,6 +30,8 @@ function LoginPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  console.log(errors)
+
   const submitHandler = async (data) => {
     try {
       const res = await postLogin(data).unwrap()
@@ -37,7 +41,7 @@ function LoginPage() {
       dispatch(setPermissisons(res.data.permission))
       navigate("/")
     } catch (err) {
-      alert(err.message)
+      alert(err.data.messages)
     }
   }
 
@@ -45,20 +49,23 @@ function LoginPage() {
     <Box className="login__page">
       <Box className="login__wrapper">
         <Box className="login__logoWrapper">
-          <img src='src/assets/images/SystemLogoName.png' alt='arcana-logo' className='login__logoWrapper__logo' />
+          <img src={SystemLogoName} alt='arcana-logo' className='login__logoWrapper__logo' />
         </Box>
         <Box className="login__formWrapper">
           <Box component="form" className="login__formWrapper__form" onSubmit={handleSubmit(submitHandler)}>
             <TextField
               label='Username'
+              error={errors && errors.username}
               size='small'
               type='text'
               autoComplete='off'
               sx={{ width: "230px" }}
               {...register("username")}
+              helperText={errors && errors.username?.message}
             />
             <TextField
               label='Password'
+              error={errors && errors.password}
               size='small'
               type={showPassword ? 'text' : 'password'}
               autoComplete='off'
@@ -73,15 +80,16 @@ function LoginPage() {
                 )
               }}
               {...register("password")}
+              helperText={errors && errors.password?.message}
             />
             <Button className='login__formWrapper__form__signIn' type='submit'>
-              Sign in
+              {isLoading ? <CircularProgress size="20px" color='white' /> : "Sign In"}
             </Button>
           </Box>
         </Box>
       </Box>
       <Box className="login__footer">
-        <img src='src/assets/images/MIS-logo.png' alt="mis-logo" />
+        <img src={MisLogo} alt="mis-logo" />
         <Typography>© 2023 Powered by</Typography>
         <Typography>Management Information System</Typography>
       </Box>
