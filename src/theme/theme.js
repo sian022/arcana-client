@@ -5,7 +5,8 @@ const colorSchemes = {
     primary: "#544d91",
     secondary: "#243448",
     accent: "#766bb9",
-    error: "#F30737",
+    error: "#BB0000",
+    // error: "#F30737",
   },
 };
 
@@ -148,5 +149,12 @@ export const theme = createTheme({
         },
       },
     },
+    // MuiFormHelperText: {
+    //   styleOverrides: {
+    //     root: {
+    //       color: "black !important",
+    //     },
+    //   },
+    // },
   },
 });
