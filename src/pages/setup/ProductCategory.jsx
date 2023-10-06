@@ -1,9 +1,16 @@
-import React from 'react'
+import { Box } from "@mui/material";
+import React from "react";
+import PageHeaderAdd from "../../components/PageHeaderAdd";
+import CommonTable from "../../components/CommonTable";
+import { dummyTableData } from "../../utils/DummyData";
 
 function ProductCategory() {
   return (
-    <div>ProductCategory</div>
-  )
+    <Box className="commonPageLayout">
+      <PageHeaderAdd pageTitle="Product Category" />
+      <CommonTable mapData={dummyTableData} />
+    </Box>
+  );
 }
 
-export default ProductCategory
+export default ProductCategory;

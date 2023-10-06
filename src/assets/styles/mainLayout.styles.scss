@@ -9,6 +9,8 @@
     flex: 1;
 
     &__content {
+      display: flex;
+      flex: 1;
       margin: 20px 100px;
     }
   }

@@ -107,25 +107,32 @@ export const theme = createTheme({
           position: "sticky",
           bottom: 0,
           zIndex: 1,
+          color: "white",
+        },
+        selectIcon: {
+          color: "white",
+        },
+        actions: {
+          color: "white !important",
         },
       },
     },
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          color: colorSchemes.light.secondary,
-          padding: 0,
-          "&:hover": {
-            color: colorSchemes.light.primary,
-          },
-          "&:disabled": {
-            color: colorSchemes.light.secondary,
-            cursor: "not-allowed",
-            pointerEvents: "auto",
-          },
-        },
-      },
-    },
+    // MuiIconButton: {
+    //   styleOverrides: {
+    //     root: {
+    //       color: colorSchemes.light.secondary,
+    //       padding: 0,
+    //       "&:hover": {
+    //         color: colorSchemes.light.primary,
+    //       },
+    //       "&:disabled": {
+    //         color: colorSchemes.light.secondary,
+    //         cursor: "not-allowed",
+    //         pointerEvents: "auto",
+    //       },
+    //     },
+    //   },
+    // },
     MuiCheckbox: {
       styleOverrides: {
         root: {
