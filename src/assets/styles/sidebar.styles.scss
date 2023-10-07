@@ -10,6 +10,12 @@
   background: white;
   box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
 
+  @media (max-width: 1024px) {
+    // display: none;
+    width: 88px;
+
+  }
+
   &__logo {
     display: flex;
     justify-content: center;
@@ -17,14 +23,23 @@
     padding: 10px;
 
     & img {
+     @media (max-width: 1024px) {
+        width: 100px;
+     }
+
       width: 150px;
     }
   }
 
   &__navigation {
     position: relative;
+    overflow-x: hidden;
     height: 100%;
-    overflow: auto;
+
+    @media (max-width: 1024px) {
+        white-space: nowrap;
+    }
+    
 
     & &__button {
       color: $secondary;
@@ -43,6 +58,10 @@
       color: $secondary;
       border-radius: 10px;
       margin-left: 20px;
+
+      @media (max-width: 1024px) {
+        margin-left: 0;
+     }
 
       &__icon {
         color: $secondary;

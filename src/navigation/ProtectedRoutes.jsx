@@ -1,21 +1,17 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Navigate, Outlet } from 'react-router-dom'
-import MainLayout from '../layouts/MainLayout'
+import React from "react";
+import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
 
 function ProtectedRoutes() {
-  const fullname = useSelector(state => state.fullname?.value)
-  const permissions = useSelector(state => state.permissions?.value)
-
-  console.log(fullname, permissions)
+  const fullname = useSelector((state) => state.fullname?.value);
+  const permissions = useSelector((state) => state.permissions?.value);
 
   if (!fullname || permissions?.length === 0) {
-    <Navigate to="/login" />
+    <Navigate to="/login" />;
   }
 
-  return (
-    <MainLayout />
-  )
+  return <MainLayout />;
 }
 
-export default ProtectedRoutes
+export default ProtectedRoutes;
