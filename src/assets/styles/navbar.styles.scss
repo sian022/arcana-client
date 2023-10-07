@@ -7,12 +7,19 @@
   z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: space-between;
+  margin: 0 100px;
+  padding: 20px 0;
+
+  & &__dateToday {
+    font-weight: bold;
+    font-size: 16px;
+    color: $primary;
+  }
 
   &__endButtons {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
   }
 }

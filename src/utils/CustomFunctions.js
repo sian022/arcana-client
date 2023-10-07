@@ -1,11 +1,30 @@
-export function transformKey(key) {
-  // Split the key into words based on capital letters
+export const transformKey = (key) => {
   const words = key.split(/(?=[A-Z])/);
 
-  // Capitalize the first letter of each word and join them with a space
   const transformedKey = words
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
   return transformedKey;
-}
+};
+
+export const formatDate = (month, day, year, hours, minutes) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const monthWord = months[month];
+
+  return `${monthWord} ${day}, ${year}`;
+};

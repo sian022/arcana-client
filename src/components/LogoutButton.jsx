@@ -1,30 +1,51 @@
-import { Logout } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { setFullname, setToken } from '../features/authentication/reducers/loginSlice'
-import { setPermissisons } from '../features/authentication/reducers/permissionsSlice'
-import { useNavigate } from 'react-router-dom'
+import { Logout } from "@mui/icons-material";
+import { IconButton, Typography } from "@mui/material";
+import React from "react";
+import { useDispatch } from "react-redux";
+import {
+  setFullname,
+  setToken,
+} from "../features/authentication/reducers/loginSlice";
+import { setPermissisons } from "../features/authentication/reducers/permissionsSlice";
+import { useNavigate } from "react-router-dom";
+import CommonDialog from "./CommonDialog";
+import useDisclosure from "../hooks/useDisclosure";
 
 function LogoutButton() {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const {
+    isOpen: isDialogOpen,
+    onOpen: onDialogOpen,
+    onClose: onDialogClose,
+  } = useDisclosure();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(setToken(""))
-    dispatch(setFullname(""))
-    dispatch(setPermissisons(""))
-    sessionStorage.removeItem("token")
-    sessionStorage.removeItem("fullname")
-    sessionStorage.removeItem("permissions")
-    navigate("/login")
-  }
+    dispatch(setToken(""));
+    dispatch(setFullname(""));
+    dispatch(setPermissisons(""));
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("fullname");
+    sessionStorage.removeItem("permissions");
+    navigate("/login");
+  };
 
   return (
-    <IconButton onClick={(handleLogout)} sx={{ color: "error.main" }}>
-      <Logout />
-    </IconButton>
-  )
+    <>
+      <IconButton onClick={onDialogOpen} sx={{ color: "error.main" }}>
+        <Logout />
+      </IconButton>
+
+      <CommonDialog
+        onClose={onDialogClose}
+        open={isDialogOpen}
+        onYes={handleLogout}
+      >
+        Are you sure you want to LOGOUT?
+      </CommonDialog>
+    </>
+  );
 }
 
-export default LogoutButton
+export default LogoutButton;
