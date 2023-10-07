@@ -15,10 +15,22 @@ function UserAccount() {
       <CommonTable mapData={dummyTableData} />
 
       <CommonDrawer
+        onClose={onClose}
         modalHeader={`Add User Account`}
         open={isOpen}
-        onClose={onClose}
       >
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
+        <TextField label="Hey" size="small" />
         <TextField label="Hey" size="small" />
         <TextField label="Hey" size="small" />
         <TextField label="Hey" size="small" />
