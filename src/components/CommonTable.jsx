@@ -25,18 +25,26 @@ function CommonTable({ mapData }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {mapData.map((item, i) => {
+          {mapData.map((item, j) => {
             return (
               <TableRow>
                 {mapDataKeys.map((keys) => (
-                  <TableCell key={keys}>{item[keys]}</TableCell>
+                  <TableCell>{item[keys]}</TableCell>
                 ))}
               </TableRow>
             );
           })}
         </TableBody>
       </Table>
-      <TablePagination component="div" rowsPerPage={10} />
+      <TablePagination
+        component="div"
+        rowsPerPage={10}
+        count={2}
+        onPageChange={() => {
+          1 + 1;
+        }}
+        page={0}
+      />
     </TableContainer>
   );
 }
