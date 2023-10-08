@@ -1,16 +1,18 @@
-import React from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import React from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import CommonPageIndex from "../../components/CommonPageIndex";
 
 function Approval() {
-  const location = useLocation()
+  return <CommonPageIndex pathname="/approval" title="Approval" />;
+  // const location = useLocation()
 
-  if (location.pathname === "/approval") {
-    return (
-      <div>Approval</div>
-    )
-  }
+  // if (location.pathname === "/approval") {
+  //   return (
+  //     <div>Approval</div>
+  //   )
+  // }
 
-  return <Outlet />
+  // return <Outlet />
 }
 
-export default Approval
+export default Approval;

@@ -1,16 +1,18 @@
-import React from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import React from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import CommonPageIndex from "../../components/CommonPageIndex";
 
 function Discount() {
-  const location = useLocation()
+  return <CommonPageIndex pathname="/discount" title="Discount" />;
+  // const location = useLocation()
 
-  if (location.pathname === "/discount") {
-    return (
-      <div>Discount</div>
-    )
-  }
+  // if (location.pathname === "/discount") {
+  //   return (
+  //     <div>Discount</div>
+  //   )
+  // }
 
-  return <Outlet />
+  // return <Outlet />
 }
 
-export default Discount
+export default Discount;
