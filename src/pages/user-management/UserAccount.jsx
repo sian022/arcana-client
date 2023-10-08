@@ -16,7 +16,7 @@ function UserAccount() {
 
       <CommonDrawer
         onClose={onClose}
-        modalHeader={`Add User Account`}
+        drawerHeader={"Add User Account"}
         open={isOpen}
       >
         <TextField label="Hey" size="small" />

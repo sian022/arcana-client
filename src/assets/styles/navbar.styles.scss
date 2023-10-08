@@ -1,14 +1,13 @@
 @import "./index.styles.scss";
 
 .navbar {
-  position: sticky;
+  // position: sticky;
   height: 50px;
   top: 0;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 100px;
   padding: 20px 0;
 
   & &__dateToday {

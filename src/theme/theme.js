@@ -63,7 +63,9 @@ export const theme = createTheme({
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          maxHeight: "560px",
+          // maxHeight: "400px",
+          // flex: 1,
+          height: "calc(100vh - 330px)",
           background: "white",
           padding: 0,
           margin: 0,
@@ -73,7 +75,8 @@ export const theme = createTheme({
     MuiTable: {
       styleOverrides: {
         root: {
-          minWidth: 500,
+          // minWidth: 500,
+          whiteSpace: "nowrap",
         },
       },
     },
