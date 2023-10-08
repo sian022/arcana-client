@@ -6,6 +6,12 @@ import DangerButton from "./DangerButton";
 function CommonDialog({ onClose, onYes, children, ...otherProps }) {
   return (
     <Dialog {...otherProps}>
+      <Box
+        sx={{
+          backgroundColor: "primary.main",
+          height: "1rem",
+        }}
+      />
       <Box sx={{ padding: "20px" }}>
         <DialogTitle sx={{ fontWeight: "bold" }}>{children}</DialogTitle>
         <DialogActions>
