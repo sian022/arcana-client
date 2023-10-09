@@ -32,8 +32,6 @@ function Header() {
     return accumulator;
   }, []);
 
-  console.log(navigationLabel);
-
   const handleNavigate = (_, sub) => {
     navigate(sub.path);
   };

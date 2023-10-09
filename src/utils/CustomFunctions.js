@@ -1,3 +1,6 @@
+import CryptoJS from "crypto-js";
+import { saltkey } from "./saltkey";
+
 export const transformKey = (key) => {
   const words = key.split(/(?=[A-Z])/);
 
@@ -27,4 +30,10 @@ export const formatDate = (month, day, year, hours, minutes) => {
   const monthWord = months[month];
 
   return `${monthWord} ${day}, ${year}`;
+};
+
+export const decryptString = (data) => {
+  const bytes = CryptoJS.AES.decrypt(data, saltkey);
+  const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  return decryptedData;
 };

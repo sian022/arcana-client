@@ -11,10 +11,44 @@ import {
 } from "@mui/material";
 import React from "react";
 import { transformKey } from "../utils/CustomFunctions";
+import SecondaryButton from "./SecondaryButton";
+import DangerButton from "./DangerButton";
 
-function CommonTable({ mapData }) {
-  const mapDataKeys = Object.keys(mapData[0]);
-  const tableHeads = mapDataKeys.map((key) => transformKey(key));
+function CommonTable({
+  mapData,
+  excludeKeys,
+  tableHeads,
+  editable,
+  archivable,
+  onEdit,
+  onArchive,
+}) {
+  var dataToMap = mapData;
+  var tableHeadsList;
+
+  if (excludeKeys) {
+    const filteredData = mapData?.map((obj) => {
+      const filteredObj = Object.fromEntries(
+        Object.entries(obj).filter(([key, value]) => !excludeKeys.includes(key))
+      );
+      return filteredObj;
+    });
+    dataToMap = filteredData;
+  }
+
+  const dataToMapKeys = Object.keys(dataToMap[0]);
+  if (tableHeads) {
+    tableHeadsList = tableHeads;
+  } else {
+    tableHeadsList = dataToMapKeys
+      .filter((key) => key !== "id")
+      .map((key) => transformKey(key));
+  }
+
+  if (editable || archivable) {
+    tableHeadsList.push("Actions");
+  }
+
   return (
     <Box className="tableSuperContainer">
       <TableContainer
@@ -24,18 +58,43 @@ function CommonTable({ mapData }) {
         <Table>
           <TableHead>
             <TableRow>
-              {tableHeads.map((item, i) => (
+              {tableHeadsList.map((item, i) => (
                 <TableCell key={i}>{item}</TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {mapData.map((item, j) => {
+            {dataToMap.map((item, j) => {
               return (
                 <TableRow>
-                  {mapDataKeys.map((keys) => (
-                    <TableCell>{item[keys]}</TableCell>
-                  ))}
+                  {dataToMapKeys.map((keys) => {
+                    if (keys === "id") {
+                      return null;
+                    }
+                    return <TableCell>{item[keys]}</TableCell>;
+                  })}
+                  {(editable || archivable) && (
+                    <TableCell>
+                      {editable && (
+                        <SecondaryButton
+                          onClick={() => {
+                            const { id, ...itemWithoutId } = item;
+                            onEdit(itemWithoutId, id);
+                          }}
+                        >
+                          Edit
+                        </SecondaryButton>
+                      )}
+                      {archivable && (
+                        <DangerButton
+                          sx={{ marginLeft: "10px" }}
+                          onClick={onArchive}
+                        >
+                          Archive
+                        </DangerButton>
+                      )}
+                    </TableCell>
+                  )}
                 </TableRow>
               );
             })}

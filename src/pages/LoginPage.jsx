@@ -74,7 +74,7 @@ function LoginPage() {
                 endAdornment: (
                   <InputAdornment position='end'>
                     <IconButton onClick={() => { setShowPassword(!showPassword) }}>
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 )
@@ -82,7 +82,7 @@ function LoginPage() {
               {...register("password")}
               helperText={errors && errors.password?.message}
             />
-            <Button className='login__formWrapper__form__signIn' type='submit'>
+            <Button className='login__formWrapper__form__signIn' type='submit' disabled={isLoading}>
               {isLoading ? <CircularProgress size="20px" color='white' /> : "Sign In"}
             </Button>
           </Box>

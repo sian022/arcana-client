@@ -4,7 +4,13 @@ import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
 
-function CommonDrawer({ onClose, drawerHeader, children, ...otherProps }) {
+function CommonDrawer({
+  onClose,
+  drawerHeader,
+  onSubmit,
+  children,
+  ...otherProps
+}) {
   return (
     <Drawer anchor="right" {...otherProps}>
       <Box className="commonDrawer">
@@ -18,7 +24,7 @@ function CommonDrawer({ onClose, drawerHeader, children, ...otherProps }) {
         </Box>
         <Box className="commonDrawer__body">{children}</Box>
         <Box className="commonDrawer__actions">
-          <SecondaryButton>Submit</SecondaryButton>
+          <SecondaryButton onClick={onSubmit}>Submit</SecondaryButton>
           <DangerButton onClick={onClose}>Close</DangerButton>
         </Box>
       </Box>
