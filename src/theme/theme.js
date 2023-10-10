@@ -6,6 +6,7 @@ const colorSchemes = {
     secondary: "#243448",
     accent: "#766bb9",
     error: "#BB0000",
+    success: "#009c7a",
     // error: "#F30737",
   },
 };
@@ -23,6 +24,9 @@ export const theme = createTheme({
     },
     error: {
       main: colorSchemes.light.error,
+    },
+    success: {
+      main: colorSchemes.light.success,
     },
     white: {
       main: "#FFFFFF",

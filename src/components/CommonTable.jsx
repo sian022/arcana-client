@@ -23,6 +23,11 @@ function CommonTable({
   onEdit,
   onArchive,
 }) {
+  if (!mapData || mapData.length === 0) {
+    // Return some message or UI element indicating that there is no data.
+    return <div>No data available.</div>;
+  }
+
   var dataToMap = mapData;
   var tableHeadsList;
 
@@ -78,8 +83,7 @@ function CommonTable({
                       {editable && (
                         <SecondaryButton
                           onClick={() => {
-                            const { id, ...itemWithoutId } = item;
-                            onEdit(itemWithoutId, id);
+                            onEdit(item);
                           }}
                         >
                           Edit
@@ -88,7 +92,9 @@ function CommonTable({
                       {archivable && (
                         <DangerButton
                           sx={{ marginLeft: "10px" }}
-                          onClick={onArchive}
+                          onClick={() => {
+                            onArchive(item.id);
+                          }}
                         >
                           Archive
                         </DangerButton>

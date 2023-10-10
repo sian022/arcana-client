@@ -34,11 +34,19 @@ export const productCategoryApi = createApi({
       transformErrorResponse: (response) => response.data,
     }),
     putProductCategory: builder.mutation({
-      query: (body, id) => ({
-        url: `/ProductCategory/UpdateProductCategory${id}`,
+      query: ({ id, ...body }) => ({
+        url: `/ProductCategory/UpdateProductCategory/${id}`,
         method: "PUT",
         body: body,
       }),
+      invalidatesTags: ["Product Category"],
+    }),
+    patchProductCategoryStatus: builder.mutation({
+      query: (id) => ({
+        url: `/ProductCategory/UpdateProductCategoryStatus/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Product Category"],
     }),
   }),
 });
@@ -47,4 +55,5 @@ export const {
   useGetAllProductCategoryQuery,
   usePostProductCategoryMutation,
   usePutProductCategoryMutation,
+  usePatchProductCategoryStatusMutation,
 } = productCategoryApi;
