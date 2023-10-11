@@ -24,6 +24,7 @@ function ProductCategory() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const {
     isOpen: isDrawerOpen,
@@ -71,7 +72,6 @@ function ProductCategory() {
     PageSize: rowsPerPage,
   });
 
-  console.log(data);
   const [postProductCategory] = usePostProductCategoryMutation();
   const [putProductCategory] = usePutProductCategoryMutation();
   const [patchProductCategoryStatus] = usePatchProductCategoryStatusMutation();
@@ -79,19 +79,24 @@ function ProductCategory() {
   const onAddSubmit = async (data) => {
     await postProductCategory(data);
     onDrawerClose();
-    alert("Success");
+    reset();
+    setSnackbarMessage("Product Category added successfully");
+    onSnackbarOpen();
   };
 
   const onEditSubmit = async (data) => {
     await putProductCategory(data);
     onDrawerClose();
-    alert("Success");
+    reset();
+    setSnackbarMessage("Product Category updated successfully");
+    onSnackbarOpen();
   };
 
   const onArchiveSubmit = async () => {
     await patchProductCategoryStatus(selectedId);
     onArchiveClose();
-    alert("Success");
+    setSnackbarMessage("Product Category archived successfully");
+    onSnackbarOpen();
   };
 
   const handleAddOpen = () => {
@@ -167,18 +172,16 @@ function ProductCategory() {
         Are you sure you want to archive?
       </CommonDialog>
 
-      {/* <SuccessSnackbar
-        open={true}
+      <SuccessSnackbar
+        open={isSnackbarOpen}
         onClose={onSnackbarClose}
-        message="Hi Mom!"
-        disableWindowBlurListener
-      /> */}
+        message={snackbarMessage}
+      />
 
       {/* <ErrorSnackbar
         open={true}
         onClose={onSnackbarClose}
-        message="Hi Mom!"
-        disableWindowBlurListener
+        message="Error"
       /> */}
     </Box>
   );
