@@ -22,6 +22,11 @@ function CommonTable({
   archivable,
   onEdit,
   onArchive,
+  page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage,
+  count,
 }) {
   if (!mapData || mapData.length === 0) {
     // Return some message or UI element indicating that there is no data.
@@ -109,12 +114,16 @@ function CommonTable({
       </TableContainer>
       <TablePagination
         component="div"
-        rowsPerPage={10}
-        count={2}
-        onPageChange={() => {
-          1 + 1;
+        rowsPerPage={rowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, { label: "All", value: 2000 }]}
+        onRowsPerPageChange={(e) => {
+          setRowsPerPage(e.target.value);
         }}
-        page={0}
+        page={page}
+        onPageChange={(_, newPage) => {
+          setPage(newPage);
+        }}
+        count={count}
         className="tableSuperContainer__tablePagination"
       />
     </Box>

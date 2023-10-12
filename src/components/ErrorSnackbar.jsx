@@ -19,6 +19,7 @@ function ErrorSnackbar({ ...otherProps }) {
           <Close />
         </IconButton>
       }
+      autoHideDuration={2000}
     />
   );
 }

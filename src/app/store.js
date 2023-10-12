@@ -5,6 +5,7 @@ import { loginApi } from "../features/authentication/api/loginApi";
 import { permissionsSlice } from "../features/authentication/reducers/permissionsSlice";
 import { productsApi } from "../features/setup/api/productsApi";
 import { productCategoryApi } from "../features/setup/api/productCategoryApi";
+import { productSubCategoryApi } from "../features/setup/api/productSubCategoryApi";
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     [loginApi.reducerPath]: loginApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,
+    [productSubCategoryApi.reducerPath]: productSubCategoryApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -20,6 +22,7 @@ export const store = configureStore({
       loginApi.middleware,
       productsApi.middleware,
       productCategoryApi.middleware,
+      productSubCategoryApi.middleware,
     ]),
 });
 

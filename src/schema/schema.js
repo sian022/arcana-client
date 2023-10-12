@@ -34,6 +34,19 @@ export const productCategorySchema = {
   },
 };
 
+export const productSubCategorySchema = {
+  schema: yup.object({
+    productSubCategoryName: yup
+      .string()
+      .required("Subcategory name is required"),
+    productCategoryId: yup.number().required("Category is required"),
+  }),
+  defaultValues: {
+    productSubCategoryName: "",
+    productCategoryId: null,
+  },
+};
+
 //User Management Schemas
 export const userAccountSchema = {
   schema: yup

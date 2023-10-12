@@ -15,7 +15,7 @@ function SuccessSnackbar({ ...otherProps }) {
           fontWeight: "600",
         },
       }}
-      autoHideDuration={3000}
+      autoHideDuration={2000}
       action={
         <IconButton sx={{ color: "white !important" }} onClick={onClose}>
           <Close />

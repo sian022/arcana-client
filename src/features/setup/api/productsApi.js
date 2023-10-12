@@ -15,6 +15,14 @@ export const productsApi = createApi({
   }),
   tagTypes: ["Products"],
   endpoints: (builder) => ({
+    postProduct: builder.mutation({
+      query: (body) => ({
+        url: "/Items/AddNewItem",
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Products"],
+    }),
     getAllProducts: builder.query({
       query: (params) => ({
         params: params,
@@ -25,7 +33,27 @@ export const productsApi = createApi({
       transformResponse: (response) => response.data,
       transformErrorResponse: (response) => response.data,
     }),
+    putProduct: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/Items/UpdateItem/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    patchProductStatus: builder.mutation({
+      query: (id) => ({
+        url: `/Items/UpdateItemStatus/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Products"],
+    }),
   }),
 });
 
-export const { useGetAllProductsQuery } = productsApi;
+export const {
+  usePostProductMutation,
+  useGetAllProductsQuery,
+  usePutProductMutation,
+  usePatchProductStatusMutation,
+} = productsApi;
