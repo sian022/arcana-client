@@ -16,6 +16,7 @@ import {
   usePostProductMutation,
   usePutProductMutation,
 } from "../../features/setup/api/productsApi";
+import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -112,7 +113,9 @@ function Products() {
     try {
       await patchProductStatus(selectedId).unwrap();
       onArchiveClose();
-      setSnackbarMessage("Product archived successfully");
+      setSnackbarMessage(
+        `Product ${status ? "archived" : "restored"} successfully`
+      );
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -163,7 +166,7 @@ function Products() {
       />
 
       {isLoading ? (
-        <div>Loading...</div>
+        <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.items}
@@ -177,6 +180,7 @@ function Products() {
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={count}
+          status={status}
         />
       )}
 
@@ -227,7 +231,7 @@ function Products() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
       >
-        Are you sure you want to archive?
+        Are you sure you want to {status ? "archive" : "restore"}?
       </CommonDialog>
 
       <SuccessSnackbar

@@ -2,20 +2,21 @@ import { Box, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
-import {
-  useGetAllProductCategoryQuery,
-  usePatchProductCategoryStatusMutation,
-  usePostProductCategoryMutation,
-  usePutProductCategoryMutation,
-} from "../../features/setup/api/productCategoryApi";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { productCategorySchema } from "../../schema/schema";
+import { meatTypeSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
+import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import {
+  useGetAllMeatTypesQuery,
+  usePatchMeatTypeStatusMutation,
+  usePostMeatTypeMutation,
+  usePutMeatTypeMutation,
+} from "../../features/setup/api/meatTypeApi";
 
 function MeatType() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -55,56 +56,50 @@ function MeatType() {
   // Constants
   const excludeKeys = [
     "createdAt",
-    "updatedAt",
-    "isActive",
     "addedBy",
-    "productSubCategory",
+    "updatedAt",
+    "modifiedBy",
+    "isActive",
   ];
 
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     register,
     setValue,
     reset,
-    getValues,
+    control,
   } = useForm({
-    resolver: yupResolver(productCategorySchema.schema),
+    resolver: yupResolver(meatTypeSchema.schema),
     mode: "onChange",
-    defaultValues: productCategorySchema.defaultValues,
+    defaultValues: meatTypeSchema.defaultValues,
   });
 
   //RTK Query
-  const [postProductCategory] = usePostProductCategoryMutation();
-  const { data, isLoading } = useGetAllProductCategoryQuery({
+  const [postMeatType] = usePostMeatTypeMutation();
+  const { data, isLoading } = useGetAllMeatTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putProductCategory] = usePutProductCategoryMutation();
-  const [patchProductCategoryStatus] = usePatchProductCategoryStatusMutation();
+  const [putMeatType] = usePutMeatTypeMutation();
+  const [patchMeatTypeStatus] = usePatchMeatTypeStatusMutation();
 
-  const onAddSubmit = async (data) => {
+  //Drawer Functions
+  const onDrawerSubmit = async (data) => {
     try {
-      await postProductCategory(data).unwrap();
+      if (drawerMode === "add") {
+        await postMeatType(data).unwrap();
+        setSnackbarMessage("Meat Type added successfully");
+      } else if (drawerMode === "edit") {
+        await putMeatType(data).unwrap();
+        setSnackbarMessage("Meat Type updated successfully");
+      }
+
       onDrawerClose();
       reset();
-      setSnackbarMessage("Product Category added successfully");
-      onSuccessOpen();
-    } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
-      onErrorOpen();
-    }
-  };
-
-  const onEditSubmit = async (data) => {
-    try {
-      await putProductCategory(data).unwrap();
-      onDrawerClose();
-      reset();
-      setSnackbarMessage("Product Category updated successfully");
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -114,9 +109,11 @@ function MeatType() {
 
   const onArchiveSubmit = async () => {
     try {
-      await patchProductCategoryStatus(selectedId).unwrap();
+      await patchMeatTypeStatus(selectedId).unwrap();
       onArchiveClose();
-      setSnackbarMessage("Product Category archived successfully");
+      setSnackbarMessage(
+        `Meat Type ${status ? "archived" : "restored"} successfully`
+      );
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -129,12 +126,12 @@ function MeatType() {
     onDrawerOpen();
   };
 
-  const handleEditOpen = (data) => {
+  const handleEditOpen = (editData) => {
     setDrawerMode("edit");
     onDrawerOpen();
 
-    Object.keys(data).forEach((key) => {
-      setValue(key, data[key]);
+    Object.keys(editData).forEach((key) => {
+      setValue(key, editData[key]);
     });
   };
 
@@ -143,12 +140,13 @@ function MeatType() {
     setSelectedId(id);
   };
 
-  const handleEditClose = () => {
+  const handleDrawerClose = () => {
+    reset();
     onDrawerClose();
     setSelectedId("");
-    reset();
   };
 
+  //UseEffect
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
@@ -160,18 +158,17 @@ function MeatType() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Product Category"
+        pageTitle="Meat Type"
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
       />
-
       {isLoading ? (
-        <div>Loading...</div>
+        <CommonTableSkeleton />
       ) : (
         <CommonTable
-          mapData={data?.result}
-          // excludeKeys={excludeKeys}
+          mapData={data?.meatTypes}
+          excludeKeys={excludeKeys}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -181,43 +178,38 @@ function MeatType() {
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={count}
+          status={status}
         />
       )}
 
       <CommonDrawer
         open={isDrawerOpen}
-        onClose={drawerMode === "edit" ? handleEditClose : onDrawerClose}
-        drawerHeader={
-          (drawerMode === "add" ? "Add" : "Edit") + " Product Category"
-        }
-        onSubmit={
-          drawerMode === "add"
-            ? handleSubmit(onAddSubmit)
-            : handleSubmit(onEditSubmit)
-        }
+        onClose={handleDrawerClose}
+        drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Meat Type"}
+        onSubmit={handleSubmit(onDrawerSubmit)}
+        disableSubmit={!isValid}
       >
         <TextField
-          label="Product Category Name"
+          label="Meat Type Name"
           size="small"
           autoComplete="off"
-          {...register("productCategoryName")}
+          {...register("meatTypeName")}
+          helperText={errors?.meatTypeName?.message}
+          error={errors?.meatTypeName}
         />
       </CommonDrawer>
-
       <CommonDialog
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
       >
-        Are you sure you want to archive?
+        Are you sure you want to {status ? "archive" : "restore"}?
       </CommonDialog>
-
       <SuccessSnackbar
         open={isSuccessOpen}
         onClose={onSuccessClose}
         message={snackbarMessage}
       />
-
       <ErrorSnackbar
         open={isErrorOpen}
         onClose={onErrorClose}

@@ -39,11 +39,40 @@ export const productSubCategorySchema = {
     productSubCategoryName: yup
       .string()
       .required("Subcategory name is required"),
-    productCategoryId: yup.number().required("Category is required"),
+    productCategoryId: yup.object().required("Category is required"),
   }),
   defaultValues: {
     productSubCategoryName: "",
     productCategoryId: null,
+  },
+};
+
+export const meatTypeSchema = {
+  schema: yup.object({
+    meatTypeName: yup.string().required("Meat type name is required"),
+  }),
+  defaultValues: {
+    meatTypeName: "",
+  },
+};
+
+export const uomSchema = {
+  schema: yup.object({
+    uomCode: yup.string().required("UOM code is required"),
+    uomDescription: yup.string().required("UOM description is required"),
+  }),
+  defaultValues: {
+    uomCode: "",
+    uomDescription: "",
+  },
+};
+
+export const storeTypeSchema = {
+  schema: yup.object({
+    storeTypeName: yup.string().required("Store type name is required"),
+  }),
+  defaultValues: {
+    storeTypeName: "",
   },
 };
 

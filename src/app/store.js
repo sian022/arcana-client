@@ -6,6 +6,9 @@ import { permissionsSlice } from "../features/authentication/reducers/permission
 import { productsApi } from "../features/setup/api/productsApi";
 import { productCategoryApi } from "../features/setup/api/productCategoryApi";
 import { productSubCategoryApi } from "../features/setup/api/productSubCategoryApi";
+import { meatTypeApi } from "../features/setup/api/meatTypeApi";
+import { uomApi } from "../features/setup/api/uomApi";
+import { storeTypeApi } from "../features/setup/api/storeTypeApi";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +18,9 @@ export const store = configureStore({
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,
     [productSubCategoryApi.reducerPath]: productSubCategoryApi.reducer,
+    [meatTypeApi.reducerPath]: meatTypeApi.reducer,
+    [uomApi.reducerPath]: uomApi.reducer,
+    [storeTypeApi.reducerPath]: storeTypeApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -23,6 +29,9 @@ export const store = configureStore({
       productsApi.middleware,
       productCategoryApi.middleware,
       productSubCategoryApi.middleware,
+      meatTypeApi.middleware,
+      uomApi.middleware,
+      storeTypeApi.middleware,
     ]),
 });
 

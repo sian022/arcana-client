@@ -1,5 +1,9 @@
 import {
   Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -8,11 +12,13 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import { transformKey } from "../utils/CustomFunctions";
-import SecondaryButton from "./SecondaryButton";
-import DangerButton from "./DangerButton";
+import useDisclosure from "../hooks/useDisclosure";
+import CommonActions from "./CommonActions";
+import NoData from "../assets/images/no-data.jpg";
 
 function CommonTable({
   mapData,
@@ -27,11 +33,23 @@ function CommonTable({
   rowsPerPage,
   setRowsPerPage,
   count,
+  status,
 }) {
   if (!mapData || mapData.length === 0) {
     // Return some message or UI element indicating that there is no data.
-    return <div>No data available.</div>;
+    return (
+      <Box className="noData">
+        <img src={NoData} alt="no-data-img" className="noData__image" />
+        <Typography>No data found</Typography>
+      </Box>
+    );
   }
+
+  const {
+    isOpen: isMenuOpen,
+    onOpen: onMenuOpen,
+    onClose: onMenuClose,
+  } = useDisclosure();
 
   var dataToMap = mapData;
   var tableHeadsList;
@@ -84,26 +102,34 @@ function CommonTable({
                     return <TableCell>{item[keys]}</TableCell>;
                   })}
                   {(editable || archivable) && (
+                    // <TableCell>
+                    //   {editable && (
+                    //     <SecondaryButton
+                    //       onClick={() => {
+                    //         onEdit(item);
+                    //       }}
+                    //     >
+                    //       Edit
+                    //     </SecondaryButton>
+                    //   )}
+                    //   {archivable && (
+                    //     <DangerButton
+                    //       sx={{ marginLeft: "10px" }}
+                    //       onClick={() => {
+                    //         onArchive(item.id);
+                    //       }}
+                    //     >
+                    //       Archive
+                    //     </DangerButton>
+                    //   )}
+                    // </TableCell>
                     <TableCell>
-                      {editable && (
-                        <SecondaryButton
-                          onClick={() => {
-                            onEdit(item);
-                          }}
-                        >
-                          Edit
-                        </SecondaryButton>
-                      )}
-                      {archivable && (
-                        <DangerButton
-                          sx={{ marginLeft: "10px" }}
-                          onClick={() => {
-                            onArchive(item.id);
-                          }}
-                        >
-                          Archive
-                        </DangerButton>
-                      )}
+                      <CommonActions
+                        onEdit={onEdit}
+                        onArchive={onArchive}
+                        item={item}
+                        status={status}
+                      />
                     </TableCell>
                   )}
                 </TableRow>

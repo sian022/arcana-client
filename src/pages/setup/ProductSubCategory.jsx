@@ -18,6 +18,7 @@ import {
 } from "../../features/setup/api/productSubCategoryApi";
 import { useGetAllProductCategoryQuery } from "../../features/setup/api/productCategoryApi";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
+import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 
 function ProductSubCategory() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -66,11 +67,10 @@ function ProductSubCategory() {
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     register,
     setValue,
     reset,
-    watch,
     control,
   } = useForm({
     resolver: yupResolver(productSubCategorySchema.schema),
@@ -94,25 +94,30 @@ function ProductSubCategory() {
     Status: true,
   });
 
-  const onAddSubmit = async (data) => {
+  //Drawer Functions
+  const onDrawerSubmit = async (data) => {
     try {
-      await postProductSubCategory(data).unwrap();
-      onDrawerClose();
-      reset();
-      setSnackbarMessage("Product Category added successfully");
-      onSuccessOpen();
-    } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
-      onErrorOpen();
-    }
-  };
+      const {
+        productCategoryId: { id },
+        ...restData
+      } = data;
 
-  const onEditSubmit = async (data) => {
-    try {
-      await putProductSubCategory(data).unwrap();
+      if (drawerMode === "add") {
+        await postProductSubCategory({
+          ...restData,
+          productCategoryId: id,
+        }).unwrap();
+        setSnackbarMessage("Product Sub Category added successfully");
+      } else if (drawerMode === "edit") {
+        await putProductSubCategory({
+          ...restData,
+          productCategoryId: id,
+        }).unwrap();
+        setSnackbarMessage("Product Sub Category updated successfully");
+      }
+
       onDrawerClose();
       reset();
-      setSnackbarMessage("Product Category updated successfully");
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -124,7 +129,9 @@ function ProductSubCategory() {
     try {
       await patchProductSubCategoryStatus(selectedId).unwrap();
       onArchiveClose();
-      setSnackbarMessage("Product Category archived successfully");
+      setSnackbarMessage(
+        `Product Sub Category ${status ? "archived" : "restored"} successfully`
+      );
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -141,20 +148,15 @@ function ProductSubCategory() {
     setDrawerMode("edit");
     onDrawerOpen();
 
-    Object.keys(editData).forEach((key) => {
-      setValue(key, editData[key]);
-    });
-
+    setValue("id", editData.id);
+    setValue("productSubCategoryName", editData.productSubCategoryName);
     setValue(
       "productCategoryId",
       data?.productSubCategories.find(
         (item) => item.productCategoryName === editData.productCategoryName
-      )?.id
+      )
     );
   };
-
-  console.log(watch("productCategoryId"));
-  // console.log(data?.productSubCategories);
 
   const handleArchiveOpen = (id) => {
     onArchiveOpen();
@@ -167,6 +169,7 @@ function ProductSubCategory() {
     setSelectedId("");
   };
 
+  //UseEffect
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
@@ -183,9 +186,8 @@ function ProductSubCategory() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-
       {isLoading ? (
-        <div>Loading...</div>
+        <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.productSubCategories}
@@ -199,6 +201,7 @@ function ProductSubCategory() {
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={count}
+          status={status}
         />
       )}
 
@@ -208,11 +211,8 @@ function ProductSubCategory() {
         drawerHeader={
           (drawerMode === "add" ? "Add" : "Edit") + " Product Sub Category"
         }
-        onSubmit={
-          drawerMode === "add"
-            ? handleSubmit(onAddSubmit)
-            : handleSubmit(onEditSubmit)
-        }
+        onSubmit={handleSubmit(onDrawerSubmit)}
+        disableSubmit={!isValid}
       >
         <TextField
           label="Product Sub Category Name"
@@ -223,33 +223,13 @@ function ProductSubCategory() {
           error={errors?.productSubCategoryName}
         />
 
-        <Autocomplete
-          selectOnFocus
-          clearOnBlur
-          handleHomeEndKeys
-          options={productCategoriesData?.result}
-          getOptionLabel={(option) => option.productCategoryName}
-          disableClearable
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              size="small"
-              label="Product Category"
-              helperText={errors?.productCategoryId?.message}
-              error={errors?.productCategoryId}
-            />
-          )}
-          onChange={(_, value) => {
-            setValue("productCategoryId", value.id);
-          }}
-        />
-
         <ControlledAutocomplete
           name={"productCategoryId"}
           control={control}
           options={productCategoriesData?.result}
           getOptionLabel={(option) => option.productCategoryName}
           disableClearable
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -259,26 +239,20 @@ function ProductSubCategory() {
               error={errors?.productCategoryId}
             />
           )}
-          onChange={(_, value) => {
-            setValue("productCategoryId", value.id);
-          }}
         />
       </CommonDrawer>
-
       <CommonDialog
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
       >
-        Are you sure you want to archive?
+        Are you sure you want to {status ? "archive" : "restore"}?
       </CommonDialog>
-
       <SuccessSnackbar
         open={isSuccessOpen}
         onClose={onSuccessClose}
         message={snackbarMessage}
       />
-
       <ErrorSnackbar
         open={isErrorOpen}
         onClose={onErrorClose}

@@ -65,11 +65,10 @@ function ProductCategory() {
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     register,
     setValue,
     reset,
-    getValues,
   } = useForm({
     resolver: yupResolver(productCategorySchema.schema),
     mode: "onChange",
@@ -87,25 +86,18 @@ function ProductCategory() {
   const [putProductCategory] = usePutProductCategoryMutation();
   const [patchProductCategoryStatus] = usePatchProductCategoryStatusMutation();
 
-  const onAddSubmit = async (data) => {
+  const onDrawerSubmit = async (data) => {
     try {
-      await postProductCategory(data).unwrap();
-      onDrawerClose();
-      reset();
-      setSnackbarMessage("Product Category added successfully");
-      onSuccessOpen();
-    } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
-      onErrorOpen();
-    }
-  };
+      if (drawerMode === "add") {
+        await postProductCategory(data).unwrap();
+        setSnackbarMessage("Product Category added successfully");
+      } else if (drawerMode === "edit") {
+        await putProductCategory(data).unwrap();
+        setSnackbarMessage("Product Category updated successfully");
+      }
 
-  const onEditSubmit = async (data) => {
-    try {
-      await putProductCategory(data).unwrap();
       onDrawerClose();
       reset();
-      setSnackbarMessage("Product Category updated successfully");
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -117,7 +109,9 @@ function ProductCategory() {
     try {
       await patchProductCategoryStatus(selectedId).unwrap();
       onArchiveClose();
-      setSnackbarMessage("Product Category archived successfully");
+      setSnackbarMessage(
+        `Product Category ${status ? "archived" : "restored"} successfully`
+      );
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -168,7 +162,7 @@ function ProductCategory() {
       />
 
       {isLoading ? (
-        <div>Loading...</div>
+        <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.result}
@@ -182,6 +176,7 @@ function ProductCategory() {
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={count}
+          status={status}
         />
       )}
 
@@ -191,17 +186,16 @@ function ProductCategory() {
         drawerHeader={
           (drawerMode === "add" ? "Add" : "Edit") + " Product Category"
         }
-        onSubmit={
-          drawerMode === "add"
-            ? handleSubmit(onAddSubmit)
-            : handleSubmit(onEditSubmit)
-        }
+        onSubmit={handleSubmit(onDrawerSubmit)}
+        disableSubmit={!isValid}
       >
         <TextField
           label="Product Category Name"
           size="small"
           autoComplete="off"
           {...register("productCategoryName")}
+          error={errors?.productCategoryName}
+          helperText={errors?.productCategoryName?.message}
         />
       </CommonDrawer>
 
@@ -210,7 +204,7 @@ function ProductCategory() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
       >
-        Are you sure you want to archive?
+        Are you sure you want to {status ? "archive" : "restore"}?
       </CommonDialog>
 
       <SuccessSnackbar

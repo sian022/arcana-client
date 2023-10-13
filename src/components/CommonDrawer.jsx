@@ -8,6 +8,7 @@ function CommonDrawer({
   onClose,
   drawerHeader,
   onSubmit,
+  disableSubmit,
   children,
   ...otherProps
 }) {
@@ -24,7 +25,9 @@ function CommonDrawer({
         </Box>
         <Box className="commonDrawer__body">{children}</Box>
         <Box className="commonDrawer__actions">
-          <SecondaryButton onClick={onSubmit}>Submit</SecondaryButton>
+          <SecondaryButton onClick={onSubmit} disabled={disableSubmit}>
+            Submit
+          </SecondaryButton>
           <DangerButton onClick={onClose}>Close</DangerButton>
         </Box>
       </Box>

@@ -1,4 +1,5 @@
 @import "./index.styles.scss";
+@import "./muiOverrides.styles.scss";
 
 .pageHeader {
   display: flex;
@@ -152,5 +153,31 @@
       font-weight: bold;
       font-size: 30px;
     }
+  }
+}
+
+.commonTableSkeletonFooter {
+  display: flex;
+  justify-content: end;
+  height: 52px;
+  width: 100%;
+  background-color: $primary;
+  align-items: center;
+  gap: 20px;
+}
+
+.noData {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  & img {
+    width: 300px;
+  }
+
+  & p {
+    font-size: 20px;
+    font-weight: 500;
   }
 }
