@@ -124,12 +124,12 @@ function ProductCategory() {
     onDrawerOpen();
   };
 
-  const handleEditOpen = (data) => {
+  const handleEditOpen = (editData) => {
     setDrawerMode("edit");
     onDrawerOpen();
 
-    Object.keys(data).forEach((key) => {
-      setValue(key, data[key]);
+    Object.keys(editData).forEach((key) => {
+      setValue(key, editData[key]);
     });
   };
 

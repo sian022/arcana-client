@@ -9,6 +9,13 @@ import { productSubCategoryApi } from "../features/setup/api/productSubCategoryA
 import { meatTypeApi } from "../features/setup/api/meatTypeApi";
 import { uomApi } from "../features/setup/api/uomApi";
 import { storeTypeApi } from "../features/setup/api/storeTypeApi";
+import { discountTypeApi } from "../features/setup/api/discountTypeApi";
+import { termDaysApi } from "../features/setup/api/termDaysApi";
+import { locationApi } from "../features/user-management/api/locationApi";
+import { departmentApi } from "../features/user-management/api/departmentApi";
+import { companyApi } from "../features/user-management/api/companyApi";
+import { userRoleApi } from "../features/user-management/api/userRoleApi";
+import { userAccountApi } from "../features/user-management/api/userAccountApi";
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +28,13 @@ export const store = configureStore({
     [meatTypeApi.reducerPath]: meatTypeApi.reducer,
     [uomApi.reducerPath]: uomApi.reducer,
     [storeTypeApi.reducerPath]: storeTypeApi.reducer,
+    [discountTypeApi.reducerPath]: discountTypeApi.reducer,
+    [termDaysApi.reducerPath]: termDaysApi.reducer,
+    [locationApi.reducerPath]: locationApi.reducer,
+    [departmentApi.reducerPath]: departmentApi.reducer,
+    [companyApi.reducerPath]: companyApi.reducer,
+    [userRoleApi.reducerPath]: userRoleApi.reducer,
+    [userAccountApi.reducerPath]: userAccountApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -32,6 +46,13 @@ export const store = configureStore({
       meatTypeApi.middleware,
       uomApi.middleware,
       storeTypeApi.middleware,
+      discountTypeApi.middleware,
+      termDaysApi.middleware,
+      locationApi.middleware,
+      departmentApi.middleware,
+      companyApi.middleware,
+      userRoleApi.middleware,
+      userAccountApi.middleware,
     ]),
 });
 

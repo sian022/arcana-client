@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { decryptString } from "../../../utils/CustomFunctions";
 
-export const userAccountApi = createApi({
-  reducerPath: "userAccountApi",
+export const termDaysApi = createApi({
+  reducerPath: "termDaysApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASEURL,
     prepareHeaders: (headers) => {
@@ -13,47 +13,47 @@ export const userAccountApi = createApi({
       );
     },
   }),
-  tagTypes: ["User"],
+  tagTypes: ["Term Days"],
   endpoints: (builder) => ({
-    postUser: builder.mutation({
+    postTermDays: builder.mutation({
       query: (body) => ({
-        url: "/User/AddNewUser",
+        url: "/TermDays/AddNewTermDays",
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Term Days"],
     }),
-    getAllUsers: builder.query({
+    getAllTermDays: builder.query({
       query: (params) => ({
         params: params,
-        url: "/User/GetUser",
+        url: "/TermDays/GetTermDays",
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: ["Term Days"],
       transformResponse: (response) => response.data,
       transformErrorResponse: (response) => response.data,
     }),
-    putUser: builder.mutation({
+    putTermDays: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/User/UpdateUser/${id}`,
+        url: `/TermDays/UpdateTermDays/${id}`,
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Term Days"],
     }),
-    patchUserStatus: builder.mutation({
+    patchTermDaysStatus: builder.mutation({
       query: (id) => ({
-        url: `/User/UpdateUserStatus/${id}`,
+        url: `/TermDays/UpdateTermDaysStatus/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Term Days"],
     }),
   }),
 });
 
 export const {
-  usePostUserMutation,
-  useGetAllUsersQuery,
-  usePutUserMutation,
-  usePatchUserStatusMutation,
-} = userAccountApi;
+  usePostTermDaysMutation,
+  useGetAllTermDaysQuery,
+  usePutTermDaysMutation,
+  usePatchTermDaysStatusMutation,
+} = termDaysApi;

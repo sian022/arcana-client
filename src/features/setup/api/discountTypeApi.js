@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { decryptString } from "../../../utils/CustomFunctions";
 
-export const userAccountApi = createApi({
-  reducerPath: "userAccountApi",
+export const discountTypeApi = createApi({
+  reducerPath: "discountTypeApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASEURL,
     prepareHeaders: (headers) => {
@@ -13,47 +13,47 @@ export const userAccountApi = createApi({
       );
     },
   }),
-  tagTypes: ["User"],
+  tagTypes: ["Discount Type"],
   endpoints: (builder) => ({
-    postUser: builder.mutation({
+    postDiscountType: builder.mutation({
       query: (body) => ({
-        url: "/User/AddNewUser",
+        url: "/Discount/AddNewDiscount",
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Discount Type"],
     }),
-    getAllUsers: builder.query({
+    getAllDiscountTypes: builder.query({
       query: (params) => ({
         params: params,
-        url: "/User/GetUser",
+        url: "/Discount/GetDiscount",
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: ["Discount Type"],
       transformResponse: (response) => response.data,
       transformErrorResponse: (response) => response.data,
     }),
-    putUser: builder.mutation({
+    putDiscountType: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/User/UpdateUser/${id}`,
+        url: `/Discount/UpdateDiscount/${id}`,
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Discount Type"],
     }),
-    patchUserStatus: builder.mutation({
+    patchDiscountTypeStatus: builder.mutation({
       query: (id) => ({
-        url: `/User/UpdateUserStatus/${id}`,
+        url: `/Discount/UpdateDiscountStatus/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Discount Type"],
     }),
   }),
 });
 
 export const {
-  usePostUserMutation,
-  useGetAllUsersQuery,
-  usePutUserMutation,
-  usePatchUserStatusMutation,
-} = userAccountApi;
+  usePostDiscountTypeMutation,
+  useGetAllDiscountTypesQuery,
+  usePutDiscountTypeMutation,
+  usePatchDiscountTypeStatusMutation,
+} = discountTypeApi;

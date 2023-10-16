@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { decryptString } from "../../../utils/CustomFunctions";
 
-export const userAccountApi = createApi({
-  reducerPath: "userAccountApi",
+export const locationApi = createApi({
+  reducerPath: "locationApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASEURL,
     prepareHeaders: (headers) => {
@@ -13,47 +13,47 @@ export const userAccountApi = createApi({
       );
     },
   }),
-  tagTypes: ["User"],
+  tagTypes: ["Location"],
   endpoints: (builder) => ({
-    postUser: builder.mutation({
+    postLocation: builder.mutation({
       query: (body) => ({
-        url: "/User/AddNewUser",
+        url: "/Location/AddNewLocation",
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Location"],
     }),
-    getAllUsers: builder.query({
+    getAllLocations: builder.query({
       query: (params) => ({
         params: params,
-        url: "/User/GetUser",
+        url: "/Location/GetAllLocations",
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: ["Location"],
       transformResponse: (response) => response.data,
       transformErrorResponse: (response) => response.data,
     }),
-    putUser: builder.mutation({
+    putLocation: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/User/UpdateUser/${id}`,
+        url: `/Location/UpdateLocation/${id}`,
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Location"],
     }),
-    patchUserStatus: builder.mutation({
+    patchLocationStatus: builder.mutation({
       query: (id) => ({
-        url: `/User/UpdateUserStatus/${id}`,
+        url: `/Location/UpdateLocationStatus/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Location"],
     }),
   }),
 });
 
 export const {
-  usePostUserMutation,
-  useGetAllUsersQuery,
-  usePutUserMutation,
-  usePatchUserStatusMutation,
-} = userAccountApi;
+  usePostLocationMutation,
+  useGetAllLocationsQuery,
+  usePutLocationMutation,
+  usePatchLocationStatusMutation,
+} = locationApi;

@@ -23,6 +23,7 @@ import {
   StoreMallDirectory,
   Label,
   CalendarToday,
+  Redeem,
 } from "@mui/icons-material";
 
 export const getIconElement = (iconName) => {
@@ -50,6 +51,8 @@ export const getIconElement = (iconName) => {
     StoreMallDirectory: <StoreMallDirectory />,
     Label: <Label />,
     CalendarToday: <CalendarToday />,
+    SquareFoot: <SquareFoot />,
+    Redeem: <Redeem />,
   };
 
   return iconMap[iconName] || <IcecreamOutlined />;

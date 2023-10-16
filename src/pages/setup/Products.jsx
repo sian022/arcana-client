@@ -17,6 +17,10 @@ import {
   usePutProductMutation,
 } from "../../features/setup/api/productsApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import ControlledAutocomplete from "../../components/ControlledAutocomplete";
+import { useGetAllUomsQuery } from "../../features/setup/api/uomApi";
+import { useGetAllProductSubCategoriesQuery } from "../../features/setup/api/productSubCategoryApi";
+import { useGetAllMeatTypesQuery } from "../../features/setup/api/meatTypeApi";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -64,13 +68,12 @@ function Products() {
     setValue,
     reset,
     getValues,
+    control,
   } = useForm({
     resolver: yupResolver(productSchema.schema),
     mode: "onChange",
     defaultValues: productSchema.defaultValues,
   });
-
-  console.log(getValues());
 
   //RTK Query
   const [postProduct] = usePostProductMutation();
@@ -83,25 +86,40 @@ function Products() {
   const [putProduct] = usePutProductMutation();
   const [patchProductStatus] = usePatchProductStatusMutation();
 
-  const onAddSubmit = async (data) => {
-    try {
-      await postProduct(data).unwrap();
-      onDrawerClose();
-      reset();
-      setSnackbarMessage("Product added successfully");
-      onSuccessOpen();
-    } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
-      onErrorOpen();
-    }
-  };
+  const { data: uomData } = useGetAllUomsQuery();
+  const { data: productSubcategoriesData } =
+    useGetAllProductSubCategoriesQuery();
+  const { data: meatTypeData } = useGetAllMeatTypesQuery();
 
-  const onEditSubmit = async (data) => {
+  const onDrawerSubmit = async (data) => {
     try {
-      await putProduct(data).unwrap();
+      const {
+        uomId: { id: uomId },
+        productSubCategoryId: { id: productSubCategoryId },
+        meatTypeId: { id: meatTypeId },
+        ...restData
+      } = data;
+
+      if (drawerMode === "add") {
+        await postProduct({
+          ...restData,
+          uomId,
+          productSubCategoryId,
+          meatTypeId,
+        }).unwrap();
+        setSnackbarMessage("Product added successfully");
+      } else if (drawerMode === "edit") {
+        await putProduct({
+          ...restData,
+          uomId,
+          productSubCategoryId,
+          meatTypeId,
+        }).unwrap();
+        setSnackbarMessage("Product updated successfully");
+      }
+
       onDrawerClose();
       reset();
-      setSnackbarMessage("Product updated successfully");
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -128,13 +146,50 @@ function Products() {
     onDrawerOpen();
   };
 
-  const handleEditOpen = (data) => {
+  const handleEditOpen = (editData) => {
     setDrawerMode("edit");
     onDrawerOpen();
-    console.log(data);
-    Object.keys(data).forEach((key) => {
-      setValue(key, data[key]);
-    });
+
+    setValue("id", editData.id);
+    setValue("itemCode", editData.itemCode);
+    setValue("itemDescription", editData.itemDescription);
+
+    const foundUom = data?.items.find((item) => item.uom === editData.uom);
+    if (foundUom) {
+      const updatedItem = { ...foundUom, uomCode: foundUom.uom };
+      delete updatedItem.uom;
+      setValue("uomId", updatedItem);
+    }
+
+    // setValue(
+    //   "uomId",
+    //   data?.items.find((item) => item.uom === editData.uom)
+    // );
+
+    setValue(
+      "productSubCategoryId",
+      data?.items.find(
+        (item) =>
+          item.productSubCategoryName === editData.productSubCategoryName
+      )
+    );
+
+    const foundMeatType = data?.items.find(
+      (item) => item.meatType === editData.meatType
+    );
+    if (foundMeatType) {
+      const updatedItem = {
+        ...foundMeatType,
+        meatTypeName: foundMeatType.meatType,
+      };
+      delete updatedItem.meatType;
+      setValue("meatTypeId", updatedItem);
+    }
+
+    // setValue(
+    //   "meatTypeId",
+    //   data?.items.find((item) => item.meatType === editData.meatType)
+    // );
   };
 
   const handleArchiveOpen = (id) => {
@@ -188,11 +243,7 @@ function Products() {
         open={isDrawerOpen}
         onClose={handleDrawerClose}
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Product"}
-        onSubmit={
-          drawerMode === "add"
-            ? handleSubmit(onAddSubmit)
-            : handleSubmit(onEditSubmit)
-        }
+        onSubmit={handleSubmit(onDrawerSubmit)}
       >
         <TextField
           label="Item Code"
@@ -206,23 +257,59 @@ function Products() {
           autoComplete="off"
           {...register("itemDescription")}
         />
-        <TextField
-          label="Unit of Measurement"
-          size="small"
-          autoComplete="off"
-          {...register("uomId")}
+
+        <ControlledAutocomplete
+          name={"uomId"}
+          control={control}
+          options={uomData?.uom}
+          getOptionLabel={(option) => option.uomCode}
+          disableClearable
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              size="small"
+              label="Unit of Measurement"
+              helperText={errors?.uomId?.message}
+              error={errors?.uomId}
+            />
+          )}
         />
-        <TextField
-          label="Product Sub Category"
-          size="small"
-          autoComplete="off"
-          {...register("productSubCategoryId")}
+
+        <ControlledAutocomplete
+          name={"productSubCategoryId"}
+          control={control}
+          options={productSubcategoriesData?.productSubCategories}
+          getOptionLabel={(option) => option.productSubCategoryName}
+          disableClearable
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              size="small"
+              label="Product Sub Category"
+              helperText={errors?.productSubCategoryId?.message}
+              error={errors?.productSubCategoryId}
+            />
+          )}
         />
-        <TextField
-          label="Meat Type"
-          size="small"
-          autoComplete="off"
-          {...register("meatTypeId")}
+
+        <ControlledAutocomplete
+          name={"meatTypeId"}
+          control={control}
+          options={meatTypeData?.meatTypes}
+          getOptionLabel={(option) => option.meatTypeName}
+          disableClearable
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              size="small"
+              label="Meat Type"
+              helperText={errors?.meatTypeId?.message}
+              error={errors?.meatTypeId}
+            />
+          )}
         />
       </CommonDrawer>
 

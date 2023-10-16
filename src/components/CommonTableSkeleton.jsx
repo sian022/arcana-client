@@ -22,18 +22,18 @@ function CommonTableSkeleton() {
         <Table>
           <TableHead>
             <TableRow>
-              {Array.from({ length: 5 }, () => (
-                <TableCell>
+              {Array.from({ length: 5 }, (_, index) => (
+                <TableCell key={index}>
                   <Skeleton />
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.from({ length: 6 }, () => (
-              <TableRow>
-                {Array.from({ length: 5 }, () => (
-                  <TableCell>
+            {Array.from({ length: 6 }, (row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {Array.from({ length: 5 }, (cell, cellIndex) => (
+                  <TableCell key={cellIndex}>
                     <Skeleton />
                   </TableCell>
                 ))}

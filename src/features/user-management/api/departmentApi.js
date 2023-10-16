@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { decryptString } from "../../../utils/CustomFunctions";
 
-export const userAccountApi = createApi({
-  reducerPath: "userAccountApi",
+export const departmentApi = createApi({
+  reducerPath: "departmentApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASEURL,
     prepareHeaders: (headers) => {
@@ -13,47 +13,47 @@ export const userAccountApi = createApi({
       );
     },
   }),
-  tagTypes: ["User"],
+  tagTypes: ["Department"],
   endpoints: (builder) => ({
-    postUser: builder.mutation({
+    postDepartment: builder.mutation({
       query: (body) => ({
-        url: "/User/AddNewUser",
+        url: "/Department/AddNewDepartment",
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Department"],
     }),
-    getAllUsers: builder.query({
+    getAllDepartments: builder.query({
       query: (params) => ({
         params: params,
-        url: "/User/GetUser",
+        url: "/Department/GetAllDepartment",
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: ["Department"],
       transformResponse: (response) => response.data,
       transformErrorResponse: (response) => response.data,
     }),
-    putUser: builder.mutation({
+    putDepartment: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/User/UpdateUser/${id}`,
+        url: `/Department/UpdateDepartment/${id}`,
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Department"],
     }),
-    patchUserStatus: builder.mutation({
+    patchDepartmentStatus: builder.mutation({
       query: (id) => ({
-        url: `/User/UpdateUserStatus/${id}`,
+        url: `/Department/UpdateDepartmentStatus/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Department"],
     }),
   }),
 });
 
 export const {
-  usePostUserMutation,
-  useGetAllUsersQuery,
-  usePutUserMutation,
-  usePatchUserStatusMutation,
-} = userAccountApi;
+  usePostDepartmentMutation,
+  useGetAllDepartmentsQuery,
+  usePutDepartmentMutation,
+  usePatchDepartmentStatusMutation,
+} = departmentApi;

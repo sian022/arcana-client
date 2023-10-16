@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { decryptString } from "../../../utils/CustomFunctions";
 
-export const userAccountApi = createApi({
-  reducerPath: "userAccountApi",
+export const companyApi = createApi({
+  reducerPath: "companyApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASEURL,
     prepareHeaders: (headers) => {
@@ -13,47 +13,47 @@ export const userAccountApi = createApi({
       );
     },
   }),
-  tagTypes: ["User"],
+  tagTypes: ["Company"],
   endpoints: (builder) => ({
-    postUser: builder.mutation({
+    postCompany: builder.mutation({
       query: (body) => ({
-        url: "/User/AddNewUser",
+        url: "/Company/AddNewCompany",
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Company"],
     }),
-    getAllUsers: builder.query({
+    getAllCompanies: builder.query({
       query: (params) => ({
         params: params,
-        url: "/User/GetUser",
+        url: "/Company/GetAllCompanies",
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: ["Company"],
       transformResponse: (response) => response.data,
       transformErrorResponse: (response) => response.data,
     }),
-    putUser: builder.mutation({
+    putCompany: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/User/UpdateUser/${id}`,
+        url: `/Company/UpdateCompany/${id}`,
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Company"],
     }),
-    patchUserStatus: builder.mutation({
+    patchCompanyStatus: builder.mutation({
       query: (id) => ({
-        url: `/User/UpdateUserStatus/${id}`,
+        url: `/Company/UpdateCompanyStatus/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Company"],
     }),
   }),
 });
 
 export const {
-  usePostUserMutation,
-  useGetAllUsersQuery,
-  usePutUserMutation,
-  usePatchUserStatusMutation,
-} = userAccountApi;
+  usePostCompanyMutation,
+  useGetAllCompaniesQuery,
+  usePutCompanyMutation,
+  usePatchCompanyStatusMutation,
+} = companyApi;

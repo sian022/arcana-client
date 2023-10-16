@@ -20,7 +20,7 @@ import useDisclosure from "../hooks/useDisclosure";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
 
-function CommonTable({
+function RoleTable({
   mapData,
   excludeKeys,
   tableHeads,
@@ -156,4 +156,4 @@ function CommonTable({
   );
 }
 
-export default CommonTable;
+export default RoleTable;
