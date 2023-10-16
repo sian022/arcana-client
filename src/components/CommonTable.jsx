@@ -1,9 +1,5 @@
 import {
   Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -16,7 +12,6 @@ import {
 } from "@mui/material";
 import React from "react";
 import { transformKey } from "../utils/CustomFunctions";
-import useDisclosure from "../hooks/useDisclosure";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
 
@@ -36,7 +31,6 @@ function CommonTable({
   status,
 }) {
   if (!mapData || mapData.length === 0) {
-    // Return some message or UI element indicating that there is no data.
     return (
       <Box className="noData">
         <img src={NoData} alt="no-data-img" className="noData__image" />
@@ -44,12 +38,6 @@ function CommonTable({
       </Box>
     );
   }
-
-  const {
-    isOpen: isMenuOpen,
-    onOpen: onMenuOpen,
-    onClose: onMenuClose,
-  } = useDisclosure();
 
   var dataToMap = mapData;
   var tableHeadsList;
@@ -102,27 +90,6 @@ function CommonTable({
                     return <TableCell key={k}>{item[keys]}</TableCell>;
                   })}
                   {(editable || archivable) && (
-                    // <TableCell>
-                    //   {editable && (
-                    //     <SecondaryButton
-                    //       onClick={() => {
-                    //         onEdit(item);
-                    //       }}
-                    //     >
-                    //       Edit
-                    //     </SecondaryButton>
-                    //   )}
-                    //   {archivable && (
-                    //     <DangerButton
-                    //       sx={{ marginLeft: "10px" }}
-                    //       onClick={() => {
-                    //         onArchive(item.id);
-                    //       }}
-                    //     >
-                    //       Archive
-                    //     </DangerButton>
-                    //   )}
-                    // </TableCell>
                     <TableCell>
                       <CommonActions
                         onEdit={onEdit}
