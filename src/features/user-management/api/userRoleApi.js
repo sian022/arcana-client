@@ -48,6 +48,14 @@ export const userRoleApi = createApi({
       }),
       invalidatesTags: ["User Role"],
     }),
+    putTagUserRole: builder.mutation({
+      query: ({ id, permissions }) => ({
+        url: `/UserRole/UntagAndTagUserRole/${id}`,
+        method: "PUT",
+        body: { permissions },
+      }),
+      invalidatesTags: ["User Role"],
+    }),
   }),
 });
 
@@ -56,4 +64,5 @@ export const {
   useGetAllUserRolesQuery,
   usePutUserRoleMutation,
   usePatchUserRoleStatusMutation,
+  usePutTagUserRoleMutation,
 } = userRoleApi;

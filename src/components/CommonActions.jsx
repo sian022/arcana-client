@@ -1,9 +1,9 @@
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import React, { useRef } from "react";
 import useDisclosure from "../hooks/useDisclosure";
-import { Archive, Edit, More, Restore } from "@mui/icons-material";
+import { Archive, Edit, More, Restore, Tag } from "@mui/icons-material";
 
-function CommonActions({ onEdit, onArchive, item, status }) {
+function CommonActions({ onEdit, onArchive, onTag, item, status }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const anchorRef = useRef();
 
@@ -12,6 +12,8 @@ function CommonActions({ onEdit, onArchive, item, status }) {
       onEdit(item);
     } else if (action === "archive") {
       onArchive(item.id);
+    } else if (action === "tag") {
+      onTag();
     }
     onClose();
   };
@@ -26,34 +28,54 @@ function CommonActions({ onEdit, onArchive, item, status }) {
         <More />
       </IconButton>
       <Menu open={isOpen} onClose={onClose} anchorEl={anchorRef.current}>
-        <MenuItem
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "5px",
-            fontWeight: "600",
-          }}
-          onClick={() => {
-            handleAction("edit");
-          }}
-        >
-          <Edit />
-          Edit
-        </MenuItem>
-        <MenuItem
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "5px",
-            fontWeight: "600",
-          }}
-          onClick={() => {
-            handleAction("archive");
-          }}
-        >
-          {status ? <Archive /> : <Restore />}
-          {status ? "Archive" : "Restore"}
-        </MenuItem>
+        {onTag && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("tag");
+            }}
+          >
+            <Tag />
+            Tagging
+          </MenuItem>
+        )}
+        {onEdit && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("edit");
+            }}
+          >
+            <Edit />
+            Edit
+          </MenuItem>
+        )}
+        {onArchive && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("archive");
+            }}
+          >
+            {status ? <Archive /> : <Restore />}
+            {status ? "Archive" : "Restore"}
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

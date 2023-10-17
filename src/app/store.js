@@ -16,11 +16,13 @@ import { departmentApi } from "../features/user-management/api/departmentApi";
 import { companyApi } from "../features/user-management/api/companyApi";
 import { userRoleApi } from "../features/user-management/api/userRoleApi";
 import { userAccountApi } from "../features/user-management/api/userAccountApi";
+import { selectedRowSlice } from "../features/misc/reducers/selectedRowSlice";
 
 export const store = configureStore({
   reducer: {
     login: loginSlice.reducer,
     permissions: permissionsSlice.reducer,
+    selectedRow: selectedRowSlice.reducer,
     [loginApi.reducerPath]: loginApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,

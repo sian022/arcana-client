@@ -16,10 +16,15 @@ import {
   useGetAllUserRolesQuery,
   usePostUserRoleMutation,
   usePutUserRoleMutation,
+  usePutTagUserRoleMutation,
 } from "../../features/user-management/api/userRoleApi";
 import RoleTable from "../../components/RoleTable";
+import RoleTaggingModal from "../../components/modals/RoleTaggingModal";
+import { useSelector } from "react-redux";
 
 function UserRole() {
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
+
   const [drawerMode, setDrawerMode] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
@@ -28,6 +33,7 @@ function UserRole() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [checkedModules, setCheckedModules] = useState([]);
 
   // Drawer Disclosures
   const {
@@ -54,6 +60,12 @@ function UserRole() {
     onClose: onErrorClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isTaggingOpen,
+    onOpen: onTaggingOpen,
+    onClose: onTaggingClose,
+  } = useDisclosure();
+
   // Constants
   const excludeKeys = [
     "createdAt",
@@ -62,9 +74,11 @@ function UserRole() {
     "modifiedBy",
     "isActive",
     "user",
-    "permissions",
+    // "permissions",
     "isTagged",
   ];
+
+  const tableHeads = ["Role"];
 
   //React Hook Form
   const {
@@ -89,6 +103,7 @@ function UserRole() {
   });
   const [putUserRole] = usePutUserRoleMutation();
   const [patchUserRoleStatus] = usePatchUserRoleStatusMutation();
+  const [putTagUserRole] = usePutTagUserRoleMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -117,6 +132,21 @@ function UserRole() {
       setSnackbarMessage(
         `User Role ${status ? "archived" : "restored"} successfully`
       );
+      onSuccessOpen();
+    } catch (error) {
+      setSnackbarMessage(error.data.messages[0]);
+      onErrorOpen();
+    }
+  };
+
+  const onTaggingSubmit = async () => {
+    try {
+      await putTagUserRole({
+        id: selectedRowData?.id,
+        permissions: checkedModules,
+      }).unwrap();
+      onTaggingClose();
+      setSnackbarMessage("User Role tagged successfully");
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -176,12 +206,14 @@ function UserRole() {
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
+          onTag={onTaggingOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 
@@ -217,6 +249,13 @@ function UserRole() {
         open={isErrorOpen}
         onClose={onErrorClose}
         message={snackbarMessage}
+      />
+      <RoleTaggingModal
+        checkedModules={checkedModules}
+        setCheckedModules={setCheckedModules}
+        onSubmit={onTaggingSubmit}
+        open={isTaggingOpen}
+        onClose={onTaggingClose}
       />
     </Box>
   );

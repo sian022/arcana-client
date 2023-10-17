@@ -14,6 +14,8 @@ import React from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
+import { useDispatch } from "react-redux";
+import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
 
 function CommonTable({
   mapData,
@@ -39,6 +41,8 @@ function CommonTable({
     );
   }
 
+  const dispatch = useDispatch();
+
   var dataToMap = mapData;
   var tableHeadsList;
 
@@ -61,7 +65,7 @@ function CommonTable({
       .map((key) => transformKey(key));
   }
 
-  if (editable || archivable) {
+  if ((editable || archivable) && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
@@ -82,7 +86,12 @@ function CommonTable({
           <TableBody>
             {dataToMap.map((item, j) => {
               return (
-                <TableRow key={j}>
+                <TableRow
+                  key={j}
+                  onClick={() => {
+                    dispatch(setSelectedRow(item));
+                  }}
+                >
                   {dataToMapKeys.map((keys, k) => {
                     if (keys === "id") {
                       return null;

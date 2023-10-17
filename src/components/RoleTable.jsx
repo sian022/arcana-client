@@ -4,6 +4,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Modal,
   Paper,
   Table,
   TableBody,
@@ -14,11 +15,14 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import useDisclosure from "../hooks/useDisclosure";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
+import RoleTaggingModal from "./modals/RoleTaggingModal";
+import { useDispatch } from "react-redux";
+import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
 
 function RoleTable({
   mapData,
@@ -28,6 +32,7 @@ function RoleTable({
   archivable,
   onEdit,
   onArchive,
+  onTag,
   page,
   setPage,
   rowsPerPage,
@@ -45,11 +50,7 @@ function RoleTable({
     );
   }
 
-  const {
-    isOpen: isMenuOpen,
-    onOpen: onMenuOpen,
-    onClose: onMenuClose,
-  } = useDisclosure();
+  const dispatch = useDispatch();
 
   var dataToMap = mapData;
   var tableHeadsList;
@@ -73,7 +74,7 @@ function RoleTable({
       .map((key) => transformKey(key));
   }
 
-  if (editable || archivable) {
+  if ((editable || archivable) && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
@@ -94,39 +95,24 @@ function RoleTable({
           <TableBody>
             {dataToMap.map((item, j) => {
               return (
-                <TableRow key={j}>
+                <TableRow
+                  key={j}
+                  onClick={() => {
+                    dispatch(setSelectedRow(item));
+                  }}
+                >
                   {dataToMapKeys.map((keys, k) => {
-                    if (keys === "id") {
+                    if (keys === "id" || keys === "permissions") {
                       return null;
                     }
                     return <TableCell key={k}>{item[keys]}</TableCell>;
                   })}
                   {(editable || archivable) && (
-                    // <TableCell>
-                    //   {editable && (
-                    //     <SecondaryButton
-                    //       onClick={() => {
-                    //         onEdit(item);
-                    //       }}
-                    //     >
-                    //       Edit
-                    //     </SecondaryButton>
-                    //   )}
-                    //   {archivable && (
-                    //     <DangerButton
-                    //       sx={{ marginLeft: "10px" }}
-                    //       onClick={() => {
-                    //         onArchive(item.id);
-                    //       }}
-                    //     >
-                    //       Archive
-                    //     </DangerButton>
-                    //   )}
-                    // </TableCell>
                     <TableCell>
                       <CommonActions
                         onEdit={onEdit}
                         onArchive={onArchive}
+                        onTag={onTag}
                         item={item}
                         status={status}
                       />
