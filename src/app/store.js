@@ -17,12 +17,15 @@ import { companyApi } from "../features/user-management/api/companyApi";
 import { userRoleApi } from "../features/user-management/api/userRoleApi";
 import { userAccountApi } from "../features/user-management/api/userAccountApi";
 import { selectedRowSlice } from "../features/misc/reducers/selectedRowSlice";
+import { selectedStoreTypeSlice } from "../features/prospect/reducers/selectedStoreTypeSlice";
+import { prospectApi } from "../features/prospect/api/prospectApi";
 
 export const store = configureStore({
   reducer: {
     login: loginSlice.reducer,
     permissions: permissionsSlice.reducer,
     selectedRow: selectedRowSlice.reducer,
+    selectedStoreType: selectedStoreTypeSlice.reducer,
     [loginApi.reducerPath]: loginApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,
@@ -37,6 +40,7 @@ export const store = configureStore({
     [companyApi.reducerPath]: companyApi.reducer,
     [userRoleApi.reducerPath]: userRoleApi.reducer,
     [userAccountApi.reducerPath]: userAccountApi.reducer,
+    [prospectApi.reducerPath]: prospectApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -55,6 +59,7 @@ export const store = configureStore({
       companyApi.middleware,
       userRoleApi.middleware,
       userAccountApi.middleware,
+      prospectApi.middleware,
     ]),
 });
 

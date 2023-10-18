@@ -9,12 +9,16 @@ function CommonDrawer({
   drawerHeader,
   onSubmit,
   disableSubmit,
+  width,
   children,
   ...otherProps
 }) {
   return (
     <Drawer anchor="right" {...otherProps}>
-      <Box className="commonDrawer">
+      <Box
+        className="commonDrawer"
+        sx={{ width: width ? `${width} !important` : null }}
+      >
         <Box className="commonDrawer__ribbon">
           <Typography className="commonDrawer__ribbon__title">
             {drawerHeader}

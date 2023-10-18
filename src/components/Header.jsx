@@ -1,13 +1,26 @@
-import { Autocomplete, Box, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  TextField,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import React from "react";
 import "../assets/styles/navbar.styles.scss";
 import LogoutButton from "./LogoutButton";
 import { formatDate } from "../utils/CustomFunctions";
 import { navigationData } from "../navigation/navigationData";
 import { useNavigate } from "react-router-dom";
+import { setSelectedStoreType } from "../features/prospect/reducers/selectedStoreTypeSlice";
+import { KeyboardDoubleArrowLeft } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
 
 function Header() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const selectedStoreType = useSelector(
+    (state) => state.selectedStoreType.value
+  );
 
   const today = new Date();
   const currentDate = formatDate(
@@ -38,7 +51,26 @@ function Header() {
 
   return (
     <Box className="navbar">
-      <Typography className="navbar__dateToday">{currentDate}</Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
+        <Typography className="navbar__dateToday">{currentDate}</Typography>
+        {selectedStoreType && (
+          <IconButton
+            onClick={() => {
+              dispatch(setSelectedStoreType(""));
+            }}
+            sx={{
+              backgroundColor: "secondary.main",
+              color: "white !important",
+              "&:hover": {
+                backgroundColor: "accent.main",
+              },
+            }}
+          >
+            <KeyboardDoubleArrowLeft />
+          </IconButton>
+        )}
+      </Box>
+
       {/* <Autocomplete
         options={navigationLabel}
         getOptionLabel={(option) => option.name}

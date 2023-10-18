@@ -163,3 +163,21 @@ export const locationSchema = {
     locationName: "",
   },
 };
+
+//Prospect Schemas
+export const prospectSchema = {
+  schema: yup.object({
+    ownersName: yup.string().required("Owner's name is required"),
+    ownersAddress: yup.string().required("Owner's address is required"),
+    phoneNumber: yup.string().required("Phone number is required"),
+    businessName: yup.string().required("Business name is required"),
+    storeTypeId: yup.object().required("Store type is required"),
+  }),
+  defaultValues: {
+    ownersName: "",
+    ownersAddress: "",
+    phoneNumber: "",
+    businessName: "",
+    storeTypeId: null,
+  },
+};

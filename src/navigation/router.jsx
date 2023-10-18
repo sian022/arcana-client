@@ -2,12 +2,12 @@ import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../pages/Dashboard";
-import UserManagement from "../pages/user-management"
-import Setup from "../pages/setup"
-import Discount from "../pages/discount"
-import Terms from "../pages/terms"
-import CustomerRegistration from "../pages/customer-registration"
-import Approval from "../pages/approval"
+import UserManagement from "../pages/user-management";
+import Setup from "../pages/setup";
+import Discount from "../pages/discount";
+import Terms from "../pages/terms";
+import CustomerRegistration from "../pages/customer-registration";
+import Approval from "../pages/approval";
 import UserAccount from "../pages/user-management/UserAccount";
 import UserRole from "../pages/user-management/UserRole";
 import Company from "../pages/user-management/Company";
@@ -21,7 +21,7 @@ import UnitOfMeasurements from "../pages/setup/UnitOfMeasurements";
 import StoreType from "../pages/setup/StoreType";
 import DiscountType from "../pages/discount/DiscountType";
 import TermDays from "../pages/terms/TermDays";
-import Prospect from "../pages/customer-registration/Prospect";
+import Prospect from "../pages/customer-registration/prospecting";
 import FreebieApproval from "../pages/approval/FreebieApproval";
 
 export const router = createBrowserRouter([
@@ -64,8 +64,8 @@ export const router = createBrowserRouter([
           {
             path: "location",
             element: <Location />,
-          }
-        ]
+          },
+        ],
       },
       {
         path: "setup",
@@ -114,8 +114,8 @@ export const router = createBrowserRouter([
           {
             path: "term-days",
             element: <TermDays />,
-          }
-        ]
+          },
+        ],
       },
       {
         path: "customer-registration",
@@ -124,8 +124,8 @@ export const router = createBrowserRouter([
           {
             path: "prospect",
             element: <Prospect />,
-          }
-        ]
+          },
+        ],
       },
       {
         path: "approval",
@@ -134,9 +134,9 @@ export const router = createBrowserRouter([
           {
             path: "freebie-approval",
             element: <FreebieApproval />,
-          }
-        ]
+          },
+        ],
       },
-    ]
+    ],
   },
-])
+]);
