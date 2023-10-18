@@ -5,7 +5,9 @@ const colorSchemes = {
     primary: "#544d91",
     secondary: "#243448",
     accent: "#766bb9",
-    error: "#F30737",
+    error: "#BB0000",
+    success: "#009c7a",
+    // error: "#F30737",
   },
 };
 
@@ -22,6 +24,9 @@ export const theme = createTheme({
     },
     error: {
       main: colorSchemes.light.error,
+    },
+    success: {
+      main: colorSchemes.light.success,
     },
     white: {
       main: "#FFFFFF",
@@ -62,7 +67,9 @@ export const theme = createTheme({
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          maxHeight: "560px",
+          // maxHeight: "400px",
+          // flex: 1,
+          height: "calc(100vh - 330px)",
           background: "white",
           padding: 0,
           margin: 0,
@@ -72,7 +79,8 @@ export const theme = createTheme({
     MuiTable: {
       styleOverrides: {
         root: {
-          minWidth: 500,
+          // minWidth: 500,
+          whiteSpace: "nowrap",
         },
       },
     },
@@ -148,5 +156,12 @@ export const theme = createTheme({
         },
       },
     },
+    // MuiFormHelperText: {
+    //   styleOverrides: {
+    //     root: {
+    //       color: "black !important",
+    //     },
+    //   },
+    // },
   },
 });

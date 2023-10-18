@@ -1,4 +1,5 @@
 @import "./index.styles.scss";
+@import "./muiOverrides.styles.scss";
 
 .pageHeader {
   display: flex;
@@ -6,6 +7,7 @@
   flex-direction: row;
   padding: 15px;
   align-items: center;
+  gap: 30px;
 
   & &__title {
     font-weight: bold;
@@ -53,4 +55,140 @@
   flex-direction: column;
   gap: 20px;
   flex: 1;
+  overflow: auto;
+}
+
+.commonDialog {
+  &__roof {
+    background-color: $primary;
+    height: 1rem;
+  }
+
+  &__content {
+    padding: 20px;
+  }
+
+  &__imageWrapper {
+    display: flex;
+    justify-content: center;
+
+    & img {
+      width: 100px;
+    }
+  }
+}
+
+.commonDrawer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 350px;
+
+  &__ribbon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $primary;
+    padding: 20px;
+    margin-top: 30px;
+
+    & &__title {
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+
+    & button {
+      color: white;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 30px;
+    overflow: auto;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    padding: 0 30px;
+    justify-content: end;
+  }
+}
+
+.tableSuperContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  &__tableContainer {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &__tablePagination {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+}
+
+.pageIndex {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  &__banner {
+    background: linear-gradient(to right, #544d91, #243448);
+    border-radius: 200px;
+    padding: 30px;
+
+    & &__title {
+      color: white;
+      font-weight: bold;
+      font-size: 30px;
+    }
+  }
+}
+
+.commonTableSkeletonFooter {
+  display: flex;
+  justify-content: end;
+  height: 52px;
+  width: 100%;
+  background-color: $primary;
+  align-items: center;
+  gap: 20px;
+}
+
+.noData {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  & img {
+    width: 300px;
+  }
+
+  & p {
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+.commonModal {
+  border-radius: 10px;
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  padding: 30px;
 }

@@ -1,24 +1,38 @@
-import { Box, Drawer, Typography } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { Box, Drawer, IconButton, Typography } from "@mui/material";
 import React from "react";
+import SecondaryButton from "./SecondaryButton";
+import DangerButton from "./DangerButton";
 
-function CommonDrawer({ modalHeader, children, ...otherProps }) {
+function CommonDrawer({
+  onClose,
+  drawerHeader,
+  onSubmit,
+  disableSubmit,
+  width,
+  children,
+  ...otherProps
+}) {
   return (
     <Drawer anchor="right" {...otherProps}>
       <Box
-        sx={{
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "40px",
-          height: "100%",
-          width: "300px",
-        }}
+        className="commonDrawer"
+        sx={{ width: width ? `${width} !important` : null }}
       >
-        <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
-          {modalHeader}
-        </Typography>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {children}
+        <Box className="commonDrawer__ribbon">
+          <Typography className="commonDrawer__ribbon__title">
+            {drawerHeader}
+          </Typography>
+          <IconButton onClick={onClose}>
+            <Close />
+          </IconButton>
+        </Box>
+        <Box className="commonDrawer__body">{children}</Box>
+        <Box className="commonDrawer__actions">
+          <SecondaryButton onClick={onSubmit} disabled={disableSubmit}>
+            Submit
+          </SecondaryButton>
+          <DangerButton onClick={onClose}>Close</DangerButton>
         </Box>
       </Box>
     </Drawer>

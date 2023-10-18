@@ -1,16 +1,18 @@
-import React from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import React from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import CommonPageIndex from "../../components/CommonPageIndex";
 
 function Terms() {
-  const location = useLocation()
+  return <CommonPageIndex pathname="/terms" title="Terms" />;
+  // const location = useLocation()
 
-  if (location.pathname === "/terms") {
-    return (
-      <div>Terms</div>
-    )
-  }
+  // if (location.pathname === "/terms") {
+  //   return (
+  //     <div>Terms</div>
+  //   )
+  // }
 
-  return <Outlet />
+  // return <Outlet />
 }
 
-export default Terms
+export default Terms;

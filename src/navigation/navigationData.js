@@ -83,7 +83,7 @@ export const navigationData = [
         id: 5,
         name: "Unit of Measurements",
         path: "/setup/uom",
-        icon: "Ruler",
+        icon: "SquareFoot",
       },
       {
         id: 6,

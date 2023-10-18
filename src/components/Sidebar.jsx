@@ -13,11 +13,11 @@ import "../assets/styles/sidebar.styles.scss";
 import { NavLink } from "react-router-dom";
 import { getIconElement } from "./GetIconElement";
 import SystemLogoName from "../assets/images/SystemLogoName.png";
-import SystemLogo from "../assets/images/SystemLogo.png"
+import SystemLogo from "../assets/images/SystemLogo.png";
 
 function Sidebar() {
   const [activeModule, setActiveModule] = useState("");
-  const [isWideScreen, setIsWideScreen] = useState(window.innerWidth >= 1024);
+  const [isWideScreen, setIsWideScreen] = useState(window.innerWidth > 1024);
 
   const permissions = useSelector((state) => state.permissions?.permissions);
   const permittedSidebar = navigationData.filter((item) =>
@@ -26,20 +26,23 @@ function Sidebar() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsWideScreen(window.innerWidth >= 1024);
+      setIsWideScreen(window.innerWidth > 1024);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []); // Emp
 
   return (
     <Box className="sidebar">
       <Box className="sidebar__logo">
-        <img src={isWideScreen ? SystemLogoName : SystemLogo} alt="arcana-logo" />
+        <img
+          src={isWideScreen ? SystemLogoName : SystemLogo}
+          alt="arcana-logo"
+        />
       </Box>
       <Box className="sidebar__navigation">
         {

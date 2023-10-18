@@ -1,15 +1,262 @@
-import { Box } from "@mui/material";
-import React from "react";
+import { Box, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
-import { userAccountTableHeads } from "../../utils/TableHeads";
-import { dummyTableData } from "../../utils/DummyData";
+import CommonDrawer from "../../components/CommonDrawer";
+import useDisclosure from "../../hooks/useDisclosure";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { userRoleSchema } from "../../schema/schema";
+import CommonDialog from "../../components/CommonDialog";
+import SuccessSnackbar from "../../components/SuccessSnackbar";
+import ErrorSnackbar from "../../components/ErrorSnackbar";
+import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import {
+  usePatchUserRoleStatusMutation,
+  useGetAllUserRolesQuery,
+  usePostUserRoleMutation,
+  usePutUserRoleMutation,
+  usePutTagUserRoleMutation,
+} from "../../features/user-management/api/userRoleApi";
+import RoleTable from "../../components/RoleTable";
+import RoleTaggingModal from "../../components/modals/RoleTaggingModal";
+import { useSelector } from "react-redux";
 
 function UserRole() {
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const [drawerMode, setDrawerMode] = useState("");
+  const [selectedId, setSelectedId] = useState("");
+  const [status, setStatus] = useState(true);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [count, setCount] = useState(null);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [checkedModules, setCheckedModules] = useState([]);
+
+  // Drawer Disclosures
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isArchiveOpen,
+    onOpen: onArchiveOpen,
+    onClose: onArchiveClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isSuccessOpen,
+    onOpen: onSuccessOpen,
+    onClose: onSuccessClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isErrorOpen,
+    onOpen: onErrorOpen,
+    onClose: onErrorClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isTaggingOpen,
+    onOpen: onTaggingOpen,
+    onClose: onTaggingClose,
+  } = useDisclosure();
+
+  // Constants
+  const excludeKeys = [
+    "createdAt",
+    "addedBy",
+    "updatedAt",
+    "modifiedBy",
+    "isActive",
+    "user",
+    // "permissions",
+    "isTagged",
+  ];
+
+  const tableHeads = ["Role"];
+
+  //React Hook Form
+  const {
+    handleSubmit,
+    formState: { errors, isValid },
+    register,
+    setValue,
+    reset,
+  } = useForm({
+    resolver: yupResolver(userRoleSchema.schema),
+    mode: "onChange",
+    defaultValues: userRoleSchema.defaultValues,
+  });
+
+  //RTK Query
+  const [postUserRole] = usePostUserRoleMutation();
+  const { data, isLoading } = useGetAllUserRolesQuery({
+    Search: search,
+    Status: status,
+    PageNumber: page + 1,
+    PageSize: rowsPerPage,
+  });
+  const [putUserRole] = usePutUserRoleMutation();
+  const [patchUserRoleStatus] = usePatchUserRoleStatusMutation();
+  const [putTagUserRole] = usePutTagUserRoleMutation();
+
+  //Drawer Functions
+  const onDrawerSubmit = async (data) => {
+    try {
+      if (drawerMode === "add") {
+        await postUserRole(data).unwrap();
+        setSnackbarMessage("User Role added successfully");
+      } else if (drawerMode === "edit") {
+        await putUserRole(data).unwrap();
+        setSnackbarMessage("User Role updated successfully");
+      }
+
+      onDrawerClose();
+      reset();
+      onSuccessOpen();
+    } catch (error) {
+      setSnackbarMessage(error.data.messages[0]);
+      onErrorOpen();
+    }
+  };
+
+  const onArchiveSubmit = async () => {
+    try {
+      await patchUserRoleStatus(selectedId).unwrap();
+      onArchiveClose();
+      setSnackbarMessage(
+        `User Role ${status ? "archived" : "restored"} successfully`
+      );
+      onSuccessOpen();
+    } catch (error) {
+      setSnackbarMessage(error.data.messages[0]);
+      onErrorOpen();
+    }
+  };
+
+  const onTaggingSubmit = async () => {
+    try {
+      await putTagUserRole({
+        id: selectedRowData?.id,
+        permissions: checkedModules,
+      }).unwrap();
+      onTaggingClose();
+      setSnackbarMessage("User Role tagged successfully");
+      onSuccessOpen();
+    } catch (error) {
+      setSnackbarMessage(error.data.messages[0]);
+      onErrorOpen();
+    }
+  };
+
+  const handleAddOpen = () => {
+    setDrawerMode("add");
+    onDrawerOpen();
+  };
+
+  const handleEditOpen = (editData) => {
+    setDrawerMode("edit");
+    onDrawerOpen();
+
+    Object.keys(editData).forEach((key) => {
+      setValue(key, editData[key]);
+    });
+  };
+
+  const handleArchiveOpen = (id) => {
+    onArchiveOpen();
+    setSelectedId(id);
+  };
+
+  const handleDrawerClose = () => {
+    reset();
+    onDrawerClose();
+    setSelectedId("");
+  };
+
+  //UseEffect
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [search, status, rowsPerPage]);
+
   return (
     <Box className="commonPageLayout">
-      <PageHeaderAdd pageTitle="User Role" />
-      <CommonTable mapData={dummyTableData} />
+      <PageHeaderAdd
+        pageTitle="User Role"
+        onOpen={handleAddOpen}
+        setSearch={setSearch}
+        setStatus={setStatus}
+      />
+      {isLoading ? (
+        <CommonTableSkeleton />
+      ) : (
+        <RoleTable
+          mapData={data?.userRoles}
+          excludeKeys={excludeKeys}
+          editable
+          archivable
+          onEdit={handleEditOpen}
+          onArchive={handleArchiveOpen}
+          onTag={onTaggingOpen}
+          page={page}
+          setPage={setPage}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+          count={count}
+          status={status}
+          tableHeads={tableHeads}
+        />
+      )}
+
+      <CommonDrawer
+        open={isDrawerOpen}
+        onClose={handleDrawerClose}
+        drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " User Role"}
+        onSubmit={handleSubmit(onDrawerSubmit)}
+        disableSubmit={!isValid}
+      >
+        <TextField
+          label="User Role Name"
+          size="small"
+          autoComplete="off"
+          {...register("roleName")}
+          helperText={errors?.roleName?.message}
+          error={errors?.roleName}
+        />
+      </CommonDrawer>
+      <CommonDialog
+        open={isArchiveOpen}
+        onClose={onArchiveClose}
+        onYes={onArchiveSubmit}
+      >
+        Are you sure you want to {status ? "archive" : "restore"}?
+      </CommonDialog>
+      <SuccessSnackbar
+        open={isSuccessOpen}
+        onClose={onSuccessClose}
+        message={snackbarMessage}
+      />
+      <ErrorSnackbar
+        open={isErrorOpen}
+        onClose={onErrorClose}
+        message={snackbarMessage}
+      />
+      <RoleTaggingModal
+        checkedModules={checkedModules}
+        setCheckedModules={setCheckedModules}
+        onSubmit={onTaggingSubmit}
+        open={isTaggingOpen}
+        onClose={onTaggingClose}
+      />
     </Box>
   );
 }
