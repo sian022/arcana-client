@@ -86,6 +86,15 @@ export const prospectApi = createApi({
       }),
       invalidatesTags: ["Prospecting"],
     }),
+
+    postRequestFreebies: builder.mutation({
+      query: ({ clientId, ...body }) => ({
+        url: `/Freebies/RequestFreebies/${clientId}`,
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Prospecting"],
+    }),
   }),
 });
 
@@ -96,4 +105,5 @@ export const {
   usePutProspectMutation,
   usePutReleaseProspectMutation,
   usePatchProspectStatusMutation,
+  usePostRequestFreebiesMutation,
 } = prospectApi;

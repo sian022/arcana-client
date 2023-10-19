@@ -184,19 +184,21 @@ export const prospectSchema = {
 
 export const requestFreebiesSchema = {
   schema: yup.object({
-    // clientId: yup.string(),
+    clientId: yup.number().required("Client ID is required").integer(),
     freebies: yup.array().of(
       yup.object({
         itemId: yup.object().required("Product Code Required"),
-        quantity: yup
-          .number()
-          .required("Quantity is required")
-          .typeError("Must be a number"),
+        quantity: yup.number().required("Quantity is required"),
       })
     ),
   }),
   defaultValues: {
-    // clientId: "",
-    freebies: [],
+    clientId: null,
+    freebies: [
+      {
+        itemId: null,
+        quantity: 1,
+      },
+    ],
   },
 };

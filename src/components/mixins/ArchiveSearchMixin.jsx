@@ -9,7 +9,7 @@ import {
 import React from "react";
 import SecondaryButton from "../SecondaryButton";
 
-function AddArchiveSearchMixin({ addTitle, onAddOpen, setStatus, setSearch }) {
+function ArchiveSearchMixin({ addTitle, onAddOpen, setStatus, setSearch }) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
@@ -18,9 +18,9 @@ function AddArchiveSearchMixin({ addTitle, onAddOpen, setStatus, setSearch }) {
     // <Paper elevation={1}>
     <Box className="pageHeader">
       <Box className="pageHeader__left">
-        <SecondaryButton className="addRowButtons" onClick={onAddOpen}>
-          Add {addTitle && addTitle}
-        </SecondaryButton>
+        {/* <SecondaryButton className="addRowButtons" onClick={onAddOpen}>
+            Add {addTitle && addTitle}
+          </SecondaryButton> */}
       </Box>
       <Box className="pageHeader__right">
         <Checkbox
@@ -44,4 +44,4 @@ function AddArchiveSearchMixin({ addTitle, onAddOpen, setStatus, setSearch }) {
   );
 }
 
-export default AddArchiveSearchMixin;
+export default ArchiveSearchMixin;

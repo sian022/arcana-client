@@ -38,6 +38,9 @@ function ForFreebies() {
   const dispatch = useDispatch();
   const badges = useSelector((state) => state.badge.value);
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const selectedStoreType = useSelector(
+    (state) => state.selectedStoreType.value
+  );
 
   //Disclosures
   const {
@@ -83,7 +86,14 @@ function ForFreebies() {
   } = useDisclosure();
 
   //Constants
-  const excludeKeys = ["createdAt", "isActive", "origin", "addedBy", "status"];
+  const excludeKeys = [
+    "createdAt",
+    "isActive",
+    "origin",
+    "addedBy",
+    "status",
+    "freebies",
+  ];
 
   //React Hook Form
   const {
@@ -107,6 +117,8 @@ function ForFreebies() {
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
+    StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
+    WithFreebies: false,
   });
   const [putProspect] = usePutProspectMutation();
   const [patchProspectStatus] = usePatchProspectStatusMutation();

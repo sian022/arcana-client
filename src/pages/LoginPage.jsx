@@ -46,12 +46,9 @@ function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(errors);
-
   const submitHandler = async (data) => {
     try {
       const res = await postLogin(data).unwrap();
-      console.log(res);
       dispatch(setFullname(res.data.fullname));
       dispatch(setToken(res.data.token));
       dispatch(setPermissisons(res.data.permission));

@@ -175,6 +175,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 10px;
+  // height: 70%;
 
   & img {
     width: 300px;
@@ -195,4 +197,11 @@
   transform: translate(-50%, -50%);
   width: 500px;
   padding: 30px;
+}
+
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 150px;
 }

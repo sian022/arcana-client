@@ -12,7 +12,6 @@ export const permissionsSlice = createSlice({
     setPermissisons: (state, action) => {
       sessionStorage.setItem("permissions", JSON.stringify(action.payload));
       state.permissions = action.payload;
-      console.log(action);
     },
   },
 });

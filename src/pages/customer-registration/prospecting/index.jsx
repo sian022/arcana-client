@@ -74,7 +74,7 @@ function Prospect() {
         <Box
           sx={{
             display: "flex",
-            my: "20px",
+            // my: "20px",
             // mx: "30px",
             gap: "10px",
           }}
@@ -95,7 +95,7 @@ function Prospect() {
               dispatch(setSelectedStoreType("Main"));
             }}
           >
-            <Storefront sx={{ fontSize: "400px" }} />
+            <Storefront sx={{ fontSize: "350px" }} />
             <Typography sx={{ fontSize: "30px", fontWeight: "600" }}>
               Main
             </Typography>
@@ -118,6 +118,7 @@ function Prospect() {
           >
             {data?.storeTypes?.map((item) => (
               <Button
+                key={item.id}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -129,9 +130,16 @@ function Prospect() {
                     bgcolor: "accent.main",
                   },
                 }}
+                title={item.storeTypeName}
+                onClick={() => {
+                  dispatch(setSelectedStoreType(item.storeTypeName));
+                }}
               >
-                <Storefront sx={{ fontSize: "150px" }} />
-                <Typography sx={{ fontSize: "20px", fontWeight: "600" }}>
+                <Storefront sx={{ fontSize: "100px" }} />
+                <Typography
+                  sx={{ fontSize: "16px", fontWeight: "600" }}
+                  className="truncate-text"
+                >
                   {item.storeTypeName}
                 </Typography>
               </Button>
