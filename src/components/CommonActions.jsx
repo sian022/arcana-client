@@ -1,9 +1,16 @@
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import React, { useRef } from "react";
 import useDisclosure from "../hooks/useDisclosure";
-import { Archive, Edit, More, Restore, Tag } from "@mui/icons-material";
+import {
+  Archive,
+  Edit,
+  More,
+  RequestPage,
+  Restore,
+  Tag,
+} from "@mui/icons-material";
 
-function CommonActions({ onEdit, onArchive, onTag, item, status }) {
+function CommonActions({ onEdit, onArchive, onTag, onFreebie, item, status }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const anchorRef = useRef();
 
@@ -14,6 +21,8 @@ function CommonActions({ onEdit, onArchive, onTag, item, status }) {
       onArchive(item.id);
     } else if (action === "tag") {
       onTag();
+    } else if (action === "requestFreebie") {
+      onFreebie();
     }
     onClose();
   };
@@ -74,6 +83,22 @@ function CommonActions({ onEdit, onArchive, onTag, item, status }) {
           >
             {status ? <Archive /> : <Restore />}
             {status ? "Archive" : "Restore"}
+          </MenuItem>
+        )}
+        {onFreebie && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("requestFreebie");
+            }}
+          >
+            <RequestPage />
+            Add Freebie(s)
           </MenuItem>
         )}
       </Menu>

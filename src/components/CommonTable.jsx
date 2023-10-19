@@ -25,6 +25,7 @@ function CommonTable({
   archivable,
   onEdit,
   onArchive,
+  onFreebie,
   page,
   setPage,
   rowsPerPage,
@@ -103,6 +104,7 @@ function CommonTable({
                       <CommonActions
                         onEdit={onEdit}
                         onArchive={onArchive}
+                        onFreebie={onFreebie && onFreebie}
                         item={item}
                         status={status}
                       />

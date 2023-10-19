@@ -4,15 +4,27 @@ import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
 import SecondaryAlert from "../assets/images/SecondaryAlert.png";
 
-function CommonDialog({ onClose, onYes, children, ...otherProps }) {
+function CommonDialog({
+  onClose,
+  onYes,
+  children,
+  noIcon,
+  customImageSource,
+  ...otherProps
+}) {
   return (
     <Dialog {...otherProps}>
       <Box className="commonDialog__roof" />
       <Box className="commonDialog__content">
-        <Box className="commonDialog__imageWrapper">
-          <img src={SecondaryAlert} alt="alert-img" />
-        </Box>
-        <DialogTitle>{children}</DialogTitle>
+        {!noIcon && (
+          <Box className="commonDialog__imageWrapper">
+            <img
+              src={customImageSource ? customImageSource : SecondaryAlert}
+              alt="alert-img"
+            />
+          </Box>
+        )}
+        <DialogTitle className="commonDialog__title">{children}</DialogTitle>
         <DialogActions>
           <SecondaryButton onClick={onYes}>Yes</SecondaryButton>
           <DangerButton onClick={onClose}>No</DangerButton>

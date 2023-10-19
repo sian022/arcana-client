@@ -1,8 +1,10 @@
 import { Box, TextField, debounce } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetAllReleasedProspectsQuery } from "../../../features/prospect/api/prospectApi";
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
 import CommonTable from "../../../components/CommonTable";
+import { useDispatch, useSelector } from "react-redux";
+import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 
 function Released() {
   const [search, setSearch] = useState("");
@@ -10,6 +12,9 @@ function Released() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+
+  const dispatch = useDispatch();
+  const badges = useSelector((state) => state.badge.value);
 
   //Constants
   const excludeKeys = [
@@ -30,6 +35,12 @@ function Released() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+    dispatch(setBadge({ ...badges, released: data?.totalCount }));
+  }, [data]);
+
   return (
     <Box>
       <TextField

@@ -181,3 +181,22 @@ export const prospectSchema = {
     storeTypeId: null,
   },
 };
+
+export const requestFreebiesSchema = {
+  schema: yup.object({
+    // clientId: yup.string(),
+    freebies: yup.array().of(
+      yup.object({
+        itemId: yup.object().required("Product Code Required"),
+        quantity: yup
+          .number()
+          .required("Quantity is required")
+          .typeError("Must be a number"),
+      })
+    ),
+  }),
+  defaultValues: {
+    // clientId: "",
+    freebies: [],
+  },
+};

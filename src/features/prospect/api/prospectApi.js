@@ -17,7 +17,7 @@ export const prospectApi = createApi({
   endpoints: (builder) => ({
     postProspect: builder.mutation({
       query: (body) => ({
-        url: "/Prospecting/AddNewProspecting",
+        url: "/Prospecting/AddNewProspect",
         method: "POST",
         body: body,
       }),

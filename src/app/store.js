@@ -19,6 +19,7 @@ import { userAccountApi } from "../features/user-management/api/userAccountApi";
 import { selectedRowSlice } from "../features/misc/reducers/selectedRowSlice";
 import { selectedStoreTypeSlice } from "../features/prospect/reducers/selectedStoreTypeSlice";
 import { prospectApi } from "../features/prospect/api/prospectApi";
+import { badgeSlice } from "../features/prospect/reducers/badgeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     permissions: permissionsSlice.reducer,
     selectedRow: selectedRowSlice.reducer,
     selectedStoreType: selectedStoreTypeSlice.reducer,
+    badge: badgeSlice.reducer,
     [loginApi.reducerPath]: loginApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,

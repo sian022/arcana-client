@@ -5,11 +5,15 @@ import { Storefront } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedStoreType } from "../../../features/prospect/reducers/selectedStoreTypeSlice";
 import PageHeaderTabs from "../../../components/PageHeaderTabs";
-import ForReleasing from "./ForReleasing";
+// import ForReleasing from "./ForReleasing";
 import Released from "./Released";
+import ForFreebies from "./ForFreebies";
+import ForReleasing from "./ForReleasing";
 
 function Prospect() {
   const [tabViewing, setTabViewing] = useState(1);
+
+  const badges = useSelector((state) => state.badge.value);
 
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
@@ -21,19 +25,25 @@ function Prospect() {
   const prospectNavigation = [
     {
       case: 1,
-      name: "For Releasing",
-      // badge: totalApprovedFreebies || totalRejectedFreebies || 0,
+      name: "For Freebies",
+      badge: badges["forFreebies"],
     },
     {
       case: 2,
+      name: "For Releasing",
+      badge: badges["forReleasing"],
+    },
+    {
+      case: 3,
       name: "Released",
-      // badge: totalReleasedProspects || 0,
+      badge: badges["released"],
     },
   ];
 
   const tabComponents = {
-    1: <ForReleasing />,
-    2: <Released />,
+    1: <ForFreebies />,
+    2: <ForReleasing />,
+    3: <Released />,
   };
 
   return (
