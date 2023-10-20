@@ -16,16 +16,6 @@ function RoleTaggingModal({
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  useEffect(() => {
-    if (selectedRowData?.permissions) {
-      setCheckedModules(selectedRowData?.permissions);
-    } else {
-      setCheckedModules([]);
-    }
-  }, [selectedRowData]);
-
-  console.log(checkedModules);
-
   const handleCheckboxChange = (itemName, subItemName) => {
     if (!subItemName) {
       // If it's an item.name checkbox, toggle its state
@@ -60,6 +50,14 @@ function RoleTaggingModal({
       }
     }
   };
+
+  useEffect(() => {
+    if (selectedRowData?.permissions) {
+      setCheckedModules(selectedRowData?.permissions);
+    } else {
+      setCheckedModules([]);
+    }
+  }, [selectedRowData]);
 
   return (
     <CommonModal {...props}>

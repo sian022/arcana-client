@@ -71,12 +71,17 @@ export const prospectApi = createApi({
       }),
       invalidatesTags: ["Prospecting"],
     }),
+
     putReleaseProspect: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `/ReleasedProspectingRequest/ReleasedProspectingRequest/${id}`,
-        method: "PUT",
-        body: body,
-      }),
+      query: ({ id, body }) => {
+        // const { ESignature, PhotoProof } = body;
+
+        return {
+          url: `/Prospecting/ReleasedProspectingRequest/${id}`,
+          method: "PUT",
+          body: body,
+        };
+      },
       invalidatesTags: ["Prospecting"],
     }),
     patchProspectStatus: builder.mutation({

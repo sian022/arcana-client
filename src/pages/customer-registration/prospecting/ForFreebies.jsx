@@ -86,7 +86,17 @@ function ForFreebies() {
   } = useDisclosure();
 
   //Constants
-  const excludeKeys = [
+  // const excludeKeys = [
+  //   "createdAt",
+  //   "isActive",
+  //   "origin",
+  //   "addedBy",
+  //   "status",
+  //   "freebies",
+  // ];
+
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "isActive",
     "origin",
@@ -118,7 +128,7 @@ function ForFreebies() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
-    WithFreebies: false,
+    // WithFreebies: false,
   });
   const [putProspect] = usePutProspectMutation();
   const [patchProspectStatus] = usePatchProspectStatusMutation();
@@ -235,7 +245,8 @@ function ForFreebies() {
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
-            excludeKeys={excludeKeys}
+            // excludeKeys={excludeKeys}
+            excludeKeysDisplay={excludeKeysDisplay}
             editable
             archivable
             onEdit={handleEditOpen}

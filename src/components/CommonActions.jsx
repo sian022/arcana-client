@@ -4,13 +4,23 @@ import useDisclosure from "../hooks/useDisclosure";
 import {
   Archive,
   Edit,
+  HowToReg,
   More,
   RequestPage,
   Restore,
   Tag,
 } from "@mui/icons-material";
 
-function CommonActions({ onEdit, onArchive, onTag, onFreebie, item, status }) {
+function CommonActions({
+  onEdit,
+  onArchive,
+  onTag,
+  onFreebie,
+  onReleaseFreebie,
+  onRegularRegister,
+  item,
+  status,
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const anchorRef = useRef();
 
@@ -23,6 +33,10 @@ function CommonActions({ onEdit, onArchive, onTag, onFreebie, item, status }) {
       onTag();
     } else if (action === "requestFreebie") {
       onFreebie();
+    } else if (action === "releaseFreebie") {
+      onReleaseFreebie();
+    } else if (action === "regularRegister") {
+      onRegularRegister();
     }
     onClose();
   };
@@ -99,6 +113,38 @@ function CommonActions({ onEdit, onArchive, onTag, onFreebie, item, status }) {
           >
             <RequestPage />
             Add Freebie(s)
+          </MenuItem>
+        )}
+        {onReleaseFreebie && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("releaseFreebie");
+            }}
+          >
+            <RequestPage />
+            Release Freebie(s)
+          </MenuItem>
+        )}
+        {onRegularRegister && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("regularRegister");
+            }}
+          >
+            <HowToReg />
+            Register as Regular
           </MenuItem>
         )}
       </Menu>

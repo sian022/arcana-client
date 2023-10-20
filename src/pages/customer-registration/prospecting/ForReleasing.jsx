@@ -23,6 +23,8 @@ import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
+import CommonModal from "../../../components/CommonModal";
+import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -85,8 +87,24 @@ function ForReleasing() {
     onClose: onFreebieConfirmClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isFreebieReleaseOpen,
+    onOpen: onFreebieReleaseOpen,
+    onClose: onFreebieReleaseClose,
+  } = useDisclosure();
+
   //Constants
-  const excludeKeys = [
+  // const excludeKeys = [
+  //   "createdAt",
+  //   "isActive",
+  //   "origin",
+  //   "addedBy",
+  //   "status",
+  //   "freebies",
+  // ];
+
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "isActive",
     "origin",
@@ -118,7 +136,8 @@ function ForReleasing() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
-    WithFreebies: true,
+    // WithFreebies: true,
+    FreebieStatus: "For Releasing",
   });
   const [putProspect] = usePutProspectMutation();
   const [patchProspectStatus] = usePatchProspectStatusMutation();
@@ -235,12 +254,14 @@ function ForReleasing() {
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
-            excludeKeys={excludeKeys}
+            // excludeKeys={excludeKeys}
+            excludeKeysDisplay={excludeKeysDisplay}
             editable
             archivable
             onEdit={handleEditOpen}
             onArchive={handleArchiveOpen}
             onFreebie={onFreebieFormOpen}
+            onReleaseFreebie={onFreebieReleaseOpen}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
@@ -329,87 +350,15 @@ function ForReleasing() {
         />
       </CommonDrawer>
 
-      {/* Freebie Form */}
-      {/* <CommonDrawer
-        drawerHeader={"Request Freebies"}
-        open={isDrawerOpen}
-        onClose={handleDrawerClose}
-        width="1000px"
-        disableSubmit={!isValid}
-        onSubmit={
-          // handleSubmit(onDrawerSubmit)
-          onConfirmOpen
-        }
-      >
-        <TextField
-          label="Owner's Name"
-          size="small"
-          autoComplete="off"
-          required
-          {...register("ownersName")}
-          helperText={errors?.ownersName?.message}
-          error={errors?.ownersName}
-        />
-        <TextField
-          label="Owner's Address"
-          size="small"
-          autoComplete="off"
-          required
-          {...register("ownersAddress")}
-          helperText={errors?.ownersAddress?.message}
-          error={errors?.ownersAddress}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            gap: "20px",
-          }}
-        >
-          <TextField
-            label="Phone Number"
-            size="small"
-            autoComplete="off"
-            required
-            {...register("phoneNumber")}
-            helperText={errors?.phoneNumber?.message}
-            error={errors?.phoneNumber}
-            sx={{ flex: 1 }}
-          />
-          <TextField
-            label="Business Name"
-            size="small"
-            autoComplete="off"
-            required
-            {...register("businessName")}
-            helperText={errors?.businessName?.message}
-            error={errors?.businessName}
-            sx={{ flex: 1 }}
-          />
-        </Box>
-        <ControlledAutocomplete
-          name={"storeTypeId"}
-          control={control}
-          options={storeTypeData?.storeTypes}
-          getOptionLabel={(option) => option.storeTypeName}
-          disableClearable
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              size="small"
-              label="Store Type"
-              required
-              helperText={errors?.storeTypeId?.message}
-              error={errors?.storeTypeId}
-            />
-          )}
-        />
-      </CommonDrawer> */}
       <FreebieForm
         isFreebieFormOpen={isFreebieFormOpen}
         onFreebieFormClose={onFreebieFormClose}
+        onClose={onFreebieFormClose}
+      />
+
+      <ReleaseFreebieModal
+        open={isFreebieReleaseOpen}
+        onClose={onFreebieReleaseClose}
       />
 
       <CommonDialog

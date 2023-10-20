@@ -20,12 +20,15 @@ import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
 function CommonTable({
   mapData,
   excludeKeys,
+  excludeKeysDisplay,
   tableHeads,
   editable,
   archivable,
   onEdit,
   onArchive,
   onFreebie,
+  onReleaseFreebie,
+  onRegularRegister,
   page,
   setPage,
   rowsPerPage,
@@ -62,7 +65,11 @@ function CommonTable({
     tableHeadsList = tableHeads;
   } else {
     tableHeadsList = dataToMapKeys
-      .filter((key) => key !== "id")
+      .filter(
+        (key) =>
+          // key !== "id"
+          !excludeKeysDisplay?.includes(key)
+      )
       .map((key) => transformKey(key));
   }
 
@@ -94,7 +101,10 @@ function CommonTable({
                   }}
                 >
                   {dataToMapKeys.map((keys, k) => {
-                    if (keys === "id") {
+                    if (
+                      // keys === "id"
+                      excludeKeysDisplay?.includes(keys)
+                    ) {
                       return null;
                     }
                     return <TableCell key={k}>{item[keys]}</TableCell>;
@@ -105,6 +115,10 @@ function CommonTable({
                         onEdit={onEdit}
                         onArchive={onArchive}
                         onFreebie={onFreebie && onFreebie}
+                        onReleaseFreebie={onReleaseFreebie && onReleaseFreebie}
+                        onRegularRegister={
+                          onRegularRegister && onRegularRegister
+                        }
                         item={item}
                         status={status}
                       />

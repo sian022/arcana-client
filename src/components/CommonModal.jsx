@@ -1,10 +1,12 @@
 import { Box, Modal } from "@mui/material";
 import React from "react";
 
-function CommonModal({ children, ...otherProps }) {
+function CommonModal({ width, children, ...otherProps }) {
   return (
     <Modal {...otherProps}>
-      <Box className="commonModal">{children}</Box>
+      <Box sx={{ width: width ? width : "500px" }} className="commonModal">
+        {children}
+      </Box>
     </Modal>
   );
 }

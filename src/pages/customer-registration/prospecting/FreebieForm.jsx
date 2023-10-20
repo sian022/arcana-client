@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { requestFreebiesSchema } from "../../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { Box, IconButton, TextField } from "@mui/material";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
@@ -125,8 +125,6 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
     };
   }, [selectedRowData]);
 
-  console.log(getValues());
-
   return (
     <>
       <CommonDrawer
@@ -139,6 +137,7 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
       >
         {fields.map((item, index) => (
           <Box
+            key={item.id}
             sx={{
               display: "flex",
               justifyContent: "center",
@@ -178,22 +177,13 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
               )}
             />
 
-            <Controller
-              control={control}
-              name={`freebies[${index}].itemId?.itemDescription`}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <TextField
-                  label="Item Description"
-                  size="small"
-                  autoComplete="off"
-                  disabled
-                  onChange={onChange}
-                  value={value}
-                  onBlur={onBlur}
-                  inputRef={ref}
-                  defaultValue=""
-                />
-              )}
+            <TextField
+              label="Item Description"
+              size="small"
+              autoComplete="off"
+              disabled
+              value={watch("freebies")[index]?.itemId?.itemDescription || ""}
+              defaultValue=""
             />
 
             <TextField
