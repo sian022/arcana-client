@@ -10,29 +10,50 @@ function CommonDrawer({
   onSubmit,
   disableSubmit,
   width,
+  navigators,
+  noRibbon,
+  submitLabel,
+  customRibbonContent,
   children,
   ...otherProps
 }) {
   return (
     <Drawer anchor="right" {...otherProps}>
-      <Box
-        className="commonDrawer"
-        sx={{ width: width ? `${width} !important` : null }}
-      >
-        <Box className="commonDrawer__ribbon">
-          <Typography className="commonDrawer__ribbon__title">
-            {drawerHeader}
-          </Typography>
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        </Box>
-        <Box className="commonDrawer__body">{children}</Box>
-        <Box className="commonDrawer__actions">
-          <SecondaryButton onClick={onSubmit} disabled={disableSubmit}>
-            Submit
-          </SecondaryButton>
-          <DangerButton onClick={onClose}>Close</DangerButton>
+      <Box sx={{ display: "flex" }}>
+        {navigators && (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            {navigators.map((item, i) => (
+              <Box key={i}>{item}</Box>
+            ))}
+          </Box>
+        )}
+        <Box
+          className="commonDrawer"
+          sx={{ width: width ? `${width} !important` : null }}
+        >
+          {!noRibbon && !customRibbonContent && (
+            <Box className="commonDrawer__ribbon">
+              <Typography className="commonDrawer__ribbon__title">
+                {drawerHeader}
+              </Typography>
+              <IconButton onClick={onClose}>
+                <Close />
+              </IconButton>
+            </Box>
+          )}
+
+          {!noRibbon && customRibbonContent && (
+            <Box className="commonDrawer__ribbonCustom">
+              {customRibbonContent}
+            </Box>
+          )}
+          <Box className="commonDrawer__body">{children}</Box>
+          <Box className="commonDrawer__actions">
+            <SecondaryButton onClick={onSubmit} disabled={disableSubmit}>
+              {submitLabel || "Submit"}
+            </SecondaryButton>
+            <DangerButton onClick={onClose}>Close</DangerButton>
+          </Box>
         </Box>
       </Box>
     </Drawer>

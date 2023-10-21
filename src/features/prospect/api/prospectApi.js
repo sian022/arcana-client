@@ -100,6 +100,15 @@ export const prospectApi = createApi({
       }),
       invalidatesTags: ["Prospecting"],
     }),
+
+    // putRegisterClient: builder.mutation({
+    //   query: ({ clientId, ...body }) => ({
+    //     url: `/Prospecting/RegisterClient/${id}`,
+    //     method: "PUT",
+    //     body: body,
+    //   }),
+    //   invalidatesTags: ["Prospecting"],
+    // }),
   }),
 });
 

@@ -20,8 +20,11 @@ import {
 import RoleTable from "../../components/RoleTable";
 import RoleTaggingModal from "../../components/modals/RoleTaggingModal";
 import { useSelector } from "react-redux";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function UserRole() {
+  const { showSnackbar, closeSnackbar } = useSnackbar();
+
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const [drawerMode, setDrawerMode] = useState("");
@@ -131,10 +134,15 @@ function UserRole() {
       setSnackbarMessage(
         `User Role ${status ? "archived" : "restored"} successfully`
       );
-      onSuccessOpen();
+      // onSuccessOpen();
+      showSnackbar(
+        `User Role ${status ? "archived" : "restored"} successfully`,
+        "success"
+      );
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
-      onErrorOpen();
+      // setSnackbarMessage(error.data.messages[0]);
+      // onErrorOpen();
+      showSnackbar(error.data.messages[0], "error");
     }
   };
 

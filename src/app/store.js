@@ -20,6 +20,7 @@ import { selectedRowSlice } from "../features/misc/reducers/selectedRowSlice";
 import { selectedStoreTypeSlice } from "../features/prospect/reducers/selectedStoreTypeSlice";
 import { prospectApi } from "../features/prospect/api/prospectApi";
 import { badgeSlice } from "../features/prospect/reducers/badgeSlice";
+import { registrationApi } from "../features/registration/registrationApi";
 
 export const store = configureStore({
   reducer: {
@@ -43,6 +44,7 @@ export const store = configureStore({
     [userRoleApi.reducerPath]: userRoleApi.reducer,
     [userAccountApi.reducerPath]: userAccountApi.reducer,
     [prospectApi.reducerPath]: prospectApi.reducer,
+    [registrationApi.reducerPath]: registrationApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -62,6 +64,7 @@ export const store = configureStore({
       userRoleApi.middleware,
       userAccountApi.middleware,
       prospectApi.middleware,
+      registrationApi.middleware,
     ]),
 });
 

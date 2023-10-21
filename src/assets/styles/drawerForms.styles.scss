@@ -1,0 +1,227 @@
+@import "./index.styles.scss";
+
+// Register as Regular
+.register {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__headers {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    &__item {
+      background-color: $primary;
+
+      & p {
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+      }
+    }
+
+    &__item.active {
+      background-color: $secondary !important;
+
+      & p {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__textField {
+    flex: 1;
+  }
+
+  // & p {
+  //   font-weight: bold;
+  //   font-size: 20px;
+  // }
+  & &__title {
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  &__firstRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+
+    &__customerInformation {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      grid-column: span 2;
+
+      &__row {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+      }
+    }
+
+    &__tinNumber {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+
+  &__secondRow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &__subRow {
+      display: flex;
+      gap: 10px;
+    }
+
+    &__content {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+  }
+
+  &__thirdRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+
+    &__column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      grid-column: span 1;
+    }
+
+    // &__cluster {
+    //   display: flex;
+    //   flex-direction: column;
+    //   gap: 10px;
+    //   grid-column: span 1;
+    // }
+  }
+}
+
+.terms {
+  display: flex;
+  justify-content: center;
+  gap: 150px;
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &__item {
+      display: flex;
+      flex-direction: column;
+      // gap: 10px;
+
+      &__title {
+        background-color: $secondary;
+        padding: 10px 20px;
+        border-radius: 8px;
+
+        & p {
+          color: white;
+          text-align: center;
+          font-weight: 600;
+          font-size: 18px;
+        }
+      }
+
+      &__choices {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        // display: grid;
+        // grid-template-columns: 1fr 1fr;
+
+        & p {
+          font-weight: 400;
+          font-size: 1rem;
+        }
+
+        &__choice {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+}
+
+.attachments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid $secondary;
+    border-radius: 5px;
+    padding: 20px 10px;
+    gap: 20px;
+
+    & &__title {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+
+      & button {
+        border: 2px solid $secondary;
+
+        & svg {
+          color: $secondary;
+        }
+      }
+
+      // & button.active {
+      //   background-color: secondary !important;
+      //   & svg {
+      //     color: $secondary;
+      //   }
+      // }
+
+      &__item {
+        display: flex;
+        gap: 30px;
+        justify-content: space-between;
+        align-items: center;
+
+        & p {
+          font-weight: 500;
+        }
+      }
+    }
+
+    &__radio {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      bottom: 0;
+    }
+  }
+}
+
+.buttonActive {
+  background-color: $secondary !important;
+
+  & svg {
+    color: white !important;
+  }
+}

@@ -168,14 +168,25 @@ export const locationSchema = {
 export const prospectSchema = {
   schema: yup.object({
     ownersName: yup.string().required("Owner's name is required"),
-    ownersAddress: yup.string().required("Owner's address is required"),
+
+    emailAddress: yup.string().required("Email address is required"),
+    houseNumber: yup.string().required("House number is required"),
+    streetName: yup.string().required("Street name is required"),
+    barangayName: yup.string().required("Barangay name is required"),
+    city: yup.string().required("City/Municipality is required"),
+    province: yup.string().required("Province is required"),
     phoneNumber: yup.string().required("Phone number is required"),
     businessName: yup.string().required("Business name is required"),
     storeTypeId: yup.object().required("Store type is required"),
   }),
   defaultValues: {
     ownersName: "",
-    ownersAddress: "",
+    emailAddress: "",
+    houseNumber: "",
+    streetName: "",
+    barangayName: "",
+    city: "",
+    province: "",
     phoneNumber: "",
     businessName: "",
     storeTypeId: null,
@@ -200,5 +211,33 @@ export const requestFreebiesSchema = {
         quantity: 1,
       },
     ],
+  },
+};
+
+//Registration Schema
+export const regularRegisterSchema = {
+  schema: yup.object({
+    clientId: yup.number().required("Client ID is required").integer(),
+    businessAddress: yup.string().required("Business address is required"),
+    tinNumber: yup.string().required("TIN number is required"),
+    authorizedRepresentative: yup
+      .string()
+      .required("Representative name is required"),
+    authorizedRepresentativePosition: yup
+      .string()
+      .required("Representative position is required"),
+    cluster: yup.number().required("Cluster is required").integer(),
+    longitude: yup.string().required("Longitude is required"),
+    latitude: yup.string().required("Latitude is required"),
+  }),
+  defaultValues: {
+    clientId: null,
+    businessAddress: "",
+    tinNumber: "",
+    authorizedRepresentative: "",
+    authorizedRepresentativePosition: "",
+    cluster: null,
+    longitude: "",
+    latitude: "",
   },
 };

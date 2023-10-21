@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddArchiveSearchMixin from "../../../components/mixins/AddArchiveSearchMixin";
 import useDisclosure from "../../../hooks/useDisclosure";
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import CommonTable from "../../../components/CommonTable";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { prospectSchema } from "../../../schema/schema";
@@ -136,7 +136,6 @@ function ForReleasing() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
-    // WithFreebies: true,
     FreebieStatus: "For Releasing",
   });
   const [putProspect] = usePutProspectMutation();
@@ -283,71 +282,142 @@ function ForReleasing() {
           onConfirmOpen
         }
       >
-        <TextField
-          label="Owner's Name"
-          size="small"
-          autoComplete="off"
-          required
-          {...register("ownersName")}
-          helperText={errors?.ownersName?.message}
-          error={errors?.ownersName}
-        />
-        <TextField
-          label="Owner's Address"
-          size="small"
-          autoComplete="off"
-          required
-          {...register("ownersAddress")}
-          helperText={errors?.ownersAddress?.message}
-          error={errors?.ownersAddress}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            gap: "20px",
-          }}
-        >
-          <TextField
-            label="Phone Number"
-            size="small"
-            autoComplete="off"
-            required
-            {...register("phoneNumber")}
-            helperText={errors?.phoneNumber?.message}
-            error={errors?.phoneNumber}
-            sx={{ flex: 1 }}
-          />
-          <TextField
-            label="Business Name"
-            size="small"
-            autoComplete="off"
-            required
-            {...register("businessName")}
-            helperText={errors?.businessName?.message}
-            error={errors?.businessName}
-            sx={{ flex: 1 }}
-          />
+        <Box className="register">
+          <Box className="register__secondRow">
+            <Box className="register__secondRow">
+              <Typography className="register__title">Name</Typography>
+              <Box className="register__secondRow">
+                <Box className="register__secondRow__content">
+                  <TextField
+                    sx={{ gridColumn: "span 3" }}
+                    label="Owners Name"
+                    size="small"
+                    autoComplete="off"
+                    required
+                    {...register("ownersName")}
+                    helperText={errors?.ownersName?.message}
+                    error={errors?.ownersName}
+                  />
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+          <Box className="register__thirdRow">
+            <Box className="register__thirdRow__column">
+              <Typography className="register__title">
+                Contact Number
+              </Typography>
+              <TextField
+                label="Phone Number"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("phoneNumber")}
+                helperText={errors?.phoneNumber?.message}
+                error={errors?.phoneNumber}
+              />
+            </Box>
+            <Box className="register__thirdRow__column">
+              <Typography className="register__title">Email Address</Typography>
+              <TextField
+                label="Email Address"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("emailAddress")}
+                helperText={errors?.emailAddress?.message}
+                error={errors?.emailAddress}
+              />
+            </Box>
+          </Box>
+          <Box className="register__secondRow">
+            <Typography className="register__title">Address</Typography>
+            <Box className="register__secondRow__content">
+              <TextField
+                label="Unit No."
+                size="small"
+                autoComplete="off"
+                required
+                {...register("houseNumber")}
+                helperText={errors?.houseNumber?.message}
+                error={errors?.houseNumber}
+              />
+              <TextField
+                label="Street"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("streetName")}
+                helperText={errors?.streetName?.message}
+                error={errors?.streetName}
+              />
+              <TextField
+                label="Barangay"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("barangayName")}
+                helperText={errors?.barangayName?.message}
+                error={errors?.barangayName}
+              />
+            </Box>
+            <Box className="register__secondRow__content">
+              <TextField
+                label="Municipality/City"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("city")}
+                helperText={errors?.city?.message}
+                error={errors?.city}
+              />
+              <TextField
+                label="Province"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("province")}
+                helperText={errors?.province?.message}
+                error={errors?.province}
+              />
+            </Box>
+          </Box>
+
+          <Box className="register__secondRow">
+            <Typography className="register__title">
+              Business Details
+            </Typography>
+            <Box className="register__secondRow__content">
+              <TextField
+                label="Business Name"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("businessName")}
+                helperText={errors?.businessName?.message}
+                error={errors?.businessName}
+              />
+              <ControlledAutocomplete
+                name={"storeTypeId"}
+                control={control}
+                options={storeTypeData?.storeTypes}
+                getOptionLabel={(option) => option.storeTypeName}
+                disableClearable
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Store Type"
+                    required
+                    helperText={errors?.storeTypeId?.message}
+                    error={errors?.storeTypeId}
+                  />
+                )}
+              />
+            </Box>
+          </Box>
         </Box>
-        <ControlledAutocomplete
-          name={"storeTypeId"}
-          control={control}
-          options={storeTypeData?.storeTypes}
-          getOptionLabel={(option) => option.storeTypeName}
-          disableClearable
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              size="small"
-              label="Store Type"
-              required
-              helperText={errors?.storeTypeId?.message}
-              error={errors?.storeTypeId}
-            />
-          )}
-        />
       </CommonDrawer>
 
       <FreebieForm

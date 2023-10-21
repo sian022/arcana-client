@@ -107,6 +107,13 @@
     }
   }
 
+  &__ribbonCustom {
+    display: flex;
+    background-color: $primary;
+    padding: 20px;
+    // margin-top: 30px;
+    margin-top: 10px;
+  }
   &__body {
     display: flex;
     flex-direction: column;

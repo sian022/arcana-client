@@ -4,12 +4,15 @@ import { ThemeProvider } from "@emotion/react";
 import { theme } from "./theme/theme";
 import { router } from "./navigation/router";
 import "./assets/styles/common.styles.scss";
+import { AppProvider } from "./context/AppContext";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <AppProvider>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </AppProvider>
   );
 }
 

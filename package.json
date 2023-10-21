@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.14.11",
     "@mui/lab": "^5.0.0-alpha.147",
     "@mui/material": "^5.14.11",
+    "@react-google-maps/api": "^2.19.2",
     "@reduxjs/toolkit": "^1.9.6",
     "crypto-js": "^4.1.1",
     "moment": "^2.29.4",

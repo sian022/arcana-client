@@ -11,6 +11,7 @@ import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonModal from "../../../components/CommonModal";
 import CommonDrawer from "../../../components/CommonDrawer";
+import RegisterRegularForm from "./RegisterRegularForm";
 
 function Released() {
   const [search, setSearch] = useState("");
@@ -98,70 +99,7 @@ function Released() {
         )}
       </Box>
 
-      {/* <CommonModal open={isRegisterOpen} onClose={onRegisterClose}>
-        Hi Mom!
-      </CommonModal> */}
-
-      <CommonDrawer
-        drawerHeader="Register as Regular"
-        open={isRegisterOpen}
-        onClose={onRegisterClose}
-        width="1000px"
-        // disableSubmit={!isValid}
-        // onSubmit={
-        //   // handleSubmit(onDrawerSubmit)
-        //   onConfirmOpen
-        // }
-      >
-        <Typography>Customer's Information</Typography>
-        <TextField
-          label="Owner's Name"
-          size="small"
-          autoComplete="off"
-          required
-          // {...register("ownersName")}
-          // helperText={errors?.ownersName?.message}
-          // error={errors?.ownersName}
-        />
-        {/* <TextField
-          label="Owner's Address"
-          size="small"
-          autoComplete="off"
-          required
-          // {...register("ownersAddress")}
-          // helperText={errors?.ownersAddress?.message}
-          // error={errors?.ownersAddress}
-        /> */}
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            gap: "20px",
-          }}
-        >
-          <TextField
-            label="Phone Number"
-            size="small"
-            autoComplete="off"
-            required
-            // {...register("phoneNumber")}
-            // helperText={errors?.phoneNumber?.message}
-            // error={errors?.phoneNumber}
-            sx={{ flex: 1 }}
-          />
-          <TextField
-            label="Business Name"
-            size="small"
-            autoComplete="off"
-            required
-            // {...register("businessName")}
-            // helperText={errors?.businessName?.message}
-            // error={errors?.businessName}
-            sx={{ flex: 1 }}
-          />
-        </Box>
-      </CommonDrawer>
+      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
     </>
   );
 }
