@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import CommonDrawer from "../../../components/CommonDrawer";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, TextField, Typography } from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
-import { PushPin } from "@mui/icons-material";
+import { Check, PushPin } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { regularRegisterSchema } from "../../../schema/schema";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
-import { usePutRegisterClientMutation } from "../../../features/registration/registrationApi";
+import { usePutRegisterClientMutation } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "./TermsAndConditions";
@@ -24,6 +24,9 @@ function RegisterRegularForm({ open, onClose }) {
   const [activeTab, setActiveTab] = useState("Personal Info");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const termsAndConditions = useSelector(
+    (state) => state.regularRegistration.value.termsAndConditions
+  );
 
   //Disclosures
   const {
@@ -37,9 +40,6 @@ function RegisterRegularForm({ open, onClose }) {
     onOpen: onPinLocationOpen,
     onClose: onPinLocationClose,
   } = useDisclosure();
-
-  //Constants
-  const navigators = ["Personal Info", "Terms and Conditions", "Attachments"];
 
   // React Hook Form
   const {
@@ -56,6 +56,30 @@ function RegisterRegularForm({ open, onClose }) {
     mode: "onChange",
     defaultValues: regularRegisterSchema.defaultValues,
   });
+
+  //Constants
+  const navigators = [
+    { label: "Personal Info", isValid: isValid },
+    {
+      label: "Terms and Conditions",
+      isValid: Object.keys(termsAndConditions).every((key) => {
+        //Check if Term Day are needed
+        if (termsAndConditions["terms"] === 1) {
+          if (key === "termDays") {
+            return true;
+          }
+        } else if (termsAndConditions["terms"] !== "3") {
+          if (key === "creditLimit") {
+            return true;
+          }
+        }
+
+        const value = termsAndConditions[key];
+        return value !== null && value !== "";
+      }),
+    },
+    { label: "Attachments", isValid: isValid },
+  ];
 
   //RTK Query
   const [putRegisterClient] = usePutRegisterClientMutation();
@@ -86,14 +110,25 @@ function RegisterRegularForm({ open, onClose }) {
     <Box className="register__headers">
       {navigators.map((item, i) => (
         <Button
+          key={i}
           className={
-            "register__headers__item" + (activeTab === item ? " active" : "")
+            "register__headers__item" +
+            (activeTab === item.label ? " active" : "")
           }
           onClick={() => {
-            setActiveTab(item);
+            setActiveTab(item.label);
           }}
         >
-          <Typography key={i}>{item}</Typography>
+          {item.isValid && (
+            <Check
+              sx={{
+                color: "white !important",
+                stroke: "white",
+                strokeWidth: 1,
+              }}
+            />
+          )}
+          <Typography>{item.label}</Typography>
         </Button>
       ))}
     </Box>
@@ -112,7 +147,7 @@ function RegisterRegularForm({ open, onClose }) {
         // noRibbon
         customRibbonContent={customRibbonContent}
         submitLabel={"Register"}
-        disableSubmit={!isValid}
+        disableSubmit={navigators.every((item) => !item.isValid)}
         onSubmit={onConfirmOpen}
       >
         {activeTab === "Personal Info" && (
@@ -266,9 +301,16 @@ function RegisterRegularForm({ open, onClose }) {
               </Box>
             </Box>
             <Box className="register__secondRow">
-              <Typography className="register__title">
-                Business Address
-              </Typography>
+              <Box className="register__titleBox">
+                <Typography className="register__title">
+                  Business Address
+                </Typography>
+                <Checkbox sx={{ ml: "10px" }} />
+                <Typography variant="subtitle2">
+                  Same as owner's address
+                </Typography>
+              </Box>
+
               <Box className="register__secondRow__content">
                 <TextField
                   label="Unit No."

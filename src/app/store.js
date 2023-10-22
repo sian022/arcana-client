@@ -20,7 +20,8 @@ import { selectedRowSlice } from "../features/misc/reducers/selectedRowSlice";
 import { selectedStoreTypeSlice } from "../features/prospect/reducers/selectedStoreTypeSlice";
 import { prospectApi } from "../features/prospect/api/prospectApi";
 import { badgeSlice } from "../features/prospect/reducers/badgeSlice";
-import { registrationApi } from "../features/registration/registrationApi";
+import { registrationApi } from "../features/registration/api/registrationApi";
+import { regularRegistrationSlice } from "../features/registration/reducers/regularRegistrationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ export const store = configureStore({
     selectedRow: selectedRowSlice.reducer,
     selectedStoreType: selectedStoreTypeSlice.reducer,
     badge: badgeSlice.reducer,
+    regularRegistration: regularRegistrationSlice.reducer,
     [loginApi.reducerPath]: loginApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,

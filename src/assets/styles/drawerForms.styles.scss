@@ -12,6 +12,9 @@
     grid-template-columns: 1fr 1fr 1fr;
 
     &__item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
       background-color: $primary;
 
       & p {
@@ -38,6 +41,15 @@
   //   font-weight: bold;
   //   font-size: 20px;
   // }
+  &__titleBox {
+    display: flex;
+    align-items: center;
+
+    & input {
+      margin-left: 10px;
+    }
+  }
+
   & &__title {
     font-weight: bold;
     font-size: 18px;
@@ -107,9 +119,13 @@
 }
 
 .terms {
-  display: flex;
-  justify-content: center;
-  gap: 150px;
+  // display: flex;
+  // justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: auto;
+  // gap: 150px;
+  gap: 80px;
 
   &__column {
     display: flex;
@@ -134,9 +150,12 @@
         }
       }
 
-      &__choices {
+      & &__choices {
         display: flex;
         justify-content: center;
+        // justify-content: left;
+        align-items: center;
+        position: relative;
         gap: 20px;
         // display: grid;
         // grid-template-columns: 1fr 1fr;
@@ -150,6 +169,12 @@
           display: flex;
           align-items: center;
         }
+      }
+
+      & &__choicesNoSpace {
+        display: flex;
+        align-items: center;
+        position: relative;
       }
     }
   }
@@ -218,10 +243,7 @@
   }
 }
 
-.buttonActive {
-  background-color: $secondary !important;
-
-  & svg {
-    color: white !important;
-  }
+ul {
+  background-color: white !important;
+  color: $secondary !important;
 }

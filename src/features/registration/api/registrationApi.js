@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../utils/CustomFunctions";
+import { decryptString } from "../../../utils/CustomFunctions";
 
 export const registrationApi = createApi({
   reducerPath: "registrationApi",
