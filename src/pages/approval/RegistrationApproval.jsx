@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
 import { dummyTableData } from "../../utils/DummyData";
 import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
 import useDisclosure from "../../hooks/useDisclosure";
-import PageHeaderAddTabs from "../../components/PageHeaderAddTabs";
-import RegisterRegularForm from "./prospecting/RegisterRegularForm";
 
-function DirectRegistration() {
+function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [origin, setOrigin] = useState("");
@@ -17,9 +15,9 @@ function DirectRegistration() {
 
   //Disclosures
   const {
-    isOpen: isRegisterOpen,
-    onOpen: onRegisterOpen,
-    onClose: onRegisterClose,
+    isOpen: isViewOpen,
+    onOpen: onViewOpen,
+    onClose: onViewClose,
   } = useDisclosure();
 
   //Constants
@@ -36,6 +34,17 @@ function DirectRegistration() {
     },
   ];
 
+  const selectOptions = [
+    {
+      value: "prospect",
+      label: "Prospect",
+    },
+    {
+      value: "direct",
+      label: "Direct",
+    },
+  ];
+
   useEffect(() => {
     const foundItem = registrationNavigation.find(
       (item) => item.case === tabViewing
@@ -47,23 +56,23 @@ function DirectRegistration() {
   return (
     <>
       <Box className="commonPageLayout">
-        <PageHeaderAddTabs
-          pageTitle="Direct Registration"
+        <PageHeaderTabs
+          pageTitle="Registration Approval"
           tabsList={registrationNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
-          onOpen={onRegisterOpen}
         />
-        <Box>
-          <TextField type="search" placeholder="Search" size="small" />
-        </Box>
-
+        <SearchFilterMixin
+          setSearch={setSearch}
+          selectOptions={selectOptions}
+          setSelectValue={setOrigin}
+        />
         <CommonTable mapData={dummyTableData} compact />
-
-        <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
       </Box>
+
+      <ViewRegistrationDetailsModal open={true} onClose={onViewClose} />
     </>
   );
 }
 
-export default DirectRegistration;
+export default RegistrationApproval;

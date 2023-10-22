@@ -193,8 +193,8 @@ function RegisterRegularForm({ open, onClose }) {
       <CommonDrawer
         drawerHeader="Register as Regular"
         open={
-          // open
-          true
+          open
+          // true
         }
         onClose={onCancelConfirmOpen}
         width="1000px"

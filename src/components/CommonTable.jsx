@@ -35,6 +35,7 @@ function CommonTable({
   setRowsPerPage,
   count = 0,
   status,
+  compact,
 }) {
   if (!mapData || mapData.length === 0) {
     return (
@@ -82,6 +83,7 @@ function CommonTable({
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
+        sx={{ height: compact && "calc(100vh - 400px)" }}
       >
         <Table>
           <TableHead>

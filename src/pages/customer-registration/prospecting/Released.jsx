@@ -100,9 +100,9 @@ function Released() {
         )}
       </Box>
 
-      <AttachmentsProvider>
-        <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
-      </AttachmentsProvider>
+      {/* <AttachmentsProvider> */}
+      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+      {/* </AttachmentsProvider> */}
     </>
   );
 }

@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function FreebieApproval() {
-  return (
-    <div>FreebieApproval</div>
-  )
+  return <div>FreebieApproval</div>;
 }
 
-export default FreebieApproval
+export default FreebieApproval;

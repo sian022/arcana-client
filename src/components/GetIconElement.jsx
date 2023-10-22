@@ -24,6 +24,10 @@ import {
   Label,
   CalendarToday,
   Redeem,
+  PersonAdd,
+  Payment,
+  HowToReg,
+  LocalOffer,
 } from "@mui/icons-material";
 
 export const getIconElement = (iconName) => {
@@ -53,6 +57,10 @@ export const getIconElement = (iconName) => {
     CalendarToday: <CalendarToday />,
     SquareFoot: <SquareFoot />,
     Redeem: <Redeem />,
+    PersonAdd: <PersonAdd />,
+    Payment: <Payment />,
+    HowToReg: <HowToReg />,
+    LocalOffer: <LocalOffer />,
   };
 
   return iconMap[iconName] || <IcecreamOutlined />;

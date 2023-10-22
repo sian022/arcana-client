@@ -23,6 +23,11 @@ import DiscountType from "../pages/discount/DiscountType";
 import TermDays from "../pages/terms/TermDays";
 import Prospect from "../pages/customer-registration/prospecting";
 import FreebieApproval from "../pages/approval/FreebieApproval";
+import DirectRegistration from "../pages/customer-registration/DirectRegistration";
+import ListingFee from "../pages/customer-registration/ListingFee";
+import RegistrationApproval from "../pages/approval/RegistrationApproval";
+import SpecialDiscountApproval from "../pages/approval/SpecialDiscountApproval";
+import ListingFeeApproval from "../pages/approval/ListingFeeApproval";
 
 export const router = createBrowserRouter([
   {
@@ -125,15 +130,35 @@ export const router = createBrowserRouter([
             path: "prospect",
             element: <Prospect />,
           },
+          {
+            path: "direct-registration",
+            element: <DirectRegistration />,
+          },
+          {
+            path: "listing-fee",
+            element: <ListingFee />,
+          },
         ],
       },
       {
         path: "approval",
         element: <Approval />,
         children: [
+          // {
+          //   path: "freebie-approval",
+          //   element: <FreebieApproval />,
+          // },
           {
-            path: "freebie-approval",
-            element: <FreebieApproval />,
+            path: "registration-approval",
+            element: <RegistrationApproval />,
+          },
+          {
+            path: "sp-discount-approval",
+            element: <SpecialDiscountApproval />,
+          },
+          {
+            path: "listing-fee-approval",
+            element: <ListingFeeApproval />,
           },
         ],
       },
