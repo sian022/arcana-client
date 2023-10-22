@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { Box, Button, Checkbox, TextField, Typography } from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
 import { Check, PushPin } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { regularRegisterSchema } from "../../../schema/schema";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,13 +15,25 @@ import useSnackbar from "../../../hooks/useSnackbar";
 import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "./TermsAndConditions";
 import Attachments from "./Attachments";
+import { AttachmentsContext } from "../../../context/AttachmentsContext";
+import { setTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
 
 function RegisterRegularForm({ open, onClose }) {
+  const dispatch = useDispatch();
+  const {
+    setOwnersRequirements,
+    setRepresentativeRequirements,
+    setRequirementsMode,
+  } = useContext(AttachmentsContext);
+
   const { showSnackbar } = useSnackbar();
 
   const [latitude, setLatitude] = useState(15.0944152);
   const [longitude, setLongitude] = useState(120.6075827);
   const [activeTab, setActiveTab] = useState("Personal Info");
+
+  const { ownersRequirements, representativeRequirements, requirementsMode } =
+    useContext(AttachmentsContext);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const termsAndConditions = useSelector(
@@ -41,6 +53,12 @@ function RegisterRegularForm({ open, onClose }) {
     onClose: onPinLocationClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isCancelConfirmOpen,
+    onOpen: onCancelConfirmOpen,
+    onClose: onCancelConfirmClose,
+  } = useDisclosure();
+
   // React Hook Form
   const {
     handleSubmit,
@@ -48,9 +66,6 @@ function RegisterRegularForm({ open, onClose }) {
     register,
     setValue,
     reset,
-    control,
-    watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(regularRegisterSchema.schema),
     mode: "onChange",
@@ -78,7 +93,17 @@ function RegisterRegularForm({ open, onClose }) {
         return value !== null && value !== "";
       }),
     },
-    { label: "Attachments", isValid: isValid },
+    {
+      label: "Attachments",
+      isValid:
+        requirementsMode === "owner"
+          ? !Object.values(ownersRequirements).some((value) => value === null)
+          : requirementsMode === "representative"
+          ? !Object.values(representativeRequirements).some(
+              (value) => value === null
+            )
+          : false,
+    },
   ];
 
   //RTK Query
@@ -87,7 +112,7 @@ function RegisterRegularForm({ open, onClose }) {
   //Drawer Functions
   const onSubmit = async (data) => {
     try {
-      await putProspect(data).unwrap();
+      await putRegisterClient(data).unwrap();
       showSnackbar("Client registered successfully", "success");
       onConfirmClose();
       onClose();
@@ -99,12 +124,37 @@ function RegisterRegularForm({ open, onClose }) {
 
   const handleDrawerClose = () => {
     onClose();
+    onCancelConfirmClose();
     reset();
+    setOwnersRequirements({
+      signature: null,
+      storePhoto: null,
+      businessPermit: null,
+      photoIdOwner: null,
+    });
+    setRepresentativeRequirements({
+      signature: null,
+      storePhoto: null,
+      businessPermit: null,
+      photoIdOwner: null,
+      photoIdRepresentative: null,
+      authorizationLetter: null,
+    });
+    setRequirementsMode(null);
+    dispatch(
+      setTermsAndConditions({
+        freezer: null,
+        typeOfCustomer: null,
+        directDelivery: null,
+        bookingCoverage: null,
+        terms: null,
+        modeOfPayment: null,
+        discount: null,
+        termDays: 10,
+        creditLimit: "",
+      })
+    );
   };
-
-  useEffect(() => {
-    setValue("clientId", selectedRowData?.id);
-  }, [selectedRowData]);
 
   const customRibbonContent = (
     <Box className="register__headers">
@@ -134,6 +184,10 @@ function RegisterRegularForm({ open, onClose }) {
     </Box>
   );
 
+  useEffect(() => {
+    setValue("clientId", selectedRowData?.id);
+  }, [selectedRowData]);
+
   return (
     <>
       <CommonDrawer
@@ -142,12 +196,12 @@ function RegisterRegularForm({ open, onClose }) {
           // open
           true
         }
-        onClose={handleDrawerClose}
+        onClose={onCancelConfirmOpen}
         width="1000px"
         // noRibbon
         customRibbonContent={customRibbonContent}
         submitLabel={"Register"}
-        disableSubmit={navigators.every((item) => !item.isValid)}
+        disableSubmit={navigators.some((obj) => obj.isValid === false)}
         onSubmit={onConfirmOpen}
       >
         {activeTab === "Personal Info" && (
@@ -435,9 +489,28 @@ function RegisterRegularForm({ open, onClose }) {
       >
         Confirm registration of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData?.businessName}
+          {selectedRowData.businessName
+            ? selectedRowData.businessName
+            : "client"}
         </span>{" "}
         as a regular customer?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isCancelConfirmOpen}
+        onYes={handleDrawerClose}
+        onClose={onCancelConfirmClose}
+      >
+        Confirm cancel of{" "}
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          {selectedRowData.businessName
+            ? selectedRowData.businessName
+            : "client"}
+        </span>{" "}
+        as a regular customer? <br />
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          (Forms will be reset)
+        </span>
       </CommonDialog>
     </>
   );

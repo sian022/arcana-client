@@ -12,6 +12,7 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import CommonModal from "../../../components/CommonModal";
 import CommonDrawer from "../../../components/CommonDrawer";
 import RegisterRegularForm from "./RegisterRegularForm";
+import { AttachmentsProvider } from "../../../context/AttachmentsContext";
 
 function Released() {
   const [search, setSearch] = useState("");
@@ -99,7 +100,9 @@ function Released() {
         )}
       </Box>
 
-      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+      <AttachmentsProvider>
+        <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+      </AttachmentsProvider>
     </>
   );
 }

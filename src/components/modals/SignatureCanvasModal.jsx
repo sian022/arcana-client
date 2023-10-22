@@ -4,7 +4,6 @@ import { Box, Typography } from "@mui/material";
 import DangerButton from "../DangerButton";
 import SecondaryButton from "../SecondaryButton";
 import AccentButton from "../AccentButton";
-import { useDispatch } from "react-redux";
 import ReactSignatureCanvas from "react-signature-canvas";
 
 function SignatureCanvasModal({ signature, setSignature, ...otherProps }) {
@@ -13,9 +12,6 @@ function SignatureCanvasModal({ signature, setSignature, ...otherProps }) {
   //Signature Canvas Functions
   const signCanvasRef = useRef();
   const clear = () => signCanvasRef.current.clear();
-  // const getTrimmedVersion = () => signCanvasRef.current.getTrimmedCanvas();
-
-  const dispatch = useDispatch();
 
   const handleClearSign = () => {
     clear();

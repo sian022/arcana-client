@@ -77,10 +77,6 @@ function ReleaseFreebieModal({ ...otherProps }) {
     formData.append("PhotoProof", photoProof);
     formData.append("ESignature", signatureFile);
 
-    console.log(photoProof);
-    console.log(signatureFile);
-    console.log(formData);
-
     try {
       await putReleaseProspect({
         id: selectedRowData?.id,

@@ -20,7 +20,6 @@ function TermsAndConditions() {
     (state) => state.regularRegistration.value.termsAndConditions
   );
 
-  console.log(termsAndConditions["termDays"]);
   return (
     <Box className="terms">
       <Box className="terms__column">

@@ -185,6 +185,14 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 
+  & button.buttonActive {
+    background-color: $secondary;
+
+    & svg {
+      color: white;
+    }
+  }
+
   &__column {
     display: flex;
     flex-direction: column;
@@ -193,6 +201,7 @@
     border-radius: 5px;
     padding: 20px 10px;
     gap: 20px;
+    position: relative;
 
     & &__title {
       font-size: 20px;
@@ -239,6 +248,10 @@
       justify-content: center;
       position: relative;
       bottom: 0;
+      z-index: 3;
+      pointer-events: all;
+      background-color: white;
+      border-radius: 50%;
     }
   }
 }
@@ -246,4 +259,25 @@
 ul {
   background-color: white !important;
   color: $secondary !important;
+}
+
+// .buttonActive {
+//   background-color: $secondary !important;
+
+//   & svg {
+//     color: white !important;
+//     z-index: 0;
+//   }
+// }
+
+.overlay {
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // width: 100%;
+  // height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 2; /* Make sure it's higher than the buttons */
+  filter: grayscale(1);
 }

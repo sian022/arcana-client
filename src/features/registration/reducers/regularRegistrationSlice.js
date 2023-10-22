@@ -15,23 +15,6 @@ export const regularRegistrationSlice = createSlice({
         termDays: 10,
         creditLimit: "",
       },
-      attachments: {
-        requirementsMode: null,
-        ownersRequirements: {
-          signature: null,
-          storePhoto: null,
-          businessPermit: null,
-          photoIdOwner: null,
-        },
-        representativesRequirements: {
-          signature: null,
-          storePhoto: null,
-          businessPermit: null,
-          photoIdOwner: null,
-          photoIdRepresentative: null,
-          authorizationLetter: null,
-        },
-      },
     },
   },
   reducers: {
@@ -42,6 +25,11 @@ export const regularRegistrationSlice = createSlice({
   },
 });
 
-export const { setTermsAndConditions } = regularRegistrationSlice.actions;
+export const {
+  setTermsAndConditions,
+  setRequirementsMode,
+  setOwnersRequirementsProperty,
+  setRepresentativesRequirementsProperty,
+} = regularRegistrationSlice.actions;
 
 export default regularRegistrationSlice.reducer;

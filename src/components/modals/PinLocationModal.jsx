@@ -1,6 +1,6 @@
 import React from "react";
 import CommonModal from "../CommonModal";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
 import {
@@ -22,7 +22,7 @@ function PinLocationModal({
   setLongitude,
   ...otherProps
 }) {
-  const { onClose } = otherProps;
+  const { onClose, ...noOnClose } = otherProps;
   const { showSnackbar } = useSnackbar();
 
   //Google Maps Functions
@@ -54,8 +54,13 @@ function PinLocationModal({
   };
 
   return (
-    <CommonModal {...otherProps}>
+    <CommonModal {...noOnClose}>
       <Box>
+        <Typography
+          sx={{ fontWeight: "bold", fontSize: "30px", textAlign: "center" }}
+        >
+          MAMAYA KA NALANG
+        </Typography>
         <div id="map"></div>
       </Box>
       {/* <Box>
