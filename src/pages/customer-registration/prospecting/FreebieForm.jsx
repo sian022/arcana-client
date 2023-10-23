@@ -13,6 +13,7 @@ import SecondaryButton from "../../../components/SecondaryButton";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import useDisclosure from "../../../hooks/useDisclosure";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
+import CommonDialog from "../../../components/CommonDialog";
 
 function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -22,6 +23,18 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
   const clientId = selectedRowData?.id || selectedRowData?.clientId;
 
   //Disclosures
+  const {
+    isOpen: isConfirmSubmitOpen,
+    onOpen: onConfirmSubmitOpen,
+    onClose: onConfirmSubmitClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isConfirmCancelOpen,
+    onOpen: onConfirmCancelOpen,
+    onClose: onConfirmCancelClose,
+  } = useDisclosure();
+
   const {
     isOpen: isSuccessOpen,
     onOpen: onSuccessOpen,
@@ -56,7 +69,8 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
   });
 
   //RTK Query
-  const [postRequestFreebies] = usePostRequestFreebiesMutation();
+  const [postRequestFreebies, { isLoading: isRequestLoading }] =
+    usePostRequestFreebiesMutation();
 
   const { data: productData } = useGetAllProductsQuery();
 
@@ -85,11 +99,14 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
       onErrorOpen();
       console.log(error);
     }
+
+    onConfirmSubmitClose();
   };
 
   const handleDrawerClose = () => {
     reset();
     onFreebieFormClose();
+    onConfirmCancelClose();
   };
 
   //Misc Functions
@@ -125,15 +142,16 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
     };
   }, [selectedRowData]);
 
+  console.log(selectedRowData);
   return (
     <>
       <CommonDrawer
         drawerHeader={"Request Freebies"}
         open={isFreebieFormOpen}
-        onClose={handleDrawerClose}
+        onClose={onConfirmCancelOpen}
         width="1000px"
         disableSubmit={!isValid}
-        onSubmit={handleSubmit(onFreebieSubmit)}
+        onSubmit={onConfirmSubmitOpen}
       >
         {fields.map((item, index) => (
           <Box
@@ -218,6 +236,36 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
           Add Freebie
         </SecondaryButton>
       </CommonDrawer>
+
+      <CommonDialog
+        open={isConfirmSubmitOpen}
+        onClose={onConfirmSubmitClose}
+        onYes={handleSubmit(onFreebieSubmit)}
+        isLoading={isRequestLoading}
+        noIcon
+      >
+        Confirm request of freebies for{" "}
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          {selectedRowData.businessName
+            ? selectedRowData.businessName
+            : "client"}
+        </span>
+        ?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isConfirmCancelOpen}
+        onClose={onConfirmCancelClose}
+        onYes={handleDrawerClose}
+      >
+        Are you sure you want to cancel request of freebies for{" "}
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          {selectedRowData.businessName
+            ? selectedRowData.businessName
+            : "client"}
+        </span>
+        ?
+      </CommonDialog>
 
       <SuccessSnackbar
         open={isSuccessOpen}

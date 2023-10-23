@@ -34,7 +34,11 @@
   background-color: $secondary;
   border-width: 1px white;
   border-color: $secondary;
-  height: 30px;
+
+  // height: 30px;
+  min-height: 30px;
+  // display: inline-block;
+  // vertical-align: top;
 
   & :hover {
     background-color: $primary;

@@ -54,7 +54,8 @@ function Department() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
@@ -169,7 +170,7 @@ function Department() {
       ) : (
         <CommonTable
           mapData={data?.department}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

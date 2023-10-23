@@ -1,4 +1,10 @@
-import { Box, Dialog, DialogActions, DialogTitle } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+} from "@mui/material";
 import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
@@ -10,6 +16,7 @@ function CommonDialog({
   children,
   noIcon,
   customImageSource,
+  isLoading,
   ...otherProps
 }) {
   return (
@@ -26,8 +33,12 @@ function CommonDialog({
         )}
         <DialogTitle className="commonDialog__title">{children}</DialogTitle>
         <DialogActions>
-          <SecondaryButton onClick={onYes}>Yes</SecondaryButton>
-          <DangerButton onClick={onClose}>No</DangerButton>
+          <SecondaryButton onClick={onYes} disabled={isLoading}>
+            {isLoading ? <CircularProgress size="20px" color="white" /> : "Yes"}
+          </SecondaryButton>
+          <DangerButton onClick={onClose} disabled={isLoading}>
+            No
+          </DangerButton>
         </DialogActions>
       </Box>
     </Dialog>

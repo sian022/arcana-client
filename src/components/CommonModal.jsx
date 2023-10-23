@@ -10,7 +10,6 @@ function CommonModal({
   children,
   ...otherProps
 }) {
-  console.log(disablePadding);
   return (
     <Modal {...otherProps}>
       <Box

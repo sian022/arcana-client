@@ -23,8 +23,11 @@ import {
 import { setPermissisons } from "../features/authentication/reducers/permissionsSlice";
 import MisLogo from "../assets/images/MIS-logo.png";
 import SystemLogoName from "../assets/images/SystemLogoName.png";
+import useSnackbar from "../hooks/useSnackbar";
 
 function LoginPage() {
+  const { showSnackbar } = useSnackbar();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [postLogin, { isLoading }] = usePostLoginMutation();
@@ -49,12 +52,14 @@ function LoginPage() {
   const submitHandler = async (data) => {
     try {
       const res = await postLogin(data).unwrap();
-      dispatch(setFullname(res.data.fullname));
-      dispatch(setToken(res.data.token));
-      dispatch(setPermissisons(res.data.permission));
+      dispatch(setFullname(res?.data?.fullname));
+      dispatch(setToken(res?.data?.token));
+      dispatch(setPermissisons(res?.data?.permission));
       navigate("/");
+      reset();
     } catch (err) {
-      alert(err.data.messages);
+      // alert(err.data.messages);
+      showSnackbar(err.data.messages, "error");
     }
   };
 

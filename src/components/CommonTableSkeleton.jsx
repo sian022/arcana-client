@@ -7,17 +7,17 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
 } from "@mui/material";
 import React from "react";
 
-function CommonTableSkeleton() {
+function CommonTableSkeleton({ compact }) {
   return (
     <Box className="tableSuperContainer">
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
+        sx={{ height: compact && "calc(100vh - 370px)" }}
       >
         <Table>
           <TableHead>

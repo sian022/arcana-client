@@ -53,6 +53,7 @@ function DirectRegistration() {
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
           onOpen={onRegisterOpen}
+          addTitle="Register Direct"
         />
         <Box>
           <TextField type="search" placeholder="Search" size="small" />

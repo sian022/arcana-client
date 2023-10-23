@@ -6,17 +6,23 @@ import SecondaryButton from "../../../components/SecondaryButton";
 import { Check, PushPin } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { regularRegisterSchema } from "../../../schema/schema";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
-import { usePutRegisterClientMutation } from "../../../features/registration/api/registrationApi";
+import {
+  usePutAddAttachmentsMutation,
+  usePutAddTermsAndCondtionsMutation,
+  usePutRegisterClientMutation,
+} from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "./TermsAndConditions";
 import Attachments from "./Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
 import { setTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
+import { base64ToBlob } from "../../../utils/CustomFunctions";
+import { prospectApi } from "../../../features/prospect/api/prospectApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -31,6 +37,7 @@ function RegisterRegularForm({ open, onClose }) {
   const [latitude, setLatitude] = useState(15.0944152);
   const [longitude, setLongitude] = useState(120.6075827);
   const [activeTab, setActiveTab] = useState("Personal Info");
+  const [sameAsOwnersAddress, setSameAsOwnersAddress] = useState(false);
 
   const { ownersRequirements, representativeRequirements, requirementsMode } =
     useContext(AttachmentsContext);
@@ -66,6 +73,8 @@ function RegisterRegularForm({ open, onClose }) {
     register,
     setValue,
     reset,
+    getValues,
+    control,
   } = useForm({
     resolver: yupResolver(regularRegisterSchema.schema),
     mode: "onChange",
@@ -74,7 +83,10 @@ function RegisterRegularForm({ open, onClose }) {
 
   //Constants
   const navigators = [
-    { label: "Personal Info", isValid: isValid },
+    {
+      label: "Personal Info",
+      isValid: isValid,
+    },
     {
       label: "Terms and Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
@@ -107,25 +119,102 @@ function RegisterRegularForm({ open, onClose }) {
   ];
 
   //RTK Query
-  const [putRegisterClient] = usePutRegisterClientMutation();
+  const [putRegisterClient, { isLoading: isRegisterLoading }] =
+    usePutRegisterClientMutation();
+  const [putAddAttachments, { isLoading: isAttachmentsLoading }] =
+    usePutAddAttachmentsMutation();
+  const [putAddTermsAndConditions, { isLoading: isTermsLoading }] =
+    usePutAddTermsAndCondtionsMutation();
 
   //Drawer Functions
   const onSubmit = async (data) => {
     try {
       await putRegisterClient(data).unwrap();
+      await addTermsAndConditions();
+      await addAttachmentsSubmit();
+
+      dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
+
       showSnackbar("Client registered successfully", "success");
       onConfirmClose();
       onClose();
       reset();
     } catch (error) {
-      showSnackbar(error.data.messages[0], "error");
+      // showSnackbar(error.data.messages[0], "error");
+      console.log(error);
     }
   };
+
+  const addTermsAndConditions = async () => {
+    if (termsAndConditions["fixedDiscounts"].discountPercentage === "") {
+      dispatch(
+        setTermsAndConditions({
+          property: "fixedDiscounts",
+          value: null,
+        })
+      );
+    }
+    await putAddTermsAndConditions({
+      id: selectedRowData?.id,
+      termsAndConditions,
+    }).unwrap();
+  };
+
+  const addAttachmentsSubmit = async () => {
+    const formData = new FormData();
+    let attachmentsArray = [];
+    if (requirementsMode === "owner") {
+      // setOwnersRequirements((prev) => ({
+      //   ...prev,
+      //   signature: new File(
+      //     [base64ToBlob(prev["signature"])],
+      //     `signature_${
+      //       selectedRowData.businessName
+      //         ? selectedRowData.businessname
+      //         : "owner"
+      //     }_${Date.now()}.jpg`,
+      //     { type: "image/jpeg" }
+      //   ),
+      // }));
+      attachmentsArray = Object.keys(ownersRequirements).map((key) => ({
+        documentType: key,
+        attachment: ownersRequirements[key],
+      }));
+    } else if (requirementsMode === "representative") {
+      // setRepresentativeRequirements((prev) => ({
+      //   ...prev,
+      //   signature: new File(
+      //     [base64ToBlob(prev["signature"])],
+      //     `signature_${
+      //       selectedRowData.businessName
+      //         ? selectedRowData.businessname
+      //         : "representative"
+      //     }_${Date.now()}.jpg`,
+      //     { type: "image/jpeg" }
+      //   ),
+      // }));
+      attachmentsArray = Object.keys(representativeRequirements).map((key) => ({
+        documentType: key,
+        attachment: representativeRequirements[key],
+      }));
+    }
+
+    console.log(attachmentsArray);
+    formData.append("Attachments", attachmentsArray);
+
+    await putAddAttachments({
+      id: selectedRowData?.id,
+      formData,
+    }).unwrap();
+  };
+
+  console.log(ownersRequirements);
 
   const handleDrawerClose = () => {
     onClose();
     onCancelConfirmClose();
     reset();
+    setSameAsOwnersAddress(false);
     setOwnersRequirements({
       signature: null,
       storePhoto: null,
@@ -188,6 +277,23 @@ function RegisterRegularForm({ open, onClose }) {
     setValue("clientId", selectedRowData?.id);
   }, [selectedRowData]);
 
+  useEffect(() => {
+    if (sameAsOwnersAddress) {
+      setValue("houseNumber", selectedRowData?.ownersAddress?.houseNumber);
+      setValue("streetName", selectedRowData?.ownersAddress?.streetName);
+      setValue("barangayName", selectedRowData?.ownersAddress?.barangayName);
+      setValue("city", selectedRowData?.ownersAddress?.city);
+      setValue("province", selectedRowData?.ownersAddress?.province);
+    }
+    // else {
+    //   setValue("houseNumber", "");
+    //   setValue("streetName", "");
+    //   setValue("barangayName", "");
+    //   setValue("city", "");
+    //   setValue("province", "");
+    // }
+  }, [sameAsOwnersAddress]);
+
   return (
     <>
       <CommonDrawer
@@ -239,10 +345,9 @@ function RegisterRegularForm({ open, onClose }) {
                     required
                     type="date"
                     className="register__textField"
-                    // {...register("ownersName")}
-                    // helperText={errors?.ownersName?.message}
-                    // error={errors?.ownersName}
-                    defaultValue={new Date().toISOString().substr(0, 10)}
+                    {...register("birthDate")}
+                    helperText={errors?.birthDate?.message}
+                    error={errors?.birthDate}
                   />
                   <TextField
                     label="Phone Number"
@@ -282,6 +387,8 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      disabled
+                      value={selectedRowData?.ownersAddress?.houseNumber ?? ""}
                     />
                     <TextField
                       label="Street Name"
@@ -289,6 +396,8 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      disabled
+                      value={selectedRowData?.ownersAddress?.streetName ?? ""}
                     />
                     <TextField
                       label="Barangay"
@@ -296,6 +405,8 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      disabled
+                      value={selectedRowData?.ownersAddress?.barangayName ?? ""}
                     />
                   </Box>
                   <Box className="register__secondRow__content">
@@ -305,6 +416,8 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      disabled
+                      value={selectedRowData?.ownersAddress?.city ?? ""}
                     />
                     <TextField
                       label="Province"
@@ -312,6 +425,8 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      disabled
+                      value={selectedRowData?.ownersAddress?.province ?? ""}
                     />
                     {/* <TextField
                 label="Zip Code"
@@ -359,64 +474,119 @@ function RegisterRegularForm({ open, onClose }) {
                 <Typography className="register__title">
                   Business Address
                 </Typography>
-                <Checkbox sx={{ ml: "10px" }} />
+                <Checkbox
+                  sx={{ ml: "10px" }}
+                  checked={sameAsOwnersAddress}
+                  onChange={(e) => {
+                    setSameAsOwnersAddress((prev) => !prev);
+                  }}
+                />
                 <Typography variant="subtitle2">
                   Same as owner's address
                 </Typography>
               </Box>
 
               <Box className="register__secondRow__content">
-                <TextField
-                  label="Unit No."
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  // {...register("ownersName")}
-                  // helperText={errors?.ownersName?.message}
-                  // error={errors?.ownersName}
+                <Controller
+                  control={control}
+                  name="houseNumber"
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Unit No."
+                      size="small"
+                      autoComplete="off"
+                      required
+                      className="register__textField"
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      inputRef={ref}
+                      helperText={errors?.houseNumber?.message}
+                      error={errors?.houseNumber}
+                    />
+                  )}
                 />
-                <TextField
-                  label="Street Name"
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  // {...register("ownersName")}
-                  // helperText={errors?.ownersName?.message}
-                  // error={errors?.ownersName}
+
+                <Controller
+                  control={control}
+                  name="streetName"
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Street Name"
+                      size="small"
+                      autoComplete="off"
+                      required
+                      className="register__textField"
+                      helperText={errors?.streetName?.message}
+                      error={errors?.streetName}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      inputRef={ref}
+                    />
+                  )}
                 />
-                <TextField
-                  label="Barangay"
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  // {...register("ownersName")}
-                  // helperText={errors?.ownersName?.message}
-                  // error={errors?.ownersName}
+
+                <Controller
+                  control={control}
+                  name="barangayName"
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Barangay"
+                      size="small"
+                      autoComplete="off"
+                      required
+                      className="register__textField"
+                      helperText={errors?.barangayName?.message}
+                      error={errors?.barangayName}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      inputRef={ref}
+                    />
+                  )}
                 />
               </Box>
+
               <Box className="register__secondRow__content">
-                <TextField
-                  label="Municipality/City"
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  // {...register("ownersName")}
-                  // helperText={errors?.ownersName?.message}
-                  // error={errors?.ownersName}
+                <Controller
+                  control={control}
+                  name="city"
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Municipality/City"
+                      size="small"
+                      autoComplete="off"
+                      required
+                      className="register__textField"
+                      helperText={errors?.city?.message}
+                      error={errors?.city}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      inputRef={ref}
+                    />
+                  )}
                 />
-                <TextField
-                  label="Province"
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  // {...register("ownersName")}
-                  // helperText={errors?.ownersName?.message}
-                  // error={errors?.ownersName}
+
+                <Controller
+                  control={control}
+                  name="province"
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Province"
+                      size="small"
+                      autoComplete="off"
+                      required
+                      className="register__textField"
+                      helperText={errors?.province?.message}
+                      error={errors?.province}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      inputRef={ref}
+                    />
+                  )}
                 />
 
                 <SecondaryButton onClick={onPinLocationOpen}>
@@ -452,16 +622,6 @@ function RegisterRegularForm({ open, onClose }) {
                     }
                     error={errors?.authorizedRepresentativePosition}
                   />
-                  {/* <TextField
-              label="Email"
-              size="small"
-              autoComplete="off"
-              required
-              className="register__textField"
-              // {...register("ownersName")}
-              // helperText={errors?.ownersName?.message}
-              // error={errors?.ownersName}
-            /> */}
                 </Box>
               </Box>
             </Box>
@@ -509,7 +669,7 @@ function RegisterRegularForm({ open, onClose }) {
         </span>{" "}
         as a regular customer? <br />
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          (Forms will be reset)
+          (Fields will be reset)
         </span>
       </CommonDialog>
     </>

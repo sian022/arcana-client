@@ -26,7 +26,7 @@ export const uomApi = createApi({
     getAllUoms: builder.query({
       query: (params) => ({
         params: params,
-        url: "/GetUomAsync/GetUom",
+        url: "/Uom/GetUom",
         method: "GET",
       }),
       providesTags: ["Meat Type"],
@@ -35,7 +35,7 @@ export const uomApi = createApi({
     }),
     putUom: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/UpdateUom/UpdateUom/${id}`,
+        url: `/Uom/UpdateUom/${id}`,
         method: "PUT",
         body: body,
       }),

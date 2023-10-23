@@ -1,4 +1,4 @@
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
@@ -54,7 +54,8 @@ function UserAccount() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
@@ -93,10 +94,10 @@ function UserAccount() {
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
-        await postUserAccount(data).unwrap();
+        await postUser(data).unwrap();
         setSnackbarMessage("User Account added successfully");
       } else if (drawerMode === "edit") {
-        await putUserAccount(data).unwrap();
+        await putUser(data).unwrap();
         setSnackbarMessage("User Account updated successfully");
       }
 
@@ -111,7 +112,7 @@ function UserAccount() {
 
   const onArchiveSubmit = async () => {
     try {
-      await patchUserAccountStatus(selectedId).unwrap();
+      await patchUserStatus(selectedId).unwrap();
       onArchiveClose();
       setSnackbarMessage(
         `User Account ${status ? "archived" : "restored"} successfully`
@@ -171,7 +172,7 @@ function UserAccount() {
       ) : (
         <CommonTable
           mapData={data?.users}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

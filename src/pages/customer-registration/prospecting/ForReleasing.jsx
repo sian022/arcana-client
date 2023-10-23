@@ -95,11 +95,7 @@ function ForReleasing() {
 
   //Constants
   // const excludeKeys = [
-  //   "createdAt",
-  //   "isActive",
-  //   "origin",
-  //   "addedBy",
-  //   "status",
+  //
   //   "freebies",
   // ];
 
@@ -111,6 +107,7 @@ function ForReleasing() {
     "addedBy",
     "status",
     "freebies",
+    "ownersAddress",
   ];
 
   //React Hook Form
@@ -129,7 +126,7 @@ function ForReleasing() {
   });
 
   //RTK Query
-  const [postProspect] = usePostProspectMutation();
+  const [postProspect, { isLoading: isAddLoading }] = usePostProspectMutation();
   const { data, isLoading } = useGetAllApprovedProspectsQuery({
     Search: search,
     Status: status,
@@ -138,8 +135,9 @@ function ForReleasing() {
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
     FreebieStatus: "For Releasing",
   });
-  const [putProspect] = usePutProspectMutation();
-  const [patchProspectStatus] = usePatchProspectStatusMutation();
+  const [putProspect, { isLoading: isEditLoading }] = usePutProspectMutation();
+  const [patchProspectStatus, { isLoading: isArchiveLoading }] =
+    usePatchProspectStatusMutation();
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery();
 
@@ -249,7 +247,7 @@ function ForReleasing() {
           setSearch={setSearch}
         />
         {isLoading ? (
-          <CommonTableSkeleton />
+          <CommonTableSkeleton compact />
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
@@ -259,7 +257,7 @@ function ForReleasing() {
             archivable
             onEdit={handleEditOpen}
             onArchive={handleArchiveOpen}
-            onFreebie={onFreebieFormOpen}
+            // onFreebie={onFreebieFormOpen}
             onReleaseFreebie={onFreebieReleaseOpen}
             page={page}
             setPage={setPage}
@@ -267,6 +265,7 @@ function ForReleasing() {
             setRowsPerPage={setRowsPerPage}
             count={count}
             status={status}
+            compact
           />
         )}
       </Box>
@@ -435,6 +434,7 @@ function ForReleasing() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
       >
         Are you sure you want to set prospect {selectedRowData.ownersName} as{" "}
         {status ? "inactive" : "active"}?
@@ -444,6 +444,7 @@ function ForReleasing() {
         open={isConfirmOpen}
         onClose={onConfirmClose}
         onYes={handleSubmit(onDrawerSubmit)}
+        isLoading={drawerMode === "add" ? isAddLoading : isEditLoading}
       >
         Are you sure you want to {drawerMode == "add" ? "add" : "update"}{" "}
         prospect {watch("businessName")}?

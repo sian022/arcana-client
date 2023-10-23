@@ -3,7 +3,7 @@ import React from "react";
 
 function SecondaryButton({ children, ...otherProps }) {
   return (
-    <Button variant="contained" color="secondary" {...otherProps}>
+    <Button size="small" variant="contained" color="secondary" {...otherProps}>
       {children}
     </Button>
   );

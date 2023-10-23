@@ -1,16 +1,17 @@
 import {
   Box,
   FormControlLabel,
+  InputAdornment,
   MenuItem,
   Radio,
   RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
-
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
+import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
 
 function TermsAndConditions() {
   const dispatch = useDispatch();
@@ -18,6 +19,10 @@ function TermsAndConditions() {
   const termsAndConditions = useSelector(
     (state) => state.regularRegistration.value.termsAndConditions
   );
+
+  const { data: termDaysData } = useGetAllTermDaysQuery({ Status: true });
+
+  console.log("termsAndConditions", termsAndConditions);
 
   return (
     <Box className="terms">
@@ -34,7 +39,7 @@ function TermsAndConditions() {
               dispatch(
                 setTermsAndConditions({
                   property: "freezer",
-                  value: e.target.value,
+                  value: e.target.value === "true" ? true : false,
                 })
               );
             }}
@@ -85,7 +90,7 @@ function TermsAndConditions() {
               dispatch(
                 setTermsAndConditions({
                   property: "directDelivery",
-                  value: e.target.value,
+                  value: e.target.value === "true" ? true : false,
                 })
               );
             }}
@@ -102,20 +107,20 @@ function TermsAndConditions() {
           <RadioGroup
             row
             className="terms__column__item__choices"
-            value={termsAndConditions["bookingCoverage"]}
+            value={termsAndConditions["bookingCoverageId"]}
             onChange={(e) => {
               dispatch(
                 setTermsAndConditions({
-                  property: "bookingCoverage",
-                  value: e.target.value,
+                  property: "bookingCoverageId",
+                  value: parseInt(e.target.value),
                 })
               );
             }}
           >
-            <FormControlLabel value="F1" control={<Radio />} label="F1" />
-            <FormControlLabel value="F2" control={<Radio />} label="F2" />
-            <FormControlLabel value="F3" control={<Radio />} label="F3" />
-            <FormControlLabel value="F4" control={<Radio />} label="F4" />
+            <FormControlLabel value={1} control={<Radio />} label="F1" />
+            <FormControlLabel value={2} control={<Radio />} label="F2" />
+            <FormControlLabel value={3} control={<Radio />} label="F3" />
+            <FormControlLabel value={4} control={<Radio />} label="F4" />
           </RadioGroup>
         </Box>
       </Box>
@@ -131,7 +136,7 @@ function TermsAndConditions() {
               dispatch(
                 setTermsAndConditions({
                   property: "terms",
-                  value: e.target.value,
+                  value: parseInt(e.target.value),
                 })
               );
             }}
@@ -143,7 +148,7 @@ function TermsAndConditions() {
                 control={<Radio />}
                 label="1 up 1 down"
               />
-              {termsAndConditions["terms"] === "2" && (
+              {termsAndConditions["terms"] === 2 && (
                 <TextField
                   sx={{
                     width: "100px",
@@ -153,22 +158,28 @@ function TermsAndConditions() {
                       height: "30px",
                     },
                   }}
+                  className="terms__select"
                   defaultValue={termsAndConditions["termDays"]}
                   select
                   label="Term Days"
-                  value={termsAndConditions["termdays"]}
+                  value={termsAndConditions["termDaysId"]}
                   onChange={(e) => {
                     dispatch(
                       setTermsAndConditions({
-                        property: "termDays",
+                        property: "termDaysId",
                         value: e.target.value,
                       })
                     );
                   }}
                 >
-                  <MenuItem value={10}>10</MenuItem>
+                  {termDaysData?.termDays?.map((item) => (
+                    <MenuItem key={item.days} value={item.days}>
+                      {item.days}
+                    </MenuItem>
+                  ))}
+                  {/* <MenuItem value={10}>10</MenuItem>
                   <MenuItem value={20}>20</MenuItem>
-                  <MenuItem value={30}>30</MenuItem>
+                  <MenuItem value={30}>30</MenuItem> */}
                 </TextField>
               )}
             </Box>
@@ -181,7 +192,7 @@ function TermsAndConditions() {
                 label="Credit Limit"
               />
 
-              {termsAndConditions["terms"] === "3" && (
+              {termsAndConditions["terms"] === 3 && (
                 <>
                   <TextField
                     sx={{
@@ -197,9 +208,19 @@ function TermsAndConditions() {
                       dispatch(
                         setTermsAndConditions({
                           property: "creditLimit",
-                          value: e.target.value,
+                          value: parseInt(e.target.value),
                         })
                       );
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment
+                          position="start"
+                          style={{ marginLeft: -3 }}
+                        >
+                          ₱
+                        </InputAdornment>
+                      ),
                     }}
                   />
                   <TextField
@@ -214,19 +235,21 @@ function TermsAndConditions() {
                     defaultValue={termsAndConditions["termDays"]}
                     select
                     label="Term Days"
-                    value={termsAndConditions["termdays"]}
+                    value={termsAndConditions["termDaysId"]}
                     onChange={(e) => {
                       dispatch(
                         setTermsAndConditions({
-                          property: "termDays",
+                          property: "termDaysId",
                           value: e.target.value,
                         })
                       );
                     }}
                   >
-                    <MenuItem value={10}>10</MenuItem>
-                    <MenuItem value={20}>20</MenuItem>
-                    <MenuItem value={30}>30</MenuItem>
+                    {termDaysData?.termDays?.map((item) => (
+                      <MenuItem key={item.days} value={item.days}>
+                        {item.days}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 </>
               )}
@@ -246,14 +269,14 @@ function TermsAndConditions() {
               dispatch(
                 setTermsAndConditions({
                   property: "modeOfPayment",
-                  value: e.target.value,
+                  value: parseInt(e.target.value),
                 })
               );
             }}
           >
-            <FormControlLabel value="Cash" control={<Radio />} label="Cash" />
+            <FormControlLabel value={1} control={<Radio />} label="Cash" />
             <FormControlLabel
-              value="Online/Check"
+              value={2}
               control={<Radio />}
               label="Online/Check"
             />
@@ -267,22 +290,48 @@ function TermsAndConditions() {
           <RadioGroup
             row
             className="terms__column__item__choices"
-            value={termsAndConditions["discount"]}
+            value={termsAndConditions["variableDiscount"]}
             onChange={(e) => {
               dispatch(
                 setTermsAndConditions({
-                  property: "discount",
-                  value: e.target.value,
+                  property: "variableDiscount",
+                  value: e.target.value === "true" ? true : false,
                 })
               );
             }}
           >
             <FormControlLabel
-              value="Variable"
+              value={true}
               control={<Radio />}
               label="Variable"
             />
-            <FormControlLabel value="Fixed" control={<Radio />} label="Fixed" />
+            <FormControlLabel value={false} control={<Radio />} label="Fixed" />
+
+            {termsAndConditions["variableDiscount"] === false && (
+              <TextField
+                sx={{
+                  width: "60px",
+                  position: "absolute",
+                  right: "-15px",
+                  "& .MuiInputBase-root": {
+                    height: "30px",
+                  },
+                }}
+                type="number"
+                value={termsAndConditions["fixedDiscounts"].discountPercentage}
+                onChange={(e) => {
+                  dispatch(
+                    setTermsAndConditions({
+                      property: "fixedDiscounts",
+                      value: { discountPercentage: parseInt(e.target.value) },
+                    })
+                  );
+                }}
+                // InputProps={{
+                //   inputProps: { min: 1, max: 10 },
+                // }}
+              />
+            )}
           </RadioGroup>
         </Box>
       </Box>

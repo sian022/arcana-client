@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
+  CircularProgress,
   IconButton,
   Input,
   Table,
@@ -34,6 +35,7 @@ function ReleaseFreebieModal({ ...otherProps }) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const address = selectedRowData?.ownersAddress;
   const { fullname } = useSelector((state) => state.login);
 
   const fileUploadRef = useRef();
@@ -48,6 +50,12 @@ function ReleaseFreebieModal({ ...otherProps }) {
     isOpen: isConfirmOpen,
     onOpen: onConfirmOpen,
     onClose: onConfirmClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isCancelConfirmOpen,
+    onOpen: onCancelConfirmOpen,
+    onClose: onCancelConfirmClose,
   } = useDisclosure();
 
   const {
@@ -79,7 +87,7 @@ function ReleaseFreebieModal({ ...otherProps }) {
 
     try {
       await putReleaseProspect({
-        id: selectedRowData?.id,
+        id: selectedRowData?.freebies?.[0]?.freebieRequestId,
         body: formData,
       }).unwrap();
 
@@ -98,6 +106,7 @@ function ReleaseFreebieModal({ ...otherProps }) {
     setSignature("");
     setPhotoProof(null);
     onClose();
+    onCancelConfirmClose();
   };
 
   const handleFileSubmit = (e) => {
@@ -133,7 +142,12 @@ function ReleaseFreebieModal({ ...otherProps }) {
                   <span>Customer:</span> {selectedRowData?.businessName || ""}
                 </Typography>
                 <Typography>
-                  <span> Address:</span> {selectedRowData?.address || ""}
+                  <span>Address: </span>
+                  {`#${address?.houseNumber || ""} ${
+                    address?.streetName || ""
+                  } ${address?.barangayName || ""}, ${address?.city || ""}, ${
+                    address?.province || ""
+                  }`}
                 </Typography>
               </Box>
               <Box>
@@ -244,7 +258,7 @@ function ReleaseFreebieModal({ ...otherProps }) {
           </Box>
         </Box>
         <Box className="releaseFreebieModal__actions">
-          <DangerButton onClick={handleCancel}>Cancel</DangerButton>
+          <DangerButton onClick={onCancelConfirmOpen}>Cancel</DangerButton>
           <SecondaryButton
             onClick={onConfirmOpen}
             disabled={!signature || !photoProof}
@@ -266,8 +280,25 @@ function ReleaseFreebieModal({ ...otherProps }) {
         onClose={onConfirmClose}
         onYes={handleReleaseSubmit}
         noIcon
+        isLoading={isLoading}
       >
-        {`Confirm release freebies for ${selectedRowData?.businessName}?`}
+        Confirm release freebies for{" "}
+        <span style={{ fontWeight: "bold" }}>
+          {selectedRowData?.businessName}
+        </span>
+        ?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isCancelConfirmOpen}
+        onClose={onCancelConfirmClose}
+        onYes={handleCancel}
+      >
+        Confirm cancel release freebies for{" "}
+        <span style={{ fontWeight: "bold" }}>
+          {selectedRowData?.businessName}
+        </span>
+        ?
       </CommonDialog>
 
       <SuccessSnackbar

@@ -58,7 +58,7 @@ function Products() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = ["isActive", "addedBy", "modifiedBy"];
+  const excludeKeysDisplay = ["id", "isActive", "addedBy", "modifiedBy"];
 
   //React Hook Form
   const {
@@ -86,10 +86,11 @@ function Products() {
   const [putProduct] = usePutProductMutation();
   const [patchProductStatus] = usePatchProductStatusMutation();
 
-  const { data: uomData } = useGetAllUomsQuery();
-  const { data: productSubcategoriesData } =
-    useGetAllProductSubCategoriesQuery();
-  const { data: meatTypeData } = useGetAllMeatTypesQuery();
+  const { data: uomData } = useGetAllUomsQuery({ Status: true });
+  const { data: productSubcategoriesData } = useGetAllProductSubCategoriesQuery(
+    { Status: true }
+  );
+  const { data: meatTypeData } = useGetAllMeatTypesQuery({ Status: true });
 
   const onDrawerSubmit = async (data) => {
     try {
@@ -211,6 +212,8 @@ function Products() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
+  console.log(uomData);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -225,7 +228,7 @@ function Products() {
       ) : (
         <CommonTable
           mapData={data?.items}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

@@ -54,7 +54,8 @@ function MeatType() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
@@ -168,7 +169,7 @@ function MeatType() {
       ) : (
         <CommonTable
           mapData={data?.meatTypes}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

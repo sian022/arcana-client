@@ -115,19 +115,19 @@ function ForFreebies() {
   });
 
   //RTK Query
-  const [postProspect] = usePostProspectMutation();
+  const [postProspect, { isLoading: isAddLoading }] = usePostProspectMutation();
   const { data, isLoading } = useGetAllApprovedProspectsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
-    // WithFreebies: false,
   });
-  const [putProspect] = usePutProspectMutation();
-  const [patchProspectStatus] = usePatchProspectStatusMutation();
+  const [putProspect, { isLoading: isEditLoading }] = usePutProspectMutation();
+  const [patchProspectStatus, { isLoading: isArchiveLoading }] =
+    usePatchProspectStatusMutation();
 
-  const { data: storeTypeData } = useGetAllStoreTypesQuery();
+  const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
 
   //Drawer Handlers
   const onDrawerSubmit = async (data) => {
@@ -225,8 +225,6 @@ function ForFreebies() {
     dispatch(setBadge({ ...badges, forFreebies: data?.totalCount }));
   }, [data]);
 
-  console.log(getValues());
-
   return (
     <>
       <Box>
@@ -237,7 +235,7 @@ function ForFreebies() {
           setSearch={setSearch}
         />
         {isLoading ? (
-          <CommonTableSkeleton />
+          <CommonTableSkeleton compact />
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
@@ -254,6 +252,7 @@ function ForFreebies() {
             setRowsPerPage={setRowsPerPage}
             count={count}
             status={status}
+            compact
           />
         )}
       </Box>
@@ -416,6 +415,7 @@ function ForFreebies() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
       >
         Are you sure you want to set prospect{" "}
         <span style={{ fontWeight: "bold" }}>{selectedRowData.ownersName}</span>{" "}
@@ -426,6 +426,7 @@ function ForFreebies() {
         open={isConfirmOpen}
         onClose={onConfirmClose}
         onYes={handleSubmit(onDrawerSubmit)}
+        isLoading={drawerMode === "add" ? isAddLoading : isEditLoading}
       >
         Are you sure you want to {drawerMode == "add" ? "add" : "update"}{" "}
         prospect{" "}

@@ -54,7 +54,8 @@ function StoreType() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
@@ -170,7 +171,7 @@ function StoreType() {
       ) : (
         <CommonTable
           mapData={data?.storeTypes}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

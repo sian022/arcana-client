@@ -54,7 +54,8 @@ function UnitOfMeasurements() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
@@ -169,7 +170,7 @@ function UnitOfMeasurements() {
       ) : (
         <CommonTable
           mapData={data?.uom}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

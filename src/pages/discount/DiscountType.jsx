@@ -54,7 +54,8 @@ function DiscountType() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updateAt",
@@ -168,7 +169,7 @@ function DiscountType() {
       ) : (
         <CommonTable
           mapData={data?.discount}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

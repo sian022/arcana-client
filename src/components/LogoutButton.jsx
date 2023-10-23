@@ -28,6 +28,10 @@ function LogoutButton() {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("fullname");
     sessionStorage.removeItem("permissions");
+
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("fullname");
+    // localStorage.removeItem("permissions");
     navigate("/login");
   };
 

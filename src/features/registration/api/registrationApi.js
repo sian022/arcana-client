@@ -17,13 +17,35 @@ export const registrationApi = createApi({
   endpoints: (builder) => ({
     putRegisterClient: builder.mutation({
       query: ({ clientId, ...body }) => ({
-        url: `/Registration/RegisterClient/${id}`,
+        url: `/Registration/RegisterClient/${clientId}`,
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["Registration", "Prospecting"],
+      invalidatesTags: ["Registration"],
+    }),
+
+    putAddAttachments: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/Registration/AddAttachments/${id}`,
+        method: "PUT",
+        body: body?.formData,
+      }),
+      invalidatesTags: ["Registration"],
+    }),
+
+    putAddTermsAndCondtions: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/Registration/AddTermsAndCondition/${id}`,
+        method: "PUT",
+        body: body?.termsAndConditions,
+      }),
+      invalidatesTags: ["Registration"],
     }),
   }),
 });
 
-export const { usePutRegisterClientMutation } = registrationApi;
+export const {
+  usePutRegisterClientMutation,
+  usePutAddAttachmentsMutation,
+  usePutAddTermsAndCondtionsMutation,
+} = registrationApi;

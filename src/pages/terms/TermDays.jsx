@@ -54,7 +54,8 @@ function TermDays() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createAt",
     "addedBy",
     "updatedAt",
@@ -168,7 +169,7 @@ function TermDays() {
       ) : (
         <CommonTable
           mapData={data?.termDays}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

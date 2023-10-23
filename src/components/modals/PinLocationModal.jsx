@@ -48,8 +48,8 @@ function PinLocationModal({
 
   //Misc Functions
   const handleSubmit = () => {
-    setLatitude("");
-    setLongitude("");
+    // setLatitude("");
+    // setLongitude("");
     onClose();
   };
 

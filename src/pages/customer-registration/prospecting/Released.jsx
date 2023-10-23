@@ -9,10 +9,7 @@ import CommonTable from "../../../components/CommonTable";
 import { useDispatch, useSelector } from "react-redux";
 import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 import useDisclosure from "../../../hooks/useDisclosure";
-import CommonModal from "../../../components/CommonModal";
-import CommonDrawer from "../../../components/CommonDrawer";
 import RegisterRegularForm from "./RegisterRegularForm";
-import { AttachmentsProvider } from "../../../context/AttachmentsContext";
 
 function Released() {
   const [search, setSearch] = useState("");
@@ -36,6 +33,8 @@ function Released() {
     "addedBy",
     "status",
     "freebies",
+    "ownersAddress",
+    "registrationStatus",
   ];
 
   //Disclosures
@@ -82,7 +81,7 @@ function Released() {
         />
 
         {isLoading ? (
-          <CommonTableSkeleton />
+          <CommonTableSkeleton compact />
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
@@ -96,6 +95,7 @@ function Released() {
             setRowsPerPage={setRowsPerPage}
             count={count}
             status={status}
+            compact
           />
         )}
       </Box>

@@ -83,7 +83,7 @@ function CommonTable({
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
-        sx={{ height: compact && "calc(100vh - 400px)" }}
+        sx={{ height: compact && "calc(100vh - 370px)" }}
       >
         <Table>
           <TableHead>

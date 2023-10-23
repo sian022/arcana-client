@@ -56,7 +56,8 @@ function ProductSubCategory() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
@@ -191,7 +192,7 @@ function ProductSubCategory() {
       ) : (
         <CommonTable
           mapData={data?.productSubCategories}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

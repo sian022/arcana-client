@@ -54,7 +54,8 @@ function ProductCategory() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "updatedAt",
     "isActive",
@@ -166,7 +167,7 @@ function ProductCategory() {
       ) : (
         <CommonTable
           mapData={data?.result}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}

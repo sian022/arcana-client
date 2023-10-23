@@ -9,14 +9,20 @@ function PageHeaderAddTabs({
   tabsList,
   tabViewing,
   setTabViewing,
+  addTitle,
+  largeButton,
 }) {
   return (
     <Paper elevation={1}>
       <Box className="pageHeader">
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
-          <SecondaryButton className="addRowButtons" onClick={onOpen}>
-            Register Direct
+          <SecondaryButton
+            sx={{ height: largeButton && "50px" }}
+            className="addRowButtons"
+            onClick={onOpen}
+          >
+            {addTitle}
           </SecondaryButton>
         </Box>
         <Box className="pageHeader__right">
