@@ -26,49 +26,73 @@ function TermsAndConditions() {
   const { data: termDaysData, isLoading: isTermDaysLoading } =
     useGetAllTermDaysQuery({ Status: true });
 
-  // const handleFixedDiscountChange = (e) => {
-  //   const parsedValue =
-  //     e.target.value !== "" ? parseInt(e.target.value) : e.target.value;
-  //   if (
-  //     (parsedValue < 0 || parsedValue > 10) &&
-  //     parsedValue !== "" &&
-  //     parsedValue !== null
-  //   ) {
-  //     showSnackbar("Value must be between 0% and 10%", "error");
-  //     return;
-  //   }
-  //   dispatch(
-  //     setTermsAndConditions({
-  //       property: "fixedDiscounts",
-  //       value: { discountPercentage: parsedValue },
-  //     })
-  //   );
-  // };
-
   const handleFixedDiscountChange = (e) => {
-    if ((e.target.value < 0 || e.target.value > 10) && e.target.value !== "") {
-      showSnackbar("Maximum of 10 only", "error");
+    const parsedValue =
+      e.target.value !== "" ? parseInt(e.target.value) : e.target.value;
+    if (
+      (parsedValue < 0 || parsedValue > 10) &&
+      parsedValue !== "" &&
+      parsedValue !== null
+    ) {
+      showSnackbar("Value must be between 0% and 10%", "error");
       return;
     }
     dispatch(
       setTermsAndConditions({
         property: "fixedDiscounts",
-        value: { discountPercentage: e.target.value },
+        value: { discountPercentage: parsedValue === "" ? null : parsedValue },
       })
     );
   };
 
+  const handleCreditLimitChange = (e) => {
+    const parsedValue =
+      e.target.value !== "" ? parseInt(e.target.value) : e.target.value;
+    dispatch(
+      setTermsAndConditions({
+        property: "creditLimit",
+        value: parsedValue === "" ? null : parsedValue,
+      })
+    );
+  };
+
+  // const handleFixedDiscountChange = (e) => {
+  //   if (e.target.value < 0 || e.target.value > 10) {
+  //     showSnackbar("Maximum of 10% only", "error");
+  //     return;
+  //   }
+  //   dispatch(
+  //     setTermsAndConditions({
+  //       property: "fixedDiscounts",
+  //       value: {
+  //         discountPercentage: parseInt(e.target.value),
+  //       },
+  //     })
+  //   );
+  // };
+
   useEffect(() => {
     if (termsAndConditions["terms"] !== 3) {
-      setTermsAndConditions("creditLimit", null);
+      console.log("Im not 3");
+      dispatch(setTermsAndConditions({ property: "creditLimit", value: null }));
     }
+
     if (
       termsAndConditions["terms"] !== 2 &&
       termsAndConditions["terms"] !== 3
     ) {
-      setTermsAndConditions("termDaysId", null);
+      dispatch(setTermsAndConditions({ property: "termDaysId", value: null }));
     }
-  }, [termsAndConditions]);
+
+    if (termsAndConditions["variableDiscount"] === false) {
+      dispatch(
+        setTermsAndConditions({
+          property: "fixedDiscounts",
+          value: { discountPercentage: null },
+        })
+      );
+    }
+  }, [termsAndConditions["terms"], termsAndConditions["variableDiscount"]]);
 
   console.log(termsAndConditions);
 
@@ -196,7 +220,8 @@ function TermsAndConditions() {
                 control={<Radio />}
                 label="1 up 1 down"
               />
-              {termsAndConditions["terms"] === 2 && termDaysData && (
+              {termsAndConditions["terms"] === 2 && (
+                // && termDaysData
                 <Autocomplete
                   selectOnFocus
                   clearOnBlur
@@ -281,7 +306,8 @@ function TermsAndConditions() {
                 label="Credit Limit"
               />
 
-              {termsAndConditions["terms"] === 3 && termDaysData && (
+              {termsAndConditions["terms"] === 3 && (
+                //  && termDaysData
                 <>
                   <TextField
                     sx={{
@@ -293,14 +319,19 @@ function TermsAndConditions() {
                       },
                     }}
                     type="number"
-                    value={termsAndConditions["creditLimit"] ?? ""}
+                    value={
+                      termsAndConditions["creditLimit"] != null
+                        ? termsAndConditions["creditLimit"].toString()
+                        : ""
+                    }
                     onChange={(e) => {
-                      dispatch(
-                        setTermsAndConditions({
-                          property: "creditLimit",
-                          value: parseInt(e.target.value) || 0,
-                        })
-                      );
+                      // dispatch(
+                      //   setTermsAndConditions({
+                      //     property: "creditLimit",
+                      //     value: parseInt(e.target.value) ?? 0,
+                      //   })
+                      // );
+                      handleCreditLimitChange(e);
                     }}
                     InputProps={{
                       startAdornment: (
@@ -453,7 +484,13 @@ function TermsAndConditions() {
                 }}
                 type="number"
                 value={
-                  termsAndConditions["fixedDiscounts"].discountPercentage || ""
+                  // termsAndConditions["fixedDiscounts"].discountPercentage ?? ""
+                  termsAndConditions["fixedDiscounts"].discountPercentage !=
+                  null
+                    ? termsAndConditions[
+                        "fixedDiscounts"
+                      ].discountPercentage.toString()
+                    : ""
                 }
                 onChange={(e) => {
                   // dispatch(

@@ -6,6 +6,7 @@ import TermsAndConditionsTab from "./TermsAndConditionsTab";
 import AttachmentsTab from "./AttachmentsTab";
 import SecondaryButton from "../../SecondaryButton";
 import DangerButton from "../../DangerButton";
+import AccentButton from "../../AccentButton";
 
 function ViewRegistrationDetailsModal({ ...props }) {
   const { onClose, ...noOnClose } = props;
@@ -35,6 +36,7 @@ function ViewRegistrationDetailsModal({ ...props }) {
   return (
     <CommonModal
       width={"800px"}
+      height="650px"
       disablePadding
       // paddingCustom="0 0 20px"
       ribbon
@@ -45,8 +47,21 @@ function ViewRegistrationDetailsModal({ ...props }) {
         {activeTab === "Personal Info" && <PersonalInfoTab />}
         {activeTab === "Terms and Conditions" && <TermsAndConditionsTab />}
         {activeTab === "Attachments" && <AttachmentsTab />}
-        <Box sx={{ display: "flex", justifyContent: "end", gap: "10px" }}>
-          <DangerButton onClick={onClose}>Close</DangerButton>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+            gap: "10px",
+            position: "absolute",
+            bottom: "20px",
+            right: "20px",
+          }}
+        >
+          <SecondaryButton onClick={onClose}>Approve</SecondaryButton>
+          <AccentButton sx={{ color: "white !important" }} onClick={onClose}>
+            Close
+          </AccentButton>
+          <DangerButton onClick={onClose}>Reject</DangerButton>
         </Box>
       </Box>
     </CommonModal>

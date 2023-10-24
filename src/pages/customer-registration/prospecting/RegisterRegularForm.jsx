@@ -102,7 +102,8 @@ function RegisterRegularForm({ open, onClose }) {
           (termsAndConditions[key].discountPercentage === null ||
             termsAndConditions[key].discountPercentage === "" ||
             termsAndConditions[key].discountPercentage === NaN ||
-            termsAndConditions[key].discountPercentage === undefined)
+            termsAndConditions[key].discountPercentage === undefined) &&
+          termsAndConditions["variableDiscount"] === false
         ) {
           return false;
         }

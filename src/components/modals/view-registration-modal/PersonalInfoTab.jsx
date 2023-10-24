@@ -35,7 +35,7 @@ function PersonalInfoTab() {
               Contact Number:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquez
+              John Serrano Marquezzz
             </Typography>
           </Box>
 

@@ -8,6 +8,7 @@ function CommonModal({
   width,
   ribbon,
   children,
+  height,
   ...otherProps
 }) {
   return (
@@ -20,6 +21,7 @@ function CommonModal({
             : paddingCustom
             ? paddingCustom
             : "30px",
+          height: height && height,
         }}
         className="commonModal"
       >
