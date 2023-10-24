@@ -25,11 +25,16 @@ export const registrationApi = createApi({
     }),
 
     putAddAttachments: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `/Registration/AddAttachments/${id}`,
-        method: "PUT",
-        body: body?.formData,
-      }),
+      query: ({ id, ...body }) => {
+        console.log(body);
+        return {
+          url: `/Registration/AddAttachments/${id}`,
+          method: "PUT",
+          body: body?.formData,
+          // body,
+          // body: body?.masterFormData,
+        };
+      },
       invalidatesTags: ["Registration"],
     }),
 

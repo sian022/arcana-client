@@ -142,7 +142,6 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
     };
   }, [selectedRowData]);
 
-  console.log(selectedRowData);
   return (
     <>
       <CommonDrawer

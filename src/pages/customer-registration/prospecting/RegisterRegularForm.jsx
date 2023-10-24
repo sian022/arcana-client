@@ -20,8 +20,14 @@ import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "./TermsAndConditions";
 import Attachments from "./Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
-import { setTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
-import { base64ToBlob } from "../../../utils/CustomFunctions";
+import {
+  setTermsAndConditions,
+  resetTermsAndConditions,
+} from "../../../features/registration/reducers/regularRegistrationSlice";
+import {
+  base64ToBlob,
+  convertToTitleCase,
+} from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
 
 function RegisterRegularForm({ open, onClose }) {
@@ -30,6 +36,7 @@ function RegisterRegularForm({ open, onClose }) {
     setOwnersRequirements,
     setRepresentativeRequirements,
     setRequirementsMode,
+    convertSignatureToBase64,
   } = useContext(AttachmentsContext);
 
   const { showSnackbar } = useSnackbar();
@@ -90,15 +97,20 @@ function RegisterRegularForm({ open, onClose }) {
     {
       label: "Terms and Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
-        //Check if Term Day are needed
-        if (termsAndConditions["terms"] === 1) {
-          if (key === "termDays") {
-            return true;
-          }
-        } else if (termsAndConditions["terms"] !== "3") {
-          if (key === "creditLimit") {
-            return true;
-          }
+        if (
+          key === "fixedDiscounts" &&
+          (termsAndConditions[key].discountPercentage === null ||
+            termsAndConditions[key].discountPercentage === "" ||
+            termsAndConditions[key].discountPercentage === NaN ||
+            termsAndConditions[key].discountPercentage === undefined)
+        ) {
+          return false;
+        }
+
+        if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
+          return true;
+        } else if (termsAndConditions["terms"] !== 3 && key === "creditLimit") {
+          return true;
         }
 
         const value = termsAndConditions[key];
@@ -138,7 +150,7 @@ function RegisterRegularForm({ open, onClose }) {
       showSnackbar("Client registered successfully", "success");
       onConfirmClose();
       onClose();
-      reset();
+      handleResetForms();
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
       console.log(error);
@@ -146,61 +158,80 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   const addTermsAndConditions = async () => {
-    if (termsAndConditions["fixedDiscounts"].discountPercentage === "") {
-      dispatch(
-        setTermsAndConditions({
-          property: "fixedDiscounts",
-          value: null,
-        })
-      );
+    let updatedTermsAndConditions = { ...termsAndConditions };
+
+    // if (termsAndConditions["fixedDiscounts"].discountPercentage === "") {
+    //   updatedTermsAndConditions = {
+    //     ...termsAndConditions,
+    //     fixedDiscounts: {
+    //       ...termsAndConditions["fixedDiscounts"],
+    //       discountPercentage: null,
+    //     },
+    //   };
+    // }
+
+    // dispatch(setTermsAndConditions(updatedTermsAndConditions));
+
+    if (updatedTermsAndConditions.termDaysId) {
+      updatedTermsAndConditions.termDaysId =
+        updatedTermsAndConditions.termDaysId.id;
     }
+
     await putAddTermsAndConditions({
       id: selectedRowData?.id,
-      termsAndConditions,
+      termsAndConditions: updatedTermsAndConditions,
     }).unwrap();
   };
 
   const addAttachmentsSubmit = async () => {
     const formData = new FormData();
-    let attachmentsArray = [];
-    if (requirementsMode === "owner") {
-      // setOwnersRequirements((prev) => ({
-      //   ...prev,
-      //   signature: new File(
-      //     [base64ToBlob(prev["signature"])],
-      //     `signature_${
-      //       selectedRowData.businessName
-      //         ? selectedRowData.businessname
-      //         : "owner"
-      //     }_${Date.now()}.jpg`,
-      //     { type: "image/jpeg" }
-      //   ),
-      // }));
-      attachmentsArray = Object.keys(ownersRequirements).map((key) => ({
-        documentType: key,
-        attachment: ownersRequirements[key],
+    let attachmentsObject = null;
+
+    if (requirementsMode === "owner" && ownersRequirements["signature"]) {
+      const convertedSignature = new File(
+        [base64ToBlob(ownersRequirements["signature"])],
+        `signature_${Date.now()}.jpg`,
+        { type: "image/jpeg" }
+      );
+      setOwnersRequirements((prevOwnersRequirements) => ({
+        ...prevOwnersRequirements,
+        signature: convertedSignature,
       }));
-    } else if (requirementsMode === "representative") {
-      // setRepresentativeRequirements((prev) => ({
-      //   ...prev,
-      //   signature: new File(
-      //     [base64ToBlob(prev["signature"])],
-      //     `signature_${
-      //       selectedRowData.businessName
-      //         ? selectedRowData.businessname
-      //         : "representative"
-      //     }_${Date.now()}.jpg`,
-      //     { type: "image/jpeg" }
-      //   ),
-      // }));
-      attachmentsArray = Object.keys(representativeRequirements).map((key) => ({
-        documentType: key,
-        attachment: representativeRequirements[key],
+      attachmentsObject = {
+        ...ownersRequirements,
+        signature: convertedSignature,
+      };
+    } else if (
+      requirementsMode === "representative" &&
+      representativeRequirements["signature"]
+    ) {
+      const convertedSignature = new File(
+        [base64ToBlob(representativeRequirements["signature"])],
+        `signature_${Date.now()}.jpg`,
+        { type: "image/jpeg" }
+      );
+      setRepresentativeRequirements((prevRepresentativeRequirements) => ({
+        ...prevRepresentativeRequirements,
+        signature: convertedSignature,
       }));
+      attachmentsObject = {
+        ...representativeRequirements,
+        signature: convertedSignature,
+      };
     }
 
-    console.log(attachmentsArray);
-    formData.append("Attachments", attachmentsArray);
+    console.log(ownersRequirements);
+    if (attachmentsObject) {
+      Object.keys(attachmentsObject).forEach((key, index) => {
+        const attachment = attachmentsObject[key];
+
+        formData.append(`Attachments[${index}].Attachment`, attachment);
+        formData.append(
+          `Attachments[${index}].DocumentType`,
+          convertToTitleCase(key)
+        );
+      });
+    }
 
     await putAddAttachments({
       id: selectedRowData?.id,
@@ -208,11 +239,89 @@ function RegisterRegularForm({ open, onClose }) {
     }).unwrap();
   };
 
-  console.log(ownersRequirements);
+  // const addAttachmentsSubmit = async () => {
+  //   const formData = new FormData();
+  //   let attachmentsObject = null;
+
+  //   // convertSignatureToBase64();
+
+  //   // if (requirementsMode === "owner") {
+  //   //   attachmentsObject = ownersRequirements;
+  //   // } else if (requirementsMode === "representative") {
+  //   //   attachmentsObject = representativeRequirements;
+  //   // }
+  //   if (requirementsMode === "owner" && ownersRequirements["signature"]) {
+  //     const convertedSignature = new File(
+  //       [base64ToBlob(ownersRequirements["signature"])],
+  //       `signature_${Date.now()}.jpg`,
+  //       { type: "image/jpeg" }
+  //     );
+  //     setOwnersRequirements({
+  //       ...ownersRequirements,
+  //       signature: convertedSignature,
+  //     });
+  //     attachmentsObject = ownersRequirements;
+  //   } else if (
+  //     requirementsMode === "representative" &&
+  //     representativeRequirements["signature"]
+  //   ) {
+  //     const convertedSignature = new File(
+  //       [base64ToBlob(representativeRequirements["signature"])],
+  //       `signature_${Date.now()}.jpg`,
+  //       { type: "image/jpeg" }
+  //     );
+  //     setRepresentativeRequirements({
+  //       ...representativeRequirements,
+  //       signature: convertedSignature,
+  //     });
+  //     attachmentsObject = representativeRequirements;
+  //   }
+
+  //   console.log(ownersRequirements);
+  //   if (attachmentsObject) {
+  //     Object.keys(attachmentsObject).forEach((key, index) => {
+  //       const attachment = attachmentsObject[key];
+
+  //       formData.append(`Attachments[${index}].Attachment`, attachment);
+  //       formData.append(
+  //         `Attachments[${index}].DocumentType`,
+  //         convertToTitleCase(key)
+  //       );
+  //     });
+  //   }
+
+  //   await putAddAttachments({
+  //     id: selectedRowData?.id,
+  //     formData,
+  //   }).unwrap();
+  // };
 
   const handleDrawerClose = () => {
     onClose();
     onCancelConfirmClose();
+    handleResetForms();
+    // reset();
+    // setSameAsOwnersAddress(false);
+    // setOwnersRequirements({
+    //   signature: null,
+    //   storePhoto: null,
+    //   businessPermit: null,
+    //   photoIdOwner: null,
+    // });
+    // setRepresentativeRequirements({
+    //   signature: null,
+    //   storePhoto: null,
+    //   businessPermit: null,
+    //   photoIdOwner: null,
+    //   photoIdRepresentative: null,
+    //   authorizationLetter: null,
+    // });
+    // setRequirementsMode(null);
+    // dispatch(resetTermsAndConditions());
+    // setActiveTab("Personal Info");
+  };
+
+  const handleResetForms = () => {
     reset();
     setSameAsOwnersAddress(false);
     setOwnersRequirements({
@@ -230,19 +339,8 @@ function RegisterRegularForm({ open, onClose }) {
       authorizationLetter: null,
     });
     setRequirementsMode(null);
-    dispatch(
-      setTermsAndConditions({
-        freezer: null,
-        typeOfCustomer: null,
-        directDelivery: null,
-        bookingCoverage: null,
-        terms: null,
-        modeOfPayment: null,
-        discount: null,
-        termDays: 10,
-        creditLimit: "",
-      })
-    );
+    dispatch(resetTermsAndConditions());
+    setActiveTab("Personal Info");
   };
 
   const customRibbonContent = (
@@ -348,6 +446,9 @@ function RegisterRegularForm({ open, onClose }) {
                     {...register("birthDate")}
                     helperText={errors?.birthDate?.message}
                     error={errors?.birthDate}
+                    InputLabelProps={{
+                      shrink: true, // This will make the label always appear on top.
+                    }}
                   />
                   <TextField
                     label="Phone Number"
@@ -646,6 +747,7 @@ function RegisterRegularForm({ open, onClose }) {
         open={isConfirmOpen}
         onYes={handleSubmit(onSubmit)}
         onClose={onConfirmClose}
+        isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
       >
         Confirm registration of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

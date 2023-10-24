@@ -407,7 +407,7 @@ function ForReleasing() {
                   <TextField
                     {...params}
                     size="small"
-                    label="Store Type"
+                    label="Business Type"
                     required
                     helperText={errors?.storeTypeId?.message}
                     error={errors?.storeTypeId}

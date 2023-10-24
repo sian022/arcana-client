@@ -97,7 +97,7 @@ export const router = createBrowserRouter([
             element: <UnitOfMeasurements />,
           },
           {
-            path: "store-type",
+            path: "business-type",
             element: <StoreType />,
           },
         ],

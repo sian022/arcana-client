@@ -87,8 +87,8 @@ export const navigationData = [
       },
       {
         id: 6,
-        name: "Store Type",
-        path: "/setup/store-type",
+        name: "Business Type",
+        path: "/setup/business-type",
         icon: "StoreMallDirectory",
       },
     ],

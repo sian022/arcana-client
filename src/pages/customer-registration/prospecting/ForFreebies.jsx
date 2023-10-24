@@ -80,6 +80,12 @@ function ForFreebies() {
   } = useDisclosure();
 
   const {
+    isOpen: isCancelConfirmOpen,
+    onOpen: onCancelConfirmOpen,
+    onClose: onCancelConfirmClose,
+  } = useDisclosure();
+
+  const {
     isOpen: isFreebieConfirmOpen,
     onOpen: onFreebieConfirmOpen,
     onClose: onFreebieConfirmClose,
@@ -212,6 +218,7 @@ function ForFreebies() {
     reset();
     onDrawerClose();
     setSelectedId("");
+    onCancelConfirmClose();
   };
 
   const handleFreebieFormYes = () => {
@@ -260,7 +267,7 @@ function ForFreebies() {
       <CommonDrawer
         drawerHeader={drawerMode == "add" ? "Add Prospect" : "Edit Prospect"}
         open={isDrawerOpen}
-        onClose={handleDrawerClose}
+        onClose={onCancelConfirmOpen}
         width="1000px"
         disableSubmit={!isValid}
         onSubmit={
@@ -394,7 +401,7 @@ function ForFreebies() {
                   <TextField
                     {...params}
                     size="small"
-                    label="Store Type"
+                    label="Business Type"
                     required
                     helperText={errors?.storeTypeId?.message}
                     error={errors?.storeTypeId}
@@ -431,6 +438,23 @@ function ForFreebies() {
         Are you sure you want to {drawerMode == "add" ? "add" : "update"}{" "}
         prospect{" "}
         <span style={{ fontWeight: "bold" }}>{watch("businessName")}</span>?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isCancelConfirmOpen}
+        onClose={onCancelConfirmClose}
+        onYes={handleDrawerClose}
+      >
+        Are you sure you want to cancel adding prospect
+        {watch("businessName") ? (
+          <>
+            {" "}
+            <span style={{ fontWeight: "bold" }}>{watch("businessName")}</span>
+          </>
+        ) : (
+          ""
+        )}
+        ?
       </CommonDialog>
 
       <CommonDialog

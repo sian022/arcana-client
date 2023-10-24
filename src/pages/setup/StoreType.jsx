@@ -93,10 +93,10 @@ function StoreType() {
     try {
       if (drawerMode === "add") {
         await postStoreType(data).unwrap();
-        setSnackbarMessage("Store Type added successfully");
+        setSnackbarMessage("Business Type added successfully");
       } else if (drawerMode === "edit") {
         await putStoreType(data).unwrap();
-        setSnackbarMessage("Store Type updated successfully");
+        setSnackbarMessage("Business Type updated successfully");
       }
 
       onDrawerClose();
@@ -113,7 +113,7 @@ function StoreType() {
       await patchStoreTypeStatus(selectedId).unwrap();
       onArchiveClose();
       setSnackbarMessage(
-        `Store Type ${status ? "archived" : "restored"} successfully`
+        `Business Type ${status ? "archived" : "restored"} successfully`
       );
       onSuccessOpen();
     } catch (error) {
@@ -161,7 +161,7 @@ function StoreType() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Store Type"
+        pageTitle="Business Type"
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
@@ -188,12 +188,14 @@ function StoreType() {
       <CommonDrawer
         open={isDrawerOpen}
         onClose={handleDrawerClose}
-        drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Store Type"}
+        drawerHeader={
+          (drawerMode === "add" ? "Add" : "Edit") + " Business Type"
+        }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
       >
         <TextField
-          label="Store Type Name"
+          label="Business Type Name"
           size="small"
           autoComplete="off"
           {...register("storeTypeName")}

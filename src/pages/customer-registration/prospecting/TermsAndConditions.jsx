@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   FormControlLabel,
   InputAdornment,
@@ -8,21 +9,68 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
+import useSnackbar from "../../../hooks/useSnackbar";
 
 function TermsAndConditions() {
   const dispatch = useDispatch();
+  const { showSnackbar } = useSnackbar();
 
   const termsAndConditions = useSelector(
     (state) => state.regularRegistration.value.termsAndConditions
   );
 
-  const { data: termDaysData } = useGetAllTermDaysQuery({ Status: true });
+  const { data: termDaysData, isLoading: isTermDaysLoading } =
+    useGetAllTermDaysQuery({ Status: true });
 
-  console.log("termsAndConditions", termsAndConditions);
+  // const handleFixedDiscountChange = (e) => {
+  //   const parsedValue =
+  //     e.target.value !== "" ? parseInt(e.target.value) : e.target.value;
+  //   if (
+  //     (parsedValue < 0 || parsedValue > 10) &&
+  //     parsedValue !== "" &&
+  //     parsedValue !== null
+  //   ) {
+  //     showSnackbar("Value must be between 0% and 10%", "error");
+  //     return;
+  //   }
+  //   dispatch(
+  //     setTermsAndConditions({
+  //       property: "fixedDiscounts",
+  //       value: { discountPercentage: parsedValue },
+  //     })
+  //   );
+  // };
+
+  const handleFixedDiscountChange = (e) => {
+    if ((e.target.value < 0 || e.target.value > 10) && e.target.value !== "") {
+      showSnackbar("Maximum of 10 only", "error");
+      return;
+    }
+    dispatch(
+      setTermsAndConditions({
+        property: "fixedDiscounts",
+        value: { discountPercentage: e.target.value },
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (termsAndConditions["terms"] !== 3) {
+      setTermsAndConditions("creditLimit", null);
+    }
+    if (
+      termsAndConditions["terms"] !== 2 &&
+      termsAndConditions["terms"] !== 3
+    ) {
+      setTermsAndConditions("termDaysId", null);
+    }
+  }, [termsAndConditions]);
+
+  console.log(termsAndConditions);
 
   return (
     <Box className="terms">
@@ -148,39 +196,80 @@ function TermsAndConditions() {
                 control={<Radio />}
                 label="1 up 1 down"
               />
-              {termsAndConditions["terms"] === 2 && (
-                <TextField
+              {termsAndConditions["terms"] === 2 && termDaysData && (
+                <Autocomplete
+                  selectOnFocus
+                  clearOnBlur
+                  handleHomeEndKeys
+                  options={termDaysData?.termDays ?? []}
+                  loading={isTermDaysLoading}
+                  getOptionLabel={(option) => option.days?.toString() ?? ""}
+                  disableClearable
+                  value={termsAndConditions["termDaysId"] ?? ""}
+                  defaultValue={termsAndConditions["termDaysId"] ?? ""}
                   sx={{
                     width: "100px",
                     position: "absolute",
                     right: "-65px",
+                    top: "10px",
                     "& .MuiInputBase-root": {
                       height: "30px",
                     },
                   }}
-                  className="terms__select"
-                  defaultValue={termsAndConditions["termDays"]}
-                  select
-                  label="Term Days"
-                  value={termsAndConditions["termDaysId"]}
-                  onChange={(e) => {
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      className="terms__select"
+                      label="Term Days"
+                      InputLabelProps={{ shrink: true }}
+                      sx={{
+                        "& input": {
+                          height: 0,
+                        },
+                      }}
+                    />
+                  )}
+                  onChange={(_, value) => {
+                    console.log(value);
                     dispatch(
                       setTermsAndConditions({
                         property: "termDaysId",
-                        value: e.target.value,
+                        value: value?.id,
+                        value,
                       })
                     );
                   }}
-                >
-                  {termDaysData?.termDays?.map((item) => (
-                    <MenuItem key={item.days} value={item.days}>
-                      {item.days}
-                    </MenuItem>
-                  ))}
-                  {/* <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={20}>20</MenuItem>
-                  <MenuItem value={30}>30</MenuItem> */}
-                </TextField>
+                />
+                // <TextField
+                //   sx={{
+                //     width: "100px",
+                //     position: "absolute",
+                //     right: "-65px",
+                //     "& .MuiInputBase-root": {
+                //       height: "30px",
+                //     },
+                //   }}
+                //   className="terms__select"
+                //   defaultValue={termsAndConditions["termDaysId"] ?? ""}
+                //   select
+                //   label="Term Days"
+                //   value={termsAndConditions["termDaysId"] ?? ""}
+                //   onChange={(e) => {
+                //     dispatch(
+                //       setTermsAndConditions({
+                //         property: "termDaysId",
+                //         value: e.target.value,
+                //       })
+                //     );
+                //   }}
+                //   InputLabelProps={{ shrink: true }}
+                // >
+                //   {termDaysData?.termDays?.map((item) => (
+                //     <MenuItem key={item.days} value={item.days}>
+                //       {item.days}
+                //     </MenuItem>
+                //   ))}
+                // </TextField>
               )}
             </Box>
 
@@ -192,7 +281,7 @@ function TermsAndConditions() {
                 label="Credit Limit"
               />
 
-              {termsAndConditions["terms"] === 3 && (
+              {termsAndConditions["terms"] === 3 && termDaysData && (
                 <>
                   <TextField
                     sx={{
@@ -203,12 +292,13 @@ function TermsAndConditions() {
                         height: "30px",
                       },
                     }}
-                    value={termsAndConditions["creditLimit"]}
+                    type="number"
+                    value={termsAndConditions["creditLimit"] ?? ""}
                     onChange={(e) => {
                       dispatch(
                         setTermsAndConditions({
                           property: "creditLimit",
-                          value: parseInt(e.target.value),
+                          value: parseInt(e.target.value) || 0,
                         })
                       );
                     }}
@@ -223,7 +313,50 @@ function TermsAndConditions() {
                       ),
                     }}
                   />
-                  <TextField
+                  <Autocomplete
+                    selectOnFocus
+                    clearOnBlur
+                    handleHomeEndKeys
+                    options={termDaysData?.termDays ?? []}
+                    loading={isTermDaysLoading}
+                    getOptionLabel={(option) => option.days?.toString() ?? ""}
+                    disableClearable
+                    value={termsAndConditions["termDaysId"] ?? ""}
+                    defaultValue={termsAndConditions["termDaysId"] ?? ""}
+                    sx={{
+                      width: "100px",
+                      position: "absolute",
+                      right: "-80px",
+                      top: "6px",
+                      "& .MuiInputBase-root": {
+                        height: "30px",
+                      },
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        className="terms__select"
+                        label="Term Days"
+                        InputLabelProps={{ shrink: true }}
+                        sx={{
+                          "& input": {
+                            height: 0,
+                          },
+                        }}
+                      />
+                    )}
+                    onChange={(_, value) => {
+                      console.log(value);
+                      dispatch(
+                        setTermsAndConditions({
+                          property: "termDaysId",
+                          value: value?.id,
+                          value,
+                        })
+                      );
+                    }}
+                  />
+                  {/* <TextField
                     sx={{
                       width: "100px",
                       position: "absolute",
@@ -232,10 +365,10 @@ function TermsAndConditions() {
                         height: "30px",
                       },
                     }}
-                    defaultValue={termsAndConditions["termDays"]}
+                    defaultValue={termsAndConditions["termDaysId"] ?? ""}
                     select
                     label="Term Days"
-                    value={termsAndConditions["termDaysId"]}
+                    value={termsAndConditions["termDaysId"] ?? ""}
                     onChange={(e) => {
                       dispatch(
                         setTermsAndConditions({
@@ -244,13 +377,14 @@ function TermsAndConditions() {
                         })
                       );
                     }}
+                    InputLabelProps={{ shrink: true }}
                   >
                     {termDaysData?.termDays?.map((item) => (
                       <MenuItem key={item.days} value={item.days}>
                         {item.days}
                       </MenuItem>
                     ))}
-                  </TextField>
+                  </TextField> */}
                 </>
               )}
             </Box>
@@ -310,26 +444,29 @@ function TermsAndConditions() {
             {termsAndConditions["variableDiscount"] === false && (
               <TextField
                 sx={{
-                  width: "60px",
+                  width: "70px",
                   position: "absolute",
-                  right: "-15px",
+                  right: "-25px",
                   "& .MuiInputBase-root": {
                     height: "30px",
                   },
                 }}
                 type="number"
-                value={termsAndConditions["fixedDiscounts"].discountPercentage}
+                value={
+                  termsAndConditions["fixedDiscounts"].discountPercentage || ""
+                }
                 onChange={(e) => {
-                  dispatch(
-                    setTermsAndConditions({
-                      property: "fixedDiscounts",
-                      value: { discountPercentage: parseInt(e.target.value) },
-                    })
-                  );
+                  // dispatch(
+                  //   setTermsAndConditions({
+                  //     property: "fixedDiscounts",
+                  //     value: { discountPercentage: parseInt(e.target.value) },
+                  //   })
+                  // );
+                  handleFixedDiscountChange(e);
                 }}
-                // InputProps={{
-                //   inputProps: { min: 1, max: 10 },
-                // }}
+                InputProps={{
+                  inputProps: { min: 0, max: 10 },
+                }}
               />
             )}
           </RadioGroup>

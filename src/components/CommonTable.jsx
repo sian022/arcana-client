@@ -10,12 +10,13 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
 import { useDispatch } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
+import CommonTableSkeleton from "./CommonTableSkeleton";
 
 function CommonTable({
   mapData,
@@ -37,11 +38,26 @@ function CommonTable({
   status,
   compact,
 }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const image = new Image();
+    image.src = NoData;
+
+    image.onload = () => {
+      setImageLoaded(true);
+    };
+  }, [mapData]);
+
   if (!mapData || mapData.length === 0) {
     return (
       <Box className="noData">
-        <img src={NoData} alt="no-data-img" className="noData__image" />
-        <Typography>No data found</Typography>
+        {imageLoaded && (
+          <>
+            <img src={NoData} alt="no-data-img" className="noData__image" />
+            <Typography>No data found</Typography>
+          </>
+        )}
       </Box>
     );
   }

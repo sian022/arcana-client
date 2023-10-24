@@ -9,6 +9,7 @@ import PageHeaderTabs from "../../../components/PageHeaderTabs";
 import Released from "./Released";
 import ForFreebies from "./ForFreebies";
 import ForReleasing from "./ForReleasing";
+import StoreTypeSkeleton from "../../../components/skeletons/StoreTypeSkeleton";
 
 function Prospect() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -20,7 +21,7 @@ function Prospect() {
   );
   const dispatch = useDispatch();
 
-  const { data } = useGetAllStoreTypesQuery();
+  const { data, isLoading } = useGetAllStoreTypesQuery();
 
   const prospectNavigation = [
     {
@@ -71,54 +72,19 @@ function Prospect() {
       {selectedStoreType ? (
         <>{tabComponents[tabViewing]}</>
       ) : (
-        <Box
-          sx={{
-            display: "flex",
-            // my: "20px",
-            // mx: "30px",
-            gap: "10px",
-          }}
-        >
-          <Button
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              borderRadius: "30px",
-              backgroundColor: "secondary.main",
-              color: "white !important",
-              " &:hover": {
-                bgcolor: "accent.main",
-              },
-            }}
-            onClick={() => {
-              dispatch(setSelectedStoreType("Main"));
-            }}
-          >
-            <Storefront sx={{ fontSize: "350px" }} />
-            <Typography sx={{ fontSize: "30px", fontWeight: "600" }}>
-              Main
-            </Typography>
-          </Button>
-
-          <Box
-            sx={{
-              flex: "1",
-              height: "500px",
-              margin: "auto",
-              borderRadius: "20px",
-              display: "flex",
-              gap: "20px",
-              maxWidth: "900px",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              // alignItems: "center",
-              overflow: "auto",
-            }}
-          >
-            {data?.storeTypes?.map((item) => (
+        <>
+          {isLoading ? (
+            <StoreTypeSkeleton />
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                // my: "20px",
+                // mx: "30px",
+                gap: "10px",
+              }}
+            >
               <Button
-                key={item.id}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -130,22 +96,63 @@ function Prospect() {
                     bgcolor: "accent.main",
                   },
                 }}
-                title={item.storeTypeName}
                 onClick={() => {
-                  dispatch(setSelectedStoreType(item.storeTypeName));
+                  dispatch(setSelectedStoreType("Main"));
                 }}
               >
-                <Storefront sx={{ fontSize: "100px" }} />
-                <Typography
-                  sx={{ fontSize: "16px", fontWeight: "600" }}
-                  className="truncate-text"
-                >
-                  {item.storeTypeName}
+                <Storefront sx={{ fontSize: "350px" }} />
+                <Typography sx={{ fontSize: "30px", fontWeight: "600" }}>
+                  Main
                 </Typography>
               </Button>
-            ))}
-          </Box>
-        </Box>
+
+              <Box
+                sx={{
+                  flex: "1",
+                  height: "500px",
+                  margin: "auto",
+                  borderRadius: "20px",
+                  display: "flex",
+                  gap: "20px",
+                  maxWidth: "900px",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  // alignItems: "center",
+                  overflow: "auto",
+                }}
+              >
+                {data?.storeTypes?.map((item) => (
+                  <Button
+                    key={item.id}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      borderRadius: "30px",
+                      backgroundColor: "secondary.main",
+                      color: "white !important",
+                      " &:hover": {
+                        bgcolor: "accent.main",
+                      },
+                    }}
+                    title={item.storeTypeName}
+                    onClick={() => {
+                      dispatch(setSelectedStoreType(item.storeTypeName));
+                    }}
+                  >
+                    <Storefront sx={{ fontSize: "100px" }} />
+                    <Typography
+                      sx={{ fontSize: "16px", fontWeight: "600" }}
+                      className="truncate-text"
+                    >
+                      {item.storeTypeName}
+                    </Typography>
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );

@@ -12,10 +12,10 @@ export const regularRegistrationSlice = createSlice({
         terms: null,
         modeOfPayment: null,
         variableDiscount: null,
-        termDaysId: 1,
+        termDaysId: null,
         creditLimit: null,
         fixedDiscounts: {
-          discountPercentage: "",
+          discountPercentage: null,
         },
       },
     },
@@ -25,14 +25,26 @@ export const regularRegistrationSlice = createSlice({
       const { property, value } = action.payload;
       state.value.termsAndConditions[property] = value;
     },
+    resetTermsAndConditions: (state) => {
+      state.value.termsAndConditions = {
+        freezer: null,
+        typeOfCustomer: null,
+        directDelivery: null,
+        bookingCoverageId: null,
+        terms: null,
+        modeOfPayment: null,
+        variableDiscount: null,
+        termDaysId: null,
+        creditLimit: null,
+        fixedDiscounts: {
+          discountPercentage: null,
+        },
+      };
+    },
   },
 });
 
-export const {
-  setTermsAndConditions,
-  setRequirementsMode,
-  setOwnersRequirementsProperty,
-  setRepresentativesRequirementsProperty,
-} = regularRegistrationSlice.actions;
+export const { setTermsAndConditions, resetTermsAndConditions } =
+  regularRegistrationSlice.actions;
 
 export default regularRegistrationSlice.reducer;
