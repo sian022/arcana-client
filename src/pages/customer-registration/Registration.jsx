@@ -4,10 +4,10 @@ import { Box, TextField } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
 import { dummyTableData } from "../../utils/DummyData";
-import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
 import useDisclosure from "../../hooks/useDisclosure";
 import PageHeaderAddTabs from "../../components/PageHeaderAddTabs";
 import RegisterRegularForm from "./prospecting/RegisterRegularForm";
+import DirectRegisterForm from "./registration/DirectRegisterForm";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -36,6 +36,21 @@ function DirectRegistration() {
     },
   ];
 
+  const selectOptions = [
+    {
+      value: "all",
+      label: "All",
+    },
+    {
+      value: "prospect",
+      label: "Prospect",
+    },
+    {
+      value: "direct",
+      label: "Direct",
+    },
+  ];
+
   useEffect(() => {
     const foundItem = registrationNavigation.find(
       (item) => item.case === tabViewing
@@ -48,20 +63,25 @@ function DirectRegistration() {
     <>
       <Box className="commonPageLayout">
         <PageHeaderAddTabs
-          pageTitle="Direct Registration"
+          pageTitle="Registration"
           tabsList={registrationNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
           onOpen={onRegisterOpen}
           addTitle="Register Direct"
         />
-        <Box>
+        {/* <Box>
           <TextField type="search" placeholder="Search" size="small" />
-        </Box>
+        </Box> */}
+        <SearchFilterMixin
+          setSearch={setSearch}
+          selectOptions={selectOptions}
+          setSelectValue={setOrigin}
+        />
 
-        <CommonTable mapData={dummyTableData} compact />
+        <CommonTable mapData={dummyTableData} moreCompact />
 
-        <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+        <DirectRegisterForm open={isRegisterOpen} onClose={onRegisterClose} />
       </Box>
     </>
   );

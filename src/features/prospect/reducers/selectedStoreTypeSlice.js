@@ -4,6 +4,7 @@ export const selectedStoreTypeSlice = createSlice({
   name: "selectedStoreType",
   initialState: {
     value: "",
+    objectValue: "",
   },
   reducers: {
     setSelectedStoreType: (state, action) => {

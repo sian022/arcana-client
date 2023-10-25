@@ -17,20 +17,17 @@ import {
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 import PinLocationModal from "../../../components/modals/PinLocationModal";
-import TermsAndConditions from "./TermsAndConditions";
-import Attachments from "./Attachments";
+import TermsAndConditions from "../prospecting/TermsAndConditions";
+import Attachments from "../prospecting/Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
-import {
-  setTermsAndConditions,
-  resetTermsAndConditions,
-} from "../../../features/registration/reducers/regularRegistrationSlice";
+import { resetTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
 import {
   base64ToBlob,
   convertToTitleCase,
 } from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
 
-function RegisterRegularForm({ open, onClose }) {
+function DirectRegisterForm({ open, onClose }) {
   const dispatch = useDispatch();
   const {
     setOwnersRequirements,
@@ -240,63 +237,6 @@ function RegisterRegularForm({ open, onClose }) {
     }).unwrap();
   };
 
-  // const addAttachmentsSubmit = async () => {
-  //   const formData = new FormData();
-  //   let attachmentsObject = null;
-
-  //   // convertSignatureToBase64();
-
-  //   // if (requirementsMode === "owner") {
-  //   //   attachmentsObject = ownersRequirements;
-  //   // } else if (requirementsMode === "representative") {
-  //   //   attachmentsObject = representativeRequirements;
-  //   // }
-  //   if (requirementsMode === "owner" && ownersRequirements["signature"]) {
-  //     const convertedSignature = new File(
-  //       [base64ToBlob(ownersRequirements["signature"])],
-  //       `signature_${Date.now()}.jpg`,
-  //       { type: "image/jpeg" }
-  //     );
-  //     setOwnersRequirements({
-  //       ...ownersRequirements,
-  //       signature: convertedSignature,
-  //     });
-  //     attachmentsObject = ownersRequirements;
-  //   } else if (
-  //     requirementsMode === "representative" &&
-  //     representativeRequirements["signature"]
-  //   ) {
-  //     const convertedSignature = new File(
-  //       [base64ToBlob(representativeRequirements["signature"])],
-  //       `signature_${Date.now()}.jpg`,
-  //       { type: "image/jpeg" }
-  //     );
-  //     setRepresentativeRequirements({
-  //       ...representativeRequirements,
-  //       signature: convertedSignature,
-  //     });
-  //     attachmentsObject = representativeRequirements;
-  //   }
-
-  //   console.log(ownersRequirements);
-  //   if (attachmentsObject) {
-  //     Object.keys(attachmentsObject).forEach((key, index) => {
-  //       const attachment = attachmentsObject[key];
-
-  //       formData.append(`Attachments[${index}].Attachment`, attachment);
-  //       formData.append(
-  //         `Attachments[${index}].DocumentType`,
-  //         convertToTitleCase(key)
-  //       );
-  //     });
-  //   }
-
-  //   await putAddAttachments({
-  //     id: selectedRowData?.id,
-  //     formData,
-  //   }).unwrap();
-  // };
-
   const handleDrawerClose = () => {
     onClose();
     onCancelConfirmClose();
@@ -374,7 +314,7 @@ function RegisterRegularForm({ open, onClose }) {
 
   useEffect(() => {
     setValue("clientId", selectedRowData?.id);
-  }, [open]);
+  }, [selectedRowData]);
 
   useEffect(() => {
     if (sameAsOwnersAddress) {
@@ -383,16 +323,15 @@ function RegisterRegularForm({ open, onClose }) {
       setValue("barangayName", selectedRowData?.ownersAddress?.barangayName);
       setValue("city", selectedRowData?.ownersAddress?.city);
       setValue("province", selectedRowData?.ownersAddress?.province);
-    } else {
-      setValue("houseNumber", "");
-      setValue("streetName", "");
-      setValue("barangayName", "");
-      setValue("city", "");
-      setValue("province", "");
     }
+    // else {
+    //   setValue("houseNumber", "");
+    //   setValue("streetName", "");
+    //   setValue("barangayName", "");
+    //   setValue("city", "");
+    //   setValue("province", "");
+    // }
   }, [sameAsOwnersAddress]);
-
-  console.log(getValues());
 
   return (
     <>
@@ -424,17 +363,13 @@ function RegisterRegularForm({ open, onClose }) {
                     autoComplete="off"
                     required
                     className="register__textField"
-                    disabled
-                    value={selectedRowData?.ownersName ?? ""}
                   />
                   <TextField
                     label="Email"
                     size="small"
                     autoComplete="off"
                     required
-                    disabled
                     className="register__textField"
-                    value={selectedRowData?.emailAddress ?? ""}
                   />
                 </Box>
                 <Box className="register__firstRow__customerInformation__row">
@@ -458,8 +393,6 @@ function RegisterRegularForm({ open, onClose }) {
                     autoComplete="off"
                     required
                     className="register__textField"
-                    disabled
-                    value={selectedRowData?.phoneNumber ?? ""}
                   />
                 </Box>
               </Box>
@@ -490,8 +423,6 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      disabled
-                      value={selectedRowData?.ownersAddress?.houseNumber ?? ""}
                     />
                     <TextField
                       label="Street Name"
@@ -499,8 +430,6 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      disabled
-                      value={selectedRowData?.ownersAddress?.streetName ?? ""}
                     />
                     <TextField
                       label="Barangay"
@@ -508,8 +437,6 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      disabled
-                      value={selectedRowData?.ownersAddress?.barangayName ?? ""}
                     />
                   </Box>
                   <Box className="register__secondRow__content">
@@ -519,8 +446,6 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      disabled
-                      value={selectedRowData?.ownersAddress?.city ?? ""}
                     />
                     <TextField
                       label="Province"
@@ -528,8 +453,6 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      disabled
-                      value={selectedRowData?.ownersAddress?.province ?? ""}
                     />
                     {/* <TextField
                 label="Zip Code"
@@ -554,8 +477,6 @@ function RegisterRegularForm({ open, onClose }) {
                   autoComplete="off"
                   required
                   className="register__textField"
-                  disabled
-                  value={selectedRowData?.businessName ?? ""}
                 />
               </Box>
               <Box className="register__thirdRow__column">
@@ -595,7 +516,6 @@ function RegisterRegularForm({ open, onClose }) {
                   name="houseNumber"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
-                      disabled={sameAsOwnersAddress}
                       label="Unit No."
                       size="small"
                       autoComplete="off"
@@ -616,7 +536,6 @@ function RegisterRegularForm({ open, onClose }) {
                   name="streetName"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
-                      disabled={sameAsOwnersAddress}
                       label="Street Name"
                       size="small"
                       autoComplete="off"
@@ -637,7 +556,6 @@ function RegisterRegularForm({ open, onClose }) {
                   name="barangayName"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
-                      disabled={sameAsOwnersAddress}
                       label="Barangay"
                       size="small"
                       autoComplete="off"
@@ -660,7 +578,6 @@ function RegisterRegularForm({ open, onClose }) {
                   name="city"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
-                      disabled={sameAsOwnersAddress}
                       label="Municipality/City"
                       size="small"
                       autoComplete="off"
@@ -681,7 +598,6 @@ function RegisterRegularForm({ open, onClose }) {
                   name="province"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
-                      disabled={sameAsOwnersAddress}
                       label="Province"
                       size="small"
                       autoComplete="off"
@@ -736,7 +652,7 @@ function RegisterRegularForm({ open, onClose }) {
           </Box>
         )}
 
-        {activeTab === "Terms and Conditions" && <TermsAndConditions />}
+        {activeTab === "Terms and Conditions" && <TermsAndConditions direct />}
 
         {activeTab === "Attachments" && <Attachments />}
       </CommonDrawer>
@@ -785,4 +701,4 @@ function RegisterRegularForm({ open, onClose }) {
   );
 }
 
-export default RegisterRegularForm;
+export default DirectRegisterForm;

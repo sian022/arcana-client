@@ -23,7 +23,6 @@ export const loginSlice = createSlice({
       sessionStorage.setItem("fullname", action.payload);
     },
     setToken: (state, action) => {
-      console.log(action.payload);
       state.token = action.payload;
       const ciphertext = CryptoJS.AES.encrypt(
         JSON.stringify(action.payload),

@@ -111,20 +111,26 @@ export const userAccountSchema = {
       fullname: yup.string().required("Fullname is required"),
       username: yup.string().required("Username is required"),
       password: yup.string().required("Password is required"),
-      locationId: yup.object().required("Location is required"),
-      departmentId: yup.object().required("Department is required"),
+      // locationId: yup.object().required("Location is required"),
+      // departmentId: yup.object().required("Department is required"),
+      // companyId: yup.object().required("Company is required"),
+      location: yup.string().required("Location is required"),
+      department: yup.string().required("Department is required"),
+      company: yup.string().required("Company is required"),
       userRoleId: yup.object().required("Role is required"),
-      companyId: yup.object().required("Company is required"),
     })
     .required(),
   defaultValues: {
     fullname: "",
     username: "",
     password: "",
-    locationId: null,
-    departmentId: null,
+    // locationId: null,
+    // departmentId: null,
+    // companyId: null,
+    location: "",
+    department: "",
+    company: "",
     userRoleId: null,
-    companyId: null,
   },
 };
 
@@ -253,3 +259,75 @@ export const regularRegisterSchema = {
     birthDate: null,
   },
 };
+
+export const directRegisterPersonalSchema = {
+  schema: yup.object({
+    ownersName: yup.string().required("Owner's name is required"),
+    ownersAddress: yup
+      .object({
+        houseNumber: yup.string().required("House number is required"),
+        streetName: yup.string().required("Street name is required"),
+        barangayName: yup.string().required("Barangay name is required"),
+        city: yup.string().required("City/Municipality is required"),
+        province: yup.string().required("Province is required"),
+      })
+      .required(),
+    phoneNumber: yup.string().required("Phone number is required"),
+    dateOfBirth: yup.date().required("Birthdate is required"),
+    tinNumber: yup.string().required("TIN number is required"),
+    businessName: yup.string().required("Business name is required"),
+    storeTypeId: yup.object().required("Store type is required"),
+    emailAddress: yup.string().required("Email address is required"),
+    businessAddress: yup
+      .object({
+        houseNumber: yup.string().required("House number is required"),
+        streetName: yup.string().required("Street name is required"),
+        barangayName: yup.string().required("Barangay name is required"),
+        city: yup.string().required("City/Municipality is required"),
+        province: yup.string().required("Province is required"),
+      })
+      .required(),
+    authorizedRepresentative: yup
+      .string()
+      .required("Representative name is required"),
+    authorizedRepresentativePosition: yup
+      .string()
+      .required("Representative position is required"),
+  }),
+  defaultValues: {
+    ownersName: "",
+    ownersAddress: {
+      houseNumber: "",
+      streetName: "",
+      barangayName: "",
+      city: "",
+      province: "",
+    },
+    phoneNumber: "",
+    dateOfBirth: null,
+    tinNumber: "",
+    businessName: "",
+    storeTypeId: null,
+    emailAddress: "",
+    businessAddress: {
+      houseNumber: "",
+      streetName: "",
+      barangayName: "",
+      city: "",
+      province: "",
+    },
+    authorizedRepresentative: "",
+    authorizedRepresentativePosition: "",
+  },
+};
+
+// cluster: yup.number().required("Cluster is required").integer(),
+// freezer: yup.boolean().required("Freezer is required"),
+// typeOfCustomer: yup.string().required("Type of customer is required"),
+// directDelivery: yup.boolean().required("Direct delivery is required"),
+// bookingCoverageId: yup.number().required("Booking coverage is required"),
+// modeOfPayment: yup.number().required("Mode of payment is required"),
+// termsId: yup.number().required("Terms is required"),
+// creditLimit: yup.number().required("Credit limit is required"),
+// termDaysId: yup.object().required("Term days is required"),
+// fixedDiscount: yup.object({}).required()

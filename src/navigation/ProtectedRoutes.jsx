@@ -8,12 +8,12 @@ function ProtectedRoutes() {
   const fullname = useSelector((state) => state.login.fullname);
   const permissions = useSelector((state) => state.permissions.permissions);
 
-  // if (!fullname || permissions?.length === 0) {
-  //   return <Navigate to="/login" />;
-  // }
+  if (!fullname || permissions?.length === 0) {
+    return <Navigate to="/login" />;
+  }
 
-  return <MainLayout />;
-  // return <PermittedRoutes />;
+  // return <MainLayout />;
+  return <PermittedRoutes />;
 }
 
 export default ProtectedRoutes;

@@ -204,7 +204,12 @@ function ForReleasing() {
 
     setValue("id", editData.id);
     setValue("ownersName", editData.ownersName);
-    setValue("ownersAddress", editData.address);
+    setValue("emailAddress", editData.emailAddress);
+    setValue("houseNumber", editData.ownersAddress.houseNumber);
+    setValue("streetName", editData.ownersAddress.streetName);
+    setValue("barangayName", editData.ownersAddress.barangayName);
+    setValue("city", editData.ownersAddress.city);
+    setValue("province", editData.ownersAddress.province);
     setValue("phoneNumber", editData.phoneNumber);
     setValue("businessName", editData.businessName);
     setValue(
@@ -254,9 +259,9 @@ function ForReleasing() {
             // excludeKeys={excludeKeys}
             excludeKeysDisplay={excludeKeysDisplay}
             editable
-            archivable
+            // archivable
             onEdit={handleEditOpen}
-            onArchive={handleArchiveOpen}
+            // onArchive={handleArchiveOpen}
             // onFreebie={onFreebieFormOpen}
             onReleaseFreebie={onFreebieReleaseOpen}
             page={page}

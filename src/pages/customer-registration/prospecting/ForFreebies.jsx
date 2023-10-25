@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddArchiveSearchMixin from "../../../components/mixins/AddArchiveSearchMixin";
 import useDisclosure from "../../../hooks/useDisclosure";
-import { Box, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import CommonTable from "../../../components/CommonTable";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { prospectSchema } from "../../../schema/schema";
@@ -92,7 +92,7 @@ function ForFreebies() {
   } = useDisclosure();
 
   // Constants;
-  const excludeKeys = ["ownersAddress"];
+  // const excludeKeys = [];
 
   const excludeKeysDisplay = [
     "id",
@@ -102,6 +102,7 @@ function ForFreebies() {
     "addedBy",
     "status",
     "freebies",
+    "ownersAddress",
   ];
 
   //React Hook Form
@@ -198,7 +199,12 @@ function ForFreebies() {
 
     setValue("id", editData.id);
     setValue("ownersName", editData.ownersName);
-    setValue("ownersAddress", editData.address);
+    setValue("emailAddress", editData.emailAddress);
+    setValue("houseNumber", editData.ownersAddress.houseNumber);
+    setValue("streetName", editData.ownersAddress.streetName);
+    setValue("barangayName", editData.ownersAddress.barangayName);
+    setValue("city", editData.ownersAddress.city);
+    setValue("province", editData.ownersAddress.province);
     setValue("phoneNumber", editData.phoneNumber);
     setValue("businessName", editData.businessName);
     setValue(
@@ -246,7 +252,7 @@ function ForFreebies() {
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
-            excludeKeys={excludeKeys}
+            // excludeKeys={excludeKeys}
             excludeKeysDisplay={excludeKeysDisplay}
             editable
             archivable
@@ -390,24 +396,51 @@ function ForFreebies() {
                 helperText={errors?.businessName?.message}
                 error={errors?.businessName}
               />
-              <ControlledAutocomplete
-                name={"storeTypeId"}
-                control={control}
-                options={storeTypeData?.storeTypes}
-                getOptionLabel={(option) => option.storeTypeName}
-                disableClearable
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label="Business Type"
-                    required
-                    helperText={errors?.storeTypeId?.message}
-                    error={errors?.storeTypeId}
-                  />
-                )}
-              />
+              {selectedStoreType === "Main" ? (
+                <ControlledAutocomplete
+                  name={"storeTypeId"}
+                  control={control}
+                  options={storeTypeData?.storeTypes}
+                  getOptionLabel={(option) => option.storeTypeName}
+                  disableClearable
+                  value={storeTypeData?.storeTypes?.find(
+                    (store) => store.storeTypeName === selectedStoreType
+                  )}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Business Type"
+                      required
+                      helperText={errors?.storeTypeId?.message}
+                      error={errors?.storeTypeId}
+                    />
+                  )}
+                />
+              ) : (
+                <Autocomplete
+                  options={storeTypeData?.storeTypes}
+                  getOptionLabel={(option) => option.storeTypeName}
+                  disableClearable
+                  value={storeTypeData?.storeTypes?.find(
+                    (store) => store.storeTypeName === selectedStoreType
+                  )}
+                  disabled
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Business Type"
+                      required
+                      helperText={errors?.storeTypeId?.message}
+                      error={errors?.storeTypeId}
+                    />
+                  )}
+                />
+              )}
             </Box>
           </Box>
         </Box>
@@ -445,7 +478,8 @@ function ForFreebies() {
         onClose={onCancelConfirmClose}
         onYes={handleDrawerClose}
       >
-        Are you sure you want to cancel adding prospect
+        Are you sure you want to cancel{" "}
+        {drawerMode === "add" ? "adding" : "editing"} prospect
         {watch("businessName") ? (
           <>
             {" "}

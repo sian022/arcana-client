@@ -14,8 +14,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
 import useSnackbar from "../../../hooks/useSnackbar";
+import SecondaryButton from "../../../components/SecondaryButton";
+import useDisclosure from "../../../hooks/useDisclosure";
+import FreebieForm from "./FreebieForm";
 
-function TermsAndConditions() {
+function TermsAndConditions({ direct }) {
   const dispatch = useDispatch();
   const { showSnackbar } = useSnackbar();
 
@@ -23,6 +26,14 @@ function TermsAndConditions() {
     (state) => state.regularRegistration.value.termsAndConditions
   );
 
+  //Disclosures
+  const {
+    isOpen: isFreebieFormOpen,
+    onOpen: onFreebieFormOpen,
+    onClose: onFreebieFormClose,
+  } = useDisclosure();
+
+  //RTK Query
   const { data: termDaysData, isLoading: isTermDaysLoading } =
     useGetAllTermDaysQuery({ Status: true });
 
@@ -73,7 +84,6 @@ function TermsAndConditions() {
 
   useEffect(() => {
     if (termsAndConditions["terms"] !== 3) {
-      console.log("Im not 3");
       dispatch(setTermsAndConditions({ property: "creditLimit", value: null }));
     }
 
@@ -84,7 +94,7 @@ function TermsAndConditions() {
       dispatch(setTermsAndConditions({ property: "termDaysId", value: null }));
     }
 
-    if (termsAndConditions["variableDiscount"] === false) {
+    if (termsAndConditions["variableDiscount"] === true) {
       dispatch(
         setTermsAndConditions({
           property: "fixedDiscounts",
@@ -93,8 +103,6 @@ function TermsAndConditions() {
       );
     }
   }, [termsAndConditions["terms"], termsAndConditions["variableDiscount"]]);
-
-  console.log(termsAndConditions);
 
   return (
     <Box className="terms">
@@ -484,7 +492,6 @@ function TermsAndConditions() {
                 }}
                 type="number"
                 value={
-                  // termsAndConditions["fixedDiscounts"].discountPercentage ?? ""
                   termsAndConditions["fixedDiscounts"].discountPercentage !=
                   null
                     ? termsAndConditions[
@@ -493,12 +500,6 @@ function TermsAndConditions() {
                     : ""
                 }
                 onChange={(e) => {
-                  // dispatch(
-                  //   setTermsAndConditions({
-                  //     property: "fixedDiscounts",
-                  //     value: { discountPercentage: parseInt(e.target.value) },
-                  //   })
-                  // );
                   handleFixedDiscountChange(e);
                 }}
                 InputProps={{
@@ -508,6 +509,18 @@ function TermsAndConditions() {
             )}
           </RadioGroup>
         </Box>
+
+        {direct && (
+          <SecondaryButton medium onClick={onFreebieFormOpen}>
+            Request Freebie
+          </SecondaryButton>
+        )}
+        {direct && (
+          <FreebieForm
+            isFreebieFormOpen={isFreebieFormOpen}
+            onFreebieFormClose={onFreebieFormClose}
+          />
+        )}
       </Box>
     </Box>
   );

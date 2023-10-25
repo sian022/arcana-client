@@ -10,6 +10,7 @@ import Released from "./Released";
 import ForFreebies from "./ForFreebies";
 import ForReleasing from "./ForReleasing";
 import StoreTypeSkeleton from "../../../components/skeletons/StoreTypeSkeleton";
+import { useGetAllApprovedProspectsQuery } from "../../../features/prospect/api/prospectApi";
 
 function Prospect() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -23,21 +24,38 @@ function Prospect() {
 
   const { data, isLoading } = useGetAllStoreTypesQuery();
 
+  const { data: forFreebiesData } = useGetAllApprovedProspectsQuery({
+    Status: true,
+  });
+
+  const { data: forReleasingData } = useGetAllApprovedProspectsQuery({
+    Status: true,
+    FreebieStatus: "For Releasing",
+  });
+
+  const { data: releasedData } = useGetAllApprovedProspectsQuery({
+    Status: true,
+    FreebieStatus: "Released",
+  });
+
   const prospectNavigation = [
     {
       case: 1,
       name: "For Freebies",
-      badge: badges["forFreebies"],
+      // badge: badges["forFreebies"],
+      badge: forFreebiesData?.totalCount || 0,
     },
     {
       case: 2,
       name: "For Releasing",
-      badge: badges["forReleasing"],
+      // badge: badges["forReleasing"],
+      badge: forReleasingData?.totalCount || 0,
     },
     {
       case: 3,
       name: "Released",
-      badge: badges["released"],
+      // badge: badges["released"],
+      badge: releasedData?.totalCount || 0,
     },
   ];
 

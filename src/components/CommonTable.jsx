@@ -37,6 +37,9 @@ function CommonTable({
   count = 0,
   status,
   compact,
+  moreCompact,
+  percentageArray,
+  pesoArray,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -99,7 +102,13 @@ function CommonTable({
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
-        sx={{ height: compact && "calc(100vh - 370px)" }}
+        sx={{
+          height: compact
+            ? "calc(100vh - 370px)"
+            : moreCompact
+            ? "calc(100vh - 400px)"
+            : null,
+        }}
       >
         <Table>
           <TableHead>
@@ -125,7 +134,17 @@ function CommonTable({
                     ) {
                       return null;
                     }
-                    return <TableCell key={k}>{item[keys]}</TableCell>;
+                    return (
+                      <TableCell key={k}>
+                        {pesoArray && pesoArray.includes(keys) && "₱ "}
+
+                        {item[keys]}
+
+                        {percentageArray &&
+                          percentageArray.includes(keys) &&
+                          "%"}
+                      </TableCell>
+                    );
                   })}
                   {(editable || archivable) && (
                     <TableCell>

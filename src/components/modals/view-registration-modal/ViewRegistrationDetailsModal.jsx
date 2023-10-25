@@ -36,7 +36,7 @@ function ViewRegistrationDetailsModal({ ...props }) {
   return (
     <CommonModal
       width={"800px"}
-      height="650px"
+      height="660px"
       disablePadding
       // paddingCustom="0 0 20px"
       ribbon
@@ -50,18 +50,23 @@ function ViewRegistrationDetailsModal({ ...props }) {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "end",
-            gap: "10px",
+            justifyContent: "space-between",
+            // gap: "10px",
             position: "absolute",
             bottom: "20px",
-            right: "20px",
+            // right: "20px",
+            width: "calc(100% - 40px)",
           }}
         >
-          <SecondaryButton onClick={onClose}>Approve</SecondaryButton>
-          <AccentButton sx={{ color: "white !important" }} onClick={onClose}>
-            Close
-          </AccentButton>
-          <DangerButton onClick={onClose}>Reject</DangerButton>
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <SecondaryButton onClick={onClose}>Approve</SecondaryButton>
+            <DangerButton onClick={onClose}>Reject</DangerButton>
+          </Box>
+          <Box sx={{ display: "flex" }}>
+            <AccentButton sx={{ color: "white !important" }} onClick={onClose}>
+              Close
+            </AccentButton>
+          </Box>
         </Box>
       </Box>
     </CommonModal>

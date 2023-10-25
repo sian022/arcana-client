@@ -63,6 +63,9 @@ function DiscountType() {
     "isActive",
   ];
 
+  const pesoArray = ["minimumAmount", "maximumAmount"];
+  const percentageArray = ["minimumPercentage", "maximumPercentage"];
+
   //React Hook Form
   const {
     handleSubmit,
@@ -170,6 +173,8 @@ function DiscountType() {
         <CommonTable
           mapData={data?.discount}
           excludeKeysDisplay={excludeKeysDisplay}
+          pesoArray={pesoArray}
+          percentageArray={percentageArray}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -193,7 +198,7 @@ function DiscountType() {
         disableSubmit={!isValid}
       >
         <TextField
-          label="Lower Boundary"
+          label="Minimum Amount (₱)"
           size="small"
           autoComplete="off"
           {...register("lowerBound")}
@@ -204,7 +209,7 @@ function DiscountType() {
         />
 
         <TextField
-          label="Upper Boundary"
+          label="Maximum Amount (₱)"
           size="small"
           autoComplete="off"
           {...register("upperBound")}
@@ -215,7 +220,7 @@ function DiscountType() {
         />
 
         <TextField
-          label="Commission Rate Lower"
+          label="Minimum Percentage"
           size="small"
           autoComplete="off"
           {...register("commissionRateLower")}
@@ -226,7 +231,7 @@ function DiscountType() {
         />
 
         <TextField
-          label="Commission Rate Upper"
+          label="Maximum Percentage"
           size="small"
           autoComplete="off"
           {...register("commissionRateUpper")}

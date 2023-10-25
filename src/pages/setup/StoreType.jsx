@@ -63,6 +63,8 @@ function StoreType() {
     "isActive",
   ];
 
+  const tableHeads = ["Business Type"];
+
   //React Hook Form
   const {
     handleSubmit,
@@ -172,6 +174,7 @@ function StoreType() {
         <CommonTable
           mapData={data?.storeTypes}
           excludeKeysDisplay={excludeKeysDisplay}
+          tableHeads={tableHeads}
           editable
           archivable
           onEdit={handleEditOpen}

@@ -4,7 +4,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../pages/Dashboard";
 import UserManagement from "../pages/user-management";
 import Setup from "../pages/setup";
-import Discount from "../pages/discount";
+import CustomerManagement from "../pages/customer-management";
 import Terms from "../pages/terms";
 import CustomerRegistration from "../pages/customer-registration";
 import Approval from "../pages/approval";
@@ -19,11 +19,10 @@ import ProductSubCategory from "../pages/setup/ProductSubCategory";
 import MeatType from "../pages/setup/MeatType";
 import UnitOfMeasurements from "../pages/setup/UnitOfMeasurements";
 import StoreType from "../pages/setup/StoreType";
-import DiscountType from "../pages/discount/DiscountType";
+import DiscountType from "../pages/customer-management/DiscountType";
 import TermDays from "../pages/terms/TermDays";
 import Prospect from "../pages/customer-registration/prospecting";
-import FreebieApproval from "../pages/approval/FreebieApproval";
-import DirectRegistration from "../pages/customer-registration/DirectRegistration";
+import Registration from "../pages/customer-registration/Registration";
 import ListingFee from "../pages/customer-registration/ListingFee";
 import RegistrationApproval from "../pages/approval/RegistrationApproval";
 import SpecialDiscountApproval from "../pages/approval/SpecialDiscountApproval";
@@ -73,7 +72,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: "setup",
+        path: "product-setup",
         element: <Setup />,
         children: [
           {
@@ -96,32 +95,40 @@ export const router = createBrowserRouter([
             path: "uom",
             element: <UnitOfMeasurements />,
           },
+          // {
+          //   path: "business-type",
+          //   element: <StoreType />,
+          // },
+        ],
+      },
+      {
+        path: "customer-management",
+        element: <CustomerManagement />,
+        children: [
           {
             path: "business-type",
             element: <StoreType />,
           },
-        ],
-      },
-      {
-        path: "discount",
-        element: <Discount />,
-        children: [
           {
             path: "discount-type",
             element: <DiscountType />,
           },
-        ],
-      },
-      {
-        path: "terms",
-        element: <Terms />,
-        children: [
           {
             path: "term-days",
             element: <TermDays />,
           },
         ],
       },
+      // {
+      //   path: "terms",
+      //   element: <Terms />,
+      //   children: [
+      //     {
+      //       path: "term-days",
+      //       element: <TermDays />,
+      //     },
+      //   ],
+      // },
       {
         path: "customer-registration",
         element: <CustomerRegistration />,
@@ -131,8 +138,8 @@ export const router = createBrowserRouter([
             element: <Prospect />,
           },
           {
-            path: "direct-registration",
-            element: <DirectRegistration />,
+            path: "registration",
+            element: <Registration />,
           },
           {
             path: "listing-fee",

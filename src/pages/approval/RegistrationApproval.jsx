@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
 import { dummyTableData } from "../../utils/DummyData";
@@ -36,6 +36,10 @@ function RegistrationApproval() {
 
   const selectOptions = [
     {
+      value: "all",
+      label: "All",
+    },
+    {
       value: "prospect",
       label: "Prospect",
     },
@@ -62,15 +66,22 @@ function RegistrationApproval() {
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
         />
+
         <SearchFilterMixin
           setSearch={setSearch}
           selectOptions={selectOptions}
           setSelectValue={setOrigin}
         />
-        <CommonTable mapData={dummyTableData} compact />
+        <CommonTable mapData={dummyTableData} moreCompact />
       </Box>
 
-      <ViewRegistrationDetailsModal open={true} onClose={onViewClose} />
+      <ViewRegistrationDetailsModal
+        open={
+          // isViewOpen
+          true
+        }
+        onClose={onViewClose}
+      />
     </>
   );
 }

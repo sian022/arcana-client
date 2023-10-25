@@ -140,7 +140,7 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
     return () => {
       setValue("clientId", null);
     };
-  }, [selectedRowData]);
+  }, [isFreebieFormOpen]);
 
   return (
     <>
@@ -217,7 +217,8 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
               onClick={() => {
                 fields.length <= 1
                   ? handleFreebieError()
-                  : remove(fields[index]);
+                  : // : remove(fields[index]);
+                    remove(index);
               }}
             >
               <Cancel sx={{ fontSize: "30px" }} />

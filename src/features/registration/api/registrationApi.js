@@ -24,6 +24,15 @@ export const registrationApi = createApi({
       invalidatesTags: ["Registration"],
     }),
 
+    postDirectRegistration: builder.mutation({
+      query: (body) => ({
+        url: `/DirectRegistration/DirectRegistration`,
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Registration"],
+    }),
+
     putAddAttachments: builder.mutation({
       query: ({ id, ...body }) => {
         console.log(body);
@@ -53,4 +62,5 @@ export const {
   usePutRegisterClientMutation,
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,
+  usePostDirectRegistrationMutation,
 } = registrationApi;
