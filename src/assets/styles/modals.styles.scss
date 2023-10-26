@@ -8,6 +8,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
   // width: 500px;
+  display: flex;
+  flex-direction: column;
   padding: 30px;
 
   &__ribbon {
@@ -135,6 +137,14 @@
         }
       }
     }
+  }
+
+  &__footerCancel {
+    margin-top: 0;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &__actions {

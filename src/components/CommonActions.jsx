@@ -3,12 +3,14 @@ import React, { useRef } from "react";
 import useDisclosure from "../hooks/useDisclosure";
 import {
   Archive,
+  Cancel,
   Edit,
   HowToReg,
   More,
   RequestPage,
   Restore,
   Tag,
+  Update,
 } from "@mui/icons-material";
 
 function CommonActions({
@@ -18,6 +20,8 @@ function CommonActions({
   onFreebie,
   onReleaseFreebie,
   onRegularRegister,
+  onUpdateFreebies,
+  onCancelFreebies,
   item,
   status,
 }) {
@@ -37,6 +41,10 @@ function CommonActions({
       onReleaseFreebie();
     } else if (action === "regularRegister") {
       onRegularRegister();
+    } else if (action === "updateFreebies") {
+      onUpdateFreebies();
+    } else if (action === "cancelFreebies") {
+      onCancelFreebies();
     }
     onClose();
   };
@@ -145,6 +153,40 @@ function CommonActions({
           >
             <HowToReg />
             Register as Regular
+          </MenuItem>
+        )}
+
+        {onUpdateFreebies && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("updateFreebies");
+            }}
+          >
+            <Update />
+            Update Freebies
+          </MenuItem>
+        )}
+
+        {onCancelFreebies && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("cancelFreebies");
+            }}
+          >
+            <Cancel />
+            Cancel Freebies
           </MenuItem>
         )}
       </Menu>

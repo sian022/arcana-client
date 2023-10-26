@@ -58,7 +58,13 @@ function Products() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = ["id", "isActive", "addedBy", "modifiedBy"];
+  const excludeKeysDisplay = [
+    "id",
+    "itemId",
+    "isActive",
+    "addedBy",
+    "modifiedBy",
+  ];
 
   //React Hook Form
   const {

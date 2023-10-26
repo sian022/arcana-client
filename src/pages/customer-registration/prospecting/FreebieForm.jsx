@@ -1,26 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { requestFreebiesSchema } from "../../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { Box, IconButton, TextField } from "@mui/material";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { Add, Cancel } from "@mui/icons-material";
-import { usePostRequestFreebiesMutation } from "../../../features/prospect/api/prospectApi";
+import {
+  usePostRequestFreebiesMutation,
+  usePutFreebiesInformationMutation,
+} from "../../../features/prospect/api/prospectApi";
 import { useGetAllProductsQuery } from "../../../features/setup/api/productsApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../../../components/SecondaryButton";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import useDisclosure from "../../../hooks/useDisclosure";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import CommonDialog from "../../../components/CommonDialog";
+import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
+import { debounce } from "../../../utils/CustomFunctions";
+import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 
-function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
+function FreebieForm({
+  isFreebieFormOpen,
+  onFreebieFormClose,
+  updateFreebies,
+}) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const clientId = selectedRowData?.id || selectedRowData?.clientId;
+  const dispatch = useDispatch();
 
   //Disclosures
   const {
@@ -47,6 +58,19 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
     onClose: onErrorClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isRedirectReleaseOpen,
+    onOpen: onRedirectReleaseOpen,
+    onClose: onRedirectReleaseClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isFreebieReleaseOpen,
+    onOpen: onFreebieReleaseOpen,
+    onClose: onFreebieReleaseClose,
+  } = useDisclosure();
+
+  console.log(isFreebieReleaseOpen);
   //React Hook Form
   const {
     handleSubmit,
@@ -71,28 +95,48 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
   //RTK Query
   const [postRequestFreebies, { isLoading: isRequestLoading }] =
     usePostRequestFreebiesMutation();
+  const [putFreebiesInformation, { isLoading: isUpdateLoading }] =
+    usePutFreebiesInformationMutation();
 
-  const { data: productData } = useGetAllProductsQuery();
+  const { data: productData } = useGetAllProductsQuery({ Status: true });
 
   //Drawer Functions
   const onFreebieSubmit = async (data) => {
     if (hasDuplicateItemCodes(watch("freebies"))) {
       setSnackbarMessage("No duplicate freebies allowed");
       onErrorOpen();
+      onConfirmSubmitClose();
       return;
     }
 
     try {
-      await postRequestFreebies({
-        clientId: data.clientId,
-        freebies: data.freebies.map((freebie) => ({
-          itemId: freebie.itemId.id,
-          quantity: freebie.quantity,
-        })),
-      }).unwrap();
+      let response;
 
-      setSnackbarMessage("Freebies requested successfully");
+      if (updateFreebies) {
+        response = await putFreebiesInformation({
+          id: data.clientId,
+          // freebieRequestId: data.freebieRequestId,
+          params: { freebieId: data.freebieRequestId },
+          freebies: data.freebies.map((freebie) => ({
+            itemId: freebie.itemId.itemId,
+            quantity: freebie.quantity,
+          })),
+        });
+        setSnackbarMessage("Freebies updated successfully");
+      } else {
+        response = await postRequestFreebies({
+          clientId: data.clientId,
+          freebies: data.freebies.map((freebie) => ({
+            itemId: freebie.itemId.id,
+            quantity: freebie.quantity,
+          })),
+        }).unwrap();
+        setSnackbarMessage("Freebies requested successfully");
+      }
+
+      dispatch(setSelectedRow(response?.data));
       handleDrawerClose();
+      debounce(onRedirectReleaseOpen(), 2000);
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error?.data?.messages || "Something went wrong");
@@ -107,6 +151,11 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
     reset();
     onFreebieFormClose();
     onConfirmCancelClose();
+  };
+
+  const handleRedirectReleaseYes = () => {
+    onFreebieReleaseOpen();
+    onRedirectReleaseClose();
   };
 
   //Misc Functions
@@ -136,16 +185,39 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
   //UseEffects
   useEffect(() => {
     setValue("clientId", clientId);
+    const freebiesLength = selectedRowData?.freebies?.length;
+
+    if (updateFreebies && isFreebieFormOpen) {
+      const originalFreebies =
+        selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
+
+      const transformedFreebies = originalFreebies.map((item) => ({
+        itemId: item,
+        quantity: 1,
+        itemDescription: item.itemDescription,
+        uom: item.uom,
+      }));
+
+      setValue("freebies", transformedFreebies);
+      setValue(
+        "freebieRequestId",
+        selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
+          null
+      );
+    }
 
     return () => {
       setValue("clientId", null);
     };
   }, [isFreebieFormOpen]);
 
+  // useEffect(() => {
+  //   onFreebieReleaseOpen();
+  // }, [isFreebieFormOpen]);
   return (
     <>
       <CommonDrawer
-        drawerHeader={"Request Freebies"}
+        drawerHeader={updateFreebies ? "Update Freebies" : "Request Freebies"}
         open={isFreebieFormOpen}
         onClose={onConfirmCancelOpen}
         width="1000px"
@@ -178,9 +250,10 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
               name={`freebies[${index}].itemId`}
               control={control}
               options={productData?.items || []}
-              getOptionLabel={(option) => option.itemCode}
+              getOptionLabel={(option) => option.itemCode || ""}
               disableClearable
-              isOptionEqualToValue={(option, value) => option.id === value.id}
+              // isOptionEqualToValue={(option, value) => option.id === value.id}
+              isOptionEqualToValue={(option, value) => true}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -192,24 +265,48 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
                   sx={{ width: "200px" }}
                 />
               )}
+              onChange={(_, value) => {
+                setValue(
+                  `freebies[${index}].itemDescription`,
+                  value?.itemDescription
+                );
+                setValue(`freebies[${index}].uom`, value?.uom);
+                return value;
+              }}
             />
 
-            <TextField
-              label="Item Description"
-              size="small"
-              autoComplete="off"
-              disabled
-              value={watch("freebies")[index]?.itemId?.itemDescription || ""}
-              defaultValue=""
+            <Controller
+              control={control}
+              name={`freebies[${index}].itemDescription`}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <TextField
+                  label="Item Description"
+                  size="small"
+                  autoComplete="off"
+                  disabled
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value || ""}
+                  ref={ref}
+                />
+              )}
             />
 
-            <TextField
-              label="UOM"
-              size="small"
-              autoComplete="off"
-              disabled
-              value={watch("freebies")[index]?.itemId?.uom || ""}
-              defaultValue=""
+            <Controller
+              control={control}
+              name={`freebies[${index}].uom`}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <TextField
+                  label="UOM"
+                  size="small"
+                  autoComplete="off"
+                  disabled
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value || ""}
+                  ref={ref}
+                />
+              )}
             />
 
             <IconButton
@@ -241,7 +338,7 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onFreebieSubmit)}
-        isLoading={isRequestLoading}
+        isLoading={updateFreebies ? isUpdateLoading : isRequestLoading}
         noIcon
       >
         Confirm request of freebies for{" "}
@@ -266,6 +363,26 @@ function FreebieForm({ isFreebieFormOpen, onFreebieFormClose }) {
         </span>
         ?
       </CommonDialog>
+
+      <CommonDialog
+        open={isRedirectReleaseOpen}
+        onClose={onRedirectReleaseClose}
+        onYes={handleRedirectReleaseYes}
+      >
+        Continue to release freebies for{" "}
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          {selectedRowData.businessName
+            ? selectedRowData.businessName
+            : "client"}
+        </span>
+        ?
+      </CommonDialog>
+
+      <ReleaseFreebieModal
+        open={isFreebieReleaseOpen}
+        // open={true}
+        onClose={onFreebieReleaseClose}
+      />
 
       <SuccessSnackbar
         open={isSuccessOpen}

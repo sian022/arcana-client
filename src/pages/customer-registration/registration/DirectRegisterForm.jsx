@@ -312,25 +312,26 @@ function DirectRegisterForm({ open, onClose }) {
     </Box>
   );
 
+  const handleSameAsOwnersAddress = () => {};
+
   useEffect(() => {
     setValue("clientId", selectedRowData?.id);
   }, [selectedRowData]);
 
   useEffect(() => {
     if (sameAsOwnersAddress) {
-      setValue("houseNumber", selectedRowData?.ownersAddress?.houseNumber);
-      setValue("streetName", selectedRowData?.ownersAddress?.streetName);
-      setValue("barangayName", selectedRowData?.ownersAddress?.barangayName);
-      setValue("city", selectedRowData?.ownersAddress?.city);
-      setValue("province", selectedRowData?.ownersAddress?.province);
+      // setValue("houseNumber", selectedRowData?.ownersAddress?.houseNumber);
+      // setValue("streetName", selectedRowData?.ownersAddress?.streetName);
+      // setValue("barangayName", selectedRowData?.ownersAddress?.barangayName);
+      // setValue("city", selectedRowData?.ownersAddress?.city);
+      // setValue("province", selectedRowData?.ownersAddress?.province);
+    } else {
+      setValue("houseNumber", "");
+      setValue("streetName", "");
+      setValue("barangayName", "");
+      setValue("city", "");
+      setValue("province", "");
     }
-    // else {
-    //   setValue("houseNumber", "");
-    //   setValue("streetName", "");
-    //   setValue("barangayName", "");
-    //   setValue("city", "");
-    //   setValue("province", "");
-    // }
   }, [sameAsOwnersAddress]);
 
   return (
@@ -516,6 +517,7 @@ function DirectRegisterForm({ open, onClose }) {
                   name="houseNumber"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
+                      disabled={sameAsOwnersAddress}
                       label="Unit No."
                       size="small"
                       autoComplete="off"
@@ -536,6 +538,7 @@ function DirectRegisterForm({ open, onClose }) {
                   name="streetName"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
+                      disabled={sameAsOwnersAddress}
                       label="Street Name"
                       size="small"
                       autoComplete="off"
@@ -556,6 +559,7 @@ function DirectRegisterForm({ open, onClose }) {
                   name="barangayName"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
+                      disabled={sameAsOwnersAddress}
                       label="Barangay"
                       size="small"
                       autoComplete="off"
@@ -578,6 +582,7 @@ function DirectRegisterForm({ open, onClose }) {
                   name="city"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
+                      disabled={sameAsOwnersAddress}
                       label="Municipality/City"
                       size="small"
                       autoComplete="off"
@@ -598,6 +603,7 @@ function DirectRegisterForm({ open, onClose }) {
                   name="province"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
+                      disabled={sameAsOwnersAddress}
                       label="Province"
                       size="small"
                       autoComplete="off"

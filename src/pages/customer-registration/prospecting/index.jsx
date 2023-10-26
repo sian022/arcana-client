@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import { Storefront } from "@mui/icons-material";
@@ -24,19 +24,25 @@ function Prospect() {
 
   const { data, isLoading } = useGetAllStoreTypesQuery();
 
-  const { data: forFreebiesData } = useGetAllApprovedProspectsQuery({
-    Status: true,
-  });
+  const { data: forFreebiesData, isLoading: isForFreebiesLoading } =
+    useGetAllApprovedProspectsQuery({
+      Status: true,
+      StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
+    });
 
-  const { data: forReleasingData } = useGetAllApprovedProspectsQuery({
-    Status: true,
-    FreebieStatus: "For Releasing",
-  });
+  const { data: forReleasingData, isLoading: isForReleasingLoading } =
+    useGetAllApprovedProspectsQuery({
+      Status: true,
+      StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
+      FreebieStatus: "For Releasing",
+    });
 
-  const { data: releasedData } = useGetAllApprovedProspectsQuery({
-    Status: true,
-    FreebieStatus: "Released",
-  });
+  const { data: releasedData, isLoading: isReleasedLoading } =
+    useGetAllApprovedProspectsQuery({
+      Status: true,
+      StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
+      FreebieStatus: "Released",
+    });
 
   const prospectNavigation = [
     {
@@ -44,18 +50,21 @@ function Prospect() {
       name: "For Freebies",
       // badge: badges["forFreebies"],
       badge: forFreebiesData?.totalCount || 0,
+      isBadgeLoading: isForFreebiesLoading,
     },
     {
       case: 2,
       name: "For Releasing",
       // badge: badges["forReleasing"],
       badge: forReleasingData?.totalCount || 0,
+      isBadgeLoading: isForReleasingLoading,
     },
     {
       case: 3,
       name: "Released",
       // badge: badges["released"],
       badge: releasedData?.totalCount || 0,
+      isBadgeLoading: isReleasedLoading,
     },
   ];
 
@@ -65,6 +74,9 @@ function Prospect() {
     3: <Released />,
   };
 
+  useEffect(() => {
+    setTabViewing(1);
+  }, [selectedStoreType]);
   return (
     <Box className="commonPageLayout">
       {selectedStoreType ? (

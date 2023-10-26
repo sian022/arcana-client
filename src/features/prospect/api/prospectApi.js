@@ -101,6 +101,26 @@ export const prospectApi = createApi({
       invalidatesTags: ["Prospecting"],
     }),
 
+    putFreebiesInformation: builder.mutation({
+      query: ({ id, params, ...body }) => ({
+        url: `/Freebie/UpdateFreebieInformation/${id}`,
+        method: "PUT",
+        params: params,
+        body: body,
+      }),
+      invalidatesTags: ["Prospecting"],
+    }),
+
+    putRejectFreebies: builder.mutation({
+      query: ({ id, params, ...body }) => ({
+        url: `/Freebies/RejectFreebies/${id}`,
+        method: "PUT",
+        params: params,
+        body: body,
+      }),
+      invalidatesTags: ["Prospecting"],
+    }),
+
     // putRegisterClient: builder.mutation({
     //   query: ({ clientId, ...body }) => ({
     //     url: `/Prospecting/RegisterClient/${id}`,
@@ -120,4 +140,6 @@ export const {
   usePutReleaseProspectMutation,
   usePatchProspectStatusMutation,
   usePostRequestFreebiesMutation,
+  usePutFreebiesInformationMutation,
+  usePutRejectFreebiesMutation,
 } = prospectApi;

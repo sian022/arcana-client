@@ -25,6 +25,8 @@ import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
 import CommonModal from "../../../components/CommonModal";
 import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
+import AddSearchMixin from "../../../components/mixins/AddSearchMixin";
+import CancelFreebiesModal from "../../../components/modals/CancelFreebiesModal";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -82,6 +84,12 @@ function ForReleasing() {
   } = useDisclosure();
 
   const {
+    isOpen: isCancelConfirmOpen,
+    onOpen: onCancelConfirmOpen,
+    onClose: onCancelConfirmClose,
+  } = useDisclosure();
+
+  const {
     isOpen: isFreebieConfirmOpen,
     onOpen: onFreebieConfirmOpen,
     onClose: onFreebieConfirmClose,
@@ -91,6 +99,18 @@ function ForReleasing() {
     isOpen: isFreebieReleaseOpen,
     onOpen: onFreebieReleaseOpen,
     onClose: onFreebieReleaseClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isFreebieCancelOpen,
+    onOpen: onFreebieCancelOpen,
+    onClose: onFreebieCancelClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isFreebieUpdateOpen,
+    onOpen: onFreebieUpdateOpen,
+    onClose: onFreebieUpdateClose,
   } = useDisclosure();
 
   //Constants
@@ -228,6 +248,7 @@ function ForReleasing() {
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
+    onCancelConfirmClose();
     setSelectedId("");
   };
 
@@ -245,12 +266,17 @@ function ForReleasing() {
   return (
     <>
       <Box>
-        <AddArchiveSearchMixin
+        <AddSearchMixin
+          addTitle="Prospect"
+          onAddOpen={handleAddOpen}
+          setSearch={setSearch}
+        />
+        {/* <AddArchiveSearchMixin
           addTitle="Prospect"
           onAddOpen={handleAddOpen}
           setStatus={setStatus}
           setSearch={setSearch}
-        />
+        /> */}
         {isLoading ? (
           <CommonTableSkeleton compact />
         ) : (
@@ -261,6 +287,9 @@ function ForReleasing() {
             editable
             // archivable
             onEdit={handleEditOpen}
+            onCancelFreebies={onFreebieCancelOpen}
+            // onUpdateFreebies={onFreebieUpdateOpen}
+            onUpdateFreebies={onFreebieFormOpen}
             // onArchive={handleArchiveOpen}
             // onFreebie={onFreebieFormOpen}
             onReleaseFreebie={onFreebieReleaseOpen}
@@ -278,7 +307,7 @@ function ForReleasing() {
       <CommonDrawer
         drawerHeader={drawerMode == "add" ? "Add Prospect" : "Edit Prospect"}
         open={isDrawerOpen}
-        onClose={handleDrawerClose}
+        onClose={onCancelConfirmOpen}
         width="1000px"
         disableSubmit={!isValid}
         onSubmit={
@@ -425,6 +454,7 @@ function ForReleasing() {
       </CommonDrawer>
 
       <FreebieForm
+        updateFreebies
         isFreebieFormOpen={isFreebieFormOpen}
         onFreebieFormClose={onFreebieFormClose}
         onClose={onFreebieFormClose}
@@ -433,6 +463,11 @@ function ForReleasing() {
       <ReleaseFreebieModal
         open={isFreebieReleaseOpen}
         onClose={onFreebieReleaseClose}
+      />
+
+      <CancelFreebiesModal
+        open={isFreebieCancelOpen}
+        onClose={onFreebieCancelClose}
       />
 
       <CommonDialog
@@ -453,6 +488,24 @@ function ForReleasing() {
       >
         Are you sure you want to {drawerMode == "add" ? "add" : "update"}{" "}
         prospect {watch("businessName")}?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isCancelConfirmOpen}
+        onClose={onCancelConfirmClose}
+        onYes={handleDrawerClose}
+      >
+        Are you sure you want to cancel{" "}
+        {drawerMode === "add" ? "adding" : "editing"} prospect
+        {watch("businessName") ? (
+          <>
+            {" "}
+            <span style={{ fontWeight: "bold" }}>{watch("businessName")}</span>
+          </>
+        ) : (
+          ""
+        )}
+        ?
       </CommonDialog>
 
       <CommonDialog

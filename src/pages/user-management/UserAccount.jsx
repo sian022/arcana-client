@@ -76,6 +76,9 @@ function UserAccount() {
     "users",
     "password",
     "permission",
+    "companyName",
+    "departmentName",
+    "locationName",
   ];
 
   //React Hook Form
@@ -105,7 +108,7 @@ function UserAccount() {
   const [patchUserStatus] = usePatchUserStatusMutation();
 
   const { data: userRoleData } = useGetAllUserRolesQuery();
-  const { data: sedarData, isLoading: isSedarLoading } =
+  const { data: sedarData = [], isLoading: isSedarLoading } =
     useGetAllEmployeesQuery();
 
   //Drawer Functions
@@ -162,9 +165,18 @@ function UserAccount() {
     setDrawerMode("edit");
     onDrawerOpen();
 
-    Object.keys(editData).forEach((key) => {
-      setValue(key, editData[key]);
-    });
+    // Object.keys(editData).forEach((key) => {
+    //   setValue(key, editData[key]);
+    // });
+    setValue("fullname", editData.fullname);
+    setValue("username", editData.username);
+    setValue("password", editData.password);
+    setValue(
+      "userRoleId",
+      userRoleData?.userRoles?.find(
+        (item) => item.roleName === editData.roleName
+      )
+    );
   };
 
   const handleArchiveOpen = (id) => {
@@ -180,7 +192,7 @@ function UserAccount() {
 
   //Misc Functions
   const filterOptions = createFilterOptions({
-    matchFrom: "start",
+    matchFrom: "any",
     limit: 50,
   });
 
@@ -193,6 +205,7 @@ function UserAccount() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
+  console.log(getValues());
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -234,28 +247,8 @@ function UserAccount() {
           options={sedarData}
           loading={isSedarLoading}
           disableClearable
-          filterOptions={(options, { inputValue }) => {
-            if (!options || options.length === 0) {
-              return [];
-            }
-            return options
-              .filter((option) => {
-                return (
-                  option &&
-                  option.general_info &&
-                  option.general_info.full_id_number &&
-                  option.general_info.full_id_number
-                    .toLowerCase()
-                    .includes(inputValue.toLowerCase())
-                );
-              })
-              .slice(0, 50);
-          }}
-          getOptionLabel={(option) =>
-            option && option.general_info && option.general_info.full_id_number
-              ? option.general_info.full_id_number
-              : ""
-          }
+          filterOptions={filterOptions}
+          getOptionLabel={(option) => option.general_info.full_id_number}
           renderInput={(params) => (
             <TextField {...params} size="small" label="Employee ID" />
           )}
@@ -307,7 +300,7 @@ function UserAccount() {
           )}
         />
 
-        <Controller
+        {/* <Controller
           control={control}
           name={"location"}
           render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -356,7 +349,7 @@ function UserAccount() {
               disabled
             />
           )}
-        />
+        /> */}
 
         <Controller
           control={control}

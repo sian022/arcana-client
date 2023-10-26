@@ -1,5 +1,11 @@
 import { Close } from "@mui/icons-material";
-import { Box, Drawer, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Drawer,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
@@ -9,6 +15,7 @@ function CommonDrawer({
   drawerHeader,
   onSubmit,
   disableSubmit,
+  isLoading,
   width,
   navigators,
   noRibbon,
@@ -50,7 +57,11 @@ function CommonDrawer({
           <Box className="commonDrawer__body">{children}</Box>
           <Box className="commonDrawer__actions">
             <SecondaryButton onClick={onSubmit} disabled={disableSubmit}>
-              {submitLabel || "Submit"}
+              {isLoading ? (
+                <CircularProgress />
+              ) : (
+                <>{submitLabel || "Submit"}</>
+              )}
             </SecondaryButton>
             <DangerButton onClick={onClose}>Close</DangerButton>
           </Box>

@@ -481,31 +481,42 @@ function TermsAndConditions({ direct }) {
             <FormControlLabel value={false} control={<Radio />} label="Fixed" />
 
             {termsAndConditions["variableDiscount"] === false && (
-              <TextField
+              <Box
                 sx={{
-                  width: "70px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
                   position: "absolute",
-                  right: "-25px",
-                  "& .MuiInputBase-root": {
-                    height: "30px",
-                  },
+                  right: "-35px",
                 }}
-                type="number"
-                value={
-                  termsAndConditions["fixedDiscounts"].discountPercentage !=
-                  null
-                    ? termsAndConditions[
-                        "fixedDiscounts"
-                      ].discountPercentage.toString()
-                    : ""
-                }
-                onChange={(e) => {
-                  handleFixedDiscountChange(e);
-                }}
-                InputProps={{
-                  inputProps: { min: 0, max: 10 },
-                }}
-              />
+              >
+                <TextField
+                  sx={{
+                    width: "70px",
+                    // position: "absolute",
+                    // right: "-25px",
+                    "& .MuiInputBase-root": {
+                      height: "30px",
+                    },
+                  }}
+                  type="number"
+                  value={
+                    termsAndConditions["fixedDiscounts"].discountPercentage !=
+                    null
+                      ? termsAndConditions[
+                          "fixedDiscounts"
+                        ].discountPercentage.toString()
+                      : ""
+                  }
+                  onChange={(e) => {
+                    handleFixedDiscountChange(e);
+                  }}
+                  InputProps={{
+                    inputProps: { min: 0, max: 10 },
+                  }}
+                />
+                {"%"}
+              </Box>
             )}
           </RadioGroup>
         </Box>

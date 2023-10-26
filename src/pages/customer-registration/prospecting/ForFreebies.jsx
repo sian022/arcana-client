@@ -23,6 +23,7 @@ import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
+import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 
 function ForFreebies() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -103,6 +104,7 @@ function ForFreebies() {
     "status",
     "freebies",
     "ownersAddress",
+    "registrationStatus",
   ];
 
   //React Hook Form
@@ -144,20 +146,23 @@ function ForFreebies() {
         ...restData
       } = data;
 
+      let response;
+
       if (drawerMode === "add") {
-        await postProspect({
+        response = await postProspect({
           ...restData,
           storeTypeId: id,
         }).unwrap();
         setSnackbarMessage("Prospect added successfully");
       } else if (drawerMode === "edit") {
-        await putProspect({
+        response = await putProspect({
           ...restData,
           storeTypeId: id,
         }).unwrap();
         setSnackbarMessage("Prospect updated successfully");
       }
 
+      dispatch(setSelectedRow(response?.data));
       onConfirmClose();
       handleDrawerClose();
 
@@ -235,8 +240,21 @@ function ForFreebies() {
   //useEffects
   useEffect(() => {
     setCount(data?.totalCount);
-    dispatch(setBadge({ ...badges, forFreebies: data?.totalCount }));
+    // dispatch(setBadge({ ...badges, forFreebies: data?.totalCount }));
   }, [data]);
+
+  useEffect(() => {
+    if (isDrawerOpen && selectedStoreType !== "Main") {
+      setValue(
+        "storeTypeId",
+        storeTypeData?.storeTypes?.find(
+          (store) => store.storeTypeName === selectedStoreType
+        )
+      );
+    }
+  }, [isDrawerOpen]);
+
+  console.log(getValues());
 
   return (
     <>
@@ -403,9 +421,9 @@ function ForFreebies() {
                   options={storeTypeData?.storeTypes}
                   getOptionLabel={(option) => option.storeTypeName}
                   disableClearable
-                  value={storeTypeData?.storeTypes?.find(
-                    (store) => store.storeTypeName === selectedStoreType
-                  )}
+                  // value={storeTypeData?.storeTypes?.find(
+                  //   (store) => store.storeTypeName === selectedStoreType
+                  // )}
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
                   }

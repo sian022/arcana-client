@@ -22,12 +22,13 @@ import SignatureCanvasModal from "./SignatureCanvasModal";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { usePutReleaseProspectMutation } from "../../features/prospect/api/prospectApi";
-import { base64ToBlob } from "../../utils/CustomFunctions";
+import { base64ToBlob, debounce } from "../../utils/CustomFunctions";
 import SuccessSnackbar from "../SuccessSnackbar";
 import ErrorSnackbar from "../ErrorSnackbar";
 import CommonDialog from "../CommonDialog";
+import ListingFeeModal from "./ListingFeeModal";
 
-function ReleaseFreebieModal({ ...otherProps }) {
+function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
 
   const [signature, setSignature] = useState("");
@@ -35,6 +36,8 @@ function ReleaseFreebieModal({ ...otherProps }) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const freebiesLength = selectedRowData?.freebies?.length;
   const address = selectedRowData?.ownersAddress;
   const { fullname } = useSelector((state) => state.login);
 
@@ -56,6 +59,18 @@ function ReleaseFreebieModal({ ...otherProps }) {
     isOpen: isCancelConfirmOpen,
     onOpen: onCancelConfirmOpen,
     onClose: onCancelConfirmClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isRedirectListingFeeOpen,
+    onOpen: onRedirectListingFeeOpen,
+    onClose: onRedirectListingFeeClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isListingFeeOpen,
+    onOpen: onListingFeeOpen,
+    onClose: onListingFeeClose,
   } = useDisclosure();
 
   const {
@@ -87,13 +102,14 @@ function ReleaseFreebieModal({ ...otherProps }) {
 
     try {
       await putReleaseProspect({
-        id: selectedRowData?.freebies?.[0]?.freebieRequestId,
+        id: selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId,
         body: formData,
       }).unwrap();
 
       onClose();
       onConfirmClose();
       setSnackbarMessage("Freebie released successfully");
+      debounce(onRedirectListingFeeOpen(), 2000);
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -119,6 +135,11 @@ function ReleaseFreebieModal({ ...otherProps }) {
       setPhotoProof(renamedFile);
     }
     // setPhotoProof(file);
+  };
+
+  const handleRedirectListingFeeYes = () => {
+    onRedirectListingFeeClose();
+    onListingFeeOpen();
   };
 
   return (
@@ -153,7 +174,8 @@ function ReleaseFreebieModal({ ...otherProps }) {
               <Box>
                 <Typography>
                   <span>Transaction no:</span>{" "}
-                  {selectedRowData?.freebies?.[0]?.transactionNumber || ""}
+                  {selectedRowData?.freebies?.[freebiesLength - 1]
+                    ?.transactionNumber || ""}
                 </Typography>
                 <Typography>
                   <span>Date:</span> {moment().format("MMM DD, YYYY")}
@@ -177,7 +199,9 @@ function ReleaseFreebieModal({ ...otherProps }) {
               </TableHead>
 
               <TableBody>
-                {selectedRowData?.freebies?.[0].freebieItems?.map((item, i) => (
+                {selectedRowData?.freebies?.[
+                  freebiesLength - 1
+                ].freebieItems?.map((item, i) => (
                   <TableRow key={i}>
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell>{item.itemCode}</TableCell>
@@ -258,7 +282,7 @@ function ReleaseFreebieModal({ ...otherProps }) {
           </Box>
         </Box>
         <Box className="releaseFreebieModal__actions">
-          <DangerButton onClick={onCancelConfirmOpen}>Cancel</DangerButton>
+          <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton>
           <SecondaryButton
             onClick={onConfirmOpen}
             disabled={!signature || !photoProof}
@@ -274,6 +298,8 @@ function ReleaseFreebieModal({ ...otherProps }) {
         signature={signature}
         setSignature={setSignature}
       />
+
+      <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} />
 
       <CommonDialog
         open={isConfirmOpen}
@@ -294,9 +320,23 @@ function ReleaseFreebieModal({ ...otherProps }) {
         onClose={onCancelConfirmClose}
         onYes={handleCancel}
       >
-        Confirm cancel release freebies for{" "}
+        Confirm close release freebies for{" "}
         <span style={{ fontWeight: "bold" }}>
           {selectedRowData?.businessName}
+        </span>
+        ?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isRedirectListingFeeOpen}
+        onClose={onRedirectListingFeeClose}
+        onYes={handleRedirectListingFeeYes}
+      >
+        Continue to listing fee for{" "}
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          {selectedRowData.businessName
+            ? selectedRowData.businessName
+            : "client"}
         </span>
         ?
       </CommonDialog>

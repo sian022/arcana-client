@@ -1,4 +1,12 @@
-import { Box, Paper, Typography, Stack, Badge, Divider } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Typography,
+  Stack,
+  Badge,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import React from "react";
 import "../assets/styles/common.styles.scss";
 
@@ -24,7 +32,7 @@ function PageHeaderTabs({ pageTitle, tabsList, tabViewing, setTabViewing }) {
                 onClick={() => setTabViewing(item.case)}
               >
                 <Badge
-                  badgeContent={item.badge}
+                  badgeContent={!item.isBadgeLoading ? item.badge : <></>}
                   color="primary"
                   invisible={item.case === tabViewing}
                 >
