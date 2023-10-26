@@ -10,7 +10,13 @@ import {
 import React from "react";
 import "../assets/styles/common.styles.scss";
 
-function PageHeaderTabs({ pageTitle, tabsList, tabViewing, setTabViewing }) {
+function PageHeaderTabs({
+  wide,
+  pageTitle,
+  tabsList,
+  tabViewing,
+  setTabViewing,
+}) {
   return (
     <Paper elevation={1}>
       <Box className="pageHeader">
@@ -27,7 +33,11 @@ function PageHeaderTabs({ pageTitle, tabsList, tabViewing, setTabViewing }) {
           >
             {tabsList?.map((item, i) => (
               <Stack
-                sx={{ cursor: "pointer", alignItems: "center", width: "160px" }}
+                sx={{
+                  cursor: "pointer",
+                  alignItems: "center",
+                  width: wide ? "180px" : "160px",
+                }}
                 key={i}
                 onClick={() => setTabViewing(item.case)}
               >
