@@ -105,6 +105,16 @@ function Header() {
     navigate("/login");
   };
 
+  const handleActions = (action) => {
+    if (action === "changePassword") {
+      onChangePasswordOpen();
+    } else if (action === "logout") {
+      onLogoutOpen();
+    }
+
+    onMenuClose();
+  };
+
   return (
     <>
       <Box className="navbar">
@@ -158,11 +168,17 @@ function Header() {
         onClose={onMenuClose}
         anchorEl={anchorRef.current}
       >
-        <MenuItem className="actionsMenuItem" onClick={onChangePasswordOpen}>
+        <MenuItem
+          className="actionsMenuItem"
+          onClick={() => handleActions("changePassword")}
+        >
           <Password />
           Change Password
         </MenuItem>
-        <MenuItem className="actionsMenuItem" onClick={onLogoutOpen}>
+        <MenuItem
+          className="actionsMenuItem"
+          onClick={() => handleActions("logout")}
+        >
           <Logout />
           Logout
         </MenuItem>

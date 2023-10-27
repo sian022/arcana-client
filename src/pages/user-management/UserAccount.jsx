@@ -330,10 +330,10 @@ function UserAccount() {
               );
               setValue(
                 "password",
-                `${generateUsername(
+                generateUsername(
                   value.general_info.first_name,
                   value.general_info.last_name
-                )}1234`
+                )
               );
             }}
           />

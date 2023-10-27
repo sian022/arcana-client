@@ -12,10 +12,7 @@ import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
 import { Check, Close, PushPin } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  directRegisterPersonalSchema,
-  regularRegisterSchema,
-} from "../../../schema/schema";
+import { directRegisterPersonalSchema } from "../../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
@@ -40,6 +37,9 @@ import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import DangerButton from "../../../components/DangerButton";
 import ListingFeeModal from "../../../components/modals/ListingFeeModal";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import moment from "moment";
 
 function DirectRegisterForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -105,6 +105,7 @@ function DirectRegisterForm({ open, onClose }) {
     reset,
     getValues,
     control,
+    watch,
   } = useForm({
     resolver: yupResolver(directRegisterPersonalSchema.schema),
     mode: "onChange",
@@ -372,28 +373,34 @@ function DirectRegisterForm({ open, onClose }) {
     onListingFeeOpen();
   };
 
-  const handleSameAsOwnersAddress = () => {};
-
   useEffect(() => {
     if (sameAsOwnersAddress) {
-      // setValue("houseNumber", selectedRowData?.ownersAddress?.houseNumber);
-      // setValue("streetName", selectedRowData?.ownersAddress?.streetName);
-      // setValue("barangayName", selectedRowData?.ownersAddress?.barangayName);
-      // setValue("city", selectedRowData?.ownersAddress?.city);
-      // setValue("province", selectedRowData?.ownersAddress?.province);
+      setValue(
+        "businessAddress.houseNumber",
+        watch("ownersAddress.houseNumber")
+      );
+      setValue("businessAddress.streetName", watch("ownersAddress.streetName"));
+      setValue(
+        "businessAddress.barangayName",
+        watch("ownersAddress.barangayName")
+      );
+      setValue("businessAddress.city", watch("ownersAddress.city"));
+      setValue("businessAddress.province", watch("ownersAddress.province"));
     } else {
-      // setValue("houseNumber", "");
-      // setValue("streetName", "");
-      // setValue("barangayName", "");
-      // setValue("city", "");
-      // setValue("province", "");
+      setValue("businessAddress.houseNumber", "");
+      setValue("businessAddress.streetName", "");
+      setValue("businessAddress.barangayName", "");
+      setValue("businessAddress.city", "");
+      setValue("businessAddress.province", "");
     }
   }, [sameAsOwnersAddress]);
+
+  console.log(getValues());
 
   return (
     <>
       <CommonDrawer
-        drawerHeader="Register as Regular"
+        drawerHeader="Direct Registration"
         open={
           open
           // true
@@ -438,7 +445,7 @@ function DirectRegisterForm({ open, onClose }) {
                   />
                 </Box>
                 <Box className="register__firstRow__customerInformation__row">
-                  <TextField
+                  {/* <TextField
                     label="Date of Birth"
                     size="small"
                     autoComplete="off"
@@ -451,7 +458,32 @@ function DirectRegisterForm({ open, onClose }) {
                     InputLabelProps={{
                       shrink: true, // This will make the label always appear on top.
                     }}
+                  /> */}
+
+                  <Controller
+                    name="dateOfBirth"
+                    control={control}
+                    render={({ field }) => (
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                          {...field}
+                          className="register__textField"
+                          label="Date of Birth"
+                          slotProps={{ textField: { size: "small" } }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              helperText={errors?.birthDate?.message}
+                              error={errors?.birthDate}
+                            />
+                          )}
+                          minDate={moment().subtract(117, "years")}
+                          maxDate={moment().subtract(18, "years")}
+                        />
+                      </LocalizationProvider>
+                    )}
                   />
+
                   <TextField
                     label="Phone Number"
                     size="small"
@@ -607,9 +639,19 @@ function DirectRegisterForm({ open, onClose }) {
                 <Checkbox
                   sx={{ ml: "10px" }}
                   checked={sameAsOwnersAddress}
-                  onChange={(e) => {
+                  onChange={() => {
                     setSameAsOwnersAddress((prev) => !prev);
                   }}
+                  disabled={Object.values(watch("ownersAddress")).some(
+                    (value) => !value
+                  )}
+                  title={
+                    !Object.values(watch("ownersAddress")).some(
+                      (value) => !value
+                    )
+                      ? "Fill up owner's address first"
+                      : ""
+                  }
                 />
                 <Typography variant="subtitle2">
                   Same as owner's address

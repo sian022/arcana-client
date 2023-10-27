@@ -1,3 +1,4 @@
+import moment from "moment";
 import * as yup from "yup";
 
 export const loginSchema = yup
@@ -6,6 +7,21 @@ export const loginSchema = yup
     password: yup.string().required("Password is required"),
   })
   .required();
+
+export const changePasswordSchema = {
+  schema: yup.object({
+    oldPassword: yup.string().required("Old password is required"),
+    newPassword: yup.string().required("New password is required"),
+    confirmNewPassword: yup
+      .string()
+      .required("Confirm new password is required"),
+  }),
+  defaultValues: {
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  },
+};
 
 //Setup Schema
 export const productSchema = {
@@ -291,6 +307,7 @@ export const directRegisterPersonalSchema = {
     },
     phoneNumber: "",
     dateOfBirth: null,
+    // dateOfBirth: moment(Date.now()),
     tinNumber: "",
     businessName: "",
     storeTypeId: null,

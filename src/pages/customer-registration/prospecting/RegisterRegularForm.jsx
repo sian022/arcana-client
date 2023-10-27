@@ -38,6 +38,8 @@ import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import DangerButton from "../../../components/DangerButton";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import ListingFeeModal from "../../../components/modals/ListingFeeModal";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import moment from "moment";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -437,7 +439,31 @@ function RegisterRegularForm({ open, onClose }) {
                   />
                 </Box>
                 <Box className="register__firstRow__customerInformation__row">
-                  <TextField
+                  <Controller
+                    name="dateOfBirth"
+                    control={control}
+                    render={({ field }) => (
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                          {...field}
+                          className="register__textField"
+                          label="Date of Birth"
+                          slotProps={{ textField: { size: "small" } }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              helperText={errors?.birthDate?.message}
+                              error={errors?.birthDate}
+                            />
+                          )}
+                          minDate={moment().subtract(117, "years")}
+                          maxDate={moment().subtract(18, "years")}
+                        />
+                      </LocalizationProvider>
+                    )}
+                  />
+
+                  {/* <TextField
                     label="Date of Birth"
                     size="small"
                     autoComplete="off"
@@ -450,7 +476,7 @@ function RegisterRegularForm({ open, onClose }) {
                     InputLabelProps={{
                       shrink: true, // This will make the label always appear on top.
                     }}
-                  />
+                  /> */}
                   <TextField
                     label="Phone Number"
                     size="small"
