@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import useDisclosure from "../hooks/useDisclosure";
 import {
   Archive,
+  ArrowForward,
   Cancel,
   Edit,
   HowToReg,
@@ -16,6 +17,7 @@ import {
 function CommonActions({
   onEdit,
   onArchive,
+  onView,
   onTag,
   onFreebie,
   onReleaseFreebie,
@@ -45,6 +47,8 @@ function CommonActions({
       onUpdateFreebies();
     } else if (action === "cancelFreebies") {
       onCancelFreebies();
+    } else if (action === "viewMore") {
+      onView();
     }
     onClose();
   };
@@ -187,6 +191,23 @@ function CommonActions({
           >
             <Cancel />
             Cancel Freebies
+          </MenuItem>
+        )}
+
+        {onView && (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              handleAction("viewMore");
+            }}
+          >
+            <ArrowForward />
+            View
           </MenuItem>
         )}
       </Menu>

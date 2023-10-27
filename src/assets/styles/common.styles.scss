@@ -115,15 +115,26 @@
   &__ribbonCustom {
     display: flex;
     background-color: $primary;
-    padding: 20px;
+    // padding: 20px;
+    padding: 10px;
     // margin-top: 30px;
-    margin-top: 10px;
+    // margin-top: 10px;
+    margin-top: 5px;
   }
+
   &__body {
     display: flex;
     flex-direction: column;
     gap: 15px;
     padding: 30px;
+    overflow: auto;
+  }
+
+  &__bodyCompact {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 30px;
     overflow: auto;
   }
 
@@ -133,6 +144,27 @@
     padding: 0 30px;
     justify-content: end;
     margin-bottom: 20px;
+    // position: fixed;
+    // bottom: 0;
+    // right: 0;
+  }
+
+  &__actionsNoMarginBottom {
+    display: flex;
+    gap: 10px;
+    padding: 0 30px;
+    justify-content: end;
+    // position: fixed;
+    // bottom: 0;
+    // right: 0;
+  }
+
+  &__actionsSpread {
+    display: flex;
+    gap: 10px;
+    // padding: 0 30px;
+    justify-content: space-between;
+    // margin-bottom: 20px;
     // position: fixed;
     // bottom: 0;
     // right: 0;

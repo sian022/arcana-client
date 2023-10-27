@@ -27,6 +27,7 @@ function CommonTable({
   archivable,
   onEdit,
   onArchive,
+  onView,
   onFreebie,
   onReleaseFreebie,
   onRegularRegister,
@@ -160,6 +161,7 @@ function CommonTable({
                         }
                         onUpdateFreebies={onUpdateFreebies && onUpdateFreebies}
                         onCancelFreebies={onCancelFreebies && onCancelFreebies}
+                        onView={onView && onView}
                         item={item}
                         status={status}
                       />

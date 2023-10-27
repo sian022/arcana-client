@@ -46,7 +46,8 @@ function LogoutButton() {
         open={isDialogOpen}
         onYes={handleLogout}
       >
-        Are you sure you want to LOGOUT?
+        Are you sure you want to{" "}
+        <span style={{ fontWeight: "bold" }}>LOGOUT</span>?
       </CommonDialog>
     </>
   );

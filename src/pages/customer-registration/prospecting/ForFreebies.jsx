@@ -107,6 +107,14 @@ function ForFreebies() {
     "registrationStatus",
   ];
 
+  const tableHeads = [
+    "Owner's Name",
+    "Mobile Number",
+    "Email Address",
+    "Business Name",
+    "Business Type",
+  ];
+
   //React Hook Form
   const {
     handleSubmit,
@@ -254,8 +262,6 @@ function ForFreebies() {
     }
   }, [isDrawerOpen]);
 
-  console.log(getValues());
-
   return (
     <>
       <Box>
@@ -272,6 +278,7 @@ function ForFreebies() {
             mapData={data?.requestedProspect}
             // excludeKeys={excludeKeys}
             excludeKeysDisplay={excludeKeysDisplay}
+            tableHeads={tableHeads}
             editable
             archivable
             onEdit={handleEditOpen}

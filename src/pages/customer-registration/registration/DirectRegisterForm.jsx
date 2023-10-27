@@ -1,11 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import CommonDrawer from "../../../components/CommonDrawer";
-import { Box, Button, Checkbox, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
-import { Check, PushPin } from "@mui/icons-material";
+import { Check, Close, PushPin } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { regularRegisterSchema } from "../../../schema/schema";
+import {
+  directRegisterPersonalSchema,
+  regularRegisterSchema,
+} from "../../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
@@ -26,6 +36,9 @@ import {
   convertToTitleCase,
 } from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
+import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
+import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
+import DangerButton from "../../../components/DangerButton";
 
 function DirectRegisterForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -80,16 +93,18 @@ function DirectRegisterForm({ open, onClose }) {
     getValues,
     control,
   } = useForm({
-    resolver: yupResolver(regularRegisterSchema.schema),
+    resolver: yupResolver(directRegisterPersonalSchema.schema),
     mode: "onChange",
-    defaultValues: regularRegisterSchema.defaultValues,
+    defaultValues: directRegisterPersonalSchema.defaultValues,
   });
 
+  console.log(getValues());
   //Constants
   const navigators = [
     {
       label: "Personal Info",
       isValid: isValid,
+      disabled: false,
     },
     {
       label: "Terms and Conditions",
@@ -114,6 +129,7 @@ function DirectRegisterForm({ open, onClose }) {
         const value = termsAndConditions[key];
         return value !== null && value !== "";
       }),
+      disabled: false,
     },
     {
       label: "Attachments",
@@ -125,8 +141,12 @@ function DirectRegisterForm({ open, onClose }) {
               (value) => value === null
             )
           : false,
+      // disabled: !navigators[0].isValid || !navigators[1].isValid,
+      disabled: false,
     },
   ];
+  navigators[1].disabled = !navigators[0].isValid;
+  navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
 
   //RTK Query
   const [putRegisterClient, { isLoading: isRegisterLoading }] =
@@ -135,6 +155,9 @@ function DirectRegisterForm({ open, onClose }) {
     usePutAddAttachmentsMutation();
   const [putAddTermsAndConditions, { isLoading: isTermsLoading }] =
     usePutAddTermsAndCondtionsMutation();
+
+  const { data: storeTypeData, isLoading: isStoreTypeLoading } =
+    useGetAllStoreTypesQuery({ Status: true });
 
   //Drawer Functions
   const onSubmit = async (data) => {
@@ -218,7 +241,6 @@ function DirectRegisterForm({ open, onClose }) {
       };
     }
 
-    console.log(ownersRequirements);
     if (attachmentsObject) {
       Object.keys(attachmentsObject).forEach((key, index) => {
         const attachment = attachmentsObject[key];
@@ -241,25 +263,6 @@ function DirectRegisterForm({ open, onClose }) {
     onClose();
     onCancelConfirmClose();
     handleResetForms();
-    // reset();
-    // setSameAsOwnersAddress(false);
-    // setOwnersRequirements({
-    //   signature: null,
-    //   storePhoto: null,
-    //   businessPermit: null,
-    //   photoIdOwner: null,
-    // });
-    // setRepresentativeRequirements({
-    //   signature: null,
-    //   storePhoto: null,
-    //   businessPermit: null,
-    //   photoIdOwner: null,
-    //   photoIdRepresentative: null,
-    //   authorizationLetter: null,
-    // });
-    // setRequirementsMode(null);
-    // dispatch(resetTermsAndConditions());
-    // setActiveTab("Personal Info");
   };
 
   const handleResetForms = () => {
@@ -285,38 +288,44 @@ function DirectRegisterForm({ open, onClose }) {
   };
 
   const customRibbonContent = (
-    <Box className="register__headers">
-      {navigators.map((item, i) => (
-        <Button
-          key={i}
-          className={
-            "register__headers__item" +
-            (activeTab === item.label ? " active" : "")
-          }
-          onClick={() => {
-            setActiveTab(item.label);
-          }}
-        >
-          {item.isValid && (
-            <Check
-              sx={{
-                color: "white !important",
-                stroke: "white",
-                strokeWidth: 1,
-              }}
-            />
-          )}
-          <Typography>{item.label}</Typography>
-        </Button>
-      ))}
+    <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
+      <Box className="register__headers">
+        {navigators.map((item, i) => (
+          <Button
+            key={i}
+            disabled={item.disabled}
+            className={
+              "register__headers__item" +
+              (activeTab === item.label ? " active" : "")
+            }
+            onClick={() => {
+              setActiveTab(item.label);
+            }}
+            // sx={{ bgcolor: item.disabled && "#a9a7c1" }}
+          >
+            {item.isValid && (
+              <Check
+                sx={{
+                  color: "white !important",
+                  stroke: "white",
+                  strokeWidth: 1,
+                }}
+              />
+            )}
+            <Typography>{item.label}</Typography>
+          </Button>
+        ))}
+      </Box>
+      <IconButton
+        sx={{ color: "white !important" }}
+        onClick={onCancelConfirmOpen}
+      >
+        <Close />
+      </IconButton>
     </Box>
   );
 
   const handleSameAsOwnersAddress = () => {};
-
-  useEffect(() => {
-    setValue("clientId", selectedRowData?.id);
-  }, [selectedRowData]);
 
   useEffect(() => {
     if (sameAsOwnersAddress) {
@@ -326,11 +335,11 @@ function DirectRegisterForm({ open, onClose }) {
       // setValue("city", selectedRowData?.ownersAddress?.city);
       // setValue("province", selectedRowData?.ownersAddress?.province);
     } else {
-      setValue("houseNumber", "");
-      setValue("streetName", "");
-      setValue("barangayName", "");
-      setValue("city", "");
-      setValue("province", "");
+      // setValue("houseNumber", "");
+      // setValue("streetName", "");
+      // setValue("barangayName", "");
+      // setValue("city", "");
+      // setValue("province", "");
     }
   }, [sameAsOwnersAddress]);
 
@@ -344,8 +353,10 @@ function DirectRegisterForm({ open, onClose }) {
         }
         onClose={onCancelConfirmOpen}
         width="1000px"
+        paddingSmall
         // noRibbon
         customRibbonContent={customRibbonContent}
+        removeButtons
         submitLabel={"Register"}
         disableSubmit={navigators.some((obj) => obj.isValid === false)}
         onSubmit={onConfirmOpen}
@@ -364,6 +375,9 @@ function DirectRegisterForm({ open, onClose }) {
                     autoComplete="off"
                     required
                     className="register__textField"
+                    {...register("ownersName")}
+                    helperText={errors?.ownersName?.message}
+                    error={errors?.ownersName}
                   />
                   <TextField
                     label="Email"
@@ -371,6 +385,9 @@ function DirectRegisterForm({ open, onClose }) {
                     autoComplete="off"
                     required
                     className="register__textField"
+                    {...register("emailAddress")}
+                    helperText={errors?.emailAddress?.message}
+                    error={errors?.emailAddress}
                   />
                 </Box>
                 <Box className="register__firstRow__customerInformation__row">
@@ -381,7 +398,7 @@ function DirectRegisterForm({ open, onClose }) {
                     required
                     type="date"
                     className="register__textField"
-                    {...register("birthDate")}
+                    {...register("dateOfBirth")}
                     helperText={errors?.birthDate?.message}
                     error={errors?.birthDate}
                     InputLabelProps={{
@@ -394,6 +411,9 @@ function DirectRegisterForm({ open, onClose }) {
                     autoComplete="off"
                     required
                     className="register__textField"
+                    {...register("phoneNumber")}
+                    helperText={errors?.phoneNumber?.message}
+                    error={errors?.phoneNumber}
                   />
                 </Box>
               </Box>
@@ -424,6 +444,9 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      {...register("ownersAddress.houseNumber")}
+                      helperText={errors?.ownersAddress?.houseNumber?.message}
+                      error={errors?.ownersAddress?.houseNumber}
                     />
                     <TextField
                       label="Street Name"
@@ -431,6 +454,9 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      {...register("ownersAddress.streetName")}
+                      helperText={errors?.ownersAddress?.streetName?.message}
+                      error={errors?.ownersAddress?.streetName}
                     />
                     <TextField
                       label="Barangay"
@@ -438,6 +464,9 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      {...register("ownersAddress.barangayName")}
+                      helperText={errors?.ownersAddress?.barangayName?.message}
+                      error={errors?.ownersAddress?.barangayName}
                     />
                   </Box>
                   <Box className="register__secondRow__content">
@@ -447,6 +476,9 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      {...register("ownersAddress.city")}
+                      helperText={errors?.ownersAddress?.city?.message}
+                      error={errors?.ownersAddress?.city}
                     />
                     <TextField
                       label="Province"
@@ -454,15 +486,10 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
+                      {...register("ownersAddress.province")}
+                      helperText={errors?.ownersAddress?.province?.message}
+                      error={errors?.ownersAddress?.province}
                     />
-                    {/* <TextField
-                label="Zip Code"
-                size="small"
-                autoComplete="off"
-                required
-                className="register__textField"
-                
-              /> */}
                   </Box>
                 </Box>
               </Box>
@@ -478,6 +505,8 @@ function DirectRegisterForm({ open, onClose }) {
                   autoComplete="off"
                   required
                   className="register__textField"
+                  {...register("businessName")}
+                  helperText={errors?.businessName?.message}
                 />
               </Box>
               <Box className="register__thirdRow__column">
@@ -491,6 +520,35 @@ function DirectRegisterForm({ open, onClose }) {
                   {...register("cluster")}
                   helperText={errors?.cluster?.message}
                   error={errors?.cluster}
+                />
+              </Box>
+
+              <Box className="register__thirdRow__column">
+                <Typography className="register__title">
+                  Business Type
+                </Typography>
+                <ControlledAutocomplete
+                  name={"storeTypeId"}
+                  control={control}
+                  options={storeTypeData?.storeTypes}
+                  getOptionLabel={(option) => option.storeTypeName}
+                  disableClearable
+                  // value={storeTypeData?.storeTypes?.find(
+                  //   (store) => store.storeTypeName === selectedStoreType
+                  // )}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Business Type"
+                      required
+                      helperText={errors?.storeTypeId?.message}
+                      error={errors?.storeTypeId}
+                    />
+                  )}
                 />
               </Box>
             </Box>
@@ -514,7 +572,7 @@ function DirectRegisterForm({ open, onClose }) {
               <Box className="register__secondRow__content">
                 <Controller
                   control={control}
-                  name="houseNumber"
+                  name="businessAddress.houseNumber"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       disabled={sameAsOwnersAddress}
@@ -527,15 +585,15 @@ function DirectRegisterForm({ open, onClose }) {
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
-                      helperText={errors?.houseNumber?.message}
-                      error={errors?.houseNumber}
+                      helperText={errors?.businessAddress?.houseNumber?.message}
+                      error={errors?.businessAddress?.houseNumber}
                     />
                   )}
                 />
 
                 <Controller
                   control={control}
-                  name="streetName"
+                  name="businessAddress.streetName"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       disabled={sameAsOwnersAddress}
@@ -544,8 +602,8 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      helperText={errors?.streetName?.message}
-                      error={errors?.streetName}
+                      helperText={errors?.businessAddress?.streetName?.message}
+                      error={errors?.businessAddress?.streetName}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
@@ -556,7 +614,7 @@ function DirectRegisterForm({ open, onClose }) {
 
                 <Controller
                   control={control}
-                  name="barangayName"
+                  name="businessAddress.barangayName"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       disabled={sameAsOwnersAddress}
@@ -565,8 +623,10 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      helperText={errors?.barangayName?.message}
-                      error={errors?.barangayName}
+                      helperText={
+                        errors?.businessAddress?.barangayName?.message
+                      }
+                      error={errors?.businessAddress?.barangayName}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
@@ -579,7 +639,7 @@ function DirectRegisterForm({ open, onClose }) {
               <Box className="register__secondRow__content">
                 <Controller
                   control={control}
-                  name="city"
+                  name="businessAddress.city"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       disabled={sameAsOwnersAddress}
@@ -588,8 +648,8 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      helperText={errors?.city?.message}
-                      error={errors?.city}
+                      helperText={errors?.businessAddress?.city?.message}
+                      error={errors?.businessAddress?.city}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
@@ -600,7 +660,7 @@ function DirectRegisterForm({ open, onClose }) {
 
                 <Controller
                   control={control}
-                  name="province"
+                  name="businessAddress.province"
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       disabled={sameAsOwnersAddress}
@@ -609,8 +669,8 @@ function DirectRegisterForm({ open, onClose }) {
                       autoComplete="off"
                       required
                       className="register__textField"
-                      helperText={errors?.province?.message}
-                      error={errors?.province}
+                      helperText={errors?.businessAddress?.province?.message}
+                      error={errors?.businessAddress?.province}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
@@ -661,6 +721,11 @@ function DirectRegisterForm({ open, onClose }) {
         {activeTab === "Terms and Conditions" && <TermsAndConditions direct />}
 
         {activeTab === "Attachments" && <Attachments />}
+
+        <Box className="commonDrawer__actionsSpread">
+          <DangerButton>Back</DangerButton>
+          <SecondaryButton>Next</SecondaryButton>
+        </Box>
       </CommonDrawer>
 
       <PinLocationModal

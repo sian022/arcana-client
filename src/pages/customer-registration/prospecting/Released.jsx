@@ -37,6 +37,14 @@ function Released() {
     "registrationStatus",
   ];
 
+  const tableHeads = [
+    "Owner's Name",
+    "Mobile Number",
+    "Email Address",
+    "Business Name",
+    "Business Type",
+  ];
+
   //Disclosures
   const {
     isOpen: isRegisterOpen,
@@ -86,6 +94,7 @@ function Released() {
           <CommonTable
             mapData={data?.requestedProspect}
             // excludeKeys={excludeKeys}
+            tableHeads={tableHeads}
             excludeKeysDisplay={excludeKeysDisplay}
             page={page}
             setPage={setPage}

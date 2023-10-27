@@ -278,6 +278,7 @@ export const directRegisterPersonalSchema = {
     businessName: yup.string().required("Business name is required"),
     storeTypeId: yup.object().required("Store type is required"),
     emailAddress: yup.string().required("Email address is required"),
+    cluster: yup.number().required("Cluster is required").integer(),
     businessAddress: yup
       .object({
         houseNumber: yup.string().required("House number is required"),
@@ -309,6 +310,7 @@ export const directRegisterPersonalSchema = {
     businessName: "",
     storeTypeId: null,
     emailAddress: "",
+    cluster: null,
     businessAddress: {
       houseNumber: "",
       streetName: "",
@@ -321,7 +323,6 @@ export const directRegisterPersonalSchema = {
   },
 };
 
-// cluster: yup.number().required("Cluster is required").integer(),
 // freezer: yup.boolean().required("Freezer is required"),
 // typeOfCustomer: yup.string().required("Type of customer is required"),
 // directDelivery: yup.boolean().required("Direct delivery is required"),

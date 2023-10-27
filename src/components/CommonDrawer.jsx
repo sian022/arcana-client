@@ -18,9 +18,11 @@ function CommonDrawer({
   isLoading,
   width,
   navigators,
+  removeButtons,
   noRibbon,
   submitLabel,
   customRibbonContent,
+  paddingSmall,
   children,
   ...otherProps
 }) {
@@ -54,17 +56,25 @@ function CommonDrawer({
               {customRibbonContent}
             </Box>
           )}
-          <Box className="commonDrawer__body">{children}</Box>
-          <Box className="commonDrawer__actions">
-            <SecondaryButton onClick={onSubmit} disabled={disableSubmit}>
-              {isLoading ? (
-                <CircularProgress />
-              ) : (
-                <>{submitLabel || "Submit"}</>
-              )}
-            </SecondaryButton>
-            <DangerButton onClick={onClose}>Close</DangerButton>
+          <Box
+            className={
+              paddingSmall ? "commonDrawer__bodyCompact" : "commonDrawer__body"
+            }
+          >
+            {children}
           </Box>
+          {!removeButtons && (
+            <Box className="commonDrawer__actions">
+              <SecondaryButton onClick={onSubmit} disabled={disableSubmit}>
+                {isLoading ? (
+                  <CircularProgress />
+                ) : (
+                  <>{submitLabel || "Submit"}</>
+                )}
+              </SecondaryButton>
+              <DangerButton onClick={onClose}>Close</DangerButton>
+            </Box>
+          )}
         </Box>
       </Box>
     </Drawer>

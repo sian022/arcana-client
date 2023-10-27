@@ -1,9 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import CommonDrawer from "../../../components/CommonDrawer";
-import { Box, Button, Checkbox, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Checkbox,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
-import { Check, PushPin } from "@mui/icons-material";
+import { Check, Close, PushPin } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { regularRegisterSchema } from "../../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
@@ -20,15 +28,15 @@ import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "./TermsAndConditions";
 import Attachments from "./Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
-import {
-  setTermsAndConditions,
-  resetTermsAndConditions,
-} from "../../../features/registration/reducers/regularRegistrationSlice";
+import { resetTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
 import {
   base64ToBlob,
   convertToTitleCase,
 } from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
+import DangerButton from "../../../components/DangerButton";
+import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
+import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -93,6 +101,7 @@ function RegisterRegularForm({ open, onClose }) {
     {
       label: "Personal Info",
       isValid: isValid,
+      disabled: false,
     },
     {
       label: "Terms and Conditions",
@@ -117,6 +126,7 @@ function RegisterRegularForm({ open, onClose }) {
         const value = termsAndConditions[key];
         return value !== null && value !== "";
       }),
+      disabled: false,
     },
     {
       label: "Attachments",
@@ -128,8 +138,11 @@ function RegisterRegularForm({ open, onClose }) {
               (value) => value === null
             )
           : false,
+      disabled: false,
     },
   ];
+  navigators[1].disabled = !navigators[0].isValid;
+  navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
 
   //RTK Query
   const [putRegisterClient, { isLoading: isRegisterLoading }] =
@@ -138,6 +151,8 @@ function RegisterRegularForm({ open, onClose }) {
     usePutAddAttachmentsMutation();
   const [putAddTermsAndConditions, { isLoading: isTermsLoading }] =
     usePutAddTermsAndCondtionsMutation();
+
+  const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
 
   //Drawer Functions
   const onSubmit = async (data) => {
@@ -240,86 +255,10 @@ function RegisterRegularForm({ open, onClose }) {
     }).unwrap();
   };
 
-  // const addAttachmentsSubmit = async () => {
-  //   const formData = new FormData();
-  //   let attachmentsObject = null;
-
-  //   // convertSignatureToBase64();
-
-  //   // if (requirementsMode === "owner") {
-  //   //   attachmentsObject = ownersRequirements;
-  //   // } else if (requirementsMode === "representative") {
-  //   //   attachmentsObject = representativeRequirements;
-  //   // }
-  //   if (requirementsMode === "owner" && ownersRequirements["signature"]) {
-  //     const convertedSignature = new File(
-  //       [base64ToBlob(ownersRequirements["signature"])],
-  //       `signature_${Date.now()}.jpg`,
-  //       { type: "image/jpeg" }
-  //     );
-  //     setOwnersRequirements({
-  //       ...ownersRequirements,
-  //       signature: convertedSignature,
-  //     });
-  //     attachmentsObject = ownersRequirements;
-  //   } else if (
-  //     requirementsMode === "representative" &&
-  //     representativeRequirements["signature"]
-  //   ) {
-  //     const convertedSignature = new File(
-  //       [base64ToBlob(representativeRequirements["signature"])],
-  //       `signature_${Date.now()}.jpg`,
-  //       { type: "image/jpeg" }
-  //     );
-  //     setRepresentativeRequirements({
-  //       ...representativeRequirements,
-  //       signature: convertedSignature,
-  //     });
-  //     attachmentsObject = representativeRequirements;
-  //   }
-
-  //   console.log(ownersRequirements);
-  //   if (attachmentsObject) {
-  //     Object.keys(attachmentsObject).forEach((key, index) => {
-  //       const attachment = attachmentsObject[key];
-
-  //       formData.append(`Attachments[${index}].Attachment`, attachment);
-  //       formData.append(
-  //         `Attachments[${index}].DocumentType`,
-  //         convertToTitleCase(key)
-  //       );
-  //     });
-  //   }
-
-  //   await putAddAttachments({
-  //     id: selectedRowData?.id,
-  //     formData,
-  //   }).unwrap();
-  // };
-
   const handleDrawerClose = () => {
     onClose();
     onCancelConfirmClose();
     handleResetForms();
-    // reset();
-    // setSameAsOwnersAddress(false);
-    // setOwnersRequirements({
-    //   signature: null,
-    //   storePhoto: null,
-    //   businessPermit: null,
-    //   photoIdOwner: null,
-    // });
-    // setRepresentativeRequirements({
-    //   signature: null,
-    //   storePhoto: null,
-    //   businessPermit: null,
-    //   photoIdOwner: null,
-    //   photoIdRepresentative: null,
-    //   authorizationLetter: null,
-    // });
-    // setRequirementsMode(null);
-    // dispatch(resetTermsAndConditions());
-    // setActiveTab("Personal Info");
   };
 
   const handleResetForms = () => {
@@ -344,31 +283,72 @@ function RegisterRegularForm({ open, onClose }) {
     setActiveTab("Personal Info");
   };
 
+  //Misc Functions
+  const handleNext = () => {
+    if (activeTab === "Personal Info") {
+      setActiveTab("Terms and Conditions");
+    } else if (activeTab === "Terms and Conditions") {
+      setActiveTab("Attachments");
+    }
+  };
+
+  const handleBack = () => {
+    if (activeTab === "Terms and Conditions") {
+      setActiveTab("Personal Info");
+    } else if (activeTab === "Attachments") {
+      setActiveTab("Terms and Conditions");
+    }
+  };
+
+  const handleDisableNext = () => {
+    if (activeTab === "Personal Info" && navigators[0].isValid === false) {
+      return true;
+    } else if (
+      activeTab === "Terms and Conditions" &&
+      navigators[1].isValid === false
+    ) {
+      return true;
+    }
+  };
+
+  //Constant JSX
   const customRibbonContent = (
-    <Box className="register__headers">
-      {navigators.map((item, i) => (
-        <Button
-          key={i}
-          className={
-            "register__headers__item" +
-            (activeTab === item.label ? " active" : "")
-          }
-          onClick={() => {
-            setActiveTab(item.label);
-          }}
-        >
-          {item.isValid && (
-            <Check
-              sx={{
-                color: "white !important",
-                stroke: "white",
-                strokeWidth: 1,
-              }}
-            />
-          )}
-          <Typography>{item.label}</Typography>
-        </Button>
-      ))}
+    <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
+      <Box className="register__headers">
+        {navigators.map((item, i) => (
+          <Button
+            key={i}
+            className={
+              "register__headers__item" +
+              (activeTab === item.label ? " active" : "")
+            }
+            onClick={() => {
+              setActiveTab(item.label);
+            }}
+            // sx={{
+            //   bgcolor: item.disabled ? "primary.main" : "accent.main",
+            // }}
+            disabled={item.disabled}
+          >
+            {item.isValid && (
+              <Check
+                sx={{
+                  color: "white !important",
+                  stroke: "white",
+                  strokeWidth: 1,
+                }}
+              />
+            )}
+            <Typography>{item.label}</Typography>
+          </Button>
+        ))}
+      </Box>
+      <IconButton
+        sx={{ color: "white !important" }}
+        onClick={onCancelConfirmOpen}
+      >
+        <Close />
+      </IconButton>
     </Box>
   );
 
@@ -392,8 +372,6 @@ function RegisterRegularForm({ open, onClose }) {
     }
   }, [sameAsOwnersAddress]);
 
-  console.log(getValues());
-
   return (
     <>
       <CommonDrawer
@@ -402,9 +380,11 @@ function RegisterRegularForm({ open, onClose }) {
           open
           // true
         }
+        paddingSmall
         onClose={onCancelConfirmOpen}
         width="1000px"
         // noRibbon
+        removeButtons
         customRibbonContent={customRibbonContent}
         submitLabel={"Register"}
         disableSubmit={navigators.some((obj) => obj.isValid === false)}
@@ -558,6 +538,7 @@ function RegisterRegularForm({ open, onClose }) {
                   value={selectedRowData?.businessName ?? ""}
                 />
               </Box>
+
               <Box className="register__thirdRow__column">
                 <Typography className="register__title">Cluster</Typography>
                 <TextField
@@ -569,6 +550,32 @@ function RegisterRegularForm({ open, onClose }) {
                   {...register("cluster")}
                   helperText={errors?.cluster?.message}
                   error={errors?.cluster}
+                />
+              </Box>
+
+              <Box className="register__thirdRow__column">
+                <Typography className="register__title">
+                  Business Type
+                </Typography>
+                <Autocomplete
+                  options={storeTypeData?.storeTypes}
+                  getOptionLabel={(option) => option.storeTypeName}
+                  disableClearable
+                  value={storeTypeData?.storeTypes?.find(
+                    (store) =>
+                      store.storeTypeName === selectedRowData?.storeType
+                  )}
+                  disabled
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Business Type"
+                      required
+                      helperText={errors?.storeTypeId?.message}
+                      error={errors?.storeTypeId}
+                    />
+                  )}
                 />
               </Box>
             </Box>
@@ -739,6 +746,34 @@ function RegisterRegularForm({ open, onClose }) {
         {activeTab === "Terms and Conditions" && <TermsAndConditions />}
 
         {activeTab === "Attachments" && <Attachments />}
+
+        <Box
+          className={
+            activeTab === "Personal Info"
+              ? "commonDrawer__actionsNoMarginBottom"
+              : "commonDrawer__actionsSpread"
+          }
+        >
+          {activeTab !== "Personal Info" && (
+            <DangerButton onClick={handleBack}>Back</DangerButton>
+          )}
+          {activeTab !== "Attachments" && (
+            <SecondaryButton
+              onClick={handleNext}
+              disabled={handleDisableNext()}
+            >
+              Next
+            </SecondaryButton>
+          )}
+          {activeTab === "Attachments" && (
+            <SecondaryButton
+              onClick={onConfirmOpen}
+              disabled={navigators.some((obj) => obj.isValid === false)}
+            >
+              Register
+            </SecondaryButton>
+          )}
+        </Box>
       </CommonDrawer>
 
       <PinLocationModal

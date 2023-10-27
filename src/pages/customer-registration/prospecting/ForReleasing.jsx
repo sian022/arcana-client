@@ -128,6 +128,15 @@ function ForReleasing() {
     "status",
     "freebies",
     "ownersAddress",
+    "registrationStatus",
+  ];
+
+  const tableHeads = [
+    "Owner's Name",
+    "Mobile Number",
+    "Email Address",
+    "Business Name",
+    "Business Type",
   ];
 
   //React Hook Form
@@ -284,6 +293,7 @@ function ForReleasing() {
             mapData={data?.requestedProspect}
             // excludeKeys={excludeKeys}
             excludeKeysDisplay={excludeKeysDisplay}
+            tableHeads={tableHeads}
             editable
             // archivable
             onEdit={handleEditOpen}
