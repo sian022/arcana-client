@@ -242,3 +242,10 @@
   text-overflow: ellipsis;
   width: 150px;
 }
+
+.actionsMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  // font-weight: 600;
+}

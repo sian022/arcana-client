@@ -23,6 +23,7 @@ import { badgeSlice } from "../features/prospect/reducers/badgeSlice";
 import { registrationApi } from "../features/registration/api/registrationApi";
 import { regularRegistrationSlice } from "../features/registration/reducers/regularRegistrationSlice";
 import { sedarApi } from "../features/user-management/api/sedarApi";
+import { userConfigApi } from "../features/authentication/api/userConfigApi";
 
 export const store = configureStore({
   reducer: {
@@ -49,6 +50,7 @@ export const store = configureStore({
     [prospectApi.reducerPath]: prospectApi.reducer,
     [registrationApi.reducerPath]: registrationApi.reducer,
     [sedarApi.reducerPath]: sedarApi.reducer,
+    [userConfigApi.reducerPath]: userConfigApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -70,6 +72,7 @@ export const store = configureStore({
       prospectApi.middleware,
       registrationApi.middleware,
       sedarApi.middleware,
+      userConfigApi.middleware,
     ]),
 });
 

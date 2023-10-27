@@ -37,10 +37,11 @@ function LogoutButton() {
 
   return (
     <>
-      <IconButton onClick={onDialogOpen} sx={{ color: "error.main" }}>
+      {/* <IconButton onClick={onDialogOpen} sx={{ color: "error.main" }}>
         <Logout />
-      </IconButton>
-
+      </IconButton> */}
+      <Logout />
+      Logout
       <CommonDialog
         onClose={onDialogClose}
         open={isDialogOpen}

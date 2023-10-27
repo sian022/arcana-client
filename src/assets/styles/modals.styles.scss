@@ -152,6 +152,12 @@
     justify-content: space-between;
     margin-top: 20px;
   }
+
+  &__actionsEnd {
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+  }
 }
 
 .signatureCanvasModal {
@@ -174,6 +180,17 @@
   &__actions {
     display: flex;
     justify-content: space-between;
+    margin-top: 20px;
+
+    &__right {
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  &__actionsRight {
+    display: flex;
+    justify-content: end;
     margin-top: 20px;
 
     &__right {
@@ -419,5 +436,23 @@
         }
       }
     }
+  }
+}
+
+.changePasswordModal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & &__title {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 }

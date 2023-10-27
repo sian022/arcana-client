@@ -39,6 +39,7 @@ import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import DangerButton from "../../../components/DangerButton";
+import ListingFeeModal from "../../../components/modals/ListingFeeModal";
 
 function DirectRegisterForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -81,6 +82,18 @@ function DirectRegisterForm({ open, onClose }) {
     isOpen: isCancelConfirmOpen,
     onOpen: onCancelConfirmOpen,
     onClose: onCancelConfirmClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isRedirectListingFeeOpen,
+    onOpen: onRedirectListingFeeOpen,
+    onClose: onRedirectListingFeeClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isListingFeeOpen,
+    onOpen: onListingFeeOpen,
+    onClose: onListingFeeClose,
   } = useDisclosure();
 
   // React Hook Form
@@ -172,6 +185,7 @@ function DirectRegisterForm({ open, onClose }) {
       onConfirmClose();
       onClose();
       handleResetForms();
+      debounce(onRedirectListingFeeOpen(), 2000);
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
       console.log(error);
@@ -324,6 +338,39 @@ function DirectRegisterForm({ open, onClose }) {
       </IconButton>
     </Box>
   );
+
+  //Misc Functions
+  const handleNext = () => {
+    if (activeTab === "Personal Info") {
+      setActiveTab("Terms and Conditions");
+    } else if (activeTab === "Terms and Conditions") {
+      setActiveTab("Attachments");
+    }
+  };
+
+  const handleBack = () => {
+    if (activeTab === "Terms and Conditions") {
+      setActiveTab("Personal Info");
+    } else if (activeTab === "Attachments") {
+      setActiveTab("Terms and Conditions");
+    }
+  };
+
+  const handleDisableNext = () => {
+    if (activeTab === "Personal Info" && navigators[0].isValid === false) {
+      return true;
+    } else if (
+      activeTab === "Terms and Conditions" &&
+      navigators[1].isValid === false
+    ) {
+      return true;
+    }
+  };
+
+  const handleRedirectListingFeeYes = () => {
+    onRedirectListingFeeClose();
+    onListingFeeOpen();
+  };
 
   const handleSameAsOwnersAddress = () => {};
 
@@ -722,9 +769,32 @@ function DirectRegisterForm({ open, onClose }) {
 
         {activeTab === "Attachments" && <Attachments />}
 
-        <Box className="commonDrawer__actionsSpread">
-          <DangerButton>Back</DangerButton>
-          <SecondaryButton>Next</SecondaryButton>
+        <Box
+          className={
+            activeTab === "Personal Info"
+              ? "commonDrawer__actionsNoMarginBottom"
+              : "commonDrawer__actionsSpread"
+          }
+        >
+          {activeTab !== "Personal Info" && (
+            <DangerButton onClick={handleBack}>Back</DangerButton>
+          )}
+          {activeTab !== "Attachments" && (
+            <SecondaryButton
+              onClick={handleNext}
+              disabled={handleDisableNext()}
+            >
+              Next
+            </SecondaryButton>
+          )}
+          {activeTab === "Attachments" && (
+            <SecondaryButton
+              onClick={onConfirmOpen}
+              disabled={navigators.some((obj) => obj.isValid === false)}
+            >
+              Register
+            </SecondaryButton>
+          )}
         </Box>
       </CommonDrawer>
 
@@ -768,6 +838,23 @@ function DirectRegisterForm({ open, onClose }) {
           (Fields will be reset)
         </span>
       </CommonDialog>
+
+      <CommonDialog
+        open={isRedirectListingFeeOpen}
+        onClose={onRedirectListingFeeClose}
+        onYes={handleRedirectListingFeeYes}
+        noIcon
+      >
+        Continue to listing fee for{" "}
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          {selectedRowData.businessName
+            ? selectedRowData.businessName
+            : "client"}
+        </span>
+        ?
+      </CommonDialog>
+
+      <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} />
     </>
   );
 }

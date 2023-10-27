@@ -110,8 +110,8 @@ export const navigationData = [
       },
       {
         id: 2,
-        name: "Discount Type",
-        path: "/customer-management/discount-type",
+        name: "Variable Discount",
+        path: "/customer-management/variable-discount",
         icon: "Label",
       },
       {

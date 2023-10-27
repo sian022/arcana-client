@@ -6,19 +6,19 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { discountTypeSchema } from "../../schema/schema";
+import { storeTypeSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
-  useGetAllDiscountTypesQuery,
-  usePatchDiscountTypeStatusMutation,
-  usePostDiscountTypeMutation,
-  usePutDiscountTypeMutation,
-} from "../../features/setup/api/discountTypeApi";
+  usePatchStoreTypeStatusMutation,
+  useGetAllStoreTypesQuery,
+  usePostStoreTypeMutation,
+  usePutStoreTypeMutation,
+} from "../../features/setup/api/storeTypeApi";
 
-function DiscountType() {
+function BusinessType() {
   const [drawerMode, setDrawerMode] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
@@ -58,13 +58,12 @@ function DiscountType() {
     "id",
     "createdAt",
     "addedBy",
-    "updateAt",
+    "updatedAt",
     "modifiedBy",
     "isActive",
   ];
 
-  const pesoArray = ["minimumAmount", "maximumAmount"];
-  const percentageArray = ["minimumPercentage", "maximumPercentage"];
+  const tableHeads = ["Business Type"];
 
   //React Hook Form
   const {
@@ -75,31 +74,31 @@ function DiscountType() {
     reset,
     control,
   } = useForm({
-    resolver: yupResolver(discountTypeSchema.schema),
+    resolver: yupResolver(storeTypeSchema.schema),
     mode: "onChange",
-    defaultValues: discountTypeSchema.defaultValues,
+    defaultValues: storeTypeSchema.defaultValues,
   });
 
   //RTK Query
-  const [postDiscountType] = usePostDiscountTypeMutation();
-  const { data, isLoading } = useGetAllDiscountTypesQuery({
+  const [postStoreType] = usePostStoreTypeMutation();
+  const { data, isLoading } = useGetAllStoreTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putDiscountType] = usePutDiscountTypeMutation();
-  const [patchDiscountTypeStatus] = usePatchDiscountTypeStatusMutation();
+  const [putStoreType] = usePutStoreTypeMutation();
+  const [patchStoreTypeStatus] = usePatchStoreTypeStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
-        await postDiscountType(data).unwrap();
-        setSnackbarMessage("Discount Type added successfully");
+        await postStoreType(data).unwrap();
+        setSnackbarMessage("Business Type added successfully");
       } else if (drawerMode === "edit") {
-        await putDiscountType(data).unwrap();
-        setSnackbarMessage("Discount Type updated successfully");
+        await putStoreType(data).unwrap();
+        setSnackbarMessage("Business Type updated successfully");
       }
 
       onDrawerClose();
@@ -113,10 +112,10 @@ function DiscountType() {
 
   const onArchiveSubmit = async () => {
     try {
-      await patchDiscountTypeStatus(selectedId).unwrap();
+      await patchStoreTypeStatus(selectedId).unwrap();
       onArchiveClose();
       setSnackbarMessage(
-        `Discount Type ${status ? "archived" : "restored"} successfully`
+        `Business Type ${status ? "archived" : "restored"} successfully`
       );
       onSuccessOpen();
     } catch (error) {
@@ -137,6 +136,8 @@ function DiscountType() {
     Object.keys(editData).forEach((key) => {
       setValue(key, editData[key]);
     });
+
+    console.log(editData);
   };
 
   const handleArchiveOpen = (id) => {
@@ -162,7 +163,7 @@ function DiscountType() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Discount Type"
+        pageTitle="Business Type"
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
@@ -171,10 +172,9 @@ function DiscountType() {
         <CommonTableSkeleton />
       ) : (
         <CommonTable
-          mapData={data?.discount}
+          mapData={data?.storeTypes}
           excludeKeysDisplay={excludeKeysDisplay}
-          pesoArray={pesoArray}
-          percentageArray={percentageArray}
+          tableHeads={tableHeads}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -192,53 +192,18 @@ function DiscountType() {
         open={isDrawerOpen}
         onClose={handleDrawerClose}
         drawerHeader={
-          (drawerMode === "add" ? "Add" : "Edit") + " Discount Type"
+          (drawerMode === "add" ? "Add" : "Edit") + " Business Type"
         }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
       >
         <TextField
-          label="Minimum Amount (₱)"
+          label="Business Type Name"
           size="small"
           autoComplete="off"
-          {...register("lowerBound")}
-          helperText={errors?.lowerBound?.message}
-          error={errors?.lowerBound}
-          type="number"
-          inputProps={{ min: 0 }}
-        />
-
-        <TextField
-          label="Maximum Amount (₱)"
-          size="small"
-          autoComplete="off"
-          {...register("upperBound")}
-          helperText={errors?.upperBound?.message}
-          error={errors?.upperBound}
-          type="number"
-          inputProps={{ min: 0 }}
-        />
-
-        <TextField
-          label="Minimum Percentage"
-          size="small"
-          autoComplete="off"
-          {...register("commissionRateLower")}
-          helperText={errors?.commissionRateLower?.message}
-          error={errors?.commissionRateLower}
-          type="number"
-          inputProps={{ min: 0 }}
-        />
-
-        <TextField
-          label="Maximum Percentage"
-          size="small"
-          autoComplete="off"
-          {...register("commissionRateUpper")}
-          helperText={errors?.commissionRateUpper?.message}
-          error={errors?.commissionRateUpper}
-          type="number"
-          inputProps={{ min: 0 }}
+          {...register("storeTypeName")}
+          helperText={errors?.storeTypeName?.message}
+          error={errors?.storeTypeName}
         />
       </CommonDrawer>
       <CommonDialog
@@ -262,4 +227,4 @@ function DiscountType() {
   );
 }
 
-export default DiscountType;
+export default BusinessType;

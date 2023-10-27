@@ -141,7 +141,7 @@ function CommonTable({
                       <TableCell key={k}>
                         {pesoArray && pesoArray.includes(keys) && "₱ "}
 
-                        {item[keys]}
+                        {percentageArray ? item[keys] * 100 : item[keys]}
 
                         {percentageArray &&
                           percentageArray.includes(keys) &&

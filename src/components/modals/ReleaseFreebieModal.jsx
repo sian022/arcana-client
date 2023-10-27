@@ -16,7 +16,7 @@ import {
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
 import rdfLogo from "../../assets/images/rdf-logo.png";
-import { Attachment, CameraAlt, PhotoCamera } from "@mui/icons-material";
+import { Attachment, CameraAlt, Close, PhotoCamera } from "@mui/icons-material";
 import useDisclosure from "../../hooks/useDisclosure";
 import SignatureCanvasModal from "./SignatureCanvasModal";
 import { useSelector } from "react-redux";
@@ -26,7 +26,6 @@ import { base64ToBlob, debounce } from "../../utils/CustomFunctions";
 import SuccessSnackbar from "../SuccessSnackbar";
 import ErrorSnackbar from "../ErrorSnackbar";
 import CommonDialog from "../CommonDialog";
-import ListingFeeModal from "./ListingFeeModal";
 
 function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -109,7 +108,7 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
       onClose();
       onConfirmClose();
       setSnackbarMessage("Freebie released successfully");
-      debounce(onRedirectListingFeeOpen(), 2000);
+      // debounce(onRedirectListingFeeOpen(), 2000);
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -146,13 +145,21 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
     <>
       <CommonModal width="900px" {...noOnCloseProps}>
         <Box className="releaseFreebieModal">
-          <Box className="releaseFreebieModal__logo">
-            <img src={rdfLogo} alt="RDF Logo" />
-            <Typography>
-              Purok 6, Brgy. Lara, <br /> City of San Fernando, Pampanga,
-              Philippines
-            </Typography>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box className="releaseFreebieModal__logo">
+              <img src={rdfLogo} alt="RDF Logo" />
+              <Typography>
+                Purok 6, Brgy. Lara, <br /> City of San Fernando, Pampanga,
+                Philippines
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", justifyContent: "end" }}>
+              <IconButton onClick={onCancelConfirmOpen}>
+                <Close />
+              </IconButton>
+            </Box>
           </Box>
+
           <Box className="releaseFreebieModal__header">
             <Typography className="releaseFreebieModal__header__title">
               Move Order Slip (Freebie)
@@ -281,8 +288,8 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
             </Box>
           </Box>
         </Box>
-        <Box className="releaseFreebieModal__actions">
-          <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton>
+        <Box className="releaseFreebieModal__actionsEnd">
+          {/* <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton> */}
           <SecondaryButton
             onClick={onConfirmOpen}
             disabled={!signature || !photoProof}
@@ -298,8 +305,6 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
         signature={signature}
         setSignature={setSignature}
       />
-
-      <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} />
 
       <CommonDialog
         open={isConfirmOpen}

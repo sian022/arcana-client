@@ -27,6 +27,8 @@ import CommonModal from "../../../components/CommonModal";
 import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
 import AddSearchMixin from "../../../components/mixins/AddSearchMixin";
 import CancelFreebiesModal from "../../../components/modals/CancelFreebiesModal";
+import SecondaryButton from "../../../components/SecondaryButton";
+import AccentButton from "../../../components/AccentButton";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -38,6 +40,7 @@ function ForReleasing() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [newProspectName, setNewProspectName] = useState("");
+  const [editMode, setEditMode] = useState(false);
 
   const dispatch = useDispatch();
   const badges = useSelector((state) => state.badge.value);
@@ -204,6 +207,7 @@ function ForReleasing() {
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
+      onConfirmClose();
       onErrorOpen();
     }
   };
@@ -296,7 +300,8 @@ function ForReleasing() {
             tableHeads={tableHeads}
             editable
             // archivable
-            onEdit={handleEditOpen}
+            // onEdit={handleEditOpen}
+            onView={handleEditOpen}
             onCancelFreebies={onFreebieCancelOpen}
             // onUpdateFreebies={onFreebieUpdateOpen}
             onUpdateFreebies={onFreebieFormOpen}
@@ -315,7 +320,7 @@ function ForReleasing() {
       </Box>
 
       <CommonDrawer
-        drawerHeader={drawerMode == "add" ? "Add Prospect" : "Edit Prospect"}
+        drawerHeader={drawerMode == "add" ? "Add Prospect" : "View Prospect"}
         open={isDrawerOpen}
         onClose={onCancelConfirmOpen}
         width="1000px"
@@ -324,6 +329,7 @@ function ForReleasing() {
           // handleSubmit(onDrawerSubmit)
           onConfirmOpen
         }
+        removeButtons
       >
         <Box className="register">
           <Box className="register__secondRow">
@@ -332,6 +338,7 @@ function ForReleasing() {
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
                   <TextField
+                    disabled={!editMode && drawerMode === "edit"}
                     sx={{ gridColumn: "span 3" }}
                     label="Owners Name"
                     size="small"
@@ -351,6 +358,7 @@ function ForReleasing() {
                 Contact Number
               </Typography>
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Phone Number"
                 size="small"
                 autoComplete="off"
@@ -363,6 +371,7 @@ function ForReleasing() {
             <Box className="register__thirdRow__column">
               <Typography className="register__title">Email Address</Typography>
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Email Address"
                 size="small"
                 autoComplete="off"
@@ -377,6 +386,7 @@ function ForReleasing() {
             <Typography className="register__title">Address</Typography>
             <Box className="register__secondRow__content">
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Unit No."
                 size="small"
                 autoComplete="off"
@@ -386,6 +396,7 @@ function ForReleasing() {
                 error={errors?.houseNumber}
               />
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Street"
                 size="small"
                 autoComplete="off"
@@ -395,6 +406,7 @@ function ForReleasing() {
                 error={errors?.streetName}
               />
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Barangay"
                 size="small"
                 autoComplete="off"
@@ -406,6 +418,7 @@ function ForReleasing() {
             </Box>
             <Box className="register__secondRow__content">
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Municipality/City"
                 size="small"
                 autoComplete="off"
@@ -415,6 +428,7 @@ function ForReleasing() {
                 error={errors?.city}
               />
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Province"
                 size="small"
                 autoComplete="off"
@@ -432,6 +446,7 @@ function ForReleasing() {
             </Typography>
             <Box className="register__secondRow__content">
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Business Name"
                 size="small"
                 autoComplete="off"
@@ -440,26 +455,71 @@ function ForReleasing() {
                 helperText={errors?.businessName?.message}
                 error={errors?.businessName}
               />
-              <ControlledAutocomplete
-                name={"storeTypeId"}
-                control={control}
-                options={storeTypeData?.storeTypes}
-                getOptionLabel={(option) => option.storeTypeName}
-                disableClearable
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label="Business Type"
-                    required
-                    helperText={errors?.storeTypeId?.message}
-                    error={errors?.storeTypeId}
-                  />
-                )}
-              />
+              {selectedStoreType === "Main" ? (
+                <ControlledAutocomplete
+                  disabled={!editMode && drawerMode === "edit"}
+                  name={"storeTypeId"}
+                  control={control}
+                  options={storeTypeData?.storeTypes}
+                  getOptionLabel={(option) => option.storeTypeName}
+                  disableClearable
+                  // value={storeTypeData?.storeTypes?.find(
+                  //   (store) => store.storeTypeName === selectedStoreType
+                  // )}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Business Type"
+                      required
+                      helperText={errors?.storeTypeId?.message}
+                      error={errors?.storeTypeId}
+                    />
+                  )}
+                />
+              ) : (
+                <Autocomplete
+                  options={storeTypeData?.storeTypes}
+                  getOptionLabel={(option) => option.storeTypeName}
+                  disableClearable
+                  value={storeTypeData?.storeTypes?.find(
+                    (store) => store.storeTypeName === selectedStoreType
+                  )}
+                  disabled
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Business Type"
+                      required
+                      helperText={errors?.storeTypeId?.message}
+                      error={errors?.storeTypeId}
+                    />
+                  )}
+                />
+              )}
             </Box>
           </Box>
+        </Box>
+        <Box className="commonDrawer__actions">
+          {drawerMode !== "edit" || editMode ? (
+            <SecondaryButton onClick={onConfirmOpen} disabled={!isValid}>
+              Submit
+            </SecondaryButton>
+          ) : null}
+          {drawerMode === "edit" && (
+            <AccentButton
+              sx={{ color: "white !important" }}
+              onClick={() => {
+                setEditMode(!editMode);
+              }}
+            >
+              Edit
+            </AccentButton>
+          )}
         </Box>
       </CommonDrawer>
 
@@ -506,7 +566,7 @@ function ForReleasing() {
         onYes={handleDrawerClose}
       >
         Are you sure you want to cancel{" "}
-        {drawerMode === "add" ? "adding" : "editing"} prospect
+        {drawerMode === "add" ? "adding" : "viewing"} prospect
         {watch("businessName") ? (
           <>
             {" "}
@@ -522,6 +582,7 @@ function ForReleasing() {
         open={isFreebieConfirmOpen}
         onClose={onFreebieConfirmClose}
         onYes={handleFreebieFormYes}
+        noIcon
       >
         Continue to add freebie for {newProspectName || "new prospect"}?
       </CommonDialog>

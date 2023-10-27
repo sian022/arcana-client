@@ -8,6 +8,7 @@ import {
   IconButton,
   TextField,
   Typography,
+  debounce,
 } from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
@@ -35,8 +36,8 @@ import {
 } from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import DangerButton from "../../../components/DangerButton";
-import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
+import ListingFeeModal from "../../../components/modals/ListingFeeModal";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -79,6 +80,18 @@ function RegisterRegularForm({ open, onClose }) {
     isOpen: isCancelConfirmOpen,
     onOpen: onCancelConfirmOpen,
     onClose: onCancelConfirmClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isRedirectListingFeeOpen,
+    onOpen: onRedirectListingFeeOpen,
+    onClose: onRedirectListingFeeClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isListingFeeOpen,
+    onOpen: onListingFeeOpen,
+    onClose: onListingFeeClose,
   } = useDisclosure();
 
   // React Hook Form
@@ -167,6 +180,7 @@ function RegisterRegularForm({ open, onClose }) {
       onConfirmClose();
       onClose();
       handleResetForms();
+      debounce(onRedirectListingFeeOpen(), 2000);
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
       console.log(error);
@@ -309,6 +323,11 @@ function RegisterRegularForm({ open, onClose }) {
     ) {
       return true;
     }
+  };
+
+  const handleRedirectListingFeeYes = () => {
+    onRedirectListingFeeClose();
+    onListingFeeOpen();
   };
 
   //Constant JSX
@@ -816,6 +835,23 @@ function RegisterRegularForm({ open, onClose }) {
           (Fields will be reset)
         </span>
       </CommonDialog>
+
+      <CommonDialog
+        open={isRedirectListingFeeOpen}
+        onClose={onRedirectListingFeeClose}
+        onYes={handleRedirectListingFeeYes}
+        noIcon
+      >
+        Continue to listing fee for{" "}
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          {selectedRowData.businessName
+            ? selectedRowData.businessName
+            : "client"}
+        </span>
+        ?
+      </CommonDialog>
+
+      <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} />
     </>
   );
 }

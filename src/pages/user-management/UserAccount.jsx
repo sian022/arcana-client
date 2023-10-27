@@ -1,8 +1,6 @@
 import {
   Autocomplete,
   Box,
-  IconButton,
-  InputAdornment,
   TextField,
   createFilterOptions,
 } from "@mui/material";
@@ -81,12 +79,14 @@ function UserAccount() {
     "locationName",
   ];
 
+  const tableHeads = ["Full ID Number", "Full Name", "Username", "Role Name"];
+
   //React Hook Form
   const {
     handleSubmit,
     formState: { errors, isValid },
-    register,
     setValue,
+    watch,
     reset,
     control,
     getValues,
@@ -97,15 +97,16 @@ function UserAccount() {
   });
 
   //RTK Query
-  const [postUser] = usePostUserMutation();
+  const [postUser, { isLoading: isAddUserLoading }] = usePostUserMutation();
   const { data, isLoading } = useGetAllUsersQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putUser] = usePutUserMutation();
-  const [patchUserStatus] = usePatchUserStatusMutation();
+  const [putUser, { isLoading: isEditUserLoading }] = usePutUserMutation();
+  const [patchUserStatus, { isLoading: isArchiveUserLoading }] =
+    usePatchUserStatusMutation();
 
   const { data: userRoleData } = useGetAllUserRolesQuery();
   const { data: sedarData = [], isLoading: isSedarLoading } =
@@ -168,9 +169,11 @@ function UserAccount() {
     // Object.keys(editData).forEach((key) => {
     //   setValue(key, editData[key]);
     // });
+    setValue("id", editData.id);
+    setValue("fullIdNo", editData.fullIdNo);
     setValue("fullname", editData.fullname);
     setValue("username", editData.username);
-    setValue("password", editData.password);
+    // setValue("password", editData.password);
     setValue(
       "userRoleId",
       userRoleData?.userRoles?.find(
@@ -178,6 +181,8 @@ function UserAccount() {
       )
     );
   };
+
+  console.log(getValues());
 
   const handleArchiveOpen = (id) => {
     onArchiveOpen();
@@ -220,6 +225,7 @@ function UserAccount() {
         <CommonTable
           mapData={data?.users}
           excludeKeysDisplay={excludeKeysDisplay}
+          tableHeads={tableHeads}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -239,16 +245,20 @@ function UserAccount() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " User Account"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddUserLoading : isEditUserLoading}
       >
-        <Autocomplete
+        {/* <ControlledAutocomplete
+          name={"fullIdNo"}
           selectOnFocus
           clearOnBlur
           handleHomeEndKeys
+          control={control}
           options={sedarData}
           loading={isSedarLoading}
           disableClearable
           filterOptions={filterOptions}
           getOptionLabel={(option) => option.general_info.full_id_number}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
             <TextField {...params} size="small" label="Employee ID" />
           )}
@@ -262,6 +272,7 @@ function UserAccount() {
               var part2 = lastName.replace(/\s/g, "").toLowerCase();
               return part1 + part2;
             };
+            setValue()
             setValue("fullname", value.general_info.full_name);
             setValue("location", value.unit_info.location_name);
             setValue("department", value.unit_info.department_name);
@@ -281,7 +292,59 @@ function UserAccount() {
               )}1234`
             );
           }}
-        />
+        /> */}
+        {drawerMode === "add" ? (
+          <Autocomplete
+            selectOnFocus
+            clearOnBlur
+            handleHomeEndKeys
+            options={sedarData}
+            loading={isSedarLoading}
+            disableClearable
+            filterOptions={filterOptions}
+            getOptionLabel={(option) => option.general_info.full_id_number}
+            renderInput={(params) => (
+              <TextField {...params} size="small" label="Employee ID" />
+            )}
+            onChange={(_, value) => {
+              const generateUsername = (firstName, lastName) => {
+                var part1 = firstName
+                  .split(" ")
+                  .map((i) => i.charAt(0))
+                  .join("")
+                  .toLowerCase();
+                var part2 = lastName.replace(/\s/g, "").toLowerCase();
+                return part1 + part2;
+              };
+              setValue("fullIdNo", value.general_info.full_id_number);
+              setValue("fullname", value.general_info.full_name);
+              setValue("location", value.unit_info.location_name);
+              setValue("department", value.unit_info.department_name);
+              setValue("company", value.unit_info.company_name);
+              setValue(
+                "username",
+                generateUsername(
+                  value.general_info.first_name,
+                  value.general_info.last_name
+                )
+              );
+              setValue(
+                "password",
+                `${generateUsername(
+                  value.general_info.first_name,
+                  value.general_info.last_name
+                )}1234`
+              );
+            }}
+          />
+        ) : (
+          <TextField
+            label="Employee ID"
+            size="small"
+            disabled
+            value={watch("fullIdNo")}
+          />
+        )}
 
         <Controller
           control={control}
@@ -358,6 +421,7 @@ function UserAccount() {
             <TextField
               size="small"
               label="Username"
+              disabled={drawerMode === "edit"}
               autoComplete="off"
               onChange={onChange}
               onBlur={onBlur}
@@ -367,7 +431,7 @@ function UserAccount() {
           )}
         />
 
-        <Controller
+        {/* <Controller
           control={control}
           name={"password"}
           render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -397,7 +461,7 @@ function UserAccount() {
               }}
             />
           )}
-        />
+        /> */}
 
         <ControlledAutocomplete
           name={"userRoleId"}

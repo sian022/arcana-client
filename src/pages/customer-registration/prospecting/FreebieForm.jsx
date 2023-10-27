@@ -368,6 +368,7 @@ function FreebieForm({
         open={isRedirectReleaseOpen}
         onClose={onRedirectReleaseClose}
         onYes={handleRedirectReleaseYes}
+        noIcon
       >
         Continue to release freebies for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

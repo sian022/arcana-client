@@ -76,22 +76,18 @@ export const storeTypeSchema = {
   },
 };
 
-export const discountTypeSchema = {
+export const variableDiscountSchema = {
   schema: yup.object({
-    lowerBound: yup.number().required("Lower boundary is required"),
-    upperBound: yup.number().required("Upper boundary is required"),
-    commissionRateLower: yup
-      .number()
-      .required("Lower commission rate is required"),
-    commissionRateUpper: yup
-      .number()
-      .required("Upper commission rate is required"),
+    minimumAmount: yup.number().required("Minimum amount is required"),
+    maximumAmount: yup.number().required("Maximum amount is required"),
+    minimumPercentage: yup.number().required("Minimum percentage is required"),
+    maximumPercentage: yup.number().required("Maximum percentage is required"),
   }),
   defaultValues: {
-    lowerBound: null,
-    upperBound: null,
-    commissionRateLower: null,
-    commissionRateUpper: null,
+    minimumAmount: null,
+    maximumAmount: null,
+    minimumPercentage: null,
+    maximumPercentage: null,
   },
 };
 
@@ -106,30 +102,19 @@ export const termDaysSchema = {
 
 //User Management Schemas
 export const userAccountSchema = {
-  schema: yup
-    .object({
-      fullname: yup.string().required("Fullname is required"),
-      username: yup.string().required("Username is required"),
-      password: yup.string().required("Password is required"),
-      // locationId: yup.object().required("Location is required"),
-      // departmentId: yup.object().required("Department is required"),
-      // companyId: yup.object().required("Company is required"),
-      // location: yup.string().required("Location is required"),
-      // department: yup.string().required("Department is required"),
-      // company: yup.string().required("Company is required"),
-      userRoleId: yup.object().required("Role is required"),
-    })
-    .required(),
+  schema: yup.object({
+    fullIdNo: yup.string().required("Full ID number is required"),
+    fullname: yup.string().required("Fullname is required"),
+    username: yup.string().required("Username is required"),
+    password: yup.string(),
+    userRoleId: yup.object().required("Role is required"),
+  }),
+  // .required(),
   defaultValues: {
+    fullIdNo: "",
     fullname: "",
     username: "",
     password: "",
-    // locationId: null,
-    // departmentId: null,
-    // companyId: null,
-    // location: "",
-    // department: "",
-    // company: "",
     userRoleId: null,
   },
 };

@@ -77,8 +77,8 @@ function RegistrationApproval() {
 
       <ViewRegistrationDetailsModal
         open={
-          // isViewOpen
-          true
+          isViewOpen
+          // true
         }
         onClose={onViewClose}
       />

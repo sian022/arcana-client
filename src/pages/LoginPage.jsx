@@ -24,6 +24,7 @@ import { setPermissisons } from "../features/authentication/reducers/permissions
 import MisLogo from "../assets/images/MIS-logo.png";
 import SystemLogoName from "../assets/images/SystemLogoName.png";
 import useSnackbar from "../hooks/useSnackbar";
+import SecondaryButton from "../components/SecondaryButton";
 
 function LoginPage() {
   const { showSnackbar } = useSnackbar();
@@ -112,17 +113,17 @@ function LoginPage() {
               {...register("password")}
               helperText={errors && errors.password?.message}
             />
-            <Button
+            <SecondaryButton
               className="login__formWrapper__form__signIn"
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !isValid}
             >
               {isLoading ? (
                 <CircularProgress size="20px" color="white" />
               ) : (
                 "Sign In"
               )}
-            </Button>
+            </SecondaryButton>
           </Box>
         </Box>
       </Box>

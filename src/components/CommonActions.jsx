@@ -12,6 +12,7 @@ import {
   Restore,
   Tag,
   Update,
+  Visibility,
 } from "@mui/icons-material";
 
 function CommonActions({
@@ -48,8 +49,9 @@ function CommonActions({
     } else if (action === "cancelFreebies") {
       onCancelFreebies();
     } else if (action === "viewMore") {
-      onView();
+      onView(item);
     }
+
     onClose();
   };
 
@@ -63,14 +65,20 @@ function CommonActions({
         <More />
       </IconButton>
       <Menu open={isOpen} onClose={onClose} anchorEl={anchorRef.current}>
+        {onView && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("viewMore");
+            }}
+          >
+            <Visibility />
+            View
+          </MenuItem>
+        )}
         {onTag && (
           <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
+            className="actionsMenuItem"
             onClick={() => {
               handleAction("tag");
             }}
@@ -81,12 +89,7 @@ function CommonActions({
         )}
         {onEdit && (
           <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
+            className="actionsMenuItem"
             onClick={() => {
               handleAction("edit");
             }}
@@ -97,12 +100,7 @@ function CommonActions({
         )}
         {onArchive && (
           <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
+            className="actionsMenuItem"
             onClick={() => {
               handleAction("archive");
             }}
@@ -113,12 +111,7 @@ function CommonActions({
         )}
         {onFreebie && (
           <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
+            className="actionsMenuItem"
             onClick={() => {
               handleAction("requestFreebie");
             }}
@@ -129,12 +122,7 @@ function CommonActions({
         )}
         {onReleaseFreebie && (
           <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
+            className="actionsMenuItem"
             onClick={() => {
               handleAction("releaseFreebie");
             }}
@@ -145,12 +133,7 @@ function CommonActions({
         )}
         {onRegularRegister && (
           <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
+            className="actionsMenuItem"
             onClick={() => {
               handleAction("regularRegister");
             }}
@@ -162,12 +145,7 @@ function CommonActions({
 
         {onUpdateFreebies && (
           <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
+            className="actionsMenuItem"
             onClick={() => {
               handleAction("updateFreebies");
             }}
@@ -179,35 +157,13 @@ function CommonActions({
 
         {onCancelFreebies && (
           <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
+            className="actionsMenuItem"
             onClick={() => {
               handleAction("cancelFreebies");
             }}
           >
             <Cancel />
             Cancel Freebies
-          </MenuItem>
-        )}
-
-        {onView && (
-          <MenuItem
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "600",
-            }}
-            onClick={() => {
-              handleAction("viewMore");
-            }}
-          >
-            <ArrowForward />
-            View
           </MenuItem>
         )}
       </Menu>

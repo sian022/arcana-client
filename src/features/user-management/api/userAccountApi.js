@@ -34,7 +34,7 @@ export const userAccountApi = createApi({
       transformErrorResponse: (response) => response.data,
     }),
     putUser: builder.mutation({
-      query: ({ id, ...body }) => ({
+      query: ({ id, password, ...body }) => ({
         url: `/User/UpdateUser/${id}`,
         method: "PUT",
         body: body,

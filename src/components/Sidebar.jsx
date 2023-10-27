@@ -45,9 +45,9 @@ function Sidebar() {
         />
       </Box>
       <Box className="sidebar__navigation">
-        {
-          // permittedSidebar.map
-          navigationData.map((item) => (
+        {permittedSidebar.map(
+          // navigationData.map
+          (item) => (
             <React.Fragment key={item.id}>
               <NavLink to={item.path}>
                 {({ isActive }) => (
@@ -108,8 +108,8 @@ function Sidebar() {
                 </Collapse>
               )}
             </React.Fragment>
-          ))
-        }
+          )
+        )}
       </Box>
     </Box>
   );

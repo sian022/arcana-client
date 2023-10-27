@@ -9,6 +9,7 @@ import {
 import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
+import AccentButton from "./AccentButton";
 
 function CommonDrawer({
   onClose,
@@ -65,14 +66,19 @@ function CommonDrawer({
           </Box>
           {!removeButtons && (
             <Box className="commonDrawer__actions">
-              <SecondaryButton onClick={onSubmit} disabled={disableSubmit}>
+              <SecondaryButton
+                onClick={onSubmit}
+                disabled={disableSubmit || isLoading}
+              >
                 {isLoading ? (
-                  <CircularProgress />
+                  <CircularProgress size="20px" />
                 ) : (
                   <>{submitLabel || "Submit"}</>
                 )}
               </SecondaryButton>
-              <DangerButton onClick={onClose}>Close</DangerButton>
+              <DangerButton onClick={onClose} disabled={isLoading}>
+                Close
+              </DangerButton>
             </Box>
           )}
         </Box>

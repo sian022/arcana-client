@@ -7,6 +7,7 @@ const storedFullname = sessionStorage.getItem("fullname");
 const initialState = {
   fullname: storedFullname || "",
   token: "",
+  isPasswordChanged: false,
 };
 
 export const loginSlice = createSlice({
@@ -30,6 +31,9 @@ export const loginSlice = createSlice({
       ).toString();
       // localStorage.setItem("token", ciphertext);
       sessionStorage.setItem("token", ciphertext);
+    },
+    setIsPasswordChanged: (state) => {
+      state.isPasswordChanged = true;
     },
   },
 });

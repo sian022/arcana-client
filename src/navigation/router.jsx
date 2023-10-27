@@ -5,7 +5,6 @@ import Dashboard from "../pages/Dashboard";
 import UserManagement from "../pages/user-management";
 import Setup from "../pages/setup";
 import CustomerManagement from "../pages/customer-management";
-import Terms from "../pages/terms";
 import CustomerRegistration from "../pages/customer-registration";
 import Approval from "../pages/approval";
 import UserAccount from "../pages/user-management/UserAccount";
@@ -18,15 +17,15 @@ import ProductCategory from "../pages/setup/ProductCategory";
 import ProductSubCategory from "../pages/setup/ProductSubCategory";
 import MeatType from "../pages/setup/MeatType";
 import UnitOfMeasurements from "../pages/setup/UnitOfMeasurements";
-import StoreType from "../pages/setup/StoreType";
-import DiscountType from "../pages/customer-management/DiscountType";
-import TermDays from "../pages/terms/TermDays";
+import TermDays from "../pages/customer-management/TermDays";
 import Prospect from "../pages/customer-registration/prospecting";
 import Registration from "../pages/customer-registration/Registration";
 import ListingFee from "../pages/customer-registration/ListingFee";
 import RegistrationApproval from "../pages/approval/RegistrationApproval";
 import SpecialDiscountApproval from "../pages/approval/SpecialDiscountApproval";
 import ListingFeeApproval from "../pages/approval/ListingFeeApproval";
+import VariableDiscount from "../pages/customer-management/VariableDiscount";
+import BusinessType from "../pages/customer-management/BusinessType";
 
 export const router = createBrowserRouter([
   {
@@ -107,11 +106,11 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "business-type",
-            element: <StoreType />,
+            element: <BusinessType />,
           },
           {
-            path: "discount-type",
-            element: <DiscountType />,
+            path: "variable-discount",
+            element: <VariableDiscount />,
           },
           {
             path: "term-days",

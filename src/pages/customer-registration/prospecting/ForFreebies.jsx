@@ -17,13 +17,15 @@ import {
 } from "../../../features/prospect/api/prospectApi";
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
 import { useDispatch, useSelector } from "react-redux";
-import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 import CommonDialog from "../../../components/CommonDialog";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
+import SecondaryButton from "../../../components/SecondaryButton";
+import DangerButton from "../../../components/DangerButton";
+import AccentButton from "../../../components/AccentButton";
 
 function ForFreebies() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -35,6 +37,7 @@ function ForFreebies() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [newProspectName, setNewProspectName] = useState("");
+  const [editMode, setEditMode] = useState(false);
 
   const dispatch = useDispatch();
   const badges = useSelector((state) => state.badge.value);
@@ -183,6 +186,7 @@ function ForFreebies() {
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
+      onConfirmClose();
       onErrorOpen();
     }
   };
@@ -279,9 +283,10 @@ function ForFreebies() {
             // excludeKeys={excludeKeys}
             excludeKeysDisplay={excludeKeysDisplay}
             tableHeads={tableHeads}
-            editable
+            // editable
             archivable
-            onEdit={handleEditOpen}
+            // onEdit={handleEditOpen}
+            onView={handleEditOpen}
             onArchive={handleArchiveOpen}
             onFreebie={onFreebieFormOpen}
             page={page}
@@ -296,7 +301,7 @@ function ForFreebies() {
       </Box>
 
       <CommonDrawer
-        drawerHeader={drawerMode == "add" ? "Add Prospect" : "Edit Prospect"}
+        drawerHeader={drawerMode == "add" ? "Add Prospect" : "View Prospect"}
         open={isDrawerOpen}
         onClose={onCancelConfirmOpen}
         width="1000px"
@@ -305,6 +310,7 @@ function ForFreebies() {
           // handleSubmit(onDrawerSubmit)
           onConfirmOpen
         }
+        removeButtons
       >
         <Box className="register">
           <Box className="register__secondRow">
@@ -313,6 +319,7 @@ function ForFreebies() {
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
                   <TextField
+                    disabled={!editMode && drawerMode === "edit"}
                     sx={{ gridColumn: "span 3" }}
                     label="Owners Name"
                     size="small"
@@ -332,6 +339,7 @@ function ForFreebies() {
                 Contact Number
               </Typography>
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Phone Number"
                 size="small"
                 autoComplete="off"
@@ -344,6 +352,7 @@ function ForFreebies() {
             <Box className="register__thirdRow__column">
               <Typography className="register__title">Email Address</Typography>
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Email Address"
                 size="small"
                 autoComplete="off"
@@ -358,6 +367,7 @@ function ForFreebies() {
             <Typography className="register__title">Address</Typography>
             <Box className="register__secondRow__content">
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Unit No."
                 size="small"
                 autoComplete="off"
@@ -367,6 +377,7 @@ function ForFreebies() {
                 error={errors?.houseNumber}
               />
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Street"
                 size="small"
                 autoComplete="off"
@@ -376,6 +387,7 @@ function ForFreebies() {
                 error={errors?.streetName}
               />
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Barangay"
                 size="small"
                 autoComplete="off"
@@ -387,6 +399,7 @@ function ForFreebies() {
             </Box>
             <Box className="register__secondRow__content">
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Municipality/City"
                 size="small"
                 autoComplete="off"
@@ -396,6 +409,7 @@ function ForFreebies() {
                 error={errors?.city}
               />
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Province"
                 size="small"
                 autoComplete="off"
@@ -413,6 +427,7 @@ function ForFreebies() {
             </Typography>
             <Box className="register__secondRow__content">
               <TextField
+                disabled={!editMode && drawerMode === "edit"}
                 label="Business Name"
                 size="small"
                 autoComplete="off"
@@ -423,6 +438,7 @@ function ForFreebies() {
               />
               {selectedStoreType === "Main" ? (
                 <ControlledAutocomplete
+                  disabled={!editMode && drawerMode === "edit"}
                   name={"storeTypeId"}
                   control={control}
                   options={storeTypeData?.storeTypes}
@@ -469,6 +485,23 @@ function ForFreebies() {
             </Box>
           </Box>
         </Box>
+        <Box className="commonDrawer__actions">
+          {drawerMode !== "edit" || editMode ? (
+            <SecondaryButton onClick={onConfirmOpen} disabled={!isValid}>
+              Submit
+            </SecondaryButton>
+          ) : null}
+          {drawerMode === "edit" && (
+            <AccentButton
+              sx={{ color: "white !important" }}
+              onClick={() => {
+                setEditMode(!editMode);
+              }}
+            >
+              Edit
+            </AccentButton>
+          )}
+        </Box>
       </CommonDrawer>
 
       <FreebieForm
@@ -504,7 +537,7 @@ function ForFreebies() {
         onYes={handleDrawerClose}
       >
         Are you sure you want to cancel{" "}
-        {drawerMode === "add" ? "adding" : "editing"} prospect
+        {drawerMode === "add" ? "adding" : "viewing"} prospect
         {watch("businessName") ? (
           <>
             {" "}
@@ -520,6 +553,7 @@ function ForFreebies() {
         open={isFreebieConfirmOpen}
         onClose={onFreebieConfirmClose}
         onYes={handleFreebieFormYes}
+        noIcon
       >
         Continue to add freebie for {newProspectName || "new prospect"}?
       </CommonDialog>
