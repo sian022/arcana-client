@@ -15,9 +15,12 @@ import { changePasswordSchema } from "../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonDialog from "../CommonDialog";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function ChangePasswordModal({ ...otherProps }) {
   const { onClose, ...noOnClose } = otherProps;
+
+  const { showSnackbar } = useSnackbar();
 
   const [viewOldPassword, setViewOldPassword] = useState(false);
   const [viewNewPassword, setViewNewPassword] = useState(false);
@@ -42,9 +45,17 @@ function ChangePasswordModal({ ...otherProps }) {
   });
 
   const onSubmit = (data) => {
+    if (data["newPassword"] !== data["confirmNewPassword"]) {
+      onConfirmClose();
+      return showSnackbar("Passwords do not match", "error");
+    }
+
     onConfirmClose();
     onClose();
     reset();
+    setViewOldPassword(false);
+    setViewNewPassword(false);
+    setViewConfirmNewPassword(false);
   };
 
   return (
