@@ -51,6 +51,10 @@ function ChangePasswordModal({ ...otherProps }) {
     }
 
     onConfirmClose();
+    handleCloseModal();
+  };
+
+  const handleCloseModal = () => {
     onClose();
     reset();
     setViewOldPassword(false);
@@ -149,7 +153,7 @@ function ChangePasswordModal({ ...otherProps }) {
           <SecondaryButton onClick={onConfirmOpen} disabled={!isValid}>
             Save
           </SecondaryButton>
-          <DangerButton onClick={onClose}>Close</DangerButton>
+          <DangerButton onClick={handleCloseModal}>Close</DangerButton>
         </Box>
       </CommonModal>
 

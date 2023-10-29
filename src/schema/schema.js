@@ -325,12 +325,21 @@ export const directRegisterPersonalSchema = {
   },
 };
 
-// freezer: yup.boolean().required("Freezer is required"),
-// typeOfCustomer: yup.string().required("Type of customer is required"),
-// directDelivery: yup.boolean().required("Direct delivery is required"),
-// bookingCoverageId: yup.number().required("Booking coverage is required"),
-// modeOfPayment: yup.number().required("Mode of payment is required"),
-// termsId: yup.number().required("Terms is required"),
-// creditLimit: yup.number().required("Credit limit is required"),
-// termDaysId: yup.object().required("Term days is required"),
-// fixedDiscount: yup.object({}).required()
+export const requestListingFeeSchema = {
+  schema: yup.object({
+    clientId: yup.number().required("Client ID is required").integer(),
+    listingFeeItems: yup.array().of(
+      yup.object({
+        itemId: yup.object().required("Product Code Required"),
+      })
+    ),
+  }),
+  defaultValues: {
+    clientId: null,
+    listingFeeItems: [
+      {
+        itemId: null,
+      },
+    ],
+  },
+};

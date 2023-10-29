@@ -17,6 +17,7 @@ function CommonDialog({
   noIcon,
   customImageSource,
   isLoading,
+  disableYes,
   ...otherProps
 }) {
   return (
@@ -33,7 +34,7 @@ function CommonDialog({
         )}
         <DialogTitle className="commonDialog__title">{children}</DialogTitle>
         <DialogActions>
-          <SecondaryButton onClick={onYes} disabled={isLoading}>
+          <SecondaryButton onClick={onYes} disabled={isLoading || disableYes}>
             {isLoading ? <CircularProgress size="20px" color="white" /> : "Yes"}
           </SecondaryButton>
           <DangerButton onClick={onClose} disabled={isLoading}>

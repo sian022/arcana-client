@@ -6,12 +6,16 @@ import CommonTable from "../../components/CommonTable";
 import { dummyTableData } from "../../utils/DummyData";
 import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
 import useDisclosure from "../../hooks/useDisclosure";
+import CommonDialog from "../../components/CommonDialog";
+import { useSelector } from "react-redux";
 
 function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [origin, setOrigin] = useState("");
   const [clientStatus, setClientStatus] = useState("pending");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //Disclosures
   const {
@@ -49,6 +53,8 @@ function RegistrationApproval() {
     },
   ];
 
+  //Misc Functions
+
   useEffect(() => {
     const foundItem = registrationNavigation.find(
       (item) => item.case === tabViewing
@@ -77,8 +83,8 @@ function RegistrationApproval() {
 
       <ViewRegistrationDetailsModal
         open={
-          isViewOpen
-          // true
+          // isViewOpen
+          true
         }
         onClose={onViewClose}
       />

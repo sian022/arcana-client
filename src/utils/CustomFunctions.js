@@ -67,3 +67,9 @@ export const convertToTitleCase = (str) => {
     }
   });
 };
+
+export const titleCaseToCamelCase = (titleCaseString) => {
+  return titleCaseString
+    .toLowerCase()
+    .replace(/\s+(.)/g, (_, match) => match.toUpperCase());
+};

@@ -6,6 +6,7 @@ import CommonTable from "../../components/CommonTable";
 import { dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
 import ListingFeeModal from "../../components/modals/ListingFeeModal";
+import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -73,7 +74,11 @@ function ListingFee() {
         <CommonTable mapData={dummyTableData} moreCompact />
       </Box>
 
-      <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} />
+      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
+      <ListingFeeDrawer
+        isListingFeeOpen={isListingFeeOpen}
+        onListingFeeClose={onListingFeeClose}
+      />
     </>
   );
 }
