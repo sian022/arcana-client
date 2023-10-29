@@ -594,6 +594,7 @@ function DirectRegisterForm({ open, onClose }) {
                   label="Cluster Type"
                   size="small"
                   autoComplete="off"
+                  type="number"
                   required
                   className="register__textField"
                   {...register("cluster")}

@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
-import { Box, IconButton, TextField } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
-import { Add, Cancel } from "@mui/icons-material";
+import { Add, Cancel, Search } from "@mui/icons-material";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
@@ -22,7 +28,9 @@ function ListingFeeDrawer({
   updateListingFee,
 }) {
   const { showSnackbar } = useSnackbar();
+
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
 
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -131,9 +139,9 @@ function ListingFeeDrawer({
   //Misc Functions
   const handleListingFeeError = () => {
     if (fields.length === 1) {
-      setSnackbarMessage("Must have at least 1 freebie");
+      setSnackbarMessage("Must have at least 1 listing fee");
     } else if (fields.length === 5) {
-      setSnackbarMessage("Maximum of 5 freebies only");
+      setSnackbarMessage("Maximum of 5 listing fees only");
     }
     onErrorOpen();
   };
@@ -180,9 +188,15 @@ function ListingFeeDrawer({
     };
   }, [isListingFeeOpen]);
 
-  // useEffect(() => {
-  //   onFreebieReleaseOpen();
-  // }, [isListingFeeOpen]);
+  useEffect(() => {
+    let total = 0;
+    fields.forEach((item) => (total += parseInt(item.unitCost)));
+    setTotalAmount(total);
+  }, [fields]);
+
+  console.log(totalAmount);
+  console.log(fields);
+
   return (
     <>
       <CommonDrawer
@@ -238,6 +252,9 @@ function ListingFeeDrawer({
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+              Product Information
+            </Typography>
             {fields.map((item, index) => (
               <Box
                 key={item.id}
@@ -248,7 +265,7 @@ function ListingFeeDrawer({
                 }}
               >
                 <ControlledAutocomplete
-                  name={`listingFeeItem[${index}].itemId`}
+                  name={`listingFeeItems[${index}].itemId`}
                   control={control}
                   options={productData?.items || []}
                   getOptionLabel={(option) => option.itemCode || ""}
@@ -268,17 +285,17 @@ function ListingFeeDrawer({
                   )}
                   onChange={(_, value) => {
                     setValue(
-                      `listingFeeItem[${index}].itemDescription`,
+                      `listingFeeItems[${index}].itemDescription`,
                       value?.itemDescription
                     );
-                    setValue(`listingFeeItem[${index}].uom`, value?.uom);
+                    setValue(`listingFeeItems[${index}].uom`, value?.uom);
                     return value;
                   }}
                 />
 
                 <Controller
                   control={control}
-                  name={`listingFeeItem[${index}].itemDescription`}
+                  name={`listingFeeItems[${index}].itemDescription`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="Item Description"
@@ -296,7 +313,7 @@ function ListingFeeDrawer({
 
                 <Controller
                   control={control}
-                  name={`listingFeeItem[${index}].uom`}
+                  name={`listingFeeItems[${index}].uom`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="UOM"
@@ -313,7 +330,7 @@ function ListingFeeDrawer({
 
                 <Controller
                   control={control}
-                  name={`listingFeeItem[${index}].uom`}
+                  name={`listingFeeItems[${index}].uom`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="SKU"
@@ -331,10 +348,11 @@ function ListingFeeDrawer({
 
                 <Controller
                   control={control}
-                  name={`listingFeeItem[${index}].uom`}
+                  name={`listingFeeItems[${index}].unitCost`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="Unit Cost"
+                      type="number"
                       size="small"
                       autoComplete="off"
                       onChange={onChange}
@@ -362,16 +380,48 @@ function ListingFeeDrawer({
           </Box>
         </Box>
 
-        <SecondaryButton
-          sx={{ width: "150px" }}
-          onClick={() => {
-            fields.length < 5
-              ? append({ itemId: null, quantity: 1 })
-              : handleListingFeeError();
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            position: "relative",
           }}
         >
-          Add Listing Fee
-        </SecondaryButton>
+          <SecondaryButton
+            sx={{ width: "150px" }}
+            onClick={() => {
+              fields.length < 5
+                ? append({ itemId: null, unitCost: null })
+                : handleListingFeeError();
+            }}
+          >
+            Add Listing Fee
+          </SecondaryButton>
+          <Box
+            sx={{
+              display: "flex",
+              gap: "10px",
+              mr: "50px",
+              position: "absolute",
+              left: "600px",
+              gap: "23px",
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "1rem",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+            >
+              Total Amount
+            </Typography>
+            <Typography sx={{ fontSize: "1rem" }}>
+              {totalAmount || 0}
+            </Typography>
+          </Box>
+        </Box>
       </CommonDrawer>
 
       <CommonDialog

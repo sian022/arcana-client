@@ -252,7 +252,6 @@ function RegisterRegularForm({ open, onClose }) {
       };
     }
 
-    console.log(ownersRequirements);
     if (attachmentsObject) {
       Object.keys(attachmentsObject).forEach((key, index) => {
         const attachment = attachmentsObject[key];
@@ -590,6 +589,7 @@ function RegisterRegularForm({ open, onClose }) {
                   label="Cluster Type"
                   size="small"
                   autoComplete="off"
+                  type="number"
                   required
                   className="register__textField"
                   {...register("cluster")}

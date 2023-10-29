@@ -327,10 +327,11 @@ export const directRegisterPersonalSchema = {
 
 export const requestListingFeeSchema = {
   schema: yup.object({
-    clientId: yup.number().required("Client ID is required").integer(),
+    clientId: yup.number().required("Business Name is required").integer(),
     listingFeeItems: yup.array().of(
       yup.object({
-        itemId: yup.object().required("Product Code Required"),
+        itemId: yup.object().required("Product Code is required"),
+        unitCost: yup.number().required("Unit Cost is required"),
       })
     ),
   }),
@@ -339,6 +340,7 @@ export const requestListingFeeSchema = {
     listingFeeItems: [
       {
         itemId: null,
+        unitCost: null,
       },
     ],
   },
