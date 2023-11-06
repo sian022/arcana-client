@@ -36,6 +36,11 @@ function RegistrationApproval() {
       name: "Approved Client",
       // badge: badges["forReleasing"],
     },
+    {
+      case: 3,
+      name: "Rejected Client",
+      // badge: badges["forReleasing"],
+    },
   ];
 
   const selectOptions = [

@@ -12,7 +12,10 @@ import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
 import { Check, Close, PushPin } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { directRegisterPersonalSchema } from "../../../schema/schema";
+import {
+  directRegisterPersonalSchema,
+  regularRegisterSchema,
+} from "../../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
@@ -108,11 +111,12 @@ function DirectRegisterForm({ open, onClose }) {
     watch,
   } = useForm({
     resolver: yupResolver(directRegisterPersonalSchema.schema),
+    // resolver: yupResolver(regularRegisterSchema.schema),
     mode: "onChange",
     defaultValues: directRegisterPersonalSchema.defaultValues,
+    // defaultValues: regularRegisterSchema.defaultValues,
   });
 
-  console.log(getValues());
   //Constants
   const navigators = [
     {
@@ -394,8 +398,6 @@ function DirectRegisterForm({ open, onClose }) {
       setValue("businessAddress.province", "");
     }
   }, [sameAsOwnersAddress]);
-
-  console.log(getValues());
 
   return (
     <>
@@ -858,9 +860,7 @@ function DirectRegisterForm({ open, onClose }) {
       >
         Confirm registration of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
-            : "client"}
+          {watch("businessName") ? watch("businessName") : "client"}
         </span>{" "}
         as a regular customer?
       </CommonDialog>
@@ -872,9 +872,7 @@ function DirectRegisterForm({ open, onClose }) {
       >
         Confirm cancel of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
-            : "client"}
+          {watch("businessName") ? watch("businessName") : "client"}
         </span>{" "}
         as a regular customer? <br />
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

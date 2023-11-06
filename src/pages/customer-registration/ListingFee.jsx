@@ -33,6 +33,10 @@ function ListingFee() {
       name: "Approved Listing Fee",
       // badge: badges["forReleasing"],
     },
+    {
+      case: 3,
+      name: "Rejected Listing Fee",
+    },
   ];
 
   const selectOptions = [
@@ -41,7 +45,7 @@ function ListingFee() {
       label: "All",
     },
     {
-      value: "prospect",
+      value: "prospecting",
       label: "Prospect",
     },
     {

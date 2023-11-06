@@ -187,6 +187,30 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 
+  &__viewModal {
+    &__title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+
+      & p {
+        font-size: 25px;
+        font-weight: bold;
+      }
+    }
+
+    &__signature {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid black;
+      min-width: 800px;
+      min-height: 400px;
+      overflow: hidden;
+    }
+  }
+
   & button.buttonActive {
     background-color: $secondary;
 
@@ -241,6 +265,18 @@
 
         & p {
           font-weight: 500;
+        }
+
+        & &__viewOwner {
+          border: none;
+          position: absolute;
+          right: 45px;
+        }
+
+        & &__viewRepresentative {
+          border: none;
+          position: absolute;
+          right: 25px;
         }
       }
     }

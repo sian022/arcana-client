@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
-import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
-import { dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
 import PageHeaderAddTabs from "../../components/PageHeaderAddTabs";
-import RegisterRegularForm from "./prospecting/RegisterRegularForm";
 import DirectRegisterForm from "./registration/DirectRegisterForm";
+import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
+import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [origin, setOrigin] = useState("");
   const [clientStatus, setClientStatus] = useState("pending");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [count, setCount] = useState(0);
 
   //Disclosures
   const {
@@ -22,27 +24,63 @@ function DirectRegistration() {
     onClose: onRegisterClose,
   } = useDisclosure();
 
+  //RTK Query
+  const { data: pendingData, isLoading: isPendingLoading } =
+    useGetAllClientsQuery({
+      Status: true,
+      RegistrationStatus: "Under Review",
+    });
+
+  const { data: approvedData, isLoading: isApprovedLoading } =
+    useGetAllClientsQuery({
+      Status: true,
+      RegistrationStatus: "Approved",
+    });
+
+  const { data: rejectedData, isLoading: isRejectedLoading } =
+    useGetAllClientsQuery({
+      Status: true,
+      RegistrationStatus: "Rejected",
+    });
+
+  const { data, isLoading } = useGetAllClientsQuery({
+    Search: search,
+    Status: true,
+    RegistrationStatus: clientStatus,
+    Origin: origin,
+    PageNumber: page + 1,
+    PageSize: rowsPerPage,
+  });
+
   //Constants
   const registrationNavigation = [
     {
       case: 1,
-      name: "Pending Client",
-      // badge: badges["forFreebies"],
+      name: "Pending Clients",
+      registrationStatus: "Under Review",
+      badge: pendingData?.totalCount || 0,
     },
     {
       case: 2,
-      name: "Approved Client",
-      // badge: badges["forReleasing"],
+      name: "Approved Clients",
+      registrationStatus: "Approved",
+      badge: approvedData?.totalCount || 0,
+    },
+    {
+      case: 3,
+      name: "Rejected Clients",
+      registrationStatus: "Rejected",
+      badge: rejectedData?.totalCount || 0,
     },
   ];
 
   const selectOptions = [
     {
-      value: "all",
+      value: " ",
       label: "All",
     },
     {
-      value: "prospect",
+      value: "prospecting",
       label: "Prospect",
     },
     {
@@ -51,13 +89,25 @@ function DirectRegistration() {
     },
   ];
 
+  const excludeKeysDisplay = [
+    "businessAddress",
+    "fixedDiscount",
+    "ownersAddress",
+    "attachments",
+    "terms",
+  ];
+
   useEffect(() => {
     const foundItem = registrationNavigation.find(
       (item) => item.case === tabViewing
     );
 
-    setClientStatus(foundItem?.name);
+    setClientStatus(foundItem?.registrationStatus);
   }, [tabViewing]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
 
   return (
     <>
@@ -79,7 +129,20 @@ function DirectRegistration() {
           setSelectValue={setOrigin}
         />
 
-        <CommonTable mapData={dummyTableData} moreCompact />
+        {isLoading ? (
+          <CommonTableSkeleton moreCompact />
+        ) : (
+          <CommonTable
+            mapData={data?.regularClient}
+            excludeKeysDisplay={excludeKeysDisplay}
+            moreCompact
+            count={count}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            page={page}
+            setPage={setPage}
+          />
+        )}
 
         <DirectRegisterForm open={isRegisterOpen} onClose={onRegisterClose} />
       </Box>

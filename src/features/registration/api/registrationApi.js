@@ -15,6 +15,17 @@ export const registrationApi = createApi({
   }),
   tagTypes: ["Registration"],
   endpoints: (builder) => ({
+    getAllClients: builder.query({
+      query: (params) => ({
+        params: params,
+        url: "/Clients/GetAllClients",
+        method: "GET",
+      }),
+      providesTags: ["Registration"],
+      transformResponse: (response) => response.data,
+      transformErrorResponse: (response) => response.data,
+    }),
+
     putRegisterClient: builder.mutation({
       query: ({ clientId, ...body }) => ({
         url: `/Registration/RegisterClient/${clientId}`,
@@ -59,6 +70,7 @@ export const registrationApi = createApi({
 });
 
 export const {
+  useGetAllClientsQuery,
   usePutRegisterClientMutation,
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,

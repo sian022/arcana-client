@@ -184,7 +184,7 @@ function ViewRegistrationDetailsModal({ ...props }) {
       >
         Are you sure you want to approve{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData.businessname || "client"}
+          {selectedRowData?.businessName || "client"}
         </span>
         ?
       </CommonDialog>
@@ -199,7 +199,7 @@ function ViewRegistrationDetailsModal({ ...props }) {
           <Box>
             Are you sure you want to reject{" "}
             <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-              {selectedRowData.businessname || "client"}
+              {selectedRowData?.businessName || "client"}
             </span>
             ?
           </Box>

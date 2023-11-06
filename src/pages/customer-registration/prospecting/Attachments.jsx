@@ -1,17 +1,28 @@
-import { Box, Button, Input, Radio, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Input,
+  Radio,
+  Typography,
+} from "@mui/material";
 import React, { useContext, useRef, useState } from "react";
 import {
   AddAPhoto,
   Assignment,
   Business,
   CameraAlt,
+  Close,
   Create,
   PermIdentity,
+  Visibility,
 } from "@mui/icons-material";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
 import SignatureCanvasModal from "../../../components/modals/SignatureCanvasModal";
 import useDisclosure from "../../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
+import CommonModal from "../../../components/CommonModal";
 import { base64ToBlob } from "../../../utils/CustomFunctions";
 
 function Attachments() {
@@ -24,10 +35,10 @@ function Attachments() {
     setRepresentativeRequirements,
   } = useContext(AttachmentsContext);
 
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const [currentViewPhoto, setCurrentViewPhoto] = useState(null);
+  const [currentViewPhotoLabel, setCurrentViewPhotoLabel] = useState("");
 
-  // console.log("Owner:", ownersRequirements);
-  // console.log("Representative:", representativeRequirements);
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const ownerRequirementRefs = {
     signature: useRef(),
@@ -50,6 +61,12 @@ function Attachments() {
     isOpen: isCanvasOpen,
     onOpen: onCanvasOpen,
     onClose: onCanvasClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isViewPhotoOpen,
+    onOpen: onViewPhotoOpen,
+    onClose: onViewPhotoClose,
   } = useDisclosure();
 
   //Handler Functions
@@ -87,6 +104,12 @@ function Attachments() {
     }
   };
 
+  const handleViewPhoto = (file, label) => {
+    onViewPhotoOpen();
+    setCurrentViewPhoto(file);
+    setCurrentViewPhotoLabel(label);
+  };
+
   return (
     <>
       <Box className="attachments">
@@ -111,6 +134,19 @@ function Attachments() {
               >
                 <Create />
               </Button>
+              {ownersRequirements["signature"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewOwner"
+                  onClick={() => {
+                    const convertedSignature = base64ToBlob(
+                      ownersRequirements["signature"]
+                    );
+                    handleViewPhoto(convertedSignature, "Signature");
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
             <Box className="attachments__column__content__item">
               <Typography>Store Photo</Typography>
@@ -122,6 +158,19 @@ function Attachments() {
               >
                 <AddAPhoto />
               </Button>
+              {ownersRequirements["storePhoto"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewOwner"
+                  onClick={() => {
+                    handleViewPhoto(
+                      ownersRequirements["storePhoto"],
+                      "Store Photo"
+                    );
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
             <Box className="attachments__column__content__item">
               <Typography>Business Permit</Typography>
@@ -135,6 +184,19 @@ function Attachments() {
               >
                 <Business />
               </Button>
+              {ownersRequirements["businessPermit"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewOwner"
+                  onClick={() => {
+                    handleViewPhoto(
+                      ownersRequirements["businessPermit"],
+                      "Business Permit"
+                    );
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
             <Box className="attachments__column__content__item">
               <Typography>Valid ID of Owner</Typography>
@@ -146,6 +208,19 @@ function Attachments() {
               >
                 <PermIdentity />
               </Button>
+              {ownersRequirements["photoIdOwner"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewOwner"
+                  onClick={() => {
+                    handleViewPhoto(
+                      ownersRequirements["photoIdOwner"],
+                      "Valid ID of Owner"
+                    );
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
           </Box>
           <Box className="attachments__column__radio">
@@ -182,6 +257,19 @@ function Attachments() {
               >
                 <Create />
               </Button>
+              {representativeRequirements["signature"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewRepresentative"
+                  onClick={() => {
+                    const convertedSignature = base64ToBlob(
+                      representativeRequirements["signature"]
+                    );
+                    handleViewPhoto(convertedSignature, "Signature");
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
             <Box className="attachments__column__content__item">
               <Typography>Store Photo</Typography>
@@ -195,6 +283,19 @@ function Attachments() {
               >
                 <AddAPhoto />
               </Button>
+              {representativeRequirements["storePhoto"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewRepresentative"
+                  onClick={() => {
+                    handleViewPhoto(
+                      representativeRequirements["storePhoto"],
+                      "Store Photo"
+                    );
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
             <Box className="attachments__column__content__item">
               <Typography>Business Permit</Typography>
@@ -210,6 +311,19 @@ function Attachments() {
               >
                 <Business />
               </Button>
+              {representativeRequirements["businessPermit"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewRepresentative"
+                  onClick={() => {
+                    handleViewPhoto(
+                      representativeRequirements["businessPermit"],
+                      "Business Permit"
+                    );
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
             <Box className="attachments__column__content__item">
               <Typography>Valid ID of Owner</Typography>
@@ -223,6 +337,19 @@ function Attachments() {
               >
                 <PermIdentity />
               </Button>
+              {representativeRequirements["photoIdOwner"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewRepresentative"
+                  onClick={() => {
+                    handleViewPhoto(
+                      representativeRequirements["photoIdOwner"],
+                      "Valid ID of Owner"
+                    );
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
             <Box className="attachments__column__content__item">
               <Typography>Valid ID of Representative</Typography>
@@ -239,6 +366,19 @@ function Attachments() {
               >
                 <CameraAlt />
               </Button>
+              {representativeRequirements["photoIdRepresentative"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewRepresentative"
+                  onClick={() => {
+                    handleViewPhoto(
+                      representativeRequirements["photoIdRepresentative"],
+                      "Valid ID of Representative"
+                    );
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
             <Box className="attachments__column__content__item">
               <Typography>Authorization Letter</Typography>
@@ -255,6 +395,19 @@ function Attachments() {
               >
                 <Assignment />
               </Button>
+              {representativeRequirements["authorizationLetter"] && (
+                <IconButton
+                  className="attachments__column__content__item__viewRepresentative"
+                  onClick={() => {
+                    handleViewPhoto(
+                      representativeRequirements["authorizationLetter"],
+                      "Authorization Letter"
+                    );
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              )}
             </Box>
           </Box>
           <Box className="attachments__column__radio">
@@ -275,6 +428,44 @@ function Attachments() {
         setSignature={handleSetSignature}
         signature={ownersRequirements["signature"]}
       />
+
+      <CommonModal
+        width="800px"
+        open={isViewPhotoOpen}
+        onClose={onViewPhotoClose}
+      >
+        <Box className="attachments__viewModal__title">
+          <Typography>
+            {currentViewPhotoLabel ? currentViewPhotoLabel : "Photo Preview"}
+          </Typography>
+          <IconButton onClick={onViewPhotoClose}>
+            <Close />
+          </IconButton>
+        </Box>
+
+        {currentViewPhoto ? (
+          <>
+            {currentViewPhotoLabel === "Signature" ? (
+              <Box className="attachments__viewModal__signature">
+                <img
+                  src={URL.createObjectURL(currentViewPhoto)}
+                  alt="File preview"
+                  style={{ borderRadius: "12px" }}
+                />
+              </Box>
+            ) : currentViewPhotoLabel !== "Signature" &&
+              currentViewPhotoLabel !== null ? (
+              <img
+                src={URL.createObjectURL(currentViewPhoto)}
+                alt="File preview"
+                style={{ borderRadius: "12px", width: "800px" }}
+              />
+            ) : null}
+          </>
+        ) : (
+          <CircularProgress />
+        )}
+      </CommonModal>
       <>
         {/* <Input
           type="file"

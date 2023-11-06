@@ -20,7 +20,9 @@ import SuccessSnackbar from "../SuccessSnackbar";
 import CommonDialog from "../CommonDialog";
 import { requestListingFeeSchema } from "../../schema/schema";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
+import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import useSnackbar from "../../hooks/useSnackbar";
+import { usePostListingFeeMutation } from "../../features/listing-fee/api/listingFeeApi";
 
 function ListingFeeDrawer({
   isListingFeeOpen,
@@ -84,51 +86,63 @@ function ListingFeeDrawer({
   });
 
   //RTK Query
-  const { data: productData } = useGetAllProductsQuery({ Status: true });
+  const { data: clientData, isLoading: isClientLoading } =
+    useGetAllClientsQuery({ Status: true });
+  const { data: productData, isLoading: isProductLoading } =
+    useGetAllProductsQuery({ Status: true });
+
+  const [postListingFee, { isLoading: isAddLoading }] =
+    usePostListingFeeMutation();
 
   //Drawer Functions
-  // const onListingFeeSubmit = async (data) => {
-  //   if (hasDuplicateItemCodes(watch("listingFeeItems"))) {
-  //     setSnackbarMessage("No duplicate items allowed");
-  //     onErrorOpen();
-  //     onConfirmSubmitClose();
-  //     return;
-  //   }
+  const onListingFeeSubmit = async (data) => {
+    if (hasDuplicateItemCodes(watch("listingItems"))) {
+      setSnackbarMessage("No duplicate items allowed");
+      onErrorOpen();
+      onConfirmSubmitClose();
+      return;
+    }
 
-  //   try {
-  //     let response;
+    try {
+      let response;
 
-  //     if (updateListingFee) {
-  //       response = await putFreebiesInformation({
-  //         id: data.clientId,
-  //         // freebieRequestId: data.freebieRequestId,
-  //         params: { freebieId: data.freebieRequestId },
-  //         freebies: data.freebies.map((freebie) => ({
-  //           itemId: freebie.itemId.itemId,
-  //         })),
-  //       });
-  //       setSnackbarMessage("Freebies updated successfully");
-  //     } else {
-  //       response = await postRequestFreebies({
-  //         clientId: data.clientId,
-  //         freebies: data.freebies.map((freebie) => ({
-  //           itemId: freebie.itemId.id,
-  //         })),
-  //       }).unwrap();
-  //       setSnackbarMessage("Freebies requested successfully");
-  //     }
+      if (updateListingFee) {
+        response = await putFreebiesInformation({
+          id: data.clientId,
+          // freebieRequestId: data.freebieRequestId,
+          params: { freebieId: data.freebieRequestId },
+          listingItems: data.listingItems.map((listingItem) => ({
+            itemId: listingItem.itemId.itemId,
+          })),
+        });
+        setSnackbarMessage("Listing Fee updated successfully");
+      } else {
+        response = await postListingFee({
+          // clientId: data.clientId,
+          clientId: 1,
+          total: totalAmount,
+          // listingItems: data.listingItems,
+          listingItems: data.listingItems.map((listingItem) => ({
+            itemId: listingItem.itemId.id,
+            sku: listingItem.sku,
+            unitCost: listingItem.unitCost,
+            quantity: listingItem.quantity,
+          })),
+        }).unwrap();
+        setSnackbarMessage("Listing Fee added successfully");
+      }
 
-  //     dispatch(setSelectedRow(response?.data));
-  //     handleDrawerClose();
-  //     onSuccessOpen();
-  //   } catch (error) {
-  //     setSnackbarMessage(error?.data?.messages || "Something went wrong");
-  //     onErrorOpen();
-  //     console.log(error);
-  //   }
+      dispatch(setSelectedRow(response?.data));
+      handleDrawerClose();
+      onSuccessOpen();
+    } catch (error) {
+      setSnackbarMessage(error?.data?.messages || "Something went wrong");
+      onErrorOpen();
+      console.log(error);
+    }
 
-  //   onConfirmSubmitClose();
-  // };
+    onConfirmSubmitClose();
+  };
 
   const handleDrawerClose = () => {
     reset();
@@ -169,32 +183,32 @@ function ListingFeeDrawer({
   }
 
   //UseEffects
-  useEffect(() => {
-    setValue("clientId", clientId);
-    const freebiesLength = selectedRowData?.freebies?.length;
+  // useEffect(() => {
+  //   setValue("clientId", clientId);
+  //   const freebiesLength = selectedRowData?.freebies?.length;
 
-    if (updateListingFee && isListingFeeOpen) {
-      const originalFreebies =
-        selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
+  //   if (updateListingFee && isListingFeeOpen) {
+  //     const originalFreebies =
+  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
 
-      const transformedFreebies = originalFreebies.map((item) => ({
-        itemId: item,
-        itemDescription: item.itemDescription,
-        uom: item.uom,
-      }));
+  //     const transformedFreebies = originalFreebies.map((item) => ({
+  //       itemId: item,
+  //       itemDescription: item.itemDescription,
+  //       uom: item.uom,
+  //     }));
 
-      setValue("freebies", transformedFreebies);
-      setValue(
-        "freebieRequestId",
-        selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
-          null
-      );
-    }
+  //     setValue("freebies", transformedFreebies);
+  //     setValue(
+  //       "freebieRequestId",
+  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
+  //         null
+  //     );
+  //   }
 
-    return () => {
-      setValue("clientId", null);
-    };
-  }, [isListingFeeOpen]);
+  //   return () => {
+  //     setValue("clientId", null);
+  //   };
+  // }, [isListingFeeOpen]);
 
   useEffect(() => {
     let total = 0;
@@ -202,6 +216,9 @@ function ListingFeeDrawer({
     setTotalAmount(total);
   }, [fields]);
 
+  console.log(getValues());
+
+  // console.log(watch("listingItems"));
   return (
     <>
       <CommonDrawer
@@ -219,9 +236,10 @@ function ListingFeeDrawer({
             <ControlledAutocomplete
               name={`clientId`}
               control={control}
-              options={productData?.items || []}
-              getOptionLabel={(option) => option.itemCode || ""}
+              options={clientData?.regularClient || []}
+              getOptionLabel={(option) => option.businessName || ""}
               disableClearable
+              loading={isClientLoading}
               // isOptionEqualToValue={(option, value) => option.id === value.id}
               isOptionEqualToValue={(option, value) => true}
               renderInput={(params) => (
@@ -235,11 +253,15 @@ function ListingFeeDrawer({
                   sx={{ width: "300px" }}
                 />
               )}
+              onChange={(_, value) => {
+                setValue(`customerName`, value?.ownersName);
+                return value;
+              }}
             />
 
             <Controller
               control={control}
-              name={`clientId`}
+              name={`customerName`}
               render={({ field: { onChange, onBlur, value, ref } }) => (
                 <TextField
                   label="Customer Name"
@@ -275,7 +297,7 @@ function ListingFeeDrawer({
               <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
                 Product Information
               </Typography>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              {/* <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
                   Remove all
                 </Typography>
@@ -291,7 +313,7 @@ function ListingFeeDrawer({
                 >
                   <Cancel sx={{ fontSize: "30px" }} />
                 </IconButton>
-              </Box>
+              </Box> */}
             </Box>
             {fields.map((item, index) => (
               <Box
@@ -303,11 +325,12 @@ function ListingFeeDrawer({
                 }}
               >
                 <ControlledAutocomplete
-                  name={`listingFeeItems[${index}].itemId`}
+                  name={`listingItems[${index}].itemId`}
                   control={control}
                   options={productData?.items || []}
                   getOptionLabel={(option) => option.itemCode || ""}
                   disableClearable
+                  loading={isProductLoading}
                   // isOptionEqualToValue={(option, value) => option.id === value.id}
                   isOptionEqualToValue={(option, value) => true}
                   renderInput={(params) => (
@@ -323,17 +346,17 @@ function ListingFeeDrawer({
                   )}
                   onChange={(_, value) => {
                     setValue(
-                      `listingFeeItems[${index}].itemDescription`,
+                      `listingItems[${index}].itemDescription`,
                       value?.itemDescription
                     );
-                    setValue(`listingFeeItems[${index}].uom`, value?.uom);
+                    setValue(`listingItems[${index}].uom`, value?.uom);
                     return value;
                   }}
                 />
 
                 <Controller
                   control={control}
-                  name={`listingFeeItems[${index}].itemDescription`}
+                  name={`listingItems[${index}].itemDescription`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="Item Description"
@@ -351,7 +374,7 @@ function ListingFeeDrawer({
 
                 <Controller
                   control={control}
-                  name={`listingFeeItems[${index}].uom`}
+                  name={`listingItems[${index}].uom`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="UOM"
@@ -362,13 +385,14 @@ function ListingFeeDrawer({
                       onBlur={onBlur}
                       value={value || ""}
                       ref={ref}
+                      sx={{ width: "190px" }}
                     />
                   )}
                 />
 
                 <Controller
                   control={control}
-                  name={`listingFeeItems[${index}].uom`}
+                  name={`listingItems[${index}].sku`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="SKU"
@@ -380,13 +404,33 @@ function ListingFeeDrawer({
                       // value={value || ""}
                       value={1}
                       ref={ref}
+                      sx={{ width: "190px" }}
                     />
                   )}
                 />
 
                 <Controller
                   control={control}
-                  name={`listingFeeItems[${index}].unitCost`}
+                  name={`listingItems[${index}].quantity`}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Quantity"
+                      size="small"
+                      autoComplete="off"
+                      required
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value || ""}
+                      // value={1}
+                      ref={ref}
+                      sx={{ width: "190px" }}
+                    />
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name={`listingItems[${index}].unitCost`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="Unit Cost"
@@ -432,7 +476,12 @@ function ListingFeeDrawer({
               // fields.length < 5
               //   ? append({ itemId: null, unitCost: null })
               //   : handleListingFeeError();
-              append({ itemId: null, unitCost: null });
+              append({
+                itemId: null,
+                sku: 1,
+                quantity: null,
+                unitCost: null,
+              });
             }}
           >
             Add Product
@@ -466,14 +515,14 @@ function ListingFeeDrawer({
       <CommonDialog
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
-        // onYes={handleSubmit(onListingFeeSubmit)}
+        onYes={handleSubmit(onListingFeeSubmit)}
         // isLoading={updateListingFee ? isUpdateLoading : isRequestLoading}
         noIcon
       >
         Confirm request of listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
+          {watch("clientId.businessName")
+            ? watch("clientId.businessName")
             : "client"}
         </span>
         ?
@@ -486,8 +535,8 @@ function ListingFeeDrawer({
       >
         Are you sure you want to cancel request of listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
+          {watch("clientId.businessName")
+            ? watch("clientId.businessName")
             : "client"}
         </span>
         ?

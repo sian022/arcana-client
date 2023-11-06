@@ -112,6 +112,7 @@ function RegisterRegularForm({ open, onClose }) {
     defaultValues: regularRegisterSchema.defaultValues,
   });
 
+  console.log(getValues());
   //Constants
   const navigators = [
     {
@@ -440,7 +441,7 @@ function RegisterRegularForm({ open, onClose }) {
                 </Box>
                 <Box className="register__firstRow__customerInformation__row">
                   <Controller
-                    name="dateOfBirth"
+                    name="birthDate"
                     control={control}
                     render={({ field }) => (
                       <LocalizationProvider dateAdapter={AdapterMoment}>
