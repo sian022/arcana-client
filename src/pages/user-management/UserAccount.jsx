@@ -182,8 +182,6 @@ function UserAccount() {
     );
   };
 
-  console.log(getValues());
-
   const handleArchiveOpen = (id) => {
     onArchiveOpen();
     setSelectedId(id);
@@ -210,7 +208,6 @@ function UserAccount() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
-  console.log(getValues());
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd

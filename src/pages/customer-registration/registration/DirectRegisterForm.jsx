@@ -610,7 +610,7 @@ function DirectRegisterForm({ open, onClose }) {
                 <ControlledAutocomplete
                   name={"storeTypeId"}
                   control={control}
-                  options={storeTypeData?.storeTypes}
+                  options={storeTypeData?.storeTypes || []}
                   getOptionLabel={(option) => option.storeTypeName}
                   disableClearable
                   // value={storeTypeData?.storeTypes?.find(

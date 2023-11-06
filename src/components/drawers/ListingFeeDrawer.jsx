@@ -80,7 +80,7 @@ function ListingFeeDrawer({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "listingFeeItems",
+    name: "listingItems",
   });
 
   //RTK Query
@@ -139,11 +139,19 @@ function ListingFeeDrawer({
   //Misc Functions
   const handleListingFeeError = () => {
     if (fields.length === 1) {
-      setSnackbarMessage("Must have at least 1 listing fee");
-    } else if (fields.length === 5) {
-      setSnackbarMessage("Maximum of 5 listing fees only");
+      setSnackbarMessage("Must have at least 1 product");
     }
+    //  else if (fields.length === 5) {
+    //   setSnackbarMessage("Maximum of 5 products only");
+    // }
     onErrorOpen();
+  };
+
+  const handleRemoveAll = () => {
+    // Loop through the items and remove them one by one
+    for (let i = fields.length - 1; i >= 0; i--) {
+      remove(i);
+    }
   };
 
   function hasDuplicateItemCodes(data) {
@@ -193,9 +201,6 @@ function ListingFeeDrawer({
     fields.forEach((item) => (total += parseInt(item.unitCost)));
     setTotalAmount(total);
   }, [fields]);
-
-  console.log(totalAmount);
-  console.log(fields);
 
   return (
     <>
@@ -251,10 +256,43 @@ function ListingFeeDrawer({
             />
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
-              Product Information
-            </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              maxHeight: "310px",
+              overflow: "auto",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                Product Information
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                  Remove all
+                </Typography>
+                <IconButton
+                  sx={{ color: "error.main" }}
+                  onClick={() => {
+                    // fields.length <= 1
+                    //   ? handleListingFeeError()
+                    //   : // : remove(fields[index]);
+                    remove();
+                    // append({ itemId: null, unitCost: null });
+                  }}
+                >
+                  <Cancel sx={{ fontSize: "30px" }} />
+                </IconButton>
+              </Box>
+            </Box>
             {fields.map((item, index) => (
               <Box
                 key={item.id}
@@ -391,12 +429,13 @@ function ListingFeeDrawer({
           <SecondaryButton
             sx={{ width: "150px" }}
             onClick={() => {
-              fields.length < 5
-                ? append({ itemId: null, unitCost: null })
-                : handleListingFeeError();
+              // fields.length < 5
+              //   ? append({ itemId: null, unitCost: null })
+              //   : handleListingFeeError();
+              append({ itemId: null, unitCost: null });
             }}
           >
-            Add Listing Fee
+            Add Product
           </SecondaryButton>
           <Box
             sx={{

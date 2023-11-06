@@ -60,7 +60,7 @@ export const theme = createTheme({
     MuiFormLabel: {
       styleOverrides: {
         root: {
-          color: `${colorSchemes.light.primary} !important`,
+          color: `${colorSchemes.light.primary}`,
         },
       },
     },
