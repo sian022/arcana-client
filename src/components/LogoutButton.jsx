@@ -25,6 +25,7 @@ function LogoutButton() {
     dispatch(setToken(""));
     dispatch(setFullname(""));
     dispatch(setPermissisons(""));
+    sessionStorage.removeItem("userDetails");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("fullname");
     sessionStorage.removeItem("permissions");

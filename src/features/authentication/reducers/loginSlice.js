@@ -21,7 +21,11 @@ export const loginSlice = createSlice({
   reducers: {
     setUserDetails: (state, action) => {
       state.userDetails = action.payload;
-      sessionStorage.setItem("userDetails", JSON.stringify(action.payload));
+      const ciphertext = CryptoJS.AES.encrypt(
+        JSON.stringify(action.payload),
+        saltkey
+      ).toString();
+      sessionStorage.setItem("userDetails", ciphertext);
     },
     setFullname: (state, action) => {
       state.fullname = action.payload;

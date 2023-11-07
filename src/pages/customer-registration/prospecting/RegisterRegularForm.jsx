@@ -41,6 +41,7 @@ import ListingFeeModal from "../../../components/modals/ListingFeeModal";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
+import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -57,6 +58,7 @@ function RegisterRegularForm({ open, onClose }) {
   const [longitude, setLongitude] = useState(120.6075827);
   const [activeTab, setActiveTab] = useState("Personal Info");
   const [sameAsOwnersAddress, setSameAsOwnersAddress] = useState(false);
+  const [isAllApiLoading, setIsAllApiLoading] = useState(false);
 
   const { ownersRequirements, representativeRequirements, requirementsMode } =
     useContext(AttachmentsContext);
@@ -174,9 +176,11 @@ function RegisterRegularForm({ open, onClose }) {
   //Drawer Functions
   const onSubmit = async (data) => {
     try {
+      setIsAllApiLoading(true);
       await putRegisterClient(data).unwrap();
       await addTermsAndConditions();
       await addAttachmentsSubmit();
+      setIsAllApiLoading(false);
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
 
@@ -836,7 +840,8 @@ function RegisterRegularForm({ open, onClose }) {
         open={isConfirmOpen}
         onYes={handleSubmit(onSubmit)}
         onClose={onConfirmClose}
-        isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
+        // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
+        isLoading={isAllApiLoading}
       >
         Confirm registration of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
@@ -879,7 +884,11 @@ function RegisterRegularForm({ open, onClose }) {
         ?
       </CommonDialog>
 
-      <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} />
+      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
+      <ListingFeeDrawer
+        isListingFeeOpen={isListingFeeOpen}
+        onListingFeeClose={onListingFeeClose}
+      />
     </>
   );
 }

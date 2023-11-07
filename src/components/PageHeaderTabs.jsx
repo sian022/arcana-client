@@ -12,6 +12,7 @@ import "../assets/styles/common.styles.scss";
 
 function PageHeaderTabs({
   wide,
+  extraWide,
   pageTitle,
   tabsList,
   tabViewing,
@@ -36,7 +37,7 @@ function PageHeaderTabs({
                 sx={{
                   cursor: "pointer",
                   alignItems: "center",
-                  width: wide ? "180px" : "160px",
+                  width: extraWide ? "200px" : wide ? "180px" : "160px",
                 }}
                 key={i}
                 onClick={() => setTabViewing(item.case)}
@@ -61,7 +62,7 @@ function PageHeaderTabs({
                   <Divider
                     sx={{
                       bgcolor: "secondary.main",
-                      width: "160px",
+                      width: extraWide ? "200px" : wide ? "180px" : "160px",
                       // width: "auto",
                       height: "3px",
                       borderRadius: "10px",

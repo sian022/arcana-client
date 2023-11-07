@@ -63,7 +63,6 @@
     flex-direction: column;
 
     & &__title {
-      font-size: 1.4rem;
       font-weight: bold;
       margin-top: 10px;
       text-align: center;
@@ -208,7 +207,6 @@
   gap: 20px;
 
   &__headers {
-    flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 
@@ -456,5 +454,61 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+}
+
+.viewListingFeeModal {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+
+  &__headers {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & &__title {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 24px;
+      color: white;
+      text-align: center;
+    }
+  }
+
+  & &__title {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 24px;
+  }
+
+  &__customerDetails {
+    // flex: 1;
+    // width: 80%;
+    display: flex;
+    gap: 50px;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    &__left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    &__right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+
+  &__table {
+    display: flex;
+    flex: 1;
   }
 }

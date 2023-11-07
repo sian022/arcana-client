@@ -18,6 +18,7 @@ import CommonDialog from "../CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { usePatchChangePasswordMutation } from "../../features/user-management/api/userAccountApi";
 import { useSelector } from "react-redux";
+import { decryptString } from "../../utils/CustomFunctions";
 
 function ChangePasswordModal({ ...otherProps }) {
   const { onClose, ...noOnClose } = otherProps;
@@ -61,7 +62,10 @@ function ChangePasswordModal({ ...otherProps }) {
     const { oldPassword, newPassword } = data;
 
     try {
-      const userId = userDetails.id || localStorage.getItem("userDetails.id");
+      const decryptedData = decryptString(
+        sessionStorage.getItem("userDetails")
+      );
+      const userId = userDetails.id || decryptedData.id;
       await patchChangePassword({
         id: userId,
         oldPassword,
@@ -69,6 +73,7 @@ function ChangePasswordModal({ ...otherProps }) {
       }).unwrap();
       showSnackbar("Password changed successfully", "success");
     } catch (error) {
+      console.log(error);
       showSnackbar(error.data.messages[0], "error");
     }
 

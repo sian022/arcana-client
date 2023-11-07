@@ -13,7 +13,7 @@ function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [origin, setOrigin] = useState("");
-  const [clientStatus, setClientStatus] = useState("pending");
+  const [clientStatus, setClientStatus] = useState("Under review");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
@@ -35,7 +35,7 @@ function DirectRegistration() {
   const { data: pendingData, isLoading: isPendingLoading } =
     useGetAllClientsQuery({
       Status: true,
-      RegistrationStatus: "Under Review",
+      RegistrationStatus: "Under review",
     });
 
   const { data: approvedData, isLoading: isApprovedLoading } =
@@ -64,7 +64,7 @@ function DirectRegistration() {
     {
       case: 1,
       name: "Pending Clients",
-      registrationStatus: "Under Review",
+      registrationStatus: "Under review",
       badge: pendingData?.totalCount || 0,
     },
     {

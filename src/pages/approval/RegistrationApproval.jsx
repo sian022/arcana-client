@@ -57,19 +57,19 @@ function RegistrationApproval() {
   const registrationNavigation = [
     {
       case: 1,
-      name: "Pending Client",
-      registrationStatus: "Under Review",
+      name: "Pending Clients",
+      registrationStatus: "Under review",
       // badge: badges["forFreebies"],
     },
     {
       case: 2,
-      name: "Approved Client",
+      name: "Approved Clients",
       registrationStatus: "Approved",
       // badge: badges["forReleasing"],
     },
     {
       case: 3,
-      name: "Rejected Client",
+      name: "Rejected Clients",
       registrationStatus: "Rejected",
       // badge: badges["forReleasing"],
     },

@@ -10,6 +10,7 @@ function CommonModal({
   ribbon,
   children,
   height,
+  maxHeight,
   closeTopRight,
   ...otherProps
 }) {
@@ -26,6 +27,7 @@ function CommonModal({
             ? paddingCustom
             : "30px",
           height: height && height,
+          maxHeight: maxHeight && maxHeight,
         }}
         className="commonModal"
       >

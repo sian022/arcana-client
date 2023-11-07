@@ -38,15 +38,31 @@ function ViewPhotoModal({
             </Box>
           ) : currentViewPhotoLabel !== "Signature" &&
             currentViewPhotoLabel !== null ? (
-            <img
-              src={
-                cloudified
-                  ? currentViewPhoto
-                  : URL.createObjectURL(currentViewPhoto)
-              }
-              alt="File preview"
-              style={{ borderRadius: "12px", width: "800px" }}
-            />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "800px",
+                height: "500px",
+              }}
+            >
+              <img
+                src={
+                  cloudified
+                    ? currentViewPhoto
+                    : URL.createObjectURL(currentViewPhoto)
+                }
+                alt="File preview"
+                style={{
+                  borderRadius: "12px",
+                  // width: "800px",
+                  // height: "auto",
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                }}
+              />
+            </Box>
           ) : null}
         </>
       ) : (

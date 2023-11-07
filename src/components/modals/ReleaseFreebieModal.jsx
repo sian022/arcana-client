@@ -32,6 +32,7 @@ import { base64ToBlob, debounce } from "../../utils/CustomFunctions";
 import SuccessSnackbar from "../SuccessSnackbar";
 import ErrorSnackbar from "../ErrorSnackbar";
 import CommonDialog from "../CommonDialog";
+import ViewPhotoModal from "./ViewPhotoModal";
 
 function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -88,6 +89,12 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
     isOpen: isErrorOpen,
     onOpen: onErrorOpen,
     onClose: onErrorClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isViewPhotoOpen,
+    onOpen: onViewPhotoOpen,
+    onClose: onViewPhotoClose,
   } = useDisclosure();
 
   //RTK Query
@@ -278,7 +285,7 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
                   <IconButton
                     className="attachments__column__content__item__viewOwner"
                     onClick={() => {
-                      handleViewPhoto(convertedSignature, "Signature");
+                      onViewPhotoOpen();
                     }}
                     sx={{
                       color: "secondary.main",
@@ -330,6 +337,13 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
         onClose={onCanvasClose}
         signature={signature}
         setSignature={setSignature}
+      />
+
+      <ViewPhotoModal
+        open={isViewPhotoOpen}
+        onClose={onViewPhotoClose}
+        currentViewPhoto={photoProof}
+        currentViewPhotoLabel={"Freebie Photo"}
       />
 
       <CommonDialog

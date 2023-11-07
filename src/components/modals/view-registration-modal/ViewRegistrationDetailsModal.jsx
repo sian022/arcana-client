@@ -130,7 +130,7 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
   return (
     <>
       <CommonModal
-        width={"800px"}
+        width="800px"
         height="660px"
         disablePadding
         ribbon
