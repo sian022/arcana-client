@@ -18,6 +18,7 @@ function AttachmentsTab() {
   const [currentViewPhotoLabel, setCurrentViewPhotoLabel] = useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const isRepresentativeRequirements = selectedRowData?.attachments?.length > 4;
 
   //Disclosures
   const {
@@ -27,18 +28,20 @@ function AttachmentsTab() {
   } = useDisclosure();
 
   const handleViewPhoto = (file, label) => {
+    console.log(file);
     onViewPhotoOpen();
     setCurrentViewPhoto(file);
     setCurrentViewPhotoLabel(label);
   };
 
   console.log(selectedRowData);
+  console.log(currentViewPhotoLabel);
   return (
     <>
       {" "}
       <Box className="viewRegistrationModal__attachments">
         <Typography className="viewRegistrationModal__attachments__header">
-          Requested by: Ernesto Soriano
+          Requested by: {selectedRowData?.requestedBy}
         </Typography>
         <Box className="viewRegistrationModal__attachments__content">
           <Box className="viewRegistrationModal__attachments__content__titleGroup">
@@ -46,14 +49,18 @@ function AttachmentsTab() {
               Attachments
             </Typography>
             <Typography className="viewRegistrationModal__attachments__content__titleGroup__title">
-              Representative's Requirements
+              {isRepresentativeRequirements > 4
+                ? "Representative's Requirements"
+                : "Owner's Requirements"}
             </Typography>
           </Box>
 
           <Box className="viewRegistrationModal__attachments__content__fields">
             <Box className="viewRegistrationModal__attachments__content__fields__item">
               <Typography className="viewRegistrationModal__attachments__content__fields__item__label">
-                Representative's Signature:
+                {isRepresentativeRequirements
+                  ? "Representative's Signature:"
+                  : "Owner's Signature:"}
               </Typography>
               <SecondaryButton
                 onClick={() => {
@@ -124,54 +131,61 @@ function AttachmentsTab() {
               </SecondaryButton>
             </Box>
 
-            <Box className="viewRegistrationModal__attachments__content__fields__item">
-              <Typography className="viewRegistrationModal__attachments__content__fields__item__label">
-                Valid ID of Representative
-              </Typography>
-              <SecondaryButton
-                onClick={() => {
-                  const foundItem = selectedRowData?.attachments.find(
-                    (item) =>
-                      item.documentType.toLowerCase() ===
-                      "photo id representative"
-                  );
-                  handleViewPhoto(
-                    foundItem?.documentLink,
-                    "Valid ID of Representative"
-                  );
-                }}
-                className="viewRegistrationModal__attachments__content__fields__item__value"
-              >
-                <CameraAlt />
-              </SecondaryButton>
-            </Box>
+            {isRepresentativeRequirements && (
+              <>
+                <Box className="viewRegistrationModal__attachments__content__fields__item">
+                  <Typography className="viewRegistrationModal__attachments__content__fields__item__label">
+                    Valid ID of Representative
+                  </Typography>
+                  <SecondaryButton
+                    onClick={() => {
+                      const foundItem = selectedRowData?.attachments.find(
+                        (item) =>
+                          item.documentType.toLowerCase() ===
+                          "photo id representative"
+                      );
+                      handleViewPhoto(
+                        foundItem?.documentLink,
+                        "Valid ID of Representative"
+                      );
+                    }}
+                    className="viewRegistrationModal__attachments__content__fields__item__value"
+                  >
+                    <CameraAlt />
+                  </SecondaryButton>
+                </Box>
 
-            <Box className="viewRegistrationModal__attachments__content__fields__item">
-              <Typography className="viewRegistrationModal__attachments__content__fields__item__label">
-                Authorization Letter:
-              </Typography>
-              <SecondaryButton
-                onClick={() => {
-                  const foundItem = selectedRowData?.attachments.find(
-                    (item) =>
-                      item.documentType.toLowerCase() === "authorization letter"
-                  );
-                  handleViewPhoto(
-                    foundItem?.documentLink,
-                    "Authorization Letter"
-                  );
-                }}
-                className="viewRegistrationModal__attachments__content__fields__item__value"
-              >
-                <Assignment />
-              </SecondaryButton>
-            </Box>
+                <Box className="viewRegistrationModal__attachments__content__fields__item">
+                  <Typography className="viewRegistrationModal__attachments__content__fields__item__label">
+                    Authorization Letter:
+                  </Typography>
+                  <SecondaryButton
+                    onClick={() => {
+                      const foundItem = selectedRowData?.attachments.find(
+                        (item) =>
+                          item.documentType.toLowerCase() ===
+                          "authorization letter"
+                      );
+                      handleViewPhoto(
+                        foundItem?.documentLink,
+                        "Authorization Letter"
+                      );
+                    }}
+                    className="viewRegistrationModal__attachments__content__fields__item__value"
+                  >
+                    <Assignment />
+                  </SecondaryButton>
+                </Box>
+              </>
+            )}
           </Box>
         </Box>
       </Box>
       <ViewPhotoModal
         open={isViewPhotoOpen}
         onClose={onViewPhotoClose}
+        currentViewPhoto={currentViewPhoto}
+        currentViewPhotoLabel={currentViewPhotoLabel}
         cloudified
       />
     </>

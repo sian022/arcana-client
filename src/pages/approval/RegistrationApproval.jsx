@@ -130,8 +130,6 @@ function RegistrationApproval() {
     setClientStatus(foundItem?.registrationStatus);
   }, [tabViewing]);
 
-  console.log(data);
-
   return (
     <>
       <Box className="commonPageLayout">
@@ -152,6 +150,8 @@ function RegistrationApproval() {
           excludeKeysDisplay={excludeKeysDisplay}
           tableHeads={tableHeads}
           moreCompact
+          editable
+          onView={onViewOpen}
         />
       </Box>
 

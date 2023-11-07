@@ -190,7 +190,7 @@ function RegisterRegularForm({ open, onClose }) {
       handleResetForms();
       debounce(onRedirectListingFeeOpen(), 2000);
     } catch (error) {
-      // showSnackbar(error.data.messages[0], "error");
+      showSnackbar(error.data.messages[0] || "Something went wrong", "error");
       console.log(error);
     }
   };
@@ -888,6 +888,7 @@ function RegisterRegularForm({ open, onClose }) {
       <ListingFeeDrawer
         isListingFeeOpen={isListingFeeOpen}
         onListingFeeClose={onListingFeeClose}
+        redirect
       />
     </>
   );

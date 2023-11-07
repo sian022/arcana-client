@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 function PersonalInfoTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const isRepresentativeRequirements = selectedRowData?.attachments?.length > 4;
 
   console.log(selectedRowData);
   return (
@@ -97,15 +98,17 @@ function PersonalInfoTab() {
             </Typography>
           </Box>
 
-          <Box className="viewRegistrationModal__personalInfo__content__fields__itemWrapped">
-            <Typography className="viewRegistrationModal__personalInfo__content__fields__itemWrapped__label">
-              Name of Authorized <br />
-              Representative:
-            </Typography>
-            <Typography className="viewRegistrationModal__personalInfo__content__fields__itemWrapped__value">
-              {selectedRowData?.authorizedRepresentative}
-            </Typography>
-          </Box>
+          {isRepresentativeRequirements && (
+            <Box className="viewRegistrationModal__personalInfo__content__fields__itemWrapped">
+              <Typography className="viewRegistrationModal__personalInfo__content__fields__itemWrapped__label">
+                Name of Authorized <br />
+                Representative:
+              </Typography>
+              <Typography className="viewRegistrationModal__personalInfo__content__fields__itemWrapped__value">
+                {selectedRowData?.authorizedRepresentative}
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

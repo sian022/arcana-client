@@ -31,6 +31,7 @@ function ListingFeeDrawer({
   isListingFeeOpen,
   onListingFeeClose,
   updateListingFee,
+  redirect,
 }) {
   const { showSnackbar } = useSnackbar();
 
@@ -237,6 +238,7 @@ function ListingFeeDrawer({
   //   setTotalAmount(total);
   // }, [fields]);
 
+  console.log(clientId);
   return (
     <>
       <CommonDrawer
@@ -258,6 +260,10 @@ function ListingFeeDrawer({
               getOptionLabel={(option) => option.businessName || ""}
               disableClearable
               loading={isClientLoading}
+              disabled={redirect}
+              value={clientData?.regularClient?.find(
+                (item) => item.businessName === selectedRowData?.businessName
+              )}
               // isOptionEqualToValue={(option, value) => option.id === value.id}
               isOptionEqualToValue={(option, value) => true}
               renderInput={(params) => (
@@ -288,7 +294,7 @@ function ListingFeeDrawer({
                   disabled
                   onChange={onChange}
                   onBlur={onBlur}
-                  value={value || ""}
+                  value={redirect ? selectedRowData?.ownersName : value || ""}
                   ref={ref}
                   sx={{ width: "300px" }}
                 />

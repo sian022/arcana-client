@@ -98,6 +98,7 @@ function ListingFeeApproval() {
         // open={isViewListingFeeOpen}
         open={true}
         onClose={onViewListingFeeClose}
+        approval
       />
     </>
   );

@@ -65,8 +65,8 @@ function TermsAndConditionsTab() {
               Terms:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              Credit Limit (P50,000) (45 Days)
-              {/* {selectedRowData?.terms?[].} */}
+              {/* Credit Limit (P50,000) (45 Days) */}
+              {selectedRowData?.terms?.term}
             </Typography>
           </Box>
 

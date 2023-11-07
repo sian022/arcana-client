@@ -207,6 +207,7 @@
   gap: 20px;
 
   &__headers {
+    flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 
@@ -235,7 +236,7 @@
   &__personalInfo {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
 
     & &__header {
       font-size: 16px;
@@ -298,7 +299,7 @@
   &__termsAndConditions {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
 
     & &__header {
       font-size: 16px;
@@ -363,7 +364,7 @@
   &__attachments {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
 
     & &__header {
       font-size: 16px;
