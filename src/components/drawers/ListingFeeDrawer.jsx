@@ -20,7 +20,10 @@ import SuccessSnackbar from "../SuccessSnackbar";
 import CommonDialog from "../CommonDialog";
 import { requestListingFeeSchema } from "../../schema/schema";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
-import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
+import {
+  useGetAllClientsForListingFeeQuery,
+  useGetAllClientsQuery,
+} from "../../features/registration/api/registrationApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { usePostListingFeeMutation } from "../../features/listing-fee/api/listingFeeApi";
 
@@ -87,7 +90,7 @@ function ListingFeeDrawer({
 
   //RTK Query
   const { data: clientData, isLoading: isClientLoading } =
-    useGetAllClientsQuery({ Status: true });
+    useGetAllClientsForListingFeeQuery({ Status: true });
   const { data: productData, isLoading: isProductLoading } =
     useGetAllProductsQuery({ Status: true });
 
@@ -126,7 +129,7 @@ function ListingFeeDrawer({
             itemId: listingItem.itemId.id,
             sku: listingItem.sku,
             unitCost: listingItem.unitCost,
-            quantity: listingItem.quantity,
+            // quantity: listingItem.quantity,
           })),
         }).unwrap();
         setSnackbarMessage("Listing Fee added successfully");
@@ -146,6 +149,7 @@ function ListingFeeDrawer({
 
   const handleDrawerClose = () => {
     reset();
+    setTotalAmount(0);
     onListingFeeClose();
     onConfirmCancelClose();
   };
@@ -182,6 +186,18 @@ function ListingFeeDrawer({
     return false;
   }
 
+  const handleRecalculateTotalAmount = () => {
+    let total = 0;
+    watch("listingItems").forEach((item) => {
+      const unitCost = parseInt(item.unitCost);
+      if (!isNaN(unitCost)) {
+        total += unitCost;
+      }
+    });
+
+    setTotalAmount(total);
+  };
+
   //UseEffects
   // useEffect(() => {
   //   setValue("clientId", clientId);
@@ -210,15 +226,17 @@ function ListingFeeDrawer({
   //   };
   // }, [isListingFeeOpen]);
 
-  useEffect(() => {
-    let total = 0;
-    fields.forEach((item) => (total += parseInt(item.unitCost)));
-    setTotalAmount(total);
-  }, [fields]);
+  // useEffect(() => {
+  //   let total = 0;
+  //   fields.forEach((item) => {
+  //     const unitCost = parseInt(item.unitCost);
+  //     if (!isNaN(unitCost)) {
+  //       total += unitCost;
+  //     }
+  //   });
+  //   setTotalAmount(total);
+  // }, [fields]);
 
-  console.log(getValues());
-
-  // console.log(watch("listingItems"));
   return (
     <>
       <CommonDrawer
@@ -385,12 +403,13 @@ function ListingFeeDrawer({
                       onBlur={onBlur}
                       value={value || ""}
                       ref={ref}
-                      sx={{ width: "190px" }}
+                      sx={{ width: "200px" }}
                     />
                   )}
                 />
 
                 <Controller
+                  key={index}
                   control={control}
                   name={`listingItems[${index}].sku`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -404,29 +423,32 @@ function ListingFeeDrawer({
                       // value={value || ""}
                       value={1}
                       ref={ref}
-                      sx={{ width: "190px" }}
+                      sx={{ width: "200px" }}
                     />
                   )}
                 />
 
-                <Controller
+                {/* <Controller
                   control={control}
                   name={`listingItems[${index}].quantity`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <TextField
                       label="Quantity"
+                      type="number"
                       size="small"
                       autoComplete="off"
                       required
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value || ""}
-                      // value={1}
                       ref={ref}
-                      sx={{ width: "190px" }}
+                      sx={{ width: "220px" }}
+                      InputProps={{
+                        inputProps: { min: 0 },
+                      }}
                     />
                   )}
-                />
+                /> */}
 
                 <Controller
                   control={control}
@@ -437,11 +459,17 @@ function ListingFeeDrawer({
                       type="number"
                       size="small"
                       autoComplete="off"
-                      onChange={onChange}
+                      onChange={(e) => {
+                        onChange(e);
+                        handleRecalculateTotalAmount();
+                      }}
                       onBlur={onBlur}
                       value={value || ""}
                       ref={ref}
                       required
+                      InputProps={{
+                        inputProps: { min: 0 },
+                      }}
                     />
                   )}
                 />
@@ -453,6 +481,7 @@ function ListingFeeDrawer({
                       ? handleListingFeeError()
                       : // : remove(fields[index]);
                         remove(index);
+                    handleRecalculateTotalAmount();
                   }}
                 >
                   <Cancel sx={{ fontSize: "30px" }} />
@@ -479,7 +508,7 @@ function ListingFeeDrawer({
               append({
                 itemId: null,
                 sku: 1,
-                quantity: null,
+                // quantity: null,
                 unitCost: null,
               });
             }}

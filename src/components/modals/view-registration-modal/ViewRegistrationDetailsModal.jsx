@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 import CommonDialog from "../../CommonDialog";
 import { Close } from "@mui/icons-material";
 
-function ViewRegistrationDetailsModal({ ...props }) {
+function ViewRegistrationDetailsModal({ approval, ...props }) {
   const { onClose, ...noOnClose } = props;
 
   const [reason, setReason] = useState("");
@@ -52,8 +52,20 @@ function ViewRegistrationDetailsModal({ ...props }) {
     { label: "Attachments", disabled: false },
   ];
 
-  navigators[1].disabled = !viewedTabs["Personal Info"];
-  navigators[2].disabled = !viewedTabs["Terms and Conditions"];
+  navigators[1].disabled = approval && !viewedTabs["Personal Info"];
+  navigators[2].disabled = approval && !viewedTabs["Terms and Conditions"];
+
+  const handleClose = () => {
+    onClose();
+    setReason("");
+    setConfirmReason("false");
+    setActiveTab("Personal Info");
+    setViewedTabs({
+      "Personal Info": false,
+      "Terms and Conditions": false,
+      Attachments: false,
+    });
+  };
 
   const customRibbonContent = (
     <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
@@ -74,7 +86,7 @@ function ViewRegistrationDetailsModal({ ...props }) {
           </Button>
         ))}
       </Box>
-      <IconButton sx={{ color: "white !important" }} onClick={onClose}>
+      <IconButton sx={{ color: "white !important" }} onClick={handleClose}>
         <Close />
       </IconButton>
     </Box>
@@ -157,7 +169,7 @@ function ViewRegistrationDetailsModal({ ...props }) {
               {activeTab !== "Attachments" && (
                 <SecondaryButton onClick={handleNext}>Next</SecondaryButton>
               )}
-              {activeTab === "Attachments" && (
+              {activeTab === "Attachments" && approval && (
                 <>
                   <Box
                     sx={{ display: "flex", justifyContent: "end", gap: "10px" }}
@@ -176,52 +188,58 @@ function ViewRegistrationDetailsModal({ ...props }) {
         </Box>
       </CommonModal>
 
-      <CommonDialog
-        onClose={onApproveConfirmClose}
-        open={isApproveConfirmOpen}
-        onYes={handleApprove}
-        noIcon
-      >
-        Are you sure you want to approve{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.businessName || "client"}
-        </span>
-        ?
-      </CommonDialog>
-
-      <CommonDialog
-        onClose={onRejectConfirmClose}
-        open={isRejectConfirmOpen}
-        onYes={handleReject}
-        disableYes={!confirmReason || !reason.trim()}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <Box>
-            Are you sure you want to reject{" "}
+      {approval && (
+        <>
+          <CommonDialog
+            onClose={onApproveConfirmClose}
+            open={isApproveConfirmOpen}
+            onYes={handleApprove}
+            noIcon
+          >
+            Are you sure you want to approve{" "}
             <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
               {selectedRowData?.businessName || "client"}
             </span>
             ?
-          </Box>
+          </CommonDialog>
 
-          <TextField
-            size="small"
-            label="Reason"
-            onChange={(e) => {
-              setReason(e.target.value);
-            }}
-          />
-          <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>
-            <Typography>Confirm reason</Typography>
-            <Checkbox
-              checked={confirmReason}
-              onChange={(e) => {
-                setConfirmReason(e.target.checked);
-              }}
-            />
-          </Box>
-        </Box>
-      </CommonDialog>
+          <CommonDialog
+            onClose={onRejectConfirmClose}
+            open={isRejectConfirmOpen}
+            onYes={handleReject}
+            disableYes={!confirmReason || !reason.trim()}
+          >
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              <Box>
+                Are you sure you want to reject{" "}
+                <span
+                  style={{ fontWeight: "bold", textTransform: "uppercase" }}
+                >
+                  {selectedRowData?.businessName || "client"}
+                </span>
+                ?
+              </Box>
+
+              <TextField
+                size="small"
+                label="Reason"
+                onChange={(e) => {
+                  setReason(e.target.value);
+                }}
+              />
+              <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>
+                <Typography>Confirm reason</Typography>
+                <Checkbox
+                  checked={confirmReason}
+                  onChange={(e) => {
+                    setConfirmReason(e.target.checked);
+                  }}
+                />
+              </Box>
+            </Box>
+          </CommonDialog>
+        </>
+      )}
     </>
   );
 }

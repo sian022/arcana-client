@@ -333,7 +333,7 @@ export const requestListingFeeSchema = {
         itemId: yup.object().required("Product Code is required"),
         sku: yup.number().required("SKU is required"),
         unitCost: yup.number().required("Unit Cost is required"),
-        quantity: yup.number().required("Quantity is required"),
+        // quantity: yup.number().required("Quantity is required"),
       })
     ),
   }),
@@ -344,7 +344,7 @@ export const requestListingFeeSchema = {
         itemId: null,
         sku: 1,
         unitCost: null,
-        quantity: null,
+        // quantity: null,
       },
     ],
   },

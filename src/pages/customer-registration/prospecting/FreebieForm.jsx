@@ -70,7 +70,6 @@ function FreebieForm({
     onClose: onFreebieReleaseClose,
   } = useDisclosure();
 
-  console.log(isFreebieReleaseOpen);
   //React Hook Form
   const {
     handleSubmit,

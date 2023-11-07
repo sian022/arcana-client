@@ -8,6 +8,7 @@ const initialState = {
   fullname: storedFullname || "",
   token: "",
   isPasswordChanged: false,
+  userDetails: {},
 };
 
 export const loginSlice = createSlice({
@@ -18,6 +19,10 @@ export const loginSlice = createSlice({
   // },
   initialState: initialState,
   reducers: {
+    setUserDetails: (state, action) => {
+      state.userDetails = action.payload;
+      sessionStorage.setItem("userDetails", JSON.stringify(action.payload));
+    },
     setFullname: (state, action) => {
       state.fullname = action.payload;
       // localStorage.setItem("fullname", action.payload);
@@ -38,4 +43,4 @@ export const loginSlice = createSlice({
   },
 });
 
-export const { setFullname, setToken } = loginSlice.actions;
+export const { setFullname, setToken, setUserDetails } = loginSlice.actions;

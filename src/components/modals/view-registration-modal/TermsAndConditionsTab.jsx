@@ -1,11 +1,14 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import { useSelector } from "react-redux";
 
 function TermsAndConditionsTab() {
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
+
   return (
     <Box className="viewRegistrationModal__termsAndConditions">
       <Typography className="viewRegistrationModal__termsAndConditions__header">
-        Requested by: Ernesto Soriano
+        Requested by: {selectedRowData?.requestedBy}
       </Typography>
       <Box className="viewRegistrationModal__termsAndConditions__content">
         <Typography className="viewRegistrationModal__termsAndConditions__content__title">
@@ -17,7 +20,7 @@ function TermsAndConditionsTab() {
               Freezer:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              Yes
+              {selectedRowData?.freezer ? "Yes" : "No"}
             </Typography>
           </Box>
 
@@ -26,7 +29,7 @@ function TermsAndConditionsTab() {
               Type of Customer:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              Dealer
+              {selectedRowData?.typeOfCustomer}
             </Typography>
           </Box>
 
@@ -35,7 +38,7 @@ function TermsAndConditionsTab() {
               Direct Delivery:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              N/A
+              {selectedRowData?.freezer ? "Yes" : "N/A"}
             </Typography>
           </Box>
 
@@ -44,7 +47,7 @@ function TermsAndConditionsTab() {
               Booking Coverage:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              F1
+              {selectedRowData?.bookingCoverage}
             </Typography>
           </Box>
 
@@ -53,7 +56,7 @@ function TermsAndConditionsTab() {
               Mode of Payment:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              Cash & Online/Check
+              {selectedRowData?.modeOfPayment}
             </Typography>
           </Box>
 
@@ -63,6 +66,7 @@ function TermsAndConditionsTab() {
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
               Credit Limit (P50,000) (45 Days)
+              {/* {selectedRowData?.terms?[].} */}
             </Typography>
           </Box>
 
@@ -71,7 +75,11 @@ function TermsAndConditionsTab() {
               Discount:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              Fixed (10%)
+              {/* Fixed (10%) */}
+              {selectedRowData?.fixedDiscount &&
+                `Fixed (${
+                  selectedRowData?.fixedDiscount?.discountPercentage * 100
+                }%)`}
             </Typography>
           </Box>
         </Box>

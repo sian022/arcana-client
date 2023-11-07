@@ -16,6 +16,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonDialog from "../CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
+import { usePatchChangePasswordMutation } from "../../features/user-management/api/userAccountApi";
+import { useSelector } from "react-redux";
 
 function ChangePasswordModal({ ...otherProps }) {
   const { onClose, ...noOnClose } = otherProps;
@@ -26,6 +28,8 @@ function ChangePasswordModal({ ...otherProps }) {
   const [viewNewPassword, setViewNewPassword] = useState(false);
   const [viewConfirmNewPassword, setViewConfirmNewPassword] = useState(false);
 
+  const userDetails = useSelector((state) => state.login.userDetails);
+
   //Disclosures
   const {
     isOpen: isConfirmOpen,
@@ -33,6 +37,10 @@ function ChangePasswordModal({ ...otherProps }) {
     onClose: onConfirmClose,
   } = useDisclosure();
 
+  //RTK Query
+  const [patchChangePassword, { isLoading }] = usePatchChangePasswordMutation();
+
+  //React Hook Form
   const {
     handleSubmit,
     register,
@@ -44,10 +52,24 @@ function ChangePasswordModal({ ...otherProps }) {
     defaultValues: changePasswordSchema.defaultValues,
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (data["newPassword"] !== data["confirmNewPassword"]) {
       onConfirmClose();
       return showSnackbar("Passwords do not match", "error");
+    }
+
+    const { oldPassword, newPassword } = data;
+
+    try {
+      const userId = userDetails.id || localStorage.getItem("userDetails.id");
+      await patchChangePassword({
+        id: userId,
+        oldPassword,
+        newPassword,
+      }).unwrap();
+      showSnackbar("Password changed successfully", "success");
+    } catch (error) {
+      showSnackbar(error.data.messages[0], "error");
     }
 
     onConfirmClose();
@@ -82,6 +104,7 @@ function ChangePasswordModal({ ...otherProps }) {
                         onClick={() => {
                           setViewOldPassword(!viewOldPassword);
                         }}
+                        tabIndex={-1}
                       >
                         {viewOldPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
@@ -104,6 +127,7 @@ function ChangePasswordModal({ ...otherProps }) {
                         onClick={() => {
                           setViewNewPassword(!viewNewPassword);
                         }}
+                        tabIndex={-1}
                       >
                         {viewNewPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
@@ -126,6 +150,7 @@ function ChangePasswordModal({ ...otherProps }) {
                         onClick={() => {
                           setViewConfirmNewPassword(!viewConfirmNewPassword);
                         }}
+                        tabIndex={-1}
                       >
                         {viewConfirmNewPassword ? (
                           <Visibility />
@@ -162,6 +187,7 @@ function ChangePasswordModal({ ...otherProps }) {
         open={isConfirmOpen}
         onYes={handleSubmit(onSubmit)}
         noIcon
+        isLoading={isLoading}
       >
         Are you sure you want to change password?
       </CommonDialog>

@@ -1,11 +1,16 @@
 import { Box, Typography } from "@mui/material";
+import moment from "moment";
 import React from "react";
+import { useSelector } from "react-redux";
 
 function PersonalInfoTab() {
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  console.log(selectedRowData);
   return (
     <Box className="viewRegistrationModal__personalInfo">
       <Typography className="viewRegistrationModal__personalInfo__header">
-        Requested by: Ernesto Soriano
+        Requested by: {selectedRowData?.requestedBy}
       </Typography>
       <Box className="viewRegistrationModal__personalInfo__content">
         <Typography className="viewRegistrationModal__personalInfo__content__title">
@@ -17,7 +22,7 @@ function PersonalInfoTab() {
               Name:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquez
+              {selectedRowData?.ownersName}
             </Typography>
           </Box>
 
@@ -26,7 +31,7 @@ function PersonalInfoTab() {
               Birthday:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquez
+              {moment(selectedRowData?.dateOfBirth).format("MMMM DD, YYYY")}
             </Typography>
           </Box>
 
@@ -35,7 +40,7 @@ function PersonalInfoTab() {
               Contact Number:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquezzz
+              {selectedRowData?.phoneNumber}
             </Typography>
           </Box>
 
@@ -44,7 +49,7 @@ function PersonalInfoTab() {
               Email Address:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquez
+              {selectedRowData?.emailAddress}
             </Typography>
           </Box>
 
@@ -53,7 +58,11 @@ function PersonalInfoTab() {
               Owner's Address
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquez
+              #{selectedRowData?.ownersAddress?.houseNumber}{" "}
+              {selectedRowData?.ownersAddress?.streetName}{" "}
+              {selectedRowData?.ownersAddress?.barangayName},{" "}
+              {selectedRowData?.ownersAddress?.city},{" "}
+              {selectedRowData?.ownersAddress?.province}
             </Typography>
           </Box>
 
@@ -62,7 +71,7 @@ function PersonalInfoTab() {
               Business Name:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquez
+              {selectedRowData?.businessName}
             </Typography>
           </Box>
 
@@ -71,7 +80,11 @@ function PersonalInfoTab() {
               Business Address:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquez
+              #{selectedRowData?.businessAddress?.houseNumber}{" "}
+              {selectedRowData?.businessAddress?.streetName}{" "}
+              {selectedRowData?.businessAddress?.barangayName},{" "}
+              {selectedRowData?.businessAddress?.city},{" "}
+              {selectedRowData?.businessAddress?.province}
             </Typography>
           </Box>
 
@@ -80,7 +93,7 @@ function PersonalInfoTab() {
               Cluster:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              John Serrano Marquez
+              {selectedRowData?.cluster}
             </Typography>
           </Box>
 
@@ -90,7 +103,7 @@ function PersonalInfoTab() {
               Representative:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__itemWrapped__value">
-              John Serrano Marquez
+              {selectedRowData?.authorizedRepresentative}
             </Typography>
           </Box>
         </Box>

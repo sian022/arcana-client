@@ -26,6 +26,17 @@ export const registrationApi = createApi({
       transformErrorResponse: (response) => response.data,
     }),
 
+    getAllClientsForListingFee: builder.query({
+      query: (params) => ({
+        params: params,
+        url: "/ListingFee/GetAllClientsInListingFee",
+        method: "GET",
+      }),
+      providesTags: ["Registration"],
+      transformResponse: (response) => response.data,
+      transformErrorResponse: (response) => response.data,
+    }),
+
     putRegisterClient: builder.mutation({
       query: ({ clientId, ...body }) => ({
         url: `/Registration/RegisterClient/${clientId}`,
@@ -71,6 +82,7 @@ export const registrationApi = createApi({
 
 export const {
   useGetAllClientsQuery,
+  useGetAllClientsForListingFeeQuery,
   usePutRegisterClientMutation,
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,

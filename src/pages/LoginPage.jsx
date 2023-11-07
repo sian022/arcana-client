@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import {
   setFullname,
   setToken,
+  setUserDetails,
 } from "../features/authentication/reducers/loginSlice";
 import { setPermissisons } from "../features/authentication/reducers/permissionsSlice";
 import MisLogo from "../assets/images/MIS-logo.png";
@@ -53,6 +54,7 @@ function LoginPage() {
   const submitHandler = async (data) => {
     try {
       const res = await postLogin(data).unwrap();
+      dispatch(setUserDetails(res?.data));
       dispatch(setFullname(res?.data?.fullname));
       dispatch(setToken(res?.data?.token));
       dispatch(setPermissisons(res?.data?.permission));

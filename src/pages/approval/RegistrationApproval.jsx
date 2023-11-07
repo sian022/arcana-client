@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
-import { dummyTableData } from "../../utils/DummyData";
 import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
 import useDisclosure from "../../hooks/useDisclosure";
-import CommonDialog from "../../components/CommonDialog";
 import { useSelector } from "react-redux";
+import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 
 function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [origin, setOrigin] = useState("");
-  const [clientStatus, setClientStatus] = useState("pending");
+  const [clientStatus, setClientStatus] = useState("under review");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -24,38 +25,99 @@ function RegistrationApproval() {
     onClose: onViewClose,
   } = useDisclosure();
 
+  //RTK Query
+  const { data: pendingData, isLoading: isPendingLoading } =
+    useGetAllClientsQuery({
+      Status: true,
+      RegistrationStatus: "Under Review",
+    });
+
+  const { data: approvedData, isLoading: isApprovedLoading } =
+    useGetAllClientsQuery({
+      Status: true,
+      RegistrationStatus: "Approved",
+    });
+
+  const { data: rejectedData, isLoading: isRejectedLoading } =
+    useGetAllClientsQuery({
+      Status: true,
+      RegistrationStatus: "Rejected",
+    });
+
+  const { data, isLoading } = useGetAllClientsQuery({
+    Search: search,
+    Status: true,
+    RegistrationStatus: clientStatus,
+    Origin: origin,
+    PageNumber: page + 1,
+    PageSize: rowsPerPage,
+  });
+
   //Constants
   const registrationNavigation = [
     {
       case: 1,
       name: "Pending Client",
+      registrationStatus: "Under Review",
       // badge: badges["forFreebies"],
     },
     {
       case: 2,
       name: "Approved Client",
+      registrationStatus: "Approved",
       // badge: badges["forReleasing"],
     },
     {
       case: 3,
       name: "Rejected Client",
+      registrationStatus: "Rejected",
       // badge: badges["forReleasing"],
     },
   ];
 
   const selectOptions = [
     {
-      value: "all",
+      value: " ",
       label: "All",
     },
     {
-      value: "prospect",
+      value: "prospecting",
       label: "Prospect",
     },
     {
       value: "direct",
       label: "Direct",
     },
+  ];
+
+  const tableHeads = [
+    "Owner's Name",
+    "Contact Number",
+    "Business Name",
+    "Business Type",
+  ];
+
+  const excludeKeysDisplay = [
+    "id",
+    "businessAddress",
+    "fixedDiscount",
+    "ownersAddress",
+    "attachments",
+    "terms",
+    "tinNumber",
+    "authorizedRepresentative",
+    "authorizedRepresentativePosition",
+    "cluster",
+    "freezer",
+    "typeOfCustomer",
+    "directDelivery",
+    "bookingCoverage",
+    "modeOfPayment",
+    "variableDiscount",
+    "longitude",
+    "latitude",
+    // "storeType",
+    "dateOfBirth",
   ];
 
   //Misc Functions
@@ -65,8 +127,10 @@ function RegistrationApproval() {
       (item) => item.case === tabViewing
     );
 
-    setClientStatus(foundItem?.name);
+    setClientStatus(foundItem?.registrationStatus);
   }, [tabViewing]);
+
+  console.log(data);
 
   return (
     <>
@@ -83,15 +147,21 @@ function RegistrationApproval() {
           selectOptions={selectOptions}
           setSelectValue={setOrigin}
         />
-        <CommonTable mapData={dummyTableData} moreCompact />
+        <CommonTable
+          mapData={data?.regularClient}
+          excludeKeysDisplay={excludeKeysDisplay}
+          tableHeads={tableHeads}
+          moreCompact
+        />
       </Box>
 
       <ViewRegistrationDetailsModal
         open={
-          // isViewOpen
-          true
+          isViewOpen
+          // true
         }
         onClose={onViewClose}
+        approval
       />
     </>
   );

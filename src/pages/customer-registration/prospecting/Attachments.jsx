@@ -24,6 +24,7 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import CommonModal from "../../../components/CommonModal";
 import { base64ToBlob } from "../../../utils/CustomFunctions";
+import ViewPhotoModal from "../../../components/modals/ViewPhotoModal";
 
 function Attachments() {
   const {
@@ -429,7 +430,13 @@ function Attachments() {
         signature={ownersRequirements["signature"]}
       />
 
-      <CommonModal
+      <ViewPhotoModal
+        currentViewPhoto={currentViewPhoto}
+        currentViewPhotoLabel={currentViewPhotoLabel}
+        open={isViewPhotoOpen}
+        onClose={onViewPhotoClose}
+      />
+      {/* <CommonModal
         width="800px"
         open={isViewPhotoOpen}
         onClose={onViewPhotoClose}
@@ -465,7 +472,7 @@ function Attachments() {
         ) : (
           <CircularProgress />
         )}
-      </CommonModal>
+      </CommonModal> */}
       <>
         {/* <Input
           type="file"

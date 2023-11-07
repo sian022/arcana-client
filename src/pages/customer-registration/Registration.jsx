@@ -7,6 +7,7 @@ import PageHeaderAddTabs from "../../components/PageHeaderAddTabs";
 import DirectRegisterForm from "./registration/DirectRegisterForm";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -22,6 +23,12 @@ function DirectRegistration() {
     isOpen: isRegisterOpen,
     onOpen: onRegisterOpen,
     onClose: onRegisterClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isViewOpen,
+    onOpen: onViewOpen,
+    onClose: onViewClose,
   } = useDisclosure();
 
   //RTK Query
@@ -90,11 +97,33 @@ function DirectRegistration() {
   ];
 
   const excludeKeysDisplay = [
+    "id",
     "businessAddress",
     "fixedDiscount",
     "ownersAddress",
     "attachments",
     "terms",
+    "tinNumber",
+    "authorizedRepresentative",
+    "authorizedRepresentativePosition",
+    "cluster",
+    "freezer",
+    "typeOfCustomer",
+    "directDelivery",
+    "bookingCoverage",
+    "modeOfPayment",
+    "variableDiscount",
+    "longitude",
+    "latitude",
+    // "storeType",
+    "dateOfBirth",
+  ];
+
+  const tableHeads = [
+    "Owner's Name",
+    "Contact Number",
+    "Business Name",
+    "Business Type",
   ];
 
   useEffect(() => {
@@ -141,10 +170,15 @@ function DirectRegistration() {
             setRowsPerPage={setRowsPerPage}
             page={page}
             setPage={setPage}
+            tableHeads={tableHeads}
+            editable
+            onView={onViewOpen}
           />
         )}
 
         <DirectRegisterForm open={isRegisterOpen} onClose={onRegisterClose} />
+
+        <ViewRegistrationDetailsModal open={isViewOpen} onClose={onViewClose} />
       </Box>
     </>
   );
