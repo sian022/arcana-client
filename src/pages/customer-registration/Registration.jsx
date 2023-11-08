@@ -122,8 +122,10 @@ function DirectRegistration() {
   const tableHeads = [
     "Owner's Name",
     "Contact Number",
+    "Email Address",
     "Business Name",
     "Business Type",
+    "Requested By",
   ];
 
   useEffect(() => {

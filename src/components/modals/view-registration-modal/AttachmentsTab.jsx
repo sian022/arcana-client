@@ -28,14 +28,11 @@ function AttachmentsTab() {
   } = useDisclosure();
 
   const handleViewPhoto = (file, label) => {
-    console.log(file);
     onViewPhotoOpen();
     setCurrentViewPhoto(file);
     setCurrentViewPhotoLabel(label);
   };
 
-  console.log(selectedRowData);
-  console.log(currentViewPhotoLabel);
   return (
     <>
       {" "}

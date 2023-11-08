@@ -137,6 +137,14 @@ function CommonTable({
                     ) {
                       return null;
                     }
+
+                    let total = 0;
+                    if (keys === "listingFee") {
+                      item[keys]?.[0]?.listingItems?.forEach((item) => {
+                        total += item.unitCost;
+                      });
+                    }
+
                     return (
                       <TableCell key={k}>
                         {pesoArray && pesoArray.includes(keys) && "₱ "}

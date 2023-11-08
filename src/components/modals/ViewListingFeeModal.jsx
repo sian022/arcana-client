@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -19,12 +19,14 @@ import DangerButton from "../DangerButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
+import { usePutApproveListingFeeMutation } from "../../features/listing-fee/api/listingFeeApi";
 
 function ViewListingFeeModal({ approval, ...props }) {
   const { onClose, ...noOnClose } = props;
 
   const [reason, setReason] = useState("");
   const [confirmReason, setConfirmReason] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -40,6 +42,10 @@ function ViewListingFeeModal({ approval, ...props }) {
     onOpen: onRejectConfirmOpen,
     onClose: onRejectConfirmClose,
   } = useDisclosure();
+
+  //RTK Query
+  const [putApproveListingFee, { isLoading: isApproveLoading }] =
+    usePutApproveListingFeeMutation();
 
   const customRibbonContent = (
     // <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
@@ -65,17 +71,47 @@ function ViewListingFeeModal({ approval, ...props }) {
   );
 
   //Functions
-  const handleApprove = () => {
+  const handleApprove = async () => {
+    try {
+      await putApproveListingFee({
+        id: selectedRowData?.id,
+      }).unwrap();
+      showSnackbar("Listing Fee approved successfully", "success");
+    } catch (error) {
+      showSnackbar(
+        error?.data?.messages[0] || "Error approving listing fee",
+        "error"
+      );
+    }
+
     onApproveConfirmClose();
+    onClose();
   };
 
   const handleReject = () => {
+    handleRejectConfirmClose();
+    onClose();
+  };
+
+  console.log(selectedRowData);
+
+  const handleRejectConfirmClose = () => {
+    setReason("");
+    setConfirmReason(false);
     onRejectConfirmClose();
   };
 
+  useEffect(() => {
+    const totalCosts =
+      selectedRowData?.listingFee?.[0]?.listingItems?.map(
+        (item) => item.unitCost
+      ) || [];
+    const total = totalCosts.reduce((acc, cost) => acc + cost, 0);
+    setTotalAmount(total);
+  }, [selectedRowData]);
+
   return (
     <>
-      {" "}
       <CommonModal
         width="900px"
         height="660px"
@@ -98,7 +134,11 @@ function ViewListingFeeModal({ approval, ...props }) {
                 Business Name
               </Box>
               <Box>
-                <TextField size="small" value="Match and Meats" readOnly />
+                <TextField
+                  size="small"
+                  value={selectedRowData?.businessName}
+                  readOnly
+                />
               </Box>
             </Box>
 
@@ -114,7 +154,11 @@ function ViewListingFeeModal({ approval, ...props }) {
                 Customer Name
               </Box>
               <Box>
-                <TextField size="small" readOnly value="Robert H. Lo" />
+                <TextField
+                  size="small"
+                  readOnly
+                  value={selectedRowData?.clientName}
+                />
               </Box>
             </Box>
           </Box>
@@ -128,11 +172,7 @@ function ViewListingFeeModal({ approval, ...props }) {
               }}
             >
               <Table>
-                <TableHead
-                // sx={{
-                //   bgcolor: "#fff",
-                // }}
-                >
+                <TableHead>
                   <TableRow>
                     <TableCell>Item Code</TableCell>
                     <TableCell>Item Description</TableCell>
@@ -143,62 +183,17 @@ function ViewListingFeeModal({ approval, ...props }) {
                 </TableHead>
 
                 <TableBody>
-                  <TableRow>
-                    <TableCell>52319</TableCell>
-                    <TableCell>Rapsarap Chicken Nuggets 200G</TableCell>
-                    <TableCell>PACK</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>4000</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>52319</TableCell>
-                    <TableCell>Rapsarap Chicken Nuggets 200G</TableCell>
-                    <TableCell>PACK</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>4000</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>52319</TableCell>
-                    <TableCell>Rapsarap Chicken Nuggets 200G</TableCell>
-                    <TableCell>PACK</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>4000</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>52319</TableCell>
-                    <TableCell>Rapsarap Chicken Nuggets 200G</TableCell>
-                    <TableCell>PACK</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>4000</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>52319</TableCell>
-                    <TableCell>Rapsarap Chicken Nuggets 200G</TableCell>
-                    <TableCell>PACK</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>4000</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>52319</TableCell>
-                    <TableCell>Rapsarap Chicken Nuggets 200G</TableCell>
-                    <TableCell>PACK</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>4000</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>52319</TableCell>
-                    <TableCell>Rapsarap Chicken Nuggets 200G</TableCell>
-                    <TableCell>PACK</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>4000</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>52319</TableCell>
-                    <TableCell>Rapsarap Chicken Nuggets 200G</TableCell>
-                    <TableCell>PACK</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>4000</TableCell>
-                  </TableRow>
+                  {selectedRowData?.listingFee?.[0]?.listingItems?.map(
+                    (item) => (
+                      <TableRow>
+                        <TableCell>{item.itemCode}</TableCell>
+                        <TableCell>{item.itemDescription}</TableCell>
+                        <TableCell>{item.uom}</TableCell>
+                        <TableCell>{item.sku}</TableCell>
+                        <TableCell>{item.unitCost}</TableCell>
+                      </TableRow>
+                    )
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -222,7 +217,7 @@ function ViewListingFeeModal({ approval, ...props }) {
           >
             Total Amount
           </Typography>
-          <Typography sx={{ fontSize: "1rem" }}>0</Typography>
+          <Typography sx={{ fontSize: "1rem" }}>{totalAmount}</Typography>
         </Box>
         {approval && (
           <Box
@@ -248,6 +243,7 @@ function ViewListingFeeModal({ approval, ...props }) {
             onClose={onApproveConfirmClose}
             open={isApproveConfirmOpen}
             onYes={handleApprove}
+            isLoading={isApproveLoading}
             noIcon
           >
             Are you sure you want to approve listing fee for{" "}
@@ -277,6 +273,7 @@ function ViewListingFeeModal({ approval, ...props }) {
               <TextField
                 size="small"
                 label="Reason"
+                autoComplete="off"
                 onChange={(e) => {
                   setReason(e.target.value);
                 }}

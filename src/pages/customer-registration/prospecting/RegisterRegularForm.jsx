@@ -37,7 +37,6 @@ import {
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import DangerButton from "../../../components/DangerButton";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
-import ListingFeeModal from "../../../components/modals/ListingFeeModal";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
@@ -842,6 +841,7 @@ function RegisterRegularForm({ open, onClose }) {
         onClose={onConfirmClose}
         // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
         isLoading={isAllApiLoading}
+        noIcon
       >
         Confirm registration of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

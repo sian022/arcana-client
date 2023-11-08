@@ -17,6 +17,11 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../CommonDialog";
 import { Close } from "@mui/icons-material";
+import {
+  usePutApproveRegistrationMutation,
+  usePutRejectRegistrationMutation,
+} from "../../../features/registration/api/registrationApi";
+import useSnackbar from "../../../hooks/useSnackbar";
 
 function ViewRegistrationDetailsModal({ approval, ...props }) {
   const { onClose, ...noOnClose } = props;
@@ -31,6 +36,8 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
   });
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const { showSnackbar } = useSnackbar();
 
   //Disclosures
   const {
@@ -55,10 +62,17 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
   navigators[1].disabled = approval && !viewedTabs["Personal Info"];
   navigators[2].disabled = approval && !viewedTabs["Terms and Conditions"];
 
+  //RTK Query
+  const [putApproveRegistration, { isLoading: isApproveLoading }] =
+    usePutApproveRegistrationMutation();
+  const [putRejectRegistration, { isLoading: isRejectLoading }] =
+    usePutRejectRegistrationMutation();
+
+  //Handler Functions
   const handleClose = () => {
     onClose();
     setReason("");
-    setConfirmReason("false");
+    setConfirmReason(false);
     setActiveTab("Personal Info");
     setViewedTabs({
       "Personal Info": false,
@@ -108,15 +122,44 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
     }
   };
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
+    try {
+      await putApproveRegistration({
+        id: selectedRowData?.id,
+      }).unwrap();
+      showSnackbar("Client approved successfully", "success");
+    } catch (error) {
+      showSnackbar(
+        error?.data?.messages[0] || "Error approving client",
+        "error"
+      );
+    }
+
     onApproveConfirmClose();
     onClose();
   };
 
-  const handleReject = () => {
+  const handleRejectConfirmClose = () => {
     setReason("");
     setConfirmReason(false);
     onRejectConfirmClose();
+  };
+
+  const handleReject = async () => {
+    try {
+      await putRejectRegistration({
+        id: selectedRowData?.id,
+        reason,
+      }).unwrap();
+      showSnackbar("Client rejected successfully", "success");
+    } catch (error) {
+      showSnackbar(
+        error?.data?.messages[0] || "Error rejecting client",
+        "error"
+      );
+    }
+
+    handleRejectConfirmClose();
     onClose();
   };
 
@@ -131,7 +174,7 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
     <>
       <CommonModal
         width="800px"
-        height="660px"
+        height="670px"
         disablePadding
         ribbon
         customRibbonContent={customRibbonContent}
@@ -194,6 +237,7 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
             onClose={onApproveConfirmClose}
             open={isApproveConfirmOpen}
             onYes={handleApprove}
+            isLoading={isApproveLoading}
             noIcon
           >
             Are you sure you want to approve{" "}
@@ -204,9 +248,10 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
           </CommonDialog>
 
           <CommonDialog
-            onClose={onRejectConfirmClose}
+            onClose={handleRejectConfirmClose}
             open={isRejectConfirmOpen}
             onYes={handleReject}
+            isLoading={isRejectLoading}
             disableYes={!confirmReason || !reason.trim()}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -223,6 +268,7 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
               <TextField
                 size="small"
                 label="Reason"
+                autoComplete="off"
                 onChange={(e) => {
                   setReason(e.target.value);
                 }}

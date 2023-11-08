@@ -112,7 +112,7 @@ function ListingFeeDrawer({
 
       if (updateListingFee) {
         response = await putFreebiesInformation({
-          id: data.clientId,
+          id: data.clientId.id,
           // freebieRequestId: data.freebieRequestId,
           params: { freebieId: data.freebieRequestId },
           listingItems: data.listingItems.map((listingItem) => ({
@@ -122,17 +122,16 @@ function ListingFeeDrawer({
         setSnackbarMessage("Listing Fee updated successfully");
       } else {
         response = await postListingFee({
-          // clientId: data.clientId,
-          clientId: 1,
+          clientId: data.clientId.id,
           total: totalAmount,
-          // listingItems: data.listingItems,
           listingItems: data.listingItems.map((listingItem) => ({
             itemId: listingItem.itemId.id,
             sku: listingItem.sku,
             unitCost: listingItem.unitCost,
-            // quantity: listingItem.quantity,
+            quantity: listingItem.sku,
           })),
         }).unwrap();
+
         setSnackbarMessage("Listing Fee added successfully");
       }
 
@@ -150,6 +149,7 @@ function ListingFeeDrawer({
 
   const handleDrawerClose = () => {
     reset();
+    setValue("customerName", "");
     setTotalAmount(0);
     onListingFeeClose();
     onConfirmCancelClose();
@@ -227,18 +227,16 @@ function ListingFeeDrawer({
   //   };
   // }, [isListingFeeOpen]);
 
-  // useEffect(() => {
-  //   let total = 0;
-  //   fields.forEach((item) => {
-  //     const unitCost = parseInt(item.unitCost);
-  //     if (!isNaN(unitCost)) {
-  //       total += unitCost;
-  //     }
-  //   });
-  //   setTotalAmount(total);
-  // }, [fields]);
+  useEffect(() => {
+    if (redirect && clientData) {
+      const foundItem = clientData?.regularClient?.find(
+        (item) => item.businessName === selectedRowData?.businessName
+      );
+      setValue("clientId", foundItem);
+      setValue("customerName", foundItem?.ownersName);
+    }
+  }, [clientData]);
 
-  console.log(clientId);
   return (
     <>
       <CommonDrawer
@@ -261,9 +259,9 @@ function ListingFeeDrawer({
               disableClearable
               loading={isClientLoading}
               disabled={redirect}
-              value={clientData?.regularClient?.find(
-                (item) => item.businessName === selectedRowData?.businessName
-              )}
+              // value={clientData?.regularClient?.find(
+              //   (item) => item.businessName === selectedRowData?.businessName
+              // )}
               // isOptionEqualToValue={(option, value) => option.id === value.id}
               isOptionEqualToValue={(option, value) => true}
               renderInput={(params) => (
@@ -294,7 +292,7 @@ function ListingFeeDrawer({
                   disabled
                   onChange={onChange}
                   onBlur={onBlur}
-                  value={redirect ? selectedRowData?.ownersName : value || ""}
+                  value={value || ""}
                   ref={ref}
                   sx={{ width: "300px" }}
                 />
@@ -551,7 +549,8 @@ function ListingFeeDrawer({
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onListingFeeSubmit)}
-        // isLoading={updateListingFee ? isUpdateLoading : isRequestLoading}
+        // isLoading={updateListingFee ? isUpdateLoading : isAddLoading}
+        isLoading={isAddLoading}
         noIcon
       >
         Confirm request of listing fee for{" "}

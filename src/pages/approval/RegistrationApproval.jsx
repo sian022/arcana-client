@@ -7,6 +7,7 @@ import ViewRegistrationDetailsModal from "../../components/modals/view-registrat
 import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
+import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 
 function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -15,6 +16,7 @@ function RegistrationApproval() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [origin, setOrigin] = useState("");
   const [clientStatus, setClientStatus] = useState("under review");
+  const [count, setCount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -29,7 +31,7 @@ function RegistrationApproval() {
   const { data: pendingData, isLoading: isPendingLoading } =
     useGetAllClientsQuery({
       Status: true,
-      RegistrationStatus: "Under Review",
+      RegistrationStatus: "Under review",
     });
 
   const { data: approvedData, isLoading: isApprovedLoading } =
@@ -93,8 +95,10 @@ function RegistrationApproval() {
   const tableHeads = [
     "Owner's Name",
     "Contact Number",
+    "Email Address",
     "Business Name",
     "Business Type",
+    "Requested By",
   ];
 
   const excludeKeysDisplay = [
@@ -130,6 +134,10 @@ function RegistrationApproval() {
     setClientStatus(foundItem?.registrationStatus);
   }, [tabViewing]);
 
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
   return (
     <>
       <Box className="commonPageLayout">
@@ -145,14 +153,23 @@ function RegistrationApproval() {
           selectOptions={selectOptions}
           setSelectValue={setOrigin}
         />
-        <CommonTable
-          mapData={data?.regularClient}
-          excludeKeysDisplay={excludeKeysDisplay}
-          tableHeads={tableHeads}
-          moreCompact
-          editable
-          onView={onViewOpen}
-        />
+        {isLoading ? (
+          <CommonTableSkeleton moreCompact />
+        ) : (
+          <CommonTable
+            mapData={data?.regularClient}
+            excludeKeysDisplay={excludeKeysDisplay}
+            tableHeads={tableHeads}
+            moreCompact
+            editable
+            onView={onViewOpen}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            count={count}
+          />
+        )}
       </Box>
 
       <ViewRegistrationDetailsModal
@@ -161,7 +178,7 @@ function RegistrationApproval() {
           // true
         }
         onClose={onViewClose}
-        approval
+        approval={clientStatus === "Under review"}
       />
     </>
   );

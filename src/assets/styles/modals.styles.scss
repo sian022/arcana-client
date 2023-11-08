@@ -258,7 +258,7 @@
       &__fields {
         display: flex;
         flex-direction: column;
-        width: 450px;
+        width: 500px;
         gap: 10px;
 
         &__item {
@@ -274,6 +274,7 @@
 
           & &__value {
             font-size: 16px;
+            text-align: right;
           }
         }
 
@@ -321,7 +322,7 @@
       &__fields {
         display: flex;
         flex-direction: column;
-        width: 450px;
+        width: 500px;
         gap: 10px;
 
         &__item {
@@ -399,7 +400,7 @@
       &__fields {
         display: flex;
         flex-direction: column;
-        width: 450px;
+        width: 500px;
         gap: 10px;
 
         &__item {

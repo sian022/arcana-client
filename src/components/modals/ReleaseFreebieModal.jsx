@@ -33,6 +33,7 @@ import SuccessSnackbar from "../SuccessSnackbar";
 import ErrorSnackbar from "../ErrorSnackbar";
 import CommonDialog from "../CommonDialog";
 import ViewPhotoModal from "./ViewPhotoModal";
+import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
 
 function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -68,15 +69,15 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
   } = useDisclosure();
 
   const {
-    isOpen: isRedirectListingFeeOpen,
-    onOpen: onRedirectListingFeeOpen,
-    onClose: onRedirectListingFeeClose,
+    isOpen: isRedirectRegisterOpen,
+    onOpen: onRedirectRegisterOpen,
+    onClose: onRedirectRegisterClose,
   } = useDisclosure();
 
   const {
-    isOpen: isListingFeeOpen,
-    onOpen: onListingFeeOpen,
-    onClose: onListingFeeClose,
+    isOpen: isRegisterOpen,
+    onOpen: onRegisterOpen,
+    onClose: onRegisterClose,
   } = useDisclosure();
 
   const {
@@ -121,7 +122,7 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
       onClose();
       onConfirmClose();
       setSnackbarMessage("Freebie released successfully");
-      // debounce(onRedirectListingFeeOpen(), 2000);
+      debounce(onRedirectRegisterOpen(), 2000);
       onSuccessOpen();
     } catch (error) {
       setSnackbarMessage(error.data.messages[0]);
@@ -149,9 +150,9 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
     // setPhotoProof(file);
   };
 
-  const handleRedirectListingFeeYes = () => {
-    onRedirectListingFeeClose();
-    onListingFeeOpen();
+  const handleRedirectRegisterYes = () => {
+    onRegisterOpen();
+    onRedirectRegisterClose();
   };
 
   return (
@@ -346,6 +347,8 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
         currentViewPhotoLabel={"Freebie Photo"}
       />
 
+      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+
       <CommonDialog
         open={isConfirmOpen}
         onClose={onConfirmClose}
@@ -373,17 +376,17 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
       </CommonDialog>
 
       <CommonDialog
-        open={isRedirectListingFeeOpen}
-        onClose={onRedirectListingFeeClose}
-        onYes={handleRedirectListingFeeYes}
+        open={isRedirectRegisterOpen}
+        onClose={onRedirectRegisterClose}
+        onYes={handleRedirectRegisterYes}
       >
-        Continue to listing fee for{" "}
+        Continue to register{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {selectedRowData.businessName
             ? selectedRowData.businessName
-            : "client"}
+            : "client"}{" "}
         </span>
-        ?
+        as regular client?
       </CommonDialog>
 
       <SuccessSnackbar

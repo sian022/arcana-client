@@ -24,6 +24,7 @@ import { registrationApi } from "../features/registration/api/registrationApi";
 import { regularRegistrationSlice } from "../features/registration/reducers/regularRegistrationSlice";
 import { sedarApi } from "../features/user-management/api/sedarApi";
 import { userConfigApi } from "../features/authentication/api/userConfigApi";
+import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
 
 export const store = configureStore({
   reducer: {
@@ -51,6 +52,7 @@ export const store = configureStore({
     [registrationApi.reducerPath]: registrationApi.reducer,
     [sedarApi.reducerPath]: sedarApi.reducer,
     [userConfigApi.reducerPath]: userConfigApi.reducer,
+    [listingFeeApi.reducerPath]: listingFeeApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -73,6 +75,7 @@ export const store = configureStore({
       registrationApi.middleware,
       sedarApi.middleware,
       userConfigApi.middleware,
+      listingFeeApi.middleware,
     ]),
 });
 

@@ -26,17 +26,38 @@ export const listingFeeApi = createApi({
       transformErrorResponse: (response) => response.data,
     }),
 
-    // getAllClients: builder.query({
-    //   query: (params) => ({
-    //     params: params,
-    //     url: "/Clients/GetAllClients",
-    //     method: "GET",
-    //   }),
-    //   providesTags: ["Listing Fee"],
-    //   transformResponse: (response) => response.data,
-    //   transformErrorResponse: (response) => response.data,
-    // }),
+    getAllListingFee: builder.query({
+      query: (params) => ({
+        params: params,
+        url: "/ListingFee/GetAllListingFee",
+        method: "GET",
+      }),
+      providesTags: ["Listing Fee"],
+      transformResponse: (response) => response.data,
+      transformErrorResponse: (response) => response.data,
+    }),
+
+    putApproveListingFee: builder.mutation({
+      query: ({ id }) => ({
+        url: `/ListingFee/ApproveListingFee/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Listing Fee"],
+    }),
+
+    putRejectListingFee: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/RegularClients/RejectRegularListingFee/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Listing Fee"],
+    }),
   }),
 });
 
-export const { usePostListingFeeMutation } = listingFeeApi;
+export const {
+  usePostListingFeeMutation,
+  useGetAllListingFeeQuery,
+  usePutApproveListingFeeMutation,
+} = listingFeeApi;

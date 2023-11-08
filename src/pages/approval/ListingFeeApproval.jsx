@@ -9,18 +9,23 @@ import ListingFeeModal from "../../components/modals/ListingFeeModal";
 import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
+import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
+import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 
 function ListingFeeApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [origin, setOrigin] = useState("");
-  const [clientStatus, setClientStatus] = useState("pending");
+  const [listingFeeStatus, setListingFeeStatus] = useState("Under review");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [count, setCount] = useState(0);
 
   //Disclosures
   const {
-    isOpen: isViewListingFeeOpen,
-    onOpen: onViewListingFeeOpen,
-    onClose: onViewListingFeeClose,
+    isOpen: isViewOpen,
+    onOpen: onViewOpen,
+    onClose: onViewClose,
   } = useDisclosure();
 
   //Constants
@@ -28,16 +33,19 @@ function ListingFeeApproval() {
     {
       case: 1,
       name: "Pending Listing Fee",
+      listingFeeStatus: "Under review",
       // badge: badges["forFreebies"],
     },
     {
       case: 2,
       name: "Approved Listing Fee",
+      listingFeeStatus: "Approved",
       // badge: badges["forReleasing"],
     },
     {
       case: 3,
       name: "Rejected Listing Fee",
+      listingFeeStatus: "Rejected",
     },
   ];
 
@@ -56,6 +64,35 @@ function ListingFeeApproval() {
     },
   ];
 
+  const excludeKeysDisplay = ["listingFee", "clientId"];
+
+  //RTK Query
+  const { data: pendingData, isLoading: isPendingLoading } =
+    useGetAllListingFeeQuery({
+      Status: true,
+      ListingFeeStatus: "Under review",
+    });
+
+  const { data: approvedData, isLoading: isApprovedLoading } =
+    useGetAllListingFeeQuery({
+      Status: true,
+      ListingFeeStatus: "Approved",
+    });
+
+  const { data: rejectedData, isLoading: isRejectedLoading } =
+    useGetAllListingFeeQuery({
+      Status: true,
+      ListingFeeStatus: "Rejected",
+    });
+
+  const { data, isLoading } = useGetAllListingFeeQuery({
+    Search: search,
+    Status: true,
+    ListingFeeStatus: listingFeeStatus,
+    PageNumber: page + 1,
+    PageSize: rowsPerPage,
+  });
+
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
@@ -65,8 +102,12 @@ function ListingFeeApproval() {
       (item) => item.case === tabViewing
     );
 
-    setClientStatus(foundItem?.name);
+    setListingFeeStatus(foundItem?.listingFeeStatus);
   }, [tabViewing]);
+
+  useEffect(() => {
+    setCount(data?.count);
+  }, [data]);
 
   return (
     <>
@@ -91,13 +132,28 @@ function ListingFeeApproval() {
           />
         </Box>
 
-        <CommonTable mapData={dummyTableData} moreCompact />
+        {isLoading ? (
+          <CommonTableSkeleton moreCompact />
+        ) : (
+          <CommonTable
+            mapData={data?.listingFees}
+            moreCompact
+            excludeKeysDisplay={excludeKeysDisplay}
+            count={count}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            page={page}
+            setPage={setPage}
+            editable
+            onView={onViewOpen}
+          />
+        )}
       </Box>
 
       <ViewListingFeeModal
-        // open={isViewListingFeeOpen}
-        open={true}
-        onClose={onViewListingFeeClose}
+        open={isViewOpen}
+        // open={true}
+        onClose={onViewClose}
         approval
       />
     </>
