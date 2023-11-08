@@ -16,6 +16,7 @@ function ListingFee() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+  const [editMode, setEditMode] = useState(false);
 
   //Disclosures
   const {
@@ -29,44 +30,6 @@ function ListingFee() {
     onOpen: onViewOpen,
     onClose: onViewClose,
   } = useDisclosure();
-
-  //Constants
-  const listingFeeNavigation = [
-    {
-      case: 1,
-      name: "Pending Listing Fee",
-      listingFeeStatus: "Under review",
-      // badge: badges["forFreebies"],
-    },
-    {
-      case: 2,
-      name: "Approved Listing Fee",
-      listingFeeStatus: "Approved",
-      // badge: badges["forReleasing"],
-    },
-    {
-      case: 3,
-      name: "Rejected Listing Fee",
-      listingFeeStatus: "Rejected",
-    },
-  ];
-
-  const selectOptions = [
-    {
-      value: "all",
-      label: "All",
-    },
-    {
-      value: "prospecting",
-      label: "Prospect",
-    },
-    {
-      value: "direct",
-      label: "Direct",
-    },
-  ];
-
-  const excludeKeysDisplay = ["listingFee", "clientId"];
 
   //RTK Query
   const { data: pendingData, isLoading: isPendingLoading } =
@@ -94,6 +57,60 @@ function ListingFee() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
+
+  //Constants
+  const listingFeeNavigation = [
+    {
+      case: 1,
+      name: "Pending Listing Fee",
+      listingFeeStatus: "Under review",
+      badge: pendingData?.count || 0,
+    },
+    {
+      case: 2,
+      name: "Approved Listing Fee",
+      listingFeeStatus: "Approved",
+      badge: approvedData?.count || 0,
+    },
+    {
+      case: 3,
+      name: "Rejected Listing Fee",
+      listingFeeStatus: "Rejected",
+      badge: rejectedData?.count || 0,
+    },
+  ];
+
+  const selectOptions = [
+    {
+      value: "all",
+      label: "All",
+    },
+    {
+      value: "prospecting",
+      label: "Prospect",
+    },
+    {
+      value: "direct",
+      label: "Direct",
+    },
+  ];
+
+  const excludeKeysDisplay = [
+    "listingItems",
+    "clientId",
+    "listingFeeId",
+    "approvalId",
+    "status",
+    "cancellationReason",
+  ];
+
+  const tableHeads = [
+    "Owner's Name",
+    "Business Name",
+    "Requested By",
+    "Total Amount",
+    "Created At",
+  ];
 
   useEffect(() => {
     const foundItem = listingFeeNavigation.find(
@@ -138,6 +155,7 @@ function ListingFee() {
             setPage={setPage}
             editable
             onView={onViewOpen}
+            tableHeads={tableHeads}
           />
         )}
       </Box>
@@ -146,9 +164,17 @@ function ListingFee() {
       <ListingFeeDrawer
         isListingFeeOpen={isListingFeeOpen}
         onListingFeeClose={onListingFeeClose}
+        editMode={editMode}
+        setEditMode={setEditMode}
+        onListingFeeViewClose={onViewClose}
       />
 
-      <ViewListingFeeModal open={isViewOpen} onClose={onViewClose} />
+      <ViewListingFeeModal
+        onListingFeeDrawerOpen={onListingFeeOpen}
+        setEditMode={setEditMode}
+        open={isViewOpen}
+        onClose={onViewClose}
+      />
     </>
   );
 }

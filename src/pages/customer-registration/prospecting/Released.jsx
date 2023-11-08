@@ -76,7 +76,7 @@ function Released() {
 
   return (
     <>
-      <Box>
+      <Box sx={{ padding: "15px" }}>
         <TextField
           type="search"
           size="small"

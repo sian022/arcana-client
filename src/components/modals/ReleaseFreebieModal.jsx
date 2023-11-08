@@ -379,6 +379,7 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
         open={isRedirectRegisterOpen}
         onClose={onRedirectRegisterClose}
         onYes={handleRedirectRegisterYes}
+        noIcon
       >
         Continue to register{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

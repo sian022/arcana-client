@@ -25,11 +25,17 @@ import {
   useGetAllClientsQuery,
 } from "../../features/registration/api/registrationApi";
 import useSnackbar from "../../hooks/useSnackbar";
-import { usePostListingFeeMutation } from "../../features/listing-fee/api/listingFeeApi";
+import {
+  usePostListingFeeMutation,
+  usePutUpdateListingFeeMutation,
+} from "../../features/listing-fee/api/listingFeeApi";
 
 function ListingFeeDrawer({
+  editMode,
+  setEditMode,
   isListingFeeOpen,
   onListingFeeClose,
+  onListingFeeViewClose,
   updateListingFee,
   redirect,
 }) {
@@ -91,12 +97,17 @@ function ListingFeeDrawer({
 
   //RTK Query
   const { data: clientData, isLoading: isClientLoading } =
-    useGetAllClientsForListingFeeQuery({ Status: true });
+    useGetAllClientsForListingFeeQuery({
+      Status: true,
+      IncludeRejected: editMode,
+    });
   const { data: productData, isLoading: isProductLoading } =
     useGetAllProductsQuery({ Status: true });
 
   const [postListingFee, { isLoading: isAddLoading }] =
     usePostListingFeeMutation();
+  const [putListingFee, { isLoading: isUpdateLoading }] =
+    usePutUpdateListingFeeMutation();
 
   //Drawer Functions
   const onListingFeeSubmit = async (data) => {
@@ -110,15 +121,20 @@ function ListingFeeDrawer({
     try {
       let response;
 
-      if (updateListingFee) {
-        response = await putFreebiesInformation({
-          id: data.clientId.id,
+      if (editMode) {
+        response = await putListingFee({
+          // id: data.clientId.id,
+          id: selectedRowData?.clientId,
           // freebieRequestId: data.freebieRequestId,
-          params: { freebieId: data.freebieRequestId },
+          params: { listingFeeId: selectedRowData?.listingFeeId },
+          total: totalAmount,
           listingItems: data.listingItems.map((listingItem) => ({
-            itemId: listingItem.itemId.itemId,
+            itemId: listingItem.itemId.id,
+            sku: listingItem.sku,
+            unitCost: listingItem.unitCost,
           })),
         });
+        onListingFeeViewClose();
         setSnackbarMessage("Listing Fee updated successfully");
       } else {
         response = await postListingFee({
@@ -128,11 +144,12 @@ function ListingFeeDrawer({
             itemId: listingItem.itemId.id,
             sku: listingItem.sku,
             unitCost: listingItem.unitCost,
-            quantity: listingItem.sku,
           })),
         }).unwrap();
 
-        setSnackbarMessage("Listing Fee added successfully");
+        setSnackbarMessage(
+          `Listing Fee ${editMode ? "updated" : "added"} successfully`
+        );
       }
 
       dispatch(setSelectedRow(response?.data));
@@ -150,6 +167,7 @@ function ListingFeeDrawer({
   const handleDrawerClose = () => {
     reset();
     setValue("customerName", "");
+    setEditMode(false);
     setTotalAmount(0);
     onListingFeeClose();
     onConfirmCancelClose();
@@ -237,17 +255,40 @@ function ListingFeeDrawer({
     }
   }, [clientData]);
 
+  useEffect(() => {
+    if (editMode && isListingFeeOpen && clientData) {
+      const foundItem = clientData?.regularClient?.find(
+        (item) => item.id === selectedRowData?.clientId
+      );
+
+      setValue("clientId", foundItem);
+      setValue("customerName", foundItem?.ownersName);
+      setValue(
+        "listingItems",
+        selectedRowData?.listingItems.map((item) => ({
+          itemId: productData?.items?.find(
+            (product) => product.id === item.itemId
+          ),
+          itemDescription: item.itemDescription,
+          uom: item.uom,
+          sku: item.sku,
+          unitCost: item.unitCost,
+        }))
+      );
+      handleRecalculateTotalAmount();
+    }
+  }, [isListingFeeOpen, clientData]);
+
   return (
     <>
       <CommonDrawer
-        drawerHeader={
-          updateListingFee ? "Update Listing Fee" : "Request Listing Fee"
-        }
+        drawerHeader={editMode ? "Update Listing Fee" : "Request Listing Fee"}
         open={isListingFeeOpen}
         onClose={onConfirmCancelOpen}
         width="1000px"
         disableSubmit={!isValid}
         onSubmit={onConfirmSubmitOpen}
+        zIndex={editMode && 1300}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
           <Box sx={{ display: "flex", gap: "10px" }}>
@@ -258,7 +299,7 @@ function ListingFeeDrawer({
               getOptionLabel={(option) => option.businessName || ""}
               disableClearable
               loading={isClientLoading}
-              disabled={redirect}
+              disabled={redirect || editMode}
               // value={clientData?.regularClient?.find(
               //   (item) => item.businessName === selectedRowData?.businessName
               // )}
@@ -432,28 +473,6 @@ function ListingFeeDrawer({
                   )}
                 />
 
-                {/* <Controller
-                  control={control}
-                  name={`listingItems[${index}].quantity`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="Quantity"
-                      type="number"
-                      size="small"
-                      autoComplete="off"
-                      required
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      ref={ref}
-                      sx={{ width: "220px" }}
-                      InputProps={{
-                        inputProps: { min: 0 },
-                      }}
-                    />
-                  )}
-                /> */}
-
                 <Controller
                   control={control}
                   name={`listingItems[${index}].unitCost`}
@@ -512,7 +531,6 @@ function ListingFeeDrawer({
               append({
                 itemId: null,
                 sku: 1,
-                // quantity: null,
                 unitCost: null,
               });
             }}
@@ -550,10 +568,10 @@ function ListingFeeDrawer({
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onListingFeeSubmit)}
         // isLoading={updateListingFee ? isUpdateLoading : isAddLoading}
-        isLoading={isAddLoading}
+        isLoading={editMode ? isUpdateLoading : isAddLoading}
         noIcon
       >
-        Confirm request of listing fee for{" "}
+        Confirm {editMode ? "update" : "request"} of listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {watch("clientId.businessName")
             ? watch("clientId.businessName")
@@ -567,7 +585,8 @@ function ListingFeeDrawer({
         onClose={onConfirmCancelClose}
         onYes={handleDrawerClose}
       >
-        Are you sure you want to cancel request of listing fee for{" "}
+        Are you sure you want to cancel {editMode ? "update" : "request"} of
+        listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {watch("clientId.businessName")
             ? watch("clientId.businessName")

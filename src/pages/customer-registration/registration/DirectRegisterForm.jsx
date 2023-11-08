@@ -21,6 +21,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
+  usePostDirectRegistrationMutation,
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,
   usePutRegisterClientMutation,
@@ -168,12 +169,15 @@ function DirectRegisterForm({ open, onClose }) {
   navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
 
   //RTK Query
-  const [putRegisterClient, { isLoading: isRegisterLoading }] =
-    usePutRegisterClientMutation();
+  // const [putRegisterClient, { isLoading: isRegisterLoading }] =
+  //   usePutRegisterClientMutation();
   const [putAddAttachments, { isLoading: isAttachmentsLoading }] =
     usePutAddAttachmentsMutation();
   const [putAddTermsAndConditions, { isLoading: isTermsLoading }] =
     usePutAddTermsAndCondtionsMutation();
+
+  const [postDirectRegistration, { isLoading: isRegisterLoading }] =
+    usePostDirectRegistrationMutation();
 
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
     useGetAllStoreTypesQuery({ Status: true });
@@ -182,9 +186,29 @@ function DirectRegisterForm({ open, onClose }) {
   const onSubmit = async (data) => {
     try {
       setIsAllApiLoading(true);
-      await putRegisterClient(data).unwrap();
-      await addTermsAndConditions();
-      await addAttachmentsSubmit();
+
+      const { terms, ...noTerms } = termsAndConditions;
+
+      const transformedData = {
+        ...data,
+        dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
+        storeTypeId: data?.storeTypeId?.id,
+      };
+
+      const transformedTermsAndConditions = {
+        ...noTerms,
+
+        termDaysId: termsAndConditions?.termDaysId?.id,
+        termsId: termsAndConditions?.terms,
+      };
+
+      await postDirectRegistration({
+        ...transformedData,
+        ...transformedTermsAndConditions,
+      }).unwrap();
+      // await putRegisterClient(data).unwrap();
+      // await addTermsAndConditions();
+      // await addAttachmentsSubmit();
       setIsAllApiLoading(false);
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
@@ -196,6 +220,7 @@ function DirectRegisterForm({ open, onClose }) {
       debounce(onRedirectListingFeeOpen(), 2000);
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
+      setIsAllApiLoading(false);
       console.log(error);
     }
   };
@@ -861,6 +886,7 @@ function DirectRegisterForm({ open, onClose }) {
         onClose={onConfirmClose}
         // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
         isLoading={isAllApiLoading}
+        noIcon
       >
         Confirm registration of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
@@ -876,7 +902,7 @@ function DirectRegisterForm({ open, onClose }) {
       >
         Confirm cancel of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {watch("businessName") ? watch("businessName") : "client"}
+          {/* {watch("businessName") ? watch("businessName") : "client"} */}
         </span>{" "}
         as a regular customer? <br />
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
@@ -892,8 +918,8 @@ function DirectRegisterForm({ open, onClose }) {
       >
         Continue to listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
+          {selectedRowData?.businessName
+            ? selectedRowData?.businessName
             : "client"}
         </span>
         ?

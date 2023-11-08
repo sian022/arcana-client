@@ -47,9 +47,19 @@ export const listingFeeApi = createApi({
 
     putRejectListingFee: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/RegularClients/RejectRegularListingFee/${id}`,
+        url: `/ListingFee/RejectListingFee/${id}`,
         method: "PUT",
         body: body,
+      }),
+      invalidatesTags: ["Listing Fee"],
+    }),
+
+    putUpdateListingFee: builder.mutation({
+      query: ({ id, params, ...body }) => ({
+        url: `/ListingFee/UpdateListingFeeItems/${id}`,
+        method: "PUT",
+        body: body,
+        params: params,
       }),
       invalidatesTags: ["Listing Fee"],
     }),
@@ -60,4 +70,6 @@ export const {
   usePostListingFeeMutation,
   useGetAllListingFeeQuery,
   usePutApproveListingFeeMutation,
+  usePutRejectListingFeeMutation,
+  usePutUpdateListingFeeMutation,
 } = listingFeeApi;

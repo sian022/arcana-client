@@ -24,11 +24,12 @@ function CommonDrawer({
   submitLabel,
   customRibbonContent,
   paddingSmall,
+  zIndex,
   children,
   ...otherProps
 }) {
   return (
-    <Drawer anchor="right" {...otherProps}>
+    <Drawer anchor="right" sx={{ zIndex: zIndex && zIndex }} {...otherProps}>
       <Box sx={{ display: "flex" }}>
         {navigators && (
           <Box sx={{ display: "flex", flexDirection: "column" }}>

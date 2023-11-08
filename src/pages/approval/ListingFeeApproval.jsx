@@ -28,44 +28,6 @@ function ListingFeeApproval() {
     onClose: onViewClose,
   } = useDisclosure();
 
-  //Constants
-  const listingFeeNavigation = [
-    {
-      case: 1,
-      name: "Pending Listing Fee",
-      listingFeeStatus: "Under review",
-      // badge: badges["forFreebies"],
-    },
-    {
-      case: 2,
-      name: "Approved Listing Fee",
-      listingFeeStatus: "Approved",
-      // badge: badges["forReleasing"],
-    },
-    {
-      case: 3,
-      name: "Rejected Listing Fee",
-      listingFeeStatus: "Rejected",
-    },
-  ];
-
-  const selectOptions = [
-    {
-      value: " ",
-      label: "All",
-    },
-    {
-      value: "prospecting",
-      label: "Prospect",
-    },
-    {
-      value: "direct",
-      label: "Direct",
-    },
-  ];
-
-  const excludeKeysDisplay = ["listingFee", "clientId"];
-
   //RTK Query
   const { data: pendingData, isLoading: isPendingLoading } =
     useGetAllListingFeeQuery({
@@ -92,6 +54,51 @@ function ListingFeeApproval() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
+
+  //Constants
+  const listingFeeNavigation = [
+    {
+      case: 1,
+      name: "Pending Listing Fee",
+      listingFeeStatus: "Under review",
+      badge: pendingData?.count || 0,
+    },
+    {
+      case: 2,
+      name: "Approved Listing Fee",
+      listingFeeStatus: "Approved",
+      badge: approvedData?.count || 0,
+    },
+    {
+      case: 3,
+      name: "Rejected Listing Fee",
+      badge: rejectedData?.count || 0,
+    },
+  ];
+
+  const selectOptions = [
+    {
+      value: " ",
+      label: "All",
+    },
+    {
+      value: "prospecting",
+      label: "Prospect",
+    },
+    {
+      value: "direct",
+      label: "Direct",
+    },
+  ];
+
+  const excludeKeysDisplay = [
+    "listingItems",
+    "clientId",
+    "listingFeeId",
+    "approvalId",
+    "status",
+    "cancellationReason",
+  ];
 
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);

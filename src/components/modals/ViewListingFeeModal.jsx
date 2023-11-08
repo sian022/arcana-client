@@ -16,12 +16,18 @@ import {
 import { Close } from "@mui/icons-material";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
+import AccentButton from "../AccentButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import { usePutApproveListingFeeMutation } from "../../features/listing-fee/api/listingFeeApi";
 
-function ViewListingFeeModal({ approval, ...props }) {
+function ViewListingFeeModal({
+  setEditMode,
+  onListingFeeDrawerOpen,
+  approval,
+  ...props
+}) {
   const { onClose, ...noOnClose } = props;
 
   const [reason, setReason] = useState("");
@@ -93,8 +99,6 @@ function ViewListingFeeModal({ approval, ...props }) {
     onClose();
   };
 
-  console.log(selectedRowData);
-
   const handleRejectConfirmClose = () => {
     setReason("");
     setConfirmReason(false);
@@ -103,9 +107,7 @@ function ViewListingFeeModal({ approval, ...props }) {
 
   useEffect(() => {
     const totalCosts =
-      selectedRowData?.listingFee?.[0]?.listingItems?.map(
-        (item) => item.unitCost
-      ) || [];
+      selectedRowData?.listingItems?.map((item) => item.unitCost) || [];
     const total = totalCosts.reduce((acc, cost) => acc + cost, 0);
     setTotalAmount(total);
   }, [selectedRowData]);
@@ -183,17 +185,15 @@ function ViewListingFeeModal({ approval, ...props }) {
                 </TableHead>
 
                 <TableBody>
-                  {selectedRowData?.listingFee?.[0]?.listingItems?.map(
-                    (item) => (
-                      <TableRow>
-                        <TableCell>{item.itemCode}</TableCell>
-                        <TableCell>{item.itemDescription}</TableCell>
-                        <TableCell>{item.uom}</TableCell>
-                        <TableCell>{item.sku}</TableCell>
-                        <TableCell>{item.unitCost}</TableCell>
-                      </TableRow>
-                    )
-                  )}
+                  {selectedRowData?.listingItems?.map((item) => (
+                    <TableRow>
+                      <TableCell>{item.itemCode}</TableCell>
+                      <TableCell>{item.itemDescription}</TableCell>
+                      <TableCell>{item.uom}</TableCell>
+                      <TableCell>{item.sku}</TableCell>
+                      <TableCell>{item.unitCost}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -219,7 +219,7 @@ function ViewListingFeeModal({ approval, ...props }) {
           </Typography>
           <Typography sx={{ fontSize: "1rem" }}>{totalAmount}</Typography>
         </Box>
-        {approval && (
+        {approval ? (
           <Box
             sx={{
               display: "flex",
@@ -234,6 +234,28 @@ function ViewListingFeeModal({ approval, ...props }) {
               Approve
             </SecondaryButton>
             <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              gap: "10px",
+              position: "absolute",
+              bottom: "30px ",
+              right: "40px",
+            }}
+          >
+            <AccentButton
+              sx={{ color: "white !important" }}
+              onClick={() => {
+                // onClose();
+                setEditMode(true);
+                onListingFeeDrawerOpen();
+              }}
+            >
+              Edit
+            </AccentButton>
           </Box>
         )}
       </CommonModal>

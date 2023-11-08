@@ -61,19 +61,19 @@ function RegistrationApproval() {
       case: 1,
       name: "Pending Clients",
       registrationStatus: "Under review",
-      // badge: badges["forFreebies"],
+      badge: pendingData?.totalCount || 0,
     },
     {
       case: 2,
       name: "Approved Clients",
       registrationStatus: "Approved",
-      // badge: badges["forReleasing"],
+      badge: approvedData?.totalCount || 0,
     },
     {
       case: 3,
       name: "Rejected Clients",
       registrationStatus: "Rejected",
-      // badge: badges["forReleasing"],
+      badge: rejectedData?.totalCount || 0,
     },
   ];
 
