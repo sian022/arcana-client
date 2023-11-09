@@ -1,15 +1,6 @@
-import {
-  Autocomplete,
-  Box,
-  TextField,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Box, Typography, IconButton, Menu, MenuItem } from "@mui/material";
 import React, { useRef } from "react";
 import "../assets/styles/navbar.styles.scss";
-import LogoutButton from "./LogoutButton";
 import { formatDate } from "../utils/CustomFunctions";
 import { navigationData } from "../navigation/navigationData";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -17,10 +8,9 @@ import { setSelectedStoreType } from "../features/prospect/reducers/selectedStor
 import {
   AccountCircle,
   KeyboardDoubleArrowLeft,
-  Lock,
   Logout,
   Password,
-  Settings,
+  Menu as MenuIcon,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import useDisclosure from "../hooks/useDisclosure";
@@ -31,6 +21,7 @@ import {
 } from "../features/authentication/reducers/loginSlice";
 import { setPermissisons } from "../features/authentication/reducers/permissionsSlice";
 import ChangePasswordModal from "./modals/ChangePasswordModal";
+import { toggleSidebar } from "../features/misc/reducers/disclosureSlice";
 
 function Header() {
   const location = useLocation();
@@ -119,6 +110,15 @@ function Header() {
     <>
       <Box className="navbar">
         <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          <IconButton
+            sx={{ color: "secondary.main" }}
+            onClick={() => {
+              dispatch(toggleSidebar());
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+
           <Typography className="navbar__dateToday">{currentDate}</Typography>
           {selectedStoreType &&
             routesForStoreType.includes(location.pathname) && (

@@ -25,6 +25,7 @@ import { regularRegistrationSlice } from "../features/registration/reducers/regu
 import { sedarApi } from "../features/user-management/api/sedarApi";
 import { userConfigApi } from "../features/authentication/api/userConfigApi";
 import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
+import { disclosureSlice } from "../features/misc/reducers/disclosureSlice";
 
 export const store = configureStore({
   reducer: {
@@ -34,6 +35,7 @@ export const store = configureStore({
     selectedStoreType: selectedStoreTypeSlice.reducer,
     badge: badgeSlice.reducer,
     regularRegistration: regularRegistrationSlice.reducer,
+    disclosure: disclosureSlice.reducer,
     [loginApi.reducerPath]: loginApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,

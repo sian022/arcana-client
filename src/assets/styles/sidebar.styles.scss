@@ -9,10 +9,30 @@
   position: relative;
   background: white;
   box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
+  transition: 0.3s all ease-out;
+
+  .toggled {
+    width: 0px;
+  }
+
+  & &__toggleRemove {
+    color: $secondary;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+
+    @media (min-width: 1025px) {
+      display: none;
+    }
+  }
 
   @media (max-width: 1024px) {
     // display: none;
+    position: fixed;
+    height: 100vh;
+    left: 0;
     width: 88px;
+    z-index: 2000;
   }
 
   &__logo {
@@ -75,4 +95,16 @@
       color: white;
     }
   }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  // display: none; /* Initially hidden */
+  z-index: 1000; /* Make sure it's above the sidebar */
+  pointer-events: none;
 }

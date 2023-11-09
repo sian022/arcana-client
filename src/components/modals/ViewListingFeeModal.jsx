@@ -94,35 +94,32 @@ function ViewListingFeeModal({
         id: selectedRowData?.approvalId,
       }).unwrap();
       showSnackbar("Listing Fee approved successfully", "success");
+      onApproveConfirmClose();
+      onClose();
     } catch (error) {
-      showSnackbar(
-        error?.data?.messages[0] || "Error approving listing fee",
-        "error"
-      );
+      if (error?.data?.messages) {
+        showSnackbar(error?.data?.messages[0], "error");
+      } else {
+        showSnackbar("Error approving listing fee", "error");
+      }
     }
-
-    onApproveConfirmClose();
-    onClose();
   };
 
   const handleReject = async () => {
     try {
       await putRejectListingFee({
-        // id: selectedRowData?.listingFeeId,
         id: selectedRowData?.approvalId,
       }).unwrap();
       showSnackbar("Listing Fee rejected successfully", "success");
+      handleRejectConfirmClose();
+      onClose();
     } catch (error) {
-      console.log(error);
-      if (error?.data?.messages[0]) {
+      if (error?.data?.messages) {
         showSnackbar(error?.data?.messages[0], "error");
       } else {
         showSnackbar("Error rejecting listing fee", "error");
       }
     }
-
-    handleRejectConfirmClose();
-    onClose();
   };
 
   const handleRejectConfirmClose = () => {
