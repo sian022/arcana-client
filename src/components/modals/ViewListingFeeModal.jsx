@@ -135,7 +135,6 @@ function ViewListingFeeModal({
     setTotalAmount(total);
   }, [selectedRowData]);
 
-  console.log(selectedRowData);
   return (
     <>
       <CommonModal
@@ -301,7 +300,7 @@ function ViewListingFeeModal({
           </CommonDialog>
 
           <CommonDialog
-            onClose={onRejectConfirmClose}
+            onClose={handleRejectConfirmClose}
             open={isRejectConfirmOpen}
             onYes={handleReject}
             disableYes={!confirmReason || !reason.trim()}

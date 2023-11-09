@@ -282,7 +282,7 @@ function ListingFeeDrawer({
   return (
     <>
       <CommonDrawer
-        drawerHeader={editMode ? "Update Listing Fee" : "Request Listing Fee"}
+        drawerHeader={editMode ? "Update Listing Fee" : "Add Listing Fee"}
         open={isListingFeeOpen}
         onClose={onConfirmCancelOpen}
         width="1000px"
@@ -571,7 +571,7 @@ function ListingFeeDrawer({
         isLoading={editMode ? isUpdateLoading : isAddLoading}
         noIcon
       >
-        Confirm {editMode ? "update" : "request"} of listing fee for{" "}
+        Confirm {editMode ? "update" : "adding"} of listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {watch("clientId.businessName")
             ? watch("clientId.businessName")
@@ -585,7 +585,7 @@ function ListingFeeDrawer({
         onClose={onConfirmCancelClose}
         onYes={handleDrawerClose}
       >
-        Are you sure you want to cancel {editMode ? "update" : "request"} of
+        Are you sure you want to cancel {editMode ? "update" : "adding"} of
         listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {watch("clientId.businessName")

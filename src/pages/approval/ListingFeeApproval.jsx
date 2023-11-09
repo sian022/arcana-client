@@ -101,6 +101,14 @@ function ListingFeeApproval() {
     "cancellationReason",
   ];
 
+  const tableHeads = [
+    "Owner's Name",
+    "Business Name",
+    "Requested By",
+    "Total Amount",
+    "Created At",
+  ];
+
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
@@ -154,6 +162,7 @@ function ListingFeeApproval() {
             setPage={setPage}
             editable
             onView={onViewOpen}
+            tableHeads={tableHeads}
           />
         )}
       </Box>

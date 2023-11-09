@@ -555,7 +555,11 @@ function ForFreebies() {
         onYes={handleFreebieFormYes}
         noIcon
       >
-        Continue to add freebie for {newProspectName || "new prospect"}?
+        Continue to add freebie for{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.businessName || "new prospect"}
+        </span>
+        ?
       </CommonDialog>
 
       <SuccessSnackbar
