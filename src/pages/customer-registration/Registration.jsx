@@ -18,6 +18,7 @@ function DirectRegistration() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [status, setStatus] = useState(true);
+  const [editMode, setEditMode] = useState(false);
 
   //Disclosures
   const {
@@ -181,9 +182,20 @@ function DirectRegistration() {
           />
         )}
 
-        <DirectRegisterForm open={isRegisterOpen} onClose={onRegisterClose} />
+        <DirectRegisterForm
+          open={isRegisterOpen}
+          onClose={onRegisterClose}
+          editMode={editMode}
+          setEditMode={setEditMode}
+        />
 
-        <ViewRegistrationDetailsModal open={isViewOpen} onClose={onViewClose} />
+        <ViewRegistrationDetailsModal
+          open={isViewOpen}
+          onClose={onViewClose}
+          onRegisterOpen={onRegisterOpen}
+          editMode={editMode}
+          setEditMode={setEditMode}
+        />
       </Box>
     </>
   );

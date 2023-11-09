@@ -20,12 +20,17 @@ import AccentButton from "../AccentButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
-import { usePutApproveListingFeeMutation } from "../../features/listing-fee/api/listingFeeApi";
+import {
+  usePutApproveListingFeeMutation,
+  usePutRejectListingFeeMutation,
+} from "../../features/listing-fee/api/listingFeeApi";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function ViewListingFeeModal({
   setEditMode,
   onListingFeeDrawerOpen,
   approval,
+  listingFeeStatus,
   ...props
 }) {
   const { onClose, ...noOnClose } = props;
@@ -33,6 +38,8 @@ function ViewListingFeeModal({
   const [reason, setReason] = useState("");
   const [confirmReason, setConfirmReason] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+
+  const { showSnackbar } = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -52,6 +59,9 @@ function ViewListingFeeModal({
   //RTK Query
   const [putApproveListingFee, { isLoading: isApproveLoading }] =
     usePutApproveListingFeeMutation();
+
+  const [putRejectListingFee, { isLoading: isRejectLoading }] =
+    usePutRejectListingFeeMutation();
 
   const customRibbonContent = (
     // <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
@@ -95,7 +105,22 @@ function ViewListingFeeModal({
     onClose();
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
+    try {
+      await putRejectListingFee({
+        // id: selectedRowData?.listingFeeId,
+        id: selectedRowData?.approvalId,
+      }).unwrap();
+      showSnackbar("Listing Fee rejected successfully", "success");
+    } catch (error) {
+      console.log(error);
+      if (error?.data?.messages[0]) {
+        showSnackbar(error?.data?.messages[0], "error");
+      } else {
+        showSnackbar("Error rejecting listing fee", "error");
+      }
+    }
+
     handleRejectConfirmClose();
     onClose();
   };
@@ -113,6 +138,7 @@ function ViewListingFeeModal({
     setTotalAmount(total);
   }, [selectedRowData]);
 
+  console.log(selectedRowData);
   return (
     <>
       <CommonModal
@@ -220,7 +246,7 @@ function ViewListingFeeModal({
           </Typography>
           <Typography sx={{ fontSize: "1rem" }}>{totalAmount}</Typography>
         </Box>
-        {approval ? (
+        {approval && listingFeeStatus === "Under review" && (
           <Box
             sx={{
               display: "flex",
@@ -236,7 +262,8 @@ function ViewListingFeeModal({
             </SecondaryButton>
             <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
           </Box>
-        ) : (
+        )}{" "}
+        {!approval && (
           <Box
             sx={{
               display: "flex",
@@ -281,6 +308,7 @@ function ViewListingFeeModal({
             open={isRejectConfirmOpen}
             onYes={handleReject}
             disableYes={!confirmReason || !reason.trim()}
+            isLoading={isRejectLoading}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <Box>

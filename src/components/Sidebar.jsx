@@ -45,69 +45,71 @@ function Sidebar() {
         />
       </Box>
       <Box className="sidebar__navigation">
-        {/* {permittedSidebar.map( */}
-        {navigationData.map((item) => (
-          <React.Fragment key={item.id}>
-            <NavLink to={item.path}>
-              {({ isActive }) => (
-                <ListItem disablePadding sx={{ px: 2 }}>
-                  <ListItemButton
-                    className={`sidebar__navigation__button  ${
-                      isActive ? "active" : ""
-                    }`}
-                    onClick={() =>
-                      setActiveModule(
-                        activeModule === item.name ? "" : item.name
-                      )
-                    }
-                  >
-                    <ListItemIcon
-                      className={`sidebar__navigation__button__icon  ${
+        {permittedSidebar.map(
+          // {navigationData.map(
+          (item) => (
+            <React.Fragment key={item.id}>
+              <NavLink to={item.path}>
+                {({ isActive }) => (
+                  <ListItem disablePadding sx={{ px: 2 }}>
+                    <ListItemButton
+                      className={`sidebar__navigation__button  ${
                         isActive ? "active" : ""
                       }`}
+                      onClick={() =>
+                        setActiveModule(
+                          activeModule === item.name ? "" : item.name
+                        )
+                      }
                     >
-                      {getIconElement(item.icon)}
-                    </ListItemIcon>
+                      <ListItemIcon
+                        className={`sidebar__navigation__button__icon  ${
+                          isActive ? "active" : ""
+                        }`}
+                      >
+                        {getIconElement(item.icon)}
+                      </ListItemIcon>
 
-                    <ListItemText>{item.name}</ListItemText>
-                  </ListItemButton>
-                </ListItem>
-              )}
-            </NavLink>
+                      <ListItemText>{item.name}</ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                )}
+              </NavLink>
 
-            {item.sub && (
-              <Collapse
-                in={activeModule === item.name}
-                timeout="auto"
-                unmountOnExit
-              >
-                {item.sub.map((subItem) => (
-                  <NavLink to={subItem.path} key={subItem.id}>
-                    {({ isActive }) => (
-                      <ListItem disablePadding sx={{ px: 2 }}>
-                        <ListItemButton
-                          className={`sidebar__navigation__subButton  ${
-                            isActive ? "active" : ""
-                          }`}
-                        >
-                          <ListItemIcon
-                            className={`sidebar__navigation__subButton__icon  ${
+              {item.sub && (
+                <Collapse
+                  in={activeModule === item.name}
+                  timeout="auto"
+                  unmountOnExit
+                >
+                  {item.sub.map((subItem) => (
+                    <NavLink to={subItem.path} key={subItem.id}>
+                      {({ isActive }) => (
+                        <ListItem disablePadding sx={{ px: 2 }}>
+                          <ListItemButton
+                            className={`sidebar__navigation__subButton  ${
                               isActive ? "active" : ""
                             }`}
                           >
-                            {getIconElement(subItem.icon)}
-                          </ListItemIcon>
+                            <ListItemIcon
+                              className={`sidebar__navigation__subButton__icon  ${
+                                isActive ? "active" : ""
+                              }`}
+                            >
+                              {getIconElement(subItem.icon)}
+                            </ListItemIcon>
 
-                          <ListItemText>{subItem.name}</ListItemText>
-                        </ListItemButton>
-                      </ListItem>
-                    )}
-                  </NavLink>
-                ))}
-              </Collapse>
-            )}
-          </React.Fragment>
-        ))}
+                            <ListItemText>{subItem.name}</ListItemText>
+                          </ListItemButton>
+                        </ListItem>
+                      )}
+                    </NavLink>
+                  ))}
+                </Collapse>
+              )}
+            </React.Fragment>
+          )
+        )}
       </Box>
     </Box>
   );

@@ -211,9 +211,6 @@ function FreebieForm({
     return false;
   }
 
-  console.log(freebiesDirect);
-  console.log(getValues());
-
   //UseEffects
   useEffect(() => {
     if (!direct) {

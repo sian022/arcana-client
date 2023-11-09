@@ -162,7 +162,9 @@ function ListingFeeApproval() {
         open={isViewOpen}
         // open={true}
         onClose={onViewClose}
+        underReview={listingFeeStatus === "Under review"}
         approval
+        listingFeeStatus={listingFeeStatus}
       />
     </>
   );

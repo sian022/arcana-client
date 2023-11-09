@@ -32,10 +32,14 @@ import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "../prospecting/TermsAndConditions";
 import Attachments from "../prospecting/Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
-import { resetTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
+import {
+  resetTermsAndConditions,
+  setWholeTermsAndConditions,
+} from "../../../features/registration/reducers/regularRegistrationSlice";
 import {
   base64ToBlob,
   convertToTitleCase,
+  shallowEqual,
 } from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
@@ -45,8 +49,9 @@ import ListingFeeModal from "../../../components/modals/ListingFeeModal";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
+import { coverageMapping } from "../../../utils/Constants";
 
-function DirectRegisterForm({ open, onClose }) {
+function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
   const {
     setOwnersRequirements,
@@ -310,6 +315,7 @@ function DirectRegisterForm({ open, onClose }) {
     });
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
+    setEditMode(false);
     setActiveTab("Personal Info");
   };
 
@@ -406,6 +412,80 @@ function DirectRegisterForm({ open, onClose }) {
     }
   }, [sameAsOwnersAddress]);
 
+  useEffect(() => {
+    if (editMode) {
+      //Personal Info
+      setValue("ownersName", selectedRowData?.ownersName);
+      setValue("emailAddress", selectedRowData?.emailAddress);
+      setValue("tinNumber", selectedRowData?.tinNumber);
+      setValue("dateOfBirth", moment(selectedRowData?.dateOfBirth));
+      setValue("phoneNumber", selectedRowData?.phoneNumber);
+      setValue("ownersAddress", selectedRowData?.ownersAddress);
+      setValue("businessName", selectedRowData?.businessName);
+      setValue("cluster", selectedRowData?.cluster);
+      setValue(
+        "storeTypeId",
+        storeTypeData?.storeTypes?.find(
+          (item) => item.storeTypeName === selectedRowData?.storeType
+        )
+      );
+      setValue("businessAddress", selectedRowData?.businessAddress);
+      setValue(
+        "authorizedRepresentative",
+        selectedRowData?.authorizedRepresentative
+      );
+      setValue(
+        "authorizedRepresentativePosition",
+        selectedRowData?.authorizedRepresentativePosition
+      );
+      if (
+        shallowEqual(
+          selectedRowData?.ownersAddress,
+          selectedRowData?.businessAddress
+        )
+      ) {
+        setSameAsOwnersAddress(true);
+      }
+
+      // Terms and Conditions
+      dispatch(
+        setWholeTermsAndConditions({
+          freezer: selectedRowData?.freezer,
+          typeOfCustomer: selectedRowData?.typeOfCustomer,
+          directDelivery: selectedRowData?.directDelivery,
+          bookingCoverageId: parseInt(
+            selectedRowData?.bookingCoverage.substring(1),
+            10
+          ),
+          terms: selectedRowData?.terms?.termId,
+          modeOfPayment:
+            selectedRowData?.modeOfPayment === "CASH"
+              ? 1
+              : selectedRowData?.modeOfPayment === "ONLINE/CHECK"
+              ? 2
+              : null,
+          termDaysId: selectedRowData?.terms?.termDays,
+          creditLimit: selectedRowData?.terms?.creditLimit,
+          variableDiscount: selectedRowData?.variableDiscount,
+          fixedDiscounts:
+            selectedRowData?.fixedDiscount === null
+              ? {
+                  discountPercentage: null,
+                }
+              : selectedRowData?.fixedDiscount,
+        })
+      );
+
+      // Attachments
+      if (selectedRowData?.attachments?.length > 4) {
+        setRequirementsMode("representative");
+      } else {
+        setRequirementsMode("owner");
+      }
+    }
+  }, [open]);
+
+  console.log(selectedRowData);
   return (
     <>
       <CommonDrawer
@@ -423,6 +503,7 @@ function DirectRegisterForm({ open, onClose }) {
         submitLabel={"Register"}
         disableSubmit={navigators.some((obj) => obj.isValid === false)}
         onSubmit={onConfirmOpen}
+        zIndex={editMode && "1300"}
       >
         {activeTab === "Personal Info" && (
           <Box className="register">
@@ -817,7 +898,9 @@ function DirectRegisterForm({ open, onClose }) {
           </Box>
         )}
 
-        {activeTab === "Terms and Conditions" && <TermsAndConditions direct />}
+        {activeTab === "Terms and Conditions" && (
+          <TermsAndConditions direct editMode={editMode} />
+        )}
 
         {activeTab === "Attachments" && <Attachments />}
 

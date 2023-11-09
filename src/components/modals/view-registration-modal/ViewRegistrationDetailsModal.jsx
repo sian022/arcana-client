@@ -13,6 +13,7 @@ import TermsAndConditionsTab from "./TermsAndConditionsTab";
 import AttachmentsTab from "./AttachmentsTab";
 import SecondaryButton from "../../SecondaryButton";
 import DangerButton from "../../DangerButton";
+import AccentButton from "../../AccentButton";
 import useDisclosure from "../../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../CommonDialog";
@@ -23,7 +24,14 @@ import {
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 
-function ViewRegistrationDetailsModal({ approval, ...props }) {
+function ViewRegistrationDetailsModal({
+  approval,
+  onRegisterOpen,
+  editMode,
+  setEditMode,
+  clientStatus,
+  ...props
+}) {
   const { onClose, ...noOnClose } = props;
 
   const [reason, setReason] = useState("");
@@ -209,23 +217,47 @@ function ViewRegistrationDetailsModal({ approval, ...props }) {
               {activeTab !== "Personal Info" && (
                 <DangerButton onClick={handleBack}>Back</DangerButton>
               )}
-              {activeTab !== "Attachments" && (
-                <SecondaryButton onClick={handleNext}>Next</SecondaryButton>
-              )}
-              {activeTab === "Attachments" && approval && (
-                <>
-                  <Box
-                    sx={{ display: "flex", justifyContent: "end", gap: "10px" }}
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "10px",
+                }}
+              >
+                {!approval && (
+                  <AccentButton
+                    sx={{ color: "white !important" }}
+                    onClick={() => {
+                      setEditMode(true);
+                      onRegisterOpen();
+                    }}
                   >
-                    <SecondaryButton onClick={onApproveConfirmOpen}>
-                      Approve
-                    </SecondaryButton>
-                    <DangerButton onClick={onRejectConfirmOpen}>
-                      Reject
-                    </DangerButton>
-                  </Box>
-                </>
-              )}
+                    Edit
+                  </AccentButton>
+                )}
+                {activeTab !== "Attachments" && (
+                  <SecondaryButton onClick={handleNext}>Next</SecondaryButton>
+                )}
+              </Box>
+              {activeTab === "Attachments" &&
+                approval &&
+                clientStatus === "Under review" && (
+                  <>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "end",
+                        gap: "10px",
+                      }}
+                    >
+                      <SecondaryButton onClick={onApproveConfirmOpen}>
+                        Approve
+                      </SecondaryButton>
+                      <DangerButton onClick={onRejectConfirmOpen}>
+                        Reject
+                      </DangerButton>
+                    </Box>
+                  </>
+                )}
             </Box>
           </Box>
         </Box>

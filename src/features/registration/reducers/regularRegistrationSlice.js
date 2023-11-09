@@ -28,6 +28,9 @@ export const regularRegistrationSlice = createSlice({
       const { property, value } = action.payload;
       state.value.termsAndConditions[property] = value;
     },
+    setWholeTermsAndConditions: (state, action) => {
+      state.value.termsAndConditions = action.payload;
+    },
     resetTermsAndConditions: (state) => {
       state.value.termsAndConditions = {
         freezer: null,
@@ -59,6 +62,7 @@ export const {
   resetTermsAndConditions,
   setFreebies,
   resetFreebies,
+  setWholeTermsAndConditions,
 } = regularRegistrationSlice.actions;
 
 export default regularRegistrationSlice.reducer;

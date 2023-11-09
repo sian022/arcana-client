@@ -45,11 +45,19 @@ export const listingFeeApi = createApi({
       invalidatesTags: ["Listing Fee"],
     }),
 
+    // putRejectListingFee: builder.mutation({
+    //   query: ({ id, ...body }) => ({
+    //     url: `/ListingFee/RejectListingFee/${id}`,
+    //     method: "PUT",
+    //     body: body,
+    //   }),
+    //   invalidatesTags: ["Listing Fee"],
+    // }),
+
     putRejectListingFee: builder.mutation({
-      query: ({ id, ...body }) => ({
+      query: ({ id }) => ({
         url: `/ListingFee/RejectListingFee/${id}`,
         method: "PUT",
-        body: body,
       }),
       invalidatesTags: ["Listing Fee"],
     }),

@@ -22,6 +22,25 @@ const AttachmentsProvider = ({ children }) => {
     authorizationLetter: null,
   });
 
+  const [ownersRequirementsIsLink, setOwnersRequirementsIsLink] = useState({
+    signature: false,
+    storePhoto: false,
+    businessPermit: false,
+    photoIdOwner: false,
+  });
+
+  const [
+    representativeRequirementsIsLink,
+    setRepresentativeRequirementsIsLink,
+  ] = useState({
+    signature: false,
+    storePhoto: false,
+    businessPermit: false,
+    photoIdOwner: false,
+    photoIdRepresentative: false,
+    authorizationLetter: false,
+  });
+
   const convertSignatureToBase64 = () => {
     if (requirementsMode === "owner" && ownersRequirements["signature"]) {
       const convertedSignature = new File(
@@ -59,6 +78,10 @@ const AttachmentsProvider = ({ children }) => {
         representativeRequirements,
         setRepresentativeRequirements,
         convertSignatureToBase64,
+        ownersRequirementsIsLink,
+        setOwnersRequirementsIsLink,
+        representativeRequirementsIsLink,
+        setRepresentativeRequirementsIsLink,
       }}
     >
       {children}

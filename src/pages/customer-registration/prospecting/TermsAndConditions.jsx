@@ -23,7 +23,7 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import FreebieForm from "./FreebieForm";
 import { Cancel } from "@mui/icons-material";
 
-function TermsAndConditions({ direct }) {
+function TermsAndConditions({ direct, editMode }) {
   const dispatch = useDispatch();
   const { showSnackbar } = useSnackbar();
 
@@ -529,7 +529,7 @@ function TermsAndConditions({ direct }) {
           </RadioGroup>
         </Box>
 
-        {direct && (
+        {direct && !editMode && (
           <>
             <SecondaryButton medium onClick={onFreebieFormOpen}>
               Request Freebie

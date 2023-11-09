@@ -178,7 +178,8 @@ function RegistrationApproval() {
           // true
         }
         onClose={onViewClose}
-        approval={clientStatus === "Under review"}
+        approval
+        clientStatus={clientStatus}
       />
     </>
   );

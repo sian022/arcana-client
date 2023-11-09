@@ -2,7 +2,7 @@ export const navigationData = [
   {
     id: 1,
     path: "/",
-    name: "Admin Dashboard",
+    name: "Dashboard",
     icon: "Dashboard",
   },
   // {
