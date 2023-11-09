@@ -18,6 +18,9 @@ export const regularRegistrationSlice = createSlice({
           discountPercentage: null,
         },
       },
+      directFreebie: {
+        freebies: [],
+      },
     },
   },
   reducers: {
@@ -41,10 +44,21 @@ export const regularRegistrationSlice = createSlice({
         },
       };
     },
+    setFreebies: (state, action) => {
+      state.value.freebies = action.payload;
+      console.log(action.payload);
+    },
+    resetFreebies: (state) => {
+      state.value.freebies = [];
+    },
   },
 });
 
-export const { setTermsAndConditions, resetTermsAndConditions } =
-  regularRegistrationSlice.actions;
+export const {
+  setTermsAndConditions,
+  resetTermsAndConditions,
+  setFreebies,
+  resetFreebies,
+} = regularRegistrationSlice.actions;
 
 export default regularRegistrationSlice.reducer;

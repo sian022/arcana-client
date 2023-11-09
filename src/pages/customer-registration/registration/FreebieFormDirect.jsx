@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  requestFreebiesSchema,
-  requestFreebiesDirectSchema,
-} from "../../../schema/schema";
+import { requestFreebiesSchema } from "../../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import CommonDrawer from "../../../components/CommonDrawer";
@@ -23,23 +20,17 @@ import CommonDialog from "../../../components/CommonDialog";
 import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
 import { debounce } from "../../../utils/CustomFunctions";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
-import { setFreebies } from "../../../features/registration/reducers/regularRegistrationSlice";
-import useSnackbar from "../../../hooks/useSnackbar";
 
-function FreebieForm({
+function FreebieFormDirect({
   isFreebieFormOpen,
   onFreebieFormClose,
   updateFreebies,
-  direct,
 }) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const clientId = selectedRowData?.id || selectedRowData?.clientId;
-  const freebiesDirect = useSelector(
-    (state) => state.regularRegistration.value.freebies
-  );
   const dispatch = useDispatch();
 
   //Disclosures
@@ -90,13 +81,9 @@ function FreebieForm({
     watch,
     getValues,
   } = useForm({
-    resolver: yupResolver(
-      direct ? requestFreebiesDirectSchema.schema : requestFreebiesSchema.schema
-    ),
+    resolver: yupResolver(requestFreebiesSchema.schema),
     mode: "onChange",
-    defaultValues: direct
-      ? requestFreebiesDirectSchema.defaultValues
-      : requestFreebiesSchema.defaultValues,
+    defaultValues: requestFreebiesSchema.defaultValues,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -170,23 +157,6 @@ function FreebieForm({
     onRedirectReleaseClose();
   };
 
-  const { showSnackbar } = useSnackbar();
-
-  const onDirectFreebieSave = (data) => {
-    if (hasDuplicateItemCodes(watch("freebies"))) {
-      setSnackbarMessage("No duplicate freebies allowed");
-      showSnackbar("No duplicated freebies allowed", "error");
-      onConfirmSubmitClose();
-      return;
-    }
-
-    dispatch(setFreebies(data.freebies));
-    setSnackbarMessage("Freebies saved successfully");
-    onSuccessOpen();
-    onConfirmSubmitClose();
-    handleDrawerClose();
-  };
-
   //Misc Functions
   const handleFreebieError = () => {
     if (fields.length === 1) {
@@ -194,7 +164,7 @@ function FreebieForm({
     } else if (fields.length === 5) {
       setSnackbarMessage("Maximum of 5 freebies only");
     }
-    showSnackbar(snackbarMessage, "error");
+    onErrorOpen();
   };
 
   function hasDuplicateItemCodes(data) {
@@ -211,50 +181,38 @@ function FreebieForm({
     return false;
   }
 
-  console.log(freebiesDirect);
-  console.log(getValues());
-
   //UseEffects
   useEffect(() => {
-    if (!direct) {
-      setValue("clientId", clientId);
-      const freebiesLength = selectedRowData?.freebies?.length;
+    setValue("clientId", clientId);
+    const freebiesLength = selectedRowData?.freebies?.length;
 
-      if (updateFreebies && isFreebieFormOpen) {
-        const originalFreebies =
-          selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
+    if (updateFreebies && isFreebieFormOpen) {
+      const originalFreebies =
+        selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
 
-        const transformedFreebies = originalFreebies.map((item) => ({
-          itemId: item,
-          quantity: 1,
-          itemDescription: item.itemDescription,
-          uom: item.uom,
-        }));
+      const transformedFreebies = originalFreebies.map((item) => ({
+        itemId: item,
+        quantity: 1,
+        itemDescription: item.itemDescription,
+        uom: item.uom,
+      }));
 
-        setValue("freebies", transformedFreebies);
-        setValue(
-          "freebieRequestId",
-          selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
-            null
-        );
-      }
-
-      return () => {
-        setValue("clientId", null);
-      };
+      setValue("freebies", transformedFreebies);
+      setValue(
+        "freebieRequestId",
+        selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
+          null
+      );
     }
+
+    return () => {
+      setValue("clientId", null);
+    };
   }, [isFreebieFormOpen]);
 
-  useEffect(() => {
-    if (direct && freebiesDirect?.length > 0) {
-      setValue("freebies", freebiesDirect);
-    }
-
-    if (direct && freebiesDirect?.length === 0) {
-      reset();
-    }
-  }, [!isFreebieFormOpen]);
-
+  // useEffect(() => {
+  //   onFreebieReleaseOpen();
+  // }, [isFreebieFormOpen]);
   return (
     <>
       <CommonDrawer
@@ -264,7 +222,6 @@ function FreebieForm({
         width="1000px"
         disableSubmit={!isValid}
         onSubmit={onConfirmSubmitOpen}
-        submitLabel={direct && "Save"}
       >
         {fields.map((item, index) => (
           <Box
@@ -379,17 +336,13 @@ function FreebieForm({
       <CommonDialog
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
-        onYes={
-          direct
-            ? handleSubmit(onDirectFreebieSave)
-            : handleSubmit(onFreebieSubmit)
-        }
+        onYes={handleSubmit(onFreebieSubmit)}
         isLoading={updateFreebies ? isUpdateLoading : isRequestLoading}
         noIcon
       >
-        Confirm {direct ? "save" : "request"} of freebies for{" "}
+        Confirm request of freebies for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName && !direct
+          {selectedRowData.businessName
             ? selectedRowData.businessName
             : "client"}
         </span>
@@ -401,10 +354,9 @@ function FreebieForm({
         onClose={onConfirmCancelClose}
         onYes={handleDrawerClose}
       >
-        Are you sure you want to cancel {direct ? "save" : "request"} of
-        freebies for{" "}
+        Are you sure you want to cancel request of freebies for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName && !direct
+          {selectedRowData.businessName
             ? selectedRowData.businessName
             : "client"}
         </span>
@@ -447,4 +399,4 @@ function FreebieForm({
   );
 }
 
-export default FreebieForm;
+export default FreebieFormDirect;

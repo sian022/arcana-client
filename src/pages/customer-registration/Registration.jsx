@@ -17,6 +17,7 @@ function DirectRegistration() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+  const [status, setStatus] = useState(true);
 
   //Disclosures
   const {
@@ -34,25 +35,25 @@ function DirectRegistration() {
   //RTK Query
   const { data: pendingData, isLoading: isPendingLoading } =
     useGetAllClientsQuery({
-      Status: true,
+      Status: status,
       RegistrationStatus: "Under review",
     });
 
   const { data: approvedData, isLoading: isApprovedLoading } =
     useGetAllClientsQuery({
-      Status: true,
+      Status: status,
       RegistrationStatus: "Approved",
     });
 
   const { data: rejectedData, isLoading: isRejectedLoading } =
     useGetAllClientsQuery({
-      Status: true,
+      Status: status,
       RegistrationStatus: "Rejected",
     });
 
   const { data, isLoading } = useGetAllClientsQuery({
     Search: search,
-    Status: true,
+    Status: status,
     RegistrationStatus: clientStatus,
     Origin: origin,
     PageNumber: page + 1,
@@ -175,6 +176,8 @@ function DirectRegistration() {
             tableHeads={tableHeads}
             editable
             onView={onViewOpen}
+            // onArchive={true}
+            status={status}
           />
         )}
 

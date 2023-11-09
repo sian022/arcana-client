@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
-import { Box, Checkbox, Typography } from "@mui/material";
+import { Box, Checkbox, CircularProgress, Typography } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
 import { navigationData } from "../../navigation/navigationData";
@@ -10,6 +10,7 @@ function RoleTaggingModal({
   checkedModules,
   setCheckedModules,
   onSubmit,
+  isLoading,
   ...props
 }) {
   const { onClose } = props;
@@ -131,8 +132,16 @@ function RoleTaggingModal({
           sx={{ display: "flex", justifyContent: "end", gap: "10px" }}
           className="roleTaggingModal__actions"
         >
-          <SecondaryButton onClick={onSubmit}>Save</SecondaryButton>
-          <DangerButton onClick={onClose}>Close</DangerButton>
+          <SecondaryButton onClick={onSubmit} disabled={isLoading}>
+            {isLoading ? (
+              <CircularProgress size="20px" color="white" />
+            ) : (
+              "Save"
+            )}
+          </SecondaryButton>
+          <DangerButton onClick={onClose} disabled={isLoading}>
+            Close
+          </DangerButton>
         </Box>
       </Box>
     </CommonModal>

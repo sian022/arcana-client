@@ -299,7 +299,9 @@ function UserAccount() {
             loading={isSedarLoading}
             disableClearable
             filterOptions={filterOptions}
-            getOptionLabel={(option) => option.general_info.full_id_number}
+            getOptionLabel={(option) =>
+              option.general_info.full_id_number_full_name
+            }
             renderInput={(params) => (
               <TextField {...params} size="small" label="Employee ID" />
             )}

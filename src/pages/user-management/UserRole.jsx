@@ -96,16 +96,19 @@ function UserRole() {
   });
 
   //RTK Query
-  const [postUserRole] = usePostUserRoleMutation();
+  const [postUserRole, { isLoading: isAddLoading }] = usePostUserRoleMutation();
   const { data, isLoading } = useGetAllUserRolesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putUserRole] = usePutUserRoleMutation();
-  const [patchUserRoleStatus] = usePatchUserRoleStatusMutation();
-  const [putTagUserRole] = usePutTagUserRoleMutation();
+  const [putUserRole, { isLoading: isUpdateLoading }] =
+    usePutUserRoleMutation();
+  const [patchUserRoleStatus, { isLoading: isArchiveLoading }] =
+    usePatchUserRoleStatusMutation();
+  const [putTagUserRole, { isLoading: isTagLoading }] =
+    usePutTagUserRoleMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -230,6 +233,7 @@ function UserRole() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " User Role"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="User Role Name"
@@ -244,6 +248,7 @@ function UserRole() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
       >
         Are you sure you want to {status ? "archive" : "restore"}?
       </CommonDialog>
@@ -263,6 +268,7 @@ function UserRole() {
         onSubmit={onTaggingSubmit}
         open={isTaggingOpen}
         onClose={onTaggingClose}
+        isLoading={isTagLoading}
       />
     </Box>
   );

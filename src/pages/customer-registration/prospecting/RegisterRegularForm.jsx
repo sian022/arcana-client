@@ -113,7 +113,6 @@ function RegisterRegularForm({ open, onClose }) {
     defaultValues: regularRegisterSchema.defaultValues,
   });
 
-  console.log(getValues());
   //Constants
   const navigators = [
     {

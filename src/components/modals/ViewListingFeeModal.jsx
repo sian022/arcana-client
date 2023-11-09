@@ -80,7 +80,8 @@ function ViewListingFeeModal({
   const handleApprove = async () => {
     try {
       await putApproveListingFee({
-        id: selectedRowData?.id,
+        // id: selectedRowData?.listingFeeId,
+        id: selectedRowData?.approvalId,
       }).unwrap();
       showSnackbar("Listing Fee approved successfully", "success");
     } catch (error) {

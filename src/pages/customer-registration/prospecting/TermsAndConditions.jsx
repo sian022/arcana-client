@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   FormControlLabel,
+  IconButton,
   InputAdornment,
   MenuItem,
   Radio,
@@ -11,12 +12,16 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
+import {
+  resetFreebies,
+  setTermsAndConditions,
+} from "../../../features/registration/reducers/regularRegistrationSlice";
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 import SecondaryButton from "../../../components/SecondaryButton";
 import useDisclosure from "../../../hooks/useDisclosure";
 import FreebieForm from "./FreebieForm";
+import { Cancel } from "@mui/icons-material";
 
 function TermsAndConditions({ direct }) {
   const dispatch = useDispatch();
@@ -24,6 +29,9 @@ function TermsAndConditions({ direct }) {
 
   const termsAndConditions = useSelector(
     (state) => state.regularRegistration.value.termsAndConditions
+  );
+  const freebiesDirect = useSelector(
+    (state) => state.regularRegistration.value.freebies
   );
 
   //Disclosures
@@ -522,14 +530,32 @@ function TermsAndConditions({ direct }) {
         </Box>
 
         {direct && (
-          <SecondaryButton medium onClick={onFreebieFormOpen}>
-            Request Freebie
-          </SecondaryButton>
+          <>
+            <SecondaryButton medium onClick={onFreebieFormOpen}>
+              Request Freebie
+            </SecondaryButton>{" "}
+            {freebiesDirect?.length > 0 && (
+              <IconButton
+                sx={{
+                  color: "error.main",
+                  position: "absolute",
+                  right: "85px",
+                  top: "408px",
+                }}
+                onClick={() => {
+                  dispatch(resetFreebies());
+                }}
+              >
+                <Cancel sx={{ fontSize: "30px" }} />
+              </IconButton>
+            )}
+          </>
         )}
         {direct && (
           <FreebieForm
             isFreebieFormOpen={isFreebieFormOpen}
             onFreebieFormClose={onFreebieFormClose}
+            direct
           />
         )}
       </Box>

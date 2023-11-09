@@ -61,18 +61,19 @@ function ListingFeeApproval() {
       case: 1,
       name: "Pending Listing Fee",
       listingFeeStatus: "Under review",
-      badge: pendingData?.count || 0,
+      badge: pendingData?.totalCount || 0,
     },
     {
       case: 2,
       name: "Approved Listing Fee",
       listingFeeStatus: "Approved",
-      badge: approvedData?.count || 0,
+      badge: approvedData?.totalCount || 0,
     },
     {
       case: 3,
       name: "Rejected Listing Fee",
-      badge: rejectedData?.count || 0,
+      listingFeeStatus: "Rejected",
+      badge: rejectedData?.totalCount || 0,
     },
   ];
 
@@ -113,7 +114,7 @@ function ListingFeeApproval() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.count);
+    setCount(data?.totalCount);
   }, [data]);
 
   return (

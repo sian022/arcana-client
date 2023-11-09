@@ -119,6 +119,7 @@ function LoginPage() {
               className="login__formWrapper__form__signIn"
               type="submit"
               disabled={isLoading || !isValid}
+              fullWidth
             >
               {isLoading ? (
                 <CircularProgress size="20px" color="white" />
@@ -126,13 +127,13 @@ function LoginPage() {
                 "Sign In"
               )}
             </SecondaryButton>
+            <Box className="login__footer">
+              <img src={MisLogo} alt="mis-logo" />
+              <Typography>© 2023 Powered by</Typography>
+              <Typography>Management Information System</Typography>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box className="login__footer">
-        <img src={MisLogo} alt="mis-logo" />
-        <Typography>© 2023 Powered by</Typography>
-        <Typography>Management Information System</Typography>
       </Box>
     </Box>
   );

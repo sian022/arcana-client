@@ -22,6 +22,7 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
   usePostDirectRegistrationMutation,
+  usePutAddAttachmentsForDirectMutation,
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,
   usePutRegisterClientMutation,
@@ -68,6 +69,9 @@ function DirectRegisterForm({ open, onClose }) {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const termsAndConditions = useSelector(
     (state) => state.regularRegistration.value.termsAndConditions
+  );
+  const freebiesDirect = useSelector(
+    (state) => state.regularRegistration.value.freebies
   );
 
   //Disclosures
@@ -169,15 +173,11 @@ function DirectRegisterForm({ open, onClose }) {
   navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
 
   //RTK Query
-  // const [putRegisterClient, { isLoading: isRegisterLoading }] =
-  //   usePutRegisterClientMutation();
-  const [putAddAttachments, { isLoading: isAttachmentsLoading }] =
-    usePutAddAttachmentsMutation();
-  const [putAddTermsAndConditions, { isLoading: isTermsLoading }] =
-    usePutAddTermsAndCondtionsMutation();
 
   const [postDirectRegistration, { isLoading: isRegisterLoading }] =
     usePostDirectRegistrationMutation();
+  const [putAddAttachmentsForDirect, { isLoading: isAttachmentsLoading }] =
+    usePutAddAttachmentsForDirectMutation();
 
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
     useGetAllStoreTypesQuery({ Status: true });
@@ -205,10 +205,15 @@ function DirectRegisterForm({ open, onClose }) {
       await postDirectRegistration({
         ...transformedData,
         ...transformedTermsAndConditions,
+        ...(freebiesDirect?.length > 0
+          ? {
+              freebies: freebiesDirect.map((freebie) => ({
+                itemId: freebie.itemId.id,
+              })),
+            }
+          : {}),
       }).unwrap();
-      // await putRegisterClient(data).unwrap();
-      // await addTermsAndConditions();
-      // await addAttachmentsSubmit();
+      await addAttachmentsSubmit();
       setIsAllApiLoading(false);
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
@@ -223,32 +228,6 @@ function DirectRegisterForm({ open, onClose }) {
       setIsAllApiLoading(false);
       console.log(error);
     }
-  };
-
-  const addTermsAndConditions = async () => {
-    let updatedTermsAndConditions = { ...termsAndConditions };
-
-    // if (termsAndConditions["fixedDiscounts"].discountPercentage === "") {
-    //   updatedTermsAndConditions = {
-    //     ...termsAndConditions,
-    //     fixedDiscounts: {
-    //       ...termsAndConditions["fixedDiscounts"],
-    //       discountPercentage: null,
-    //     },
-    //   };
-    // }
-
-    // dispatch(setTermsAndConditions(updatedTermsAndConditions));
-
-    if (updatedTermsAndConditions.termDaysId) {
-      updatedTermsAndConditions.termDaysId =
-        updatedTermsAndConditions.termDaysId.id;
-    }
-
-    await putAddTermsAndConditions({
-      id: selectedRowData?.id,
-      termsAndConditions: updatedTermsAndConditions,
-    }).unwrap();
   };
 
   const addAttachmentsSubmit = async () => {
@@ -300,7 +279,7 @@ function DirectRegisterForm({ open, onClose }) {
       });
     }
 
-    await putAddAttachments({
+    await putAddAttachmentsForDirect({
       id: selectedRowData?.id,
       formData,
     }).unwrap();

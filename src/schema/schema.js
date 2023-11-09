@@ -221,6 +221,25 @@ export const requestFreebiesSchema = {
   },
 };
 
+export const requestFreebiesDirectSchema = {
+  schema: yup.object({
+    freebies: yup.array().of(
+      yup.object({
+        itemId: yup.object().required("Product Code Required"),
+        quantity: yup.number().required("Quantity is required"),
+      })
+    ),
+  }),
+  defaultValues: {
+    freebies: [
+      {
+        itemId: null,
+        quantity: 1,
+      },
+    ],
+  },
+};
+
 //Registration Schema
 export const regularRegisterSchema = {
   schema: yup.object({

@@ -69,6 +69,15 @@ export const registrationApi = createApi({
       invalidatesTags: ["Registration"],
     }),
 
+    putAddAttachmentsForDirect: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/RegularRegistration/AddAttachmentsForDirectClient/${id}`,
+        method: "PUT",
+        body: body?.formData,
+      }),
+      invalidatesTags: ["Registration"],
+    }),
+
     putAddTermsAndCondtions: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `/Registration/AddTermsAndCondition/${id}`,
@@ -106,4 +115,5 @@ export const {
   usePostDirectRegistrationMutation,
   usePutApproveRegistrationMutation,
   usePutRejectRegistrationMutation,
+  usePutAddAttachmentsForDirectMutation,
 } = registrationApi;
