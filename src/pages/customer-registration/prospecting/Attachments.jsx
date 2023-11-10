@@ -113,312 +113,319 @@ function Attachments() {
 
   return (
     <>
-      <Box className="attachments">
-        <Box
-          className={
-            "attachments__column" +
-            (requirementsMode !== "owner" ? " overlay" : "")
-          }
-        >
-          <Typography className="attachments__column__title">
-            Owner's Requirements
-          </Typography>
-          <Box className="attachments__column__content">
-            <Box className="attachments__column__content__item">
-              <Typography>Customer's Signature</Typography>
-              <Button
-                className={ownersRequirements["signature"] && "buttonActive"}
-                onClick={
-                  onCanvasOpen
-                  // () => {ownerRequirementRefs["signature"].current.click()}
-                }
-              >
-                <Create />
-              </Button>
-              {ownersRequirements["signature"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewOwner"
+      <Box className="attachmentsContainer">
+        <Box className="attachments">
+          <Box
+            className={
+              "attachments__column" +
+              (requirementsMode !== "owner" ? " overlay" : "")
+            }
+          >
+            <Typography className="attachments__column__title">
+              Owner's Requirements
+            </Typography>
+            <Box className="attachments__column__content">
+              <Box className="attachments__column__content__item">
+                <Typography>Customer's Signature</Typography>
+                <Button
+                  className={ownersRequirements["signature"] && "buttonActive"}
+                  onClick={
+                    onCanvasOpen
+                    // () => {ownerRequirementRefs["signature"].current.click()}
+                  }
+                >
+                  <Create />
+                </Button>
+                {ownersRequirements["signature"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewOwner"
+                    onClick={() => {
+                      const convertedSignature = base64ToBlob(
+                        ownersRequirements["signature"]
+                      );
+                      handleViewPhoto(convertedSignature, "Signature");
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
+              <Box className="attachments__column__content__item">
+                <Typography>Store Photo</Typography>
+                <Button
+                  className={ownersRequirements["storePhoto"] && "buttonActive"}
                   onClick={() => {
-                    const convertedSignature = base64ToBlob(
-                      ownersRequirements["signature"]
-                    );
-                    handleViewPhoto(convertedSignature, "Signature");
+                    ownerRequirementRefs["storePhoto"].current.click();
                   }}
                 >
-                  <Visibility />
-                </IconButton>
-              )}
+                  <AddAPhoto />
+                </Button>
+                {ownersRequirements["storePhoto"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewOwner"
+                    onClick={() => {
+                      handleViewPhoto(
+                        ownersRequirements["storePhoto"],
+                        "Store Photo"
+                      );
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
+              <Box className="attachments__column__content__item">
+                <Typography>Business Permit</Typography>
+                <Button
+                  className={
+                    ownersRequirements["businessPermit"] && "buttonActive"
+                  }
+                  onClick={() => {
+                    ownerRequirementRefs["businessPermit"].current.click();
+                  }}
+                >
+                  <Business />
+                </Button>
+                {ownersRequirements["businessPermit"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewOwner"
+                    onClick={() => {
+                      handleViewPhoto(
+                        ownersRequirements["businessPermit"],
+                        "Business Permit"
+                      );
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
+              <Box className="attachments__column__content__item">
+                <Typography>Valid ID of Owner</Typography>
+                <Button
+                  className={
+                    ownersRequirements["photoIdOwner"] && "buttonActive"
+                  }
+                  onClick={() => {
+                    ownerRequirementRefs["photoIdOwner"].current.click();
+                  }}
+                >
+                  <PermIdentity />
+                </Button>
+                {ownersRequirements["photoIdOwner"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewOwner"
+                    onClick={() => {
+                      handleViewPhoto(
+                        ownersRequirements["photoIdOwner"],
+                        "Valid ID of Owner"
+                      );
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
             </Box>
-            <Box className="attachments__column__content__item">
-              <Typography>Store Photo</Typography>
-              <Button
-                className={ownersRequirements["storePhoto"] && "buttonActive"}
-                onClick={() => {
-                  ownerRequirementRefs["storePhoto"].current.click();
+            <Box className="attachments__column__radio">
+              <Radio
+                value={"owner"}
+                checked={requirementsMode === "owner"}
+                onChange={(e) => {
+                  setRequirementsMode(e.target.value);
                 }}
-              >
-                <AddAPhoto />
-              </Button>
-              {ownersRequirements["storePhoto"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewOwner"
-                  onClick={() => {
-                    handleViewPhoto(
-                      ownersRequirements["storePhoto"],
-                      "Store Photo"
-                    );
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              )}
-            </Box>
-            <Box className="attachments__column__content__item">
-              <Typography>Business Permit</Typography>
-              <Button
-                className={
-                  ownersRequirements["businessPermit"] && "buttonActive"
-                }
-                onClick={() => {
-                  ownerRequirementRefs["businessPermit"].current.click();
-                }}
-              >
-                <Business />
-              </Button>
-              {ownersRequirements["businessPermit"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewOwner"
-                  onClick={() => {
-                    handleViewPhoto(
-                      ownersRequirements["businessPermit"],
-                      "Business Permit"
-                    );
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              )}
-            </Box>
-            <Box className="attachments__column__content__item">
-              <Typography>Valid ID of Owner</Typography>
-              <Button
-                className={ownersRequirements["photoIdOwner"] && "buttonActive"}
-                onClick={() => {
-                  ownerRequirementRefs["photoIdOwner"].current.click();
-                }}
-              >
-                <PermIdentity />
-              </Button>
-              {ownersRequirements["photoIdOwner"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewOwner"
-                  onClick={() => {
-                    handleViewPhoto(
-                      ownersRequirements["photoIdOwner"],
-                      "Valid ID of Owner"
-                    );
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              )}
+              />
             </Box>
           </Box>
-          <Box className="attachments__column__radio">
-            <Radio
-              value={"owner"}
-              checked={requirementsMode === "owner"}
-              onChange={(e) => {
-                setRequirementsMode(e.target.value);
-              }}
-            />
-          </Box>
-        </Box>
 
-        <Box
-          className={
-            "attachments__column" +
-            (requirementsMode !== "representative" ? " overlay" : "")
-          }
-        >
-          <Typography className="attachments__column__title">
-            Representative's Requirements
-          </Typography>
-          <Box className="attachments__column__content">
-            <Box className="attachments__column__content__item">
-              <Typography>Representative's Signature</Typography>
-              <Button
-                className={
-                  representativeRequirements["signature"] && "buttonActive"
-                }
-                onClick={
-                  onCanvasOpen
-                  // () => {representativeRequirementRefs["signature"].current.click()}
-                }
-              >
-                <Create />
-              </Button>
-              {representativeRequirements["signature"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewRepresentative"
+          <Box
+            className={
+              "attachments__column" +
+              (requirementsMode !== "representative" ? " overlay" : "")
+            }
+          >
+            <Typography className="attachments__column__title">
+              Representative's Requirements
+            </Typography>
+            <Box className="attachments__column__content">
+              <Box className="attachments__column__content__item">
+                <Typography>Representative's Signature</Typography>
+                <Button
+                  className={
+                    representativeRequirements["signature"] && "buttonActive"
+                  }
+                  onClick={
+                    onCanvasOpen
+                    // () => {representativeRequirementRefs["signature"].current.click()}
+                  }
+                >
+                  <Create />
+                </Button>
+                {representativeRequirements["signature"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewRepresentative"
+                    onClick={() => {
+                      const convertedSignature = base64ToBlob(
+                        representativeRequirements["signature"]
+                      );
+                      handleViewPhoto(convertedSignature, "Signature");
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
+              <Box className="attachments__column__content__item">
+                <Typography>Store Photo</Typography>
+                <Button
+                  className={
+                    representativeRequirements["storePhoto"] && "buttonActive"
+                  }
                   onClick={() => {
-                    const convertedSignature = base64ToBlob(
-                      representativeRequirements["signature"]
-                    );
-                    handleViewPhoto(convertedSignature, "Signature");
+                    representativeRequirementRefs["storePhoto"].current.click();
                   }}
                 >
-                  <Visibility />
-                </IconButton>
-              )}
+                  <AddAPhoto />
+                </Button>
+                {representativeRequirements["storePhoto"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewRepresentative"
+                    onClick={() => {
+                      handleViewPhoto(
+                        representativeRequirements["storePhoto"],
+                        "Store Photo"
+                      );
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
+              <Box className="attachments__column__content__item">
+                <Typography>Business Permit</Typography>
+                <Button
+                  className={
+                    representativeRequirements["businessPermit"] &&
+                    "buttonActive"
+                  }
+                  onClick={() => {
+                    representativeRequirementRefs[
+                      "businessPermit"
+                    ].current.click();
+                  }}
+                >
+                  <Business />
+                </Button>
+                {representativeRequirements["businessPermit"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewRepresentative"
+                    onClick={() => {
+                      handleViewPhoto(
+                        representativeRequirements["businessPermit"],
+                        "Business Permit"
+                      );
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
+              <Box className="attachments__column__content__item">
+                <Typography>Valid ID of Owner</Typography>
+                <Button
+                  className={
+                    representativeRequirements["photoIdOwner"] && "buttonActive"
+                  }
+                  onClick={() => {
+                    representativeRequirementRefs[
+                      "photoIdOwner"
+                    ].current.click();
+                  }}
+                >
+                  <PermIdentity />
+                </Button>
+                {representativeRequirements["photoIdOwner"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewRepresentative"
+                    onClick={() => {
+                      handleViewPhoto(
+                        representativeRequirements["photoIdOwner"],
+                        "Valid ID of Owner"
+                      );
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
+              <Box className="attachments__column__content__item">
+                <Typography>Valid ID of Representative</Typography>
+                <Button
+                  className={
+                    representativeRequirements["photoIdRepresentative"] &&
+                    "buttonActive"
+                  }
+                  onClick={() => {
+                    representativeRequirementRefs[
+                      "photoIdRepresentative"
+                    ].current.click();
+                  }}
+                >
+                  <CameraAlt />
+                </Button>
+                {representativeRequirements["photoIdRepresentative"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewRepresentative"
+                    onClick={() => {
+                      handleViewPhoto(
+                        representativeRequirements["photoIdRepresentative"],
+                        "Valid ID of Representative"
+                      );
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
+              <Box className="attachments__column__content__item">
+                <Typography>Authorization Letter</Typography>
+                <Button
+                  className={
+                    representativeRequirements["authorizationLetter"] &&
+                    "buttonActive"
+                  }
+                  onClick={() => {
+                    representativeRequirementRefs[
+                      "authorizationLetter"
+                    ].current.click();
+                  }}
+                >
+                  <Assignment />
+                </Button>
+                {representativeRequirements["authorizationLetter"] && (
+                  <IconButton
+                    className="attachments__column__content__item__viewRepresentative"
+                    onClick={() => {
+                      handleViewPhoto(
+                        representativeRequirements["authorizationLetter"],
+                        "Authorization Letter"
+                      );
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+              </Box>
             </Box>
-            <Box className="attachments__column__content__item">
-              <Typography>Store Photo</Typography>
-              <Button
-                className={
-                  representativeRequirements["storePhoto"] && "buttonActive"
-                }
-                onClick={() => {
-                  representativeRequirementRefs["storePhoto"].current.click();
+            <Box className="attachments__column__radio">
+              <Radio
+                value={"representative"}
+                checked={requirementsMode === "representative"}
+                onChange={(e) => {
+                  setRequirementsMode(e.target.value);
                 }}
-              >
-                <AddAPhoto />
-              </Button>
-              {representativeRequirements["storePhoto"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewRepresentative"
-                  onClick={() => {
-                    handleViewPhoto(
-                      representativeRequirements["storePhoto"],
-                      "Store Photo"
-                    );
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              )}
+              />
             </Box>
-            <Box className="attachments__column__content__item">
-              <Typography>Business Permit</Typography>
-              <Button
-                className={
-                  representativeRequirements["businessPermit"] && "buttonActive"
-                }
-                onClick={() => {
-                  representativeRequirementRefs[
-                    "businessPermit"
-                  ].current.click();
-                }}
-              >
-                <Business />
-              </Button>
-              {representativeRequirements["businessPermit"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewRepresentative"
-                  onClick={() => {
-                    handleViewPhoto(
-                      representativeRequirements["businessPermit"],
-                      "Business Permit"
-                    );
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              )}
-            </Box>
-            <Box className="attachments__column__content__item">
-              <Typography>Valid ID of Owner</Typography>
-              <Button
-                className={
-                  representativeRequirements["photoIdOwner"] && "buttonActive"
-                }
-                onClick={() => {
-                  representativeRequirementRefs["photoIdOwner"].current.click();
-                }}
-              >
-                <PermIdentity />
-              </Button>
-              {representativeRequirements["photoIdOwner"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewRepresentative"
-                  onClick={() => {
-                    handleViewPhoto(
-                      representativeRequirements["photoIdOwner"],
-                      "Valid ID of Owner"
-                    );
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              )}
-            </Box>
-            <Box className="attachments__column__content__item">
-              <Typography>Valid ID of Representative</Typography>
-              <Button
-                className={
-                  representativeRequirements["photoIdRepresentative"] &&
-                  "buttonActive"
-                }
-                onClick={() => {
-                  representativeRequirementRefs[
-                    "photoIdRepresentative"
-                  ].current.click();
-                }}
-              >
-                <CameraAlt />
-              </Button>
-              {representativeRequirements["photoIdRepresentative"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewRepresentative"
-                  onClick={() => {
-                    handleViewPhoto(
-                      representativeRequirements["photoIdRepresentative"],
-                      "Valid ID of Representative"
-                    );
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              )}
-            </Box>
-            <Box className="attachments__column__content__item">
-              <Typography>Authorization Letter</Typography>
-              <Button
-                className={
-                  representativeRequirements["authorizationLetter"] &&
-                  "buttonActive"
-                }
-                onClick={() => {
-                  representativeRequirementRefs[
-                    "authorizationLetter"
-                  ].current.click();
-                }}
-              >
-                <Assignment />
-              </Button>
-              {representativeRequirements["authorizationLetter"] && (
-                <IconButton
-                  className="attachments__column__content__item__viewRepresentative"
-                  onClick={() => {
-                    handleViewPhoto(
-                      representativeRequirements["authorizationLetter"],
-                      "Authorization Letter"
-                    );
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              )}
-            </Box>
-          </Box>
-          <Box className="attachments__column__radio">
-            <Radio
-              value={"representative"}
-              checked={requirementsMode === "representative"}
-              onChange={(e) => {
-                setRequirementsMode(e.target.value);
-              }}
-            />
           </Box>
         </Box>
       </Box>

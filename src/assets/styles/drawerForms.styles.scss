@@ -184,6 +184,9 @@
   }
 }
 
+.attachmentsContainer {
+  flex: 1;
+}
 .attachments {
   display: grid;
   grid-template-columns: 1fr 1fr;

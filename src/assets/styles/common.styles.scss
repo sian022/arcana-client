@@ -156,7 +156,7 @@
     gap: 10px;
     padding: 0 30px;
     justify-content: end;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     // position: fixed;
     // bottom: 0;
     // right: 0;
@@ -165,11 +165,12 @@
   &__actionsNoMarginBottom {
     display: flex;
     gap: 10px;
-    padding: 0 30px;
+    // padding: 0 30px;
     justify-content: end;
     // position: fixed;
     // bottom: 0;
     // right: 0;
+    margin-bottom: 10px;
   }
 
   &__actionsSpread {
@@ -182,6 +183,7 @@
     // position: sticky;
     // bottom: 0;
     // right: 0;
+    margin-bottom: 10px;
   }
 }
 

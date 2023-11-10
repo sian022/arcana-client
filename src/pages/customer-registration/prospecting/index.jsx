@@ -164,6 +164,7 @@ function Prospect() {
                       " &:hover": {
                         bgcolor: "accent.main",
                       },
+                      maxHeight: "200px",
                     }}
                     title={item.storeTypeName}
                     onClick={() => {

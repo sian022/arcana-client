@@ -220,9 +220,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           : {}),
       }).unwrap();
 
-      dispatch(setSelectedRow(response?.data));
-
-      await addAttachmentsSubmit();
+      await addAttachmentsSubmit(response?.data?.id);
       setIsAllApiLoading(false);
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
@@ -239,11 +237,15 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     }
   };
 
-  const addAttachmentsSubmit = async () => {
+  const addAttachmentsSubmit = async (clientId) => {
     const formData = new FormData();
     let attachmentsObject = null;
 
-    if (requirementsMode === "owner" && ownersRequirements["signature"]) {
+    if (
+      requirementsMode === "owner" &&
+      ownersRequirements["signature"] &&
+      !(ownersRequirements["signature"] instanceof Blob)
+    ) {
       const convertedSignature = new File(
         [base64ToBlob(ownersRequirements["signature"])],
         `signature_${Date.now()}.jpg`,
@@ -289,7 +291,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     }
 
     await putAddAttachmentsForDirect({
-      id: selectedRowData?.id,
+      // id: selectedRowData?.id,
+      id: clientId,
       formData,
     }).unwrap();
   };
