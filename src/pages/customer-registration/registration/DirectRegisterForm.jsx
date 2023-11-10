@@ -50,6 +50,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { coverageMapping } from "../../../utils/Constants";
+import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -207,7 +208,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         termsId: termsAndConditions?.terms,
       };
 
-      await postDirectRegistration({
+      const response = await postDirectRegistration({
         ...transformedData,
         ...transformedTermsAndConditions,
         ...(freebiesDirect?.length > 0
@@ -218,6 +219,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             }
           : {}),
       }).unwrap();
+
+      dispatch(setSelectedRow(response?.data));
+
       await addAttachmentsSubmit();
       setIsAllApiLoading(false);
 

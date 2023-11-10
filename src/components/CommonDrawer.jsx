@@ -30,7 +30,7 @@ function CommonDrawer({
 }) {
   return (
     <Drawer anchor="right" sx={{ zIndex: zIndex && zIndex }} {...otherProps}>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", flex: 1 }}>
         {navigators && (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             {navigators.map((item, i) => (
