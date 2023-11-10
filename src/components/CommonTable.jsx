@@ -153,6 +153,8 @@ function CommonTable({
                           ? item[keys] * 100
                           : pesoArray && pesoArray.includes(keys)
                           ? item[keys].toLocaleString()
+                          : !item[keys]
+                          ? "N/A"
                           : item[keys]}
 
                         {percentageArray &&

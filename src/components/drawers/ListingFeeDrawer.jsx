@@ -95,11 +95,12 @@ function ListingFeeDrawer({
     name: "listingItems",
   });
 
+  console.log(selectedRowData);
   //RTK Query
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsForListingFeeQuery({
       Status: true,
-      IncludeRejected: editMode,
+      IncludeRejected: editMode ? editMode : "",
     });
   const { data: productData, isLoading: isProductLoading } =
     useGetAllProductsQuery({ Status: true });
@@ -167,7 +168,10 @@ function ListingFeeDrawer({
   const handleDrawerClose = () => {
     reset();
     setValue("customerName", "");
-    setEditMode(false);
+
+    if (!redirect) {
+      setEditMode(false);
+    }
     setTotalAmount(0);
     onListingFeeClose();
     onConfirmCancelClose();
@@ -253,7 +257,9 @@ function ListingFeeDrawer({
       setValue("clientId", foundItem);
       setValue("customerName", foundItem?.ownersName);
     }
-  }, [clientData]);
+  }, [isListingFeeOpen, clientData]);
+
+  console.log(clientData);
 
   useEffect(() => {
     if (editMode && isListingFeeOpen && clientData) {
@@ -392,6 +398,12 @@ function ListingFeeDrawer({
                   control={control}
                   options={productData?.items || []}
                   getOptionLabel={(option) => option.itemCode || ""}
+                  getOptionDisabled={(option) => {
+                    const freebies = watch("listingItems");
+                    return freebies.some(
+                      (item) => item?.itemId?.itemCode === option.itemCode
+                    );
+                  }}
                   disableClearable
                   loading={isProductLoading}
                   // isOptionEqualToValue={(option, value) => option.id === value.id}

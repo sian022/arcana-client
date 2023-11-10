@@ -17,6 +17,7 @@ import {
   usePostMeatTypeMutation,
   usePutMeatTypeMutation,
 } from "../../features/setup/api/meatTypeApi";
+import { useSelector } from "react-redux";
 
 function MeatType() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function MeatType() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -80,15 +83,17 @@ function MeatType() {
   });
 
   //RTK Query
-  const [postMeatType] = usePostMeatTypeMutation();
+  const [postMeatType, { isLoading: isAddLoading }] = usePostMeatTypeMutation();
   const { data, isLoading } = useGetAllMeatTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putMeatType] = usePutMeatTypeMutation();
-  const [patchMeatTypeStatus] = usePatchMeatTypeStatusMutation();
+  const [putMeatType, { isLoading: isUpdateLoading }] =
+    usePutMeatTypeMutation();
+  const [patchMeatTypeStatus, { isLoading: isArchiveLoading }] =
+    usePatchMeatTypeStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -158,6 +163,8 @@ function MeatType() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
+  console.log(isAddLoading);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -192,6 +199,7 @@ function MeatType() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Meat Type"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Meat Type Name"
@@ -206,8 +214,14 @@ function MeatType() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        noIcon={!status}
+        isLoading={isArchiveLoading}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.meatTypeName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

@@ -17,6 +17,7 @@ import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import { useSelector } from "react-redux";
 
 function ProductCategory() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function ProductCategory() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -79,15 +82,18 @@ function ProductCategory() {
   });
 
   //RTK Query
-  const [postProductCategory] = usePostProductCategoryMutation();
+  const [postProductCategory, { isLoading: isAddLoading }] =
+    usePostProductCategoryMutation();
   const { data, isLoading } = useGetAllProductCategoryQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putProductCategory] = usePutProductCategoryMutation();
-  const [patchProductCategoryStatus] = usePatchProductCategoryStatusMutation();
+  const [putProductCategory, { isLoading: isUpdateLoading }] =
+    usePutProductCategoryMutation();
+  const [patchProductCategoryStatus, { isLoading: isArchiveLoading }] =
+    usePatchProductCategoryStatusMutation();
 
   const onDrawerSubmit = async (data) => {
     try {
@@ -192,6 +198,7 @@ function ProductCategory() {
         }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Product Category Name"
@@ -207,8 +214,14 @@ function ProductCategory() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.productCategoryName}
+        </span>
+        ?
       </CommonDialog>
 
       <SuccessSnackbar

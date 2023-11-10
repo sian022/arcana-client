@@ -252,6 +252,7 @@ function FreebieForm({
     }
   }, [!isFreebieFormOpen]);
 
+  console.log(watch("freebies"));
   return (
     <>
       <CommonDrawer
@@ -279,8 +280,9 @@ function FreebieForm({
               options={productData?.items || []}
               getOptionLabel={(option) => option.itemCode || ""}
               getOptionDisabled={(option) => {
-                return productData?.items?.some(
-                  (item) => item?.itemCode === option.itemCode
+                const freebies = watch("freebies");
+                return freebies.some(
+                  (item) => item?.itemId?.itemCode === option.itemCode
                 );
               }}
               disableClearable

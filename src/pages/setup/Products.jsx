@@ -21,6 +21,7 @@ import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useGetAllUomsQuery } from "../../features/setup/api/uomApi";
 import { useGetAllProductSubCategoriesQuery } from "../../features/setup/api/productSubCategoryApi";
 import { useGetAllMeatTypesQuery } from "../../features/setup/api/meatTypeApi";
+import { useSelector } from "react-redux";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -31,6 +32,8 @@ function Products() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -91,15 +94,16 @@ function Products() {
   });
 
   //RTK Query
-  const [postProduct] = usePostProductMutation();
+  const [postProduct, { isLoading: isAddLoading }] = usePostProductMutation();
   const { data, isLoading } = useGetAllProductsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putProduct] = usePutProductMutation();
-  const [patchProductStatus] = usePatchProductStatusMutation();
+  const [putProduct, { isLoading: isUpdateLoading }] = usePutProductMutation();
+  const [patchProductStatus, { isLoading: isArchiveLoading }] =
+    usePatchProductStatusMutation();
 
   const { data: uomData } = useGetAllUomsQuery({ Status: true });
   const { data: productSubcategoriesData } = useGetAllProductSubCategoriesQuery(
@@ -261,6 +265,7 @@ function Products() {
         onClose={handleDrawerClose}
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Product"}
         onSubmit={handleSubmit(onDrawerSubmit)}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Item Code"
@@ -356,8 +361,14 @@ function Products() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.itemCode}
+        </span>
+        ?
       </CommonDialog>
 
       <SuccessSnackbar

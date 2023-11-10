@@ -17,6 +17,7 @@ import {
   usePutUomMutation,
 } from "../../features/setup/api/uomApi";
 import { uomSchema } from "../../schema/schema";
+import { useSelector } from "react-redux";
 
 function UnitOfMeasurements() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function UnitOfMeasurements() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -80,15 +83,16 @@ function UnitOfMeasurements() {
   });
 
   //RTK Query
-  const [postUom] = usePostUomMutation();
+  const [postUom, { isLoading: isAddLoading }] = usePostUomMutation();
   const { data, isLoading } = useGetAllUomsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putUom] = usePutUomMutation();
-  const [patchUomStatus] = usePatchUomStatusMutation();
+  const [putUom, { isLoading: isUpdateLoading }] = usePutUomMutation();
+  const [patchUomStatus, { isLoading: isArchiveLoading }] =
+    usePatchUomStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -149,7 +153,6 @@ function UnitOfMeasurements() {
     setSelectedId("");
   };
 
-  console.log(getValues());
   //UseEffect
   useEffect(() => {
     setCount(data?.totalCount);
@@ -193,6 +196,7 @@ function UnitOfMeasurements() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " UOM"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="UOM Code"
@@ -215,8 +219,14 @@ function UnitOfMeasurements() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.uomCode}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

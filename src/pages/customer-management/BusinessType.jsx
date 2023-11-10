@@ -17,6 +17,7 @@ import {
   usePostStoreTypeMutation,
   usePutStoreTypeMutation,
 } from "../../features/setup/api/storeTypeApi";
+import { useSelector } from "react-redux";
 
 function BusinessType() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function BusinessType() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -80,15 +83,18 @@ function BusinessType() {
   });
 
   //RTK Query
-  const [postStoreType] = usePostStoreTypeMutation();
+  const [postStoreType, { isLoading: isAddLoading }] =
+    usePostStoreTypeMutation();
   const { data, isLoading } = useGetAllStoreTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putStoreType] = usePutStoreTypeMutation();
-  const [patchStoreTypeStatus] = usePatchStoreTypeStatusMutation();
+  const [putStoreType, { isLoading: isUpdateLoading }] =
+    usePutStoreTypeMutation();
+  const [patchStoreTypeStatus, { isLoading: isArchiveLoading }] =
+    usePatchStoreTypeStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -196,6 +202,7 @@ function BusinessType() {
         }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Business Type Name"
@@ -210,8 +217,14 @@ function BusinessType() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.storeTypeName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

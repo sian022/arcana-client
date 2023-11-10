@@ -17,6 +17,7 @@ import {
   usePostDiscountTypeMutation,
   usePutDiscountTypeMutation,
 } from "../../features/setup/api/discountTypeApi";
+import { useSelector } from "react-redux";
 
 function VariableDiscount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function VariableDiscount() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -82,15 +85,18 @@ function VariableDiscount() {
   });
 
   //RTK Query
-  const [postDiscountType] = usePostDiscountTypeMutation();
+  const [postDiscountType, { isLoading: isAddLoading }] =
+    usePostDiscountTypeMutation();
   const { data, isLoading } = useGetAllDiscountTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putDiscountType] = usePutDiscountTypeMutation();
-  const [patchDiscountTypeStatus] = usePatchDiscountTypeStatusMutation();
+  const [putDiscountType, { isLoading: isUpdateLoading }] =
+    usePutDiscountTypeMutation();
+  const [patchDiscountTypeStatus, { isLoading: isArchiveLoading }] =
+    usePatchDiscountTypeStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -204,6 +210,7 @@ function VariableDiscount() {
         }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Minimum Amount (₱)"
@@ -253,8 +260,14 @@ function VariableDiscount() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          variable discount range
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

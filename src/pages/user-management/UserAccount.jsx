@@ -26,6 +26,7 @@ import { useGetAllEmployeesQuery } from "../../features/user-management/api/seda
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useGetAllUserRolesQuery } from "../../features/user-management/api/userRoleApi";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
+import { useSelector } from "react-redux";
 
 function UserAccount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -38,6 +39,7 @@ function UserAccount() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
   // Drawer Disclosures
   const {
     isOpen: isDrawerOpen,
@@ -485,8 +487,14 @@ function UserAccount() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveUserLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.username}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

@@ -17,6 +17,7 @@ import {
   usePostDepartmentMutation,
   usePutDepartmentMutation,
 } from "../../features/user-management/api/departmentApi";
+import { useSelector } from "react-redux";
 
 function Department() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function Department() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -78,15 +81,18 @@ function Department() {
   });
 
   //RTK Query
-  const [postDepartment] = usePostDepartmentMutation();
+  const [postDepartment, { isLoading: isAddLoading }] =
+    usePostDepartmentMutation();
   const { data, isLoading } = useGetAllDepartmentsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putDepartment] = usePutDepartmentMutation();
-  const [patchDepartmentStatus] = usePatchDepartmentStatusMutation();
+  const [putDepartment, { isLoading: isUpdateLoading }] =
+    usePutDepartmentMutation();
+  const [patchDepartmentStatus, { isLoading: isArchiveLoading }] =
+    usePatchDepartmentStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -190,6 +196,7 @@ function Department() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Department"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Department Name"
@@ -204,8 +211,14 @@ function Department() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.departmentName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

@@ -76,7 +76,6 @@ function ViewRegistrationDetailsModal({
   const [putRejectRegistration, { isLoading: isRejectLoading }] =
     usePutRejectRegistrationMutation();
 
-  console.log(selectedRowData);
   //Handler Functions
   const handleClose = () => {
     onClose();
@@ -145,7 +144,7 @@ function ViewRegistrationDetailsModal({
     }
 
     onApproveConfirmClose();
-    onClose();
+    handleClose();
   };
 
   const handleRejectConfirmClose = () => {
@@ -169,7 +168,7 @@ function ViewRegistrationDetailsModal({
     }
 
     handleRejectConfirmClose();
-    onClose();
+    handleClose();
   };
 
   useEffect(() => {

@@ -17,6 +17,7 @@ import {
   usePutTermDaysMutation,
 } from "../../features/setup/api/termDaysApi";
 import { termDaysSchema } from "../../schema/schema";
+import { useSelector } from "react-redux";
 
 function TermDays() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function TermDays() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -78,15 +81,17 @@ function TermDays() {
   });
 
   //RTK Query
-  const [postTermDays] = usePostTermDaysMutation();
+  const [postTermDays, { isLoading: isAddLoading }] = usePostTermDaysMutation();
   const { data, isLoading } = useGetAllTermDaysQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putTermDays] = usePutTermDaysMutation();
-  const [patchTermDaysStatus] = usePatchTermDaysStatusMutation();
+  const [putTermDays, { isLoading: isUpdateLoading }] =
+    usePutTermDaysMutation();
+  const [patchTermDaysStatus, { isLoading: isArchiveLoading }] =
+    usePatchTermDaysStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -189,6 +194,7 @@ function TermDays() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Term Days"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Term Days"
@@ -204,8 +210,14 @@ function TermDays() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.days}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}
