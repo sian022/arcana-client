@@ -557,7 +557,7 @@ function ListingFeeDrawer({
               Total Amount
             </Typography>
             <Typography sx={{ fontSize: "1rem" }}>
-              {totalAmount || 0}
+              {totalAmount?.toLocaleString() || 0}
             </Typography>
           </Box>
         </Box>

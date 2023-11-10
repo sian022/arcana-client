@@ -9,6 +9,7 @@ import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
 import SecondaryAlert from "../assets/images/SecondaryAlert.png";
+import QuestionAlert from "../assets/images/QuestionAlert.png";
 
 function CommonDialog({
   onClose,
@@ -24,14 +25,34 @@ function CommonDialog({
     <Dialog {...otherProps}>
       <Box className="commonDialog__roof" />
       <Box className="commonDialog__content">
-        {!noIcon && (
+        {/* {!noIcon && (
           <Box className="commonDialog__imageWrapper">
             <img
               src={customImageSource ? customImageSource : SecondaryAlert}
               alt="alert-img"
             />
           </Box>
-        )}
+        )} */}
+
+        <Box
+          className={
+            noIcon
+              ? "commonDialog__imageWrapperQuestion"
+              : "commonDialog__imageWrapper"
+          }
+        >
+          <img
+            src={
+              customImageSource
+                ? customImageSource
+                : noIcon
+                ? QuestionAlert
+                : SecondaryAlert
+            }
+            alt="alert-img"
+          />
+        </Box>
+
         <DialogTitle className="commonDialog__title">{children}</DialogTitle>
         <DialogActions>
           <SecondaryButton onClick={onYes} disabled={isLoading || disableYes}>

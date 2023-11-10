@@ -24,7 +24,6 @@ import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import SecondaryButton from "../../../components/SecondaryButton";
-import DangerButton from "../../../components/DangerButton";
 import AccentButton from "../../../components/AccentButton";
 
 function ForFreebies() {
@@ -40,7 +39,6 @@ function ForFreebies() {
   const [editMode, setEditMode] = useState(false);
 
   const dispatch = useDispatch();
-  const badges = useSelector((state) => state.badge.value);
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
@@ -525,6 +523,7 @@ function ForFreebies() {
         onClose={onConfirmClose}
         onYes={handleSubmit(onDrawerSubmit)}
         isLoading={drawerMode === "add" ? isAddLoading : isEditLoading}
+        noIcon
       >
         Are you sure you want to {drawerMode == "add" ? "add" : "update"}{" "}
         prospect{" "}

@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  TextareaAutosize,
   Typography,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
@@ -27,8 +28,8 @@ import {
 import useSnackbar from "../../hooks/useSnackbar";
 
 function ViewListingFeeModal({
-  setEditMode,
-  onListingFeeDrawerOpen,
+  // setEditMode,
+  // onListingFeeDrawerOpen,
   approval,
   listingFeeStatus,
   ...props
@@ -163,6 +164,7 @@ function ViewListingFeeModal({
                   size="small"
                   value={selectedRowData?.businessName}
                   readOnly
+                  sx={{ pointerEvents: "none" }}
                 />
               </Box>
             </Box>
@@ -183,6 +185,7 @@ function ViewListingFeeModal({
                   size="small"
                   readOnly
                   value={selectedRowData?.clientName}
+                  sx={{ pointerEvents: "none" }}
                 />
               </Box>
             </Box>
@@ -214,7 +217,7 @@ function ViewListingFeeModal({
                       <TableCell>{item.itemDescription}</TableCell>
                       <TableCell>{item.uom}</TableCell>
                       <TableCell>{item.sku}</TableCell>
-                      <TableCell>{item.unitCost}</TableCell>
+                      <TableCell>₱ {item.unitCost?.toLocaleString()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -226,7 +229,9 @@ function ViewListingFeeModal({
           sx={{
             display: "flex",
             position: "absolute",
-            right: "150px",
+            // right: "150px",
+            // right: "125px",
+            left: "550px",
             bottom: "90px",
             gap: "20px",
           }}
@@ -240,7 +245,9 @@ function ViewListingFeeModal({
           >
             Total Amount
           </Typography>
-          <Typography sx={{ fontSize: "1rem" }}>{totalAmount}</Typography>
+          <Typography sx={{ fontSize: "1rem" }}>
+            ₱ {totalAmount?.toLocaleString()}
+          </Typography>
         </Box>
         {approval && listingFeeStatus === "Under review" && (
           <Box
@@ -254,12 +261,12 @@ function ViewListingFeeModal({
             }}
           >
             <SecondaryButton onClick={onApproveConfirmOpen}>
-              Approve
+              Approve{" "}
             </SecondaryButton>
             <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
           </Box>
-        )}{" "}
-        {!approval && (
+        )}
+        {/* {!approval && (
           <Box
             sx={{
               display: "flex",
@@ -281,7 +288,7 @@ function ViewListingFeeModal({
               Edit
             </AccentButton>
           </Box>
-        )}
+        )} */}
       </CommonModal>
       {approval && (
         <>
@@ -325,6 +332,7 @@ function ViewListingFeeModal({
                   setReason(e.target.value);
                 }}
               />
+
               <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>
                 <Typography>Confirm reason</Typography>
                 <Checkbox
@@ -332,6 +340,7 @@ function ViewListingFeeModal({
                   onChange={(e) => {
                     setConfirmReason(e.target.checked);
                   }}
+                  disabled={!reason.trim()}
                 />
               </Box>
             </Box>

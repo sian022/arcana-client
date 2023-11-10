@@ -16,7 +16,10 @@ import { getIconElement } from "./GetIconElement";
 import SystemLogoName from "../assets/images/SystemLogoName.png";
 import SystemLogo from "../assets/images/SystemLogo.png";
 import { KeyboardDoubleArrowLeft } from "@mui/icons-material";
-import { toggleSidebar } from "../features/misc/reducers/disclosureSlice";
+import {
+  toggleSidebar,
+  toggleSidebarSmallScreen,
+} from "../features/misc/reducers/disclosureSlice";
 
 function Sidebar() {
   const [activeModule, setActiveModule] = useState("");
@@ -29,6 +32,9 @@ function Sidebar() {
     permissions?.includes(item.name)
   );
   const sidebarToggled = useSelector((state) => state.disclosure.sidebar);
+  const sidebarSmallScreenToggled = useSelector(
+    (state) => state.disclosure.sidebarSmallScreen
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -47,9 +53,9 @@ function Sidebar() {
       <Box
         className="sidebar"
         sx={{
-          width: (isWideScreen ? !sidebarToggled : sidebarToggled)
-            ? 0
-            : "300px",
+          width: (isWideScreen ? sidebarToggled : sidebarSmallScreenToggled)
+            ? "300px"
+            : 0,
           overflow: "hidden",
           // whiteSpace: !sidebarToggled && "nowrap",
         }}
@@ -62,7 +68,7 @@ function Sidebar() {
           <IconButton
             className="sidebar__toggleRemove"
             onClick={() => {
-              dispatch(toggleSidebar());
+              dispatch(toggleSidebarSmallScreen());
             }}
           >
             <KeyboardDoubleArrowLeft />

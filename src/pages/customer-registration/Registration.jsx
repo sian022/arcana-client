@@ -5,9 +5,15 @@ import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
 import PageHeaderAddTabs from "../../components/PageHeaderAddTabs";
 import DirectRegisterForm from "./registration/DirectRegisterForm";
-import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
+import {
+  useGetAllClientsQuery,
+  usePatchUpdateRegistrationStatusMutation,
+} from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
+import CommonDialog from "../../components/CommonDialog";
+import useSnackbar from "../../hooks/useSnackbar";
+import { useSelector } from "react-redux";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -20,6 +26,9 @@ function DirectRegistration() {
   const [status, setStatus] = useState(true);
   const [editMode, setEditMode] = useState(false);
 
+  const { showSnackbar } = useSnackbar();
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
+
   //Disclosures
   const {
     isOpen: isRegisterOpen,
@@ -31,6 +40,12 @@ function DirectRegistration() {
     isOpen: isViewOpen,
     onOpen: onViewOpen,
     onClose: onViewClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isArchiveOpen,
+    onOpen: onArchiveOpen,
+    onClose: onArchiveClose,
   } = useDisclosure();
 
   //RTK Query
@@ -60,6 +75,9 @@ function DirectRegistration() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
+
+  const [patchUpdateRegistrationStatus, { isLoading: isUpdateStatusLoading }] =
+    usePatchUpdateRegistrationStatusMutation();
 
   //Constants
   const registrationNavigation = [
@@ -130,6 +148,29 @@ function DirectRegistration() {
     "Requested By",
   ];
 
+  const handleEditOpen = () => {
+    setEditMode(true);
+    onRegisterOpen();
+  };
+
+  const onArchiveSubmit = async () => {
+    try {
+      await patchUpdateRegistrationStatus(selectedRowData?.id).unwrap();
+      onArchiveClose();
+      console.log(selectedRowData?.id);
+      showSnackbar(
+        `Client ${status ? "archived" : "restored"} successfully`,
+        "success"
+      );
+    } catch (error) {
+      if (error?.data?.messages) {
+        showSnackbar(error?.data?.messages[0], "error");
+      } else {
+        showSnackbar("Error archiving client", "error");
+      }
+    }
+  };
+
   useEffect(() => {
     const foundItem = registrationNavigation.find(
       (item) => item.case === tabViewing
@@ -141,6 +182,8 @@ function DirectRegistration() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
+
+  console.log(selectedRowData);
 
   return (
     <>
@@ -179,24 +222,39 @@ function DirectRegistration() {
             onView={onViewOpen}
             // onArchive={true}
             status={status}
+            onEdit={handleEditOpen}
+            onArchive={onArchiveOpen}
           />
         )}
-
-        <DirectRegisterForm
-          open={isRegisterOpen}
-          onClose={onRegisterClose}
-          editMode={editMode}
-          setEditMode={setEditMode}
-        />
-
-        <ViewRegistrationDetailsModal
-          open={isViewOpen}
-          onClose={onViewClose}
-          onRegisterOpen={onRegisterOpen}
-          editMode={editMode}
-          setEditMode={setEditMode}
-        />
       </Box>
+
+      <DirectRegisterForm
+        open={isRegisterOpen}
+        onClose={onRegisterClose}
+        editMode={editMode}
+        setEditMode={setEditMode}
+      />
+
+      <ViewRegistrationDetailsModal
+        open={isViewOpen}
+        onClose={onViewClose}
+        onRegisterOpen={onRegisterOpen}
+        editMode={editMode}
+        setEditMode={setEditMode}
+      />
+
+      <CommonDialog
+        open={isArchiveOpen}
+        onClose={onArchiveClose}
+        isLoading={isUpdateStatusLoading}
+        onYes={onArchiveSubmit}
+      >
+        Are you sure you want to {status ? "archive" : "restore"} client{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.businessName}
+        </span>
+        ?
+      </CommonDialog>
     </>
   );
 }

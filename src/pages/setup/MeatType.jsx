@@ -63,6 +63,8 @@ function MeatType() {
     "isActive",
   ];
 
+  const tableHeads = ["Meat Type"];
+
   //React Hook Form
   const {
     handleSubmit,
@@ -180,6 +182,7 @@ function MeatType() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 

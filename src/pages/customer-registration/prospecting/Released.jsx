@@ -76,7 +76,7 @@ function Released() {
 
   return (
     <>
-      <Box sx={{ padding: "15px" }}>
+      <Box>
         <TextField
           type="search"
           size="small"
@@ -85,7 +85,7 @@ function Released() {
             debouncedSetSearch(e.target.value);
           }}
           autoComplete="off"
-          sx={{ mb: 2 }}
+          sx={{ margin: "15px" }}
         />
 
         {isLoading ? (

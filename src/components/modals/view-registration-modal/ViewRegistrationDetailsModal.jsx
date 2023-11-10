@@ -76,6 +76,7 @@ function ViewRegistrationDetailsModal({
   const [putRejectRegistration, { isLoading: isRejectLoading }] =
     usePutRejectRegistrationMutation();
 
+  console.log(selectedRowData);
   //Handler Functions
   const handleClose = () => {
     onClose();
@@ -217,13 +218,13 @@ function ViewRegistrationDetailsModal({
               {activeTab !== "Personal Info" && (
                 <DangerButton onClick={handleBack}>Back</DangerButton>
               )}
-              <Box
+              {/* <Box
                 sx={{
                   display: "flex",
                   gap: "10px",
                 }}
-              >
-                {!approval && (
+              > */}
+              {/* {!approval && (
                   <AccentButton
                     sx={{ color: "white !important" }}
                     onClick={() => {
@@ -233,11 +234,11 @@ function ViewRegistrationDetailsModal({
                   >
                     Edit
                   </AccentButton>
-                )}
-                {activeTab !== "Attachments" && (
-                  <SecondaryButton onClick={handleNext}>Next</SecondaryButton>
-                )}
-              </Box>
+                )} */}
+              {activeTab !== "Attachments" && (
+                <SecondaryButton onClick={handleNext}>Next</SecondaryButton>
+              )}
+              {/* </Box> */}
               {activeTab === "Attachments" &&
                 approval &&
                 clientStatus === "Under review" && (
@@ -312,6 +313,7 @@ function ViewRegistrationDetailsModal({
                   onChange={(e) => {
                     setConfirmReason(e.target.checked);
                   }}
+                  disabled={!reason.trim()}
                 />
               </Box>
             </Box>

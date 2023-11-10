@@ -273,23 +273,16 @@ function FreebieForm({
               alignItems: "center",
             }}
           >
-            <TextField
-              label="Quantity"
-              size="small"
-              autoComplete="off"
-              value={1}
-              disabled
-              // sx={{ width: "100px" }}
-              {...register(`freebies[${index}].quantity`)}
-              helperText={errors?.freebies?.quantity?.message}
-              error={errors?.freebies?.quantity}
-            />
-
             <ControlledAutocomplete
               name={`freebies[${index}].itemId`}
               control={control}
               options={productData?.items || []}
               getOptionLabel={(option) => option.itemCode || ""}
+              getOptionDisabled={(option) => {
+                return productData?.items?.some(
+                  (item) => item?.itemCode === option.itemCode
+                );
+              }}
               disableClearable
               // isOptionEqualToValue={(option, value) => option.id === value.id}
               isOptionEqualToValue={(option, value) => true}
@@ -327,6 +320,7 @@ function FreebieForm({
                   onBlur={onBlur}
                   value={value || ""}
                   ref={ref}
+                  sx={{ width: "500px" }}
                 />
               )}
             />
@@ -346,6 +340,18 @@ function FreebieForm({
                   ref={ref}
                 />
               )}
+            />
+
+            <TextField
+              label="Quantity"
+              size="small"
+              autoComplete="off"
+              value={1}
+              disabled
+              // sx={{ width: "100px" }}
+              {...register(`freebies[${index}].quantity`)}
+              helperText={errors?.freebies?.quantity?.message}
+              error={errors?.freebies?.quantity}
             />
 
             <IconButton

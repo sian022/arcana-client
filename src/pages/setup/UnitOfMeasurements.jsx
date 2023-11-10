@@ -63,6 +63,8 @@ function UnitOfMeasurements() {
     "isActive",
   ];
 
+  const tableHeads = ["UOM Code", "UOM Description"];
+
   //React Hook Form
   const {
     handleSubmit,
@@ -181,6 +183,7 @@ function UnitOfMeasurements() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 

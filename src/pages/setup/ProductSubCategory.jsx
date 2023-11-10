@@ -65,6 +65,8 @@ function ProductSubCategory() {
     "isActive",
   ];
 
+  const tableHeads = ["Product Category", "Product Sub Category"];
+
   //React Hook Form
   const {
     handleSubmit,
@@ -203,6 +205,7 @@ function ProductSubCategory() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 

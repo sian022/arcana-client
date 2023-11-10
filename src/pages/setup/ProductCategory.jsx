@@ -63,6 +63,8 @@ function ProductCategory() {
     "productSubCategory",
   ];
 
+  const tableHeads = ["Product Category"];
+
   //React Hook Form
   const {
     handleSubmit,
@@ -178,6 +180,7 @@ function ProductCategory() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 

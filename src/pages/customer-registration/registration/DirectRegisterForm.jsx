@@ -485,7 +485,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     }
   }, [open]);
 
-  console.log(selectedRowData);
   return (
     <>
       <CommonDrawer

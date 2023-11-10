@@ -103,6 +103,14 @@ export const registrationApi = createApi({
       }),
       invalidatesTags: ["Registration"],
     }),
+
+    patchUpdateRegistrationStatus: builder.mutation({
+      query: (id) => ({
+        url: `/DirectRegistration/UpdateDirectRegisteredClientStatus/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Registration"],
+    }),
   }),
 });
 
@@ -116,4 +124,5 @@ export const {
   usePutApproveRegistrationMutation,
   usePutRejectRegistrationMutation,
   usePutAddAttachmentsForDirectMutation,
+  usePatchUpdateRegistrationStatusMutation,
 } = registrationApi;

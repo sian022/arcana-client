@@ -109,6 +109,8 @@ function ListingFeeApproval() {
     "Created At",
   ];
 
+  const pesoArray = ["total"];
+
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
@@ -163,6 +165,7 @@ function ListingFeeApproval() {
             editable
             onView={onViewOpen}
             tableHeads={tableHeads}
+            pesoArray={pesoArray}
           />
         )}
       </Box>

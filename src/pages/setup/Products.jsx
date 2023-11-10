@@ -4,7 +4,7 @@ import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
@@ -64,6 +64,15 @@ function Products() {
     "isActive",
     "addedBy",
     "modifiedBy",
+  ];
+
+  const tableHeads = [
+    "Item Code",
+    "Item Description",
+    "UOM",
+    "Product Category",
+    "Product Sub Category",
+    "Meat Type",
   ];
 
   //React Hook Form
@@ -218,8 +227,6 @@ function Products() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
-  console.log(uomData);
-
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -245,6 +252,7 @@ function Products() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 
@@ -299,6 +307,28 @@ function Products() {
               label="Product Sub Category"
               helperText={errors?.productSubCategoryId?.message}
               error={errors?.productSubCategoryId}
+            />
+          )}
+          onChange={(_, value) => {
+            console.log(value);
+            setValue("productCategory", value?.productCategoryName);
+            return value;
+          }}
+        />
+
+        <Controller
+          control={control}
+          name={"productCategory"}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <TextField
+              label="Product Category"
+              size="small"
+              autoComplete="off"
+              disabled
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value || ""}
+              ref={ref}
             />
           )}
         />

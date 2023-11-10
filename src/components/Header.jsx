@@ -21,7 +21,10 @@ import {
 } from "../features/authentication/reducers/loginSlice";
 import { setPermissisons } from "../features/authentication/reducers/permissionsSlice";
 import ChangePasswordModal from "./modals/ChangePasswordModal";
-import { toggleSidebar } from "../features/misc/reducers/disclosureSlice";
+import {
+  toggleSidebar,
+  toggleSidebarSmallScreen,
+} from "../features/misc/reducers/disclosureSlice";
 
 function Header() {
   const location = useLocation();
@@ -113,7 +116,9 @@ function Header() {
           <IconButton
             sx={{ color: "secondary.main" }}
             onClick={() => {
-              dispatch(toggleSidebar());
+              window.innerWidth > 1024
+                ? dispatch(toggleSidebar())
+                : dispatch(toggleSidebarSmallScreen());
             }}
           >
             <MenuIcon />

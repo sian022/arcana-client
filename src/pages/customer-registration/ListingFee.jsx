@@ -8,6 +8,9 @@ import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
 import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import CommonDialog from "../../components/CommonDialog";
+import useSnackbar from "../../hooks/useSnackbar";
+import { useSelector } from "react-redux";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -17,6 +20,9 @@ function ListingFee() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
+
+  const { showSnackbar } = useSnackbar();
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //Disclosures
   const {
@@ -29,6 +35,12 @@ function ListingFee() {
     isOpen: isViewOpen,
     onOpen: onViewOpen,
     onClose: onViewClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isArchiveOpen,
+    onOpen: onArchiveOpen,
+    onClose: onArchiveClose,
   } = useDisclosure();
 
   //RTK Query
@@ -112,6 +124,14 @@ function ListingFee() {
     "Created At",
   ];
 
+  const pesoArray = ["total"];
+
+  //Misc Functions
+  const handleOpenEdit = () => {
+    setEditMode(true);
+    onListingFeeOpen();
+  };
+
   useEffect(() => {
     const foundItem = listingFeeNavigation.find(
       (item) => item.case === tabViewing
@@ -156,6 +176,8 @@ function ListingFee() {
             editable
             onView={onViewOpen}
             tableHeads={tableHeads}
+            pesoArray={pesoArray}
+            onEdit={handleOpenEdit}
           />
         )}
       </Box>
@@ -175,6 +197,19 @@ function ListingFee() {
         open={isViewOpen}
         onClose={onViewClose}
       />
+
+      <CommonDialog
+        open={isArchiveOpen}
+        onClose={onArchiveClose}
+        // isLoading={isUpdateStatusLoading}
+        // onYes={onArchiveSubmit}
+      >
+        Are you sure you want to {status ? "archive" : "restore"} client{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.businessName}
+        </span>
+        ?
+      </CommonDialog>
     </>
   );
 }
