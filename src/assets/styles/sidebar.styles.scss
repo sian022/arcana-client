@@ -1,15 +1,35 @@
 @import "./index.styles.scss";
 
+.sidebarWrapper {
+  width: 300px;
+  transition: 0.3s all ease-in-out;
+  box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
+  background: white;
+  position: relative;
+  overflow: hidden;
+  // overflow-y: overlay;
+  // overflow-x: hidden;
+
+  @media (max-width: 1024px) {
+    position: fixed;
+    left: 0;
+    z-index: 2000;
+    height: 100vh;
+  }
+}
+
 .sidebar {
   width: 300px;
   text-align: center;
   display: flex;
   flex-direction: column;
-  transition: width 0.5 ease;
-  position: relative;
-  background: white;
-  box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
-  transition: 0.3s all ease-out;
+  height: 100%;
+  // overflow: hidden;
+  // position: relative;
+  // background: white;
+  // box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
+  // transition: 0.3s all ease-in-out;
+  // overflow: auto;
 
   .toggled {
     width: 0px;
@@ -26,14 +46,14 @@
     }
   }
 
-  @media (max-width: 1024px) {
-    // display: none;
-    position: fixed;
-    height: 100vh;
-    left: 0;
-    width: 88px;
-    z-index: 2000;
-  }
+  // @media (max-width: 1024px) {
+  //   // display: none;
+  //   position: fixed;
+  //   height: 100vh;
+  //   left: 0;
+  //   width: 88px;
+  //   z-index: 2000;
+  // }
 
   &__logo {
     display: flex;
@@ -42,9 +62,9 @@
     padding: 10px;
 
     & img {
-      @media (max-width: 1024px) {
-        width: 100px;
-      }
+      // @media (max-width: 1024px) {
+      //   width: 100px;
+      // }
 
       width: 150px;
     }
@@ -52,13 +72,15 @@
 
   &__navigation {
     position: relative;
-    overflow-x: hidden;
+    // overflow-x: hidden;
+    overflow: auto;
     height: 100%;
     margin-bottom: 30px;
+    // overflow: hidden;
 
-    @media (max-width: 1024px) {
-      white-space: nowrap;
-    }
+    // @media (max-width: 1024px) {
+    //   white-space: nowrap;
+    // }
 
     & &__button {
       color: $secondary;
@@ -78,9 +100,9 @@
       border-radius: 10px;
       margin-left: 20px;
 
-      @media (max-width: 1024px) {
-        margin-left: 0;
-      }
+      // @media (max-width: 1024px) {
+      //   margin-left: 0;
+      // }
 
       &__icon {
         color: $secondary;

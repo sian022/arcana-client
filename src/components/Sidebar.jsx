@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { navigationData } from "../navigation/navigationData";
 import {
+  Backdrop,
   Box,
   Collapse,
   IconButton,
@@ -51,33 +52,34 @@ function Sidebar() {
   return (
     <>
       <Box
-        className="sidebar"
+        className="sidebarWrapper"
         sx={{
           width: (isWideScreen ? sidebarToggled : sidebarSmallScreenToggled)
             ? "300px"
             : 0,
-          overflow: "hidden",
+
           // whiteSpace: !sidebarToggled && "nowrap",
         }}
       >
-        <Box className="sidebar__logo">
-          <img
-            src={isWideScreen ? SystemLogoName : SystemLogo}
-            alt="arcana-logo"
-          />
-          <IconButton
-            className="sidebar__toggleRemove"
-            onClick={() => {
-              dispatch(toggleSidebarSmallScreen());
-            }}
-          >
-            <KeyboardDoubleArrowLeft />
-          </IconButton>
-        </Box>
-        <Box className="sidebar__navigation">
-          {permittedSidebar.map(
-            // {navigationData.map(
-            (item) => (
+        <Box className="sidebar">
+          <Box className="sidebar__logo">
+            <img
+              // src={isWideScreen ? SystemLogoName : SystemLogo}
+              src={SystemLogoName}
+              alt="arcana-logo"
+            />
+            <IconButton
+              className="sidebar__toggleRemove"
+              onClick={() => {
+                dispatch(toggleSidebarSmallScreen());
+              }}
+            >
+              <KeyboardDoubleArrowLeft />
+            </IconButton>
+          </Box>
+          <Box className="sidebar__navigation">
+            {/* {permittedSidebar.map( */}
+            {navigationData.map((item) => (
               <React.Fragment key={item.id}>
                 <NavLink to={item.path}>
                   {({ isActive }) => (
@@ -144,10 +146,14 @@ function Sidebar() {
                   </Collapse>
                 )}
               </React.Fragment>
-            )
-          )}
+            ))}
+          </Box>
         </Box>
       </Box>
+      {/* <Box
+        className="overlaySidebar"
+        // sx={{ display: sidebarSmallScreenToggled && "block" }}
+      ></Box> */}
     </>
   );
 }
