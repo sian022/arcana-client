@@ -236,7 +236,7 @@ function ProductSubCategory() {
         <ControlledAutocomplete
           name={"productCategoryId"}
           control={control}
-          options={productCategoriesData?.result}
+          options={productCategoriesData?.result || []}
           getOptionLabel={(option) => option.productCategoryName}
           disableClearable
           isOptionEqualToValue={(option, value) => option.id === value.id}

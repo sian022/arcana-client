@@ -13,8 +13,8 @@ function PageHeaderAddTabs({
   largeButton,
 }) {
   return (
-    <Paper elevation={1}>
-      <Box className="pageHeader">
+    <Box sx={{ padding: "1px" }}>
+      <Box component={Paper} className="pageHeader">
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
           <SecondaryButton
@@ -72,7 +72,7 @@ function PageHeaderAddTabs({
           </Box>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 }
 

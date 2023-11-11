@@ -145,7 +145,7 @@ function ForReleasing() {
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     register,
     setValue,
     reset,
@@ -322,7 +322,7 @@ function ForReleasing() {
       <CommonDrawer
         drawerHeader={drawerMode == "add" ? "Add Prospect" : "View Prospect"}
         open={isDrawerOpen}
-        onClose={onCancelConfirmOpen}
+        onClose={isDirty ? onCancelConfirmOpen : handleDrawerClose}
         width="1000px"
         disableSubmit={!isValid}
         onSubmit={
@@ -460,7 +460,7 @@ function ForReleasing() {
                   disabled={!editMode && drawerMode === "edit"}
                   name={"storeTypeId"}
                   control={control}
-                  options={storeTypeData?.storeTypes}
+                  options={storeTypeData?.storeTypes || []}
                   getOptionLabel={(option) => option.storeTypeName}
                   disableClearable
                   // value={storeTypeData?.storeTypes?.find(

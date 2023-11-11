@@ -467,7 +467,7 @@ function UserAccount() {
         <ControlledAutocomplete
           name={"userRoleId"}
           control={control}
-          options={userRoleData?.userRoles}
+          options={userRoleData?.userRoles || []}
           getOptionLabel={(option) => option.roleName}
           disableClearable
           isOptionEqualToValue={(option, value) => option.id === value.id}

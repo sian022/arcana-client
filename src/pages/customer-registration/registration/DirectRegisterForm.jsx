@@ -114,7 +114,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   // React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     register,
     setValue,
     reset,
@@ -357,7 +357,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       </Box>
       <IconButton
         sx={{ color: "white !important" }}
-        onClick={onCancelConfirmOpen}
+        onClick={isDirty ? onCancelConfirmOpen : handleDrawerClose}
       >
         <Close />
       </IconButton>
@@ -500,7 +500,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           open
           // true
         }
-        onClose={onCancelConfirmOpen}
+        // onClose={onCancelConfirmOpen}
+        onClose={isDirty ? onCancelConfirmOpen : handleDrawerClose}
         width="1000px"
         paddingSmall
         // noRibbon

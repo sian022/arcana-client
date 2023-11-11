@@ -1,4 +1,12 @@
-import { Box, Typography, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Autocomplete,
+  TextField,
+} from "@mui/material";
 import React, { useRef } from "react";
 import "../assets/styles/navbar.styles.scss";
 import { formatDate } from "../utils/CustomFunctions";
@@ -144,21 +152,23 @@ function Header() {
             )}
         </Box>
 
-        {/* <Autocomplete
-      options={navigationLabel}
-      getOptionLabel={(option) => option.name}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Quick Navigate"
-          sx={{ width: "300px" }}
-          size="small"
-        />
-      )}
-      onChange={handleNavigate}
-    /> */}
         <Box className="navbar__endButtons">
           {/* <LogoutButton /> */}
+          <Autocomplete
+            options={navigationLabel}
+            getOptionLabel={(option) => option.name}
+            disableClearable
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Quick Navigate"
+                sx={{ width: "300px" }}
+                size="small"
+              />
+            )}
+            onChange={handleNavigate}
+          />
+
           <IconButton
             sx={{ color: "secondary.main" }}
             onClick={onMenuOpen}

@@ -19,8 +19,8 @@ function PageHeaderTabs({
   setTabViewing,
 }) {
   return (
-    <Paper elevation={1}>
-      <Box className="pageHeader">
+    <Box sx={{ padding: "1px" }}>
+      <Box component={Paper} className="pageHeader">
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
         </Box>
@@ -75,7 +75,7 @@ function PageHeaderTabs({
           </Box>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 }
 

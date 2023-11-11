@@ -283,7 +283,7 @@ function Products() {
         <ControlledAutocomplete
           name={"uomId"}
           control={control}
-          options={uomData?.uom}
+          options={uomData?.uom || []}
           getOptionLabel={(option) => option.uomCode}
           disableClearable
           isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -301,7 +301,7 @@ function Products() {
         <ControlledAutocomplete
           name={"productSubCategoryId"}
           control={control}
-          options={productSubcategoriesData?.productSubCategories}
+          options={productSubcategoriesData?.productSubCategories || []}
           getOptionLabel={(option) => option.productSubCategoryName}
           disableClearable
           isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -341,7 +341,7 @@ function Products() {
         <ControlledAutocomplete
           name={"meatTypeId"}
           control={control}
-          options={meatTypeData?.meatTypes}
+          options={meatTypeData?.meatTypes || []}
           getOptionLabel={(option) => option.meatTypeName}
           disableClearable
           isOptionEqualToValue={(option, value) => option.id === value.id}
