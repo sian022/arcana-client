@@ -7,7 +7,7 @@ import {
   Autocomplete,
   TextField,
 } from "@mui/material";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import "../assets/styles/navbar.styles.scss";
 import { formatDate } from "../utils/CustomFunctions";
 import { navigationData } from "../navigation/navigationData";
@@ -35,6 +35,9 @@ import {
 } from "../features/misc/reducers/disclosureSlice";
 
 function Header() {
+  // const [currentPage, setCurrentPage] = useState(navigationData[0]);
+  const [currentPage, setCurrentPage] = useState("");
+
   const location = useLocation();
 
   const dispatch = useDispatch();
@@ -90,6 +93,7 @@ function Header() {
   }, []);
 
   const handleNavigate = (_, sub) => {
+    setCurrentPage(sub);
     navigate(sub.path);
   };
 
@@ -158,6 +162,7 @@ function Header() {
             options={navigationLabel}
             getOptionLabel={(option) => option.name}
             disableClearable
+            value={currentPage}
             renderInput={(params) => (
               <TextField
                 {...params}
