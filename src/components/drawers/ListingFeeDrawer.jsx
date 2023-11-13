@@ -77,7 +77,7 @@ function ListingFeeDrawer({
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     register,
     setValue,
     reset,
@@ -259,8 +259,6 @@ function ListingFeeDrawer({
     }
   }, [isListingFeeOpen, clientData]);
 
-  console.log(clientData);
-
   useEffect(() => {
     if (editMode && isListingFeeOpen && clientData) {
       const foundItem = clientData?.regularClient?.find(
@@ -290,11 +288,11 @@ function ListingFeeDrawer({
       <CommonDrawer
         drawerHeader={editMode ? "Update Listing Fee" : "Add Listing Fee"}
         open={isListingFeeOpen}
-        onClose={onConfirmCancelOpen}
+        onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
         width="1000px"
         disableSubmit={!isValid}
         onSubmit={onConfirmSubmitOpen}
-        zIndex={editMode && 1300}
+        // zIndex={editMode && 1300}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
           <Box sx={{ display: "flex", gap: "10px" }}>

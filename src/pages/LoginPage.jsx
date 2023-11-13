@@ -32,8 +32,10 @@ function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  //RTK Query
   const [postLogin, { isLoading }] = usePostLoginMutation();
 
+  //React Hook Form
   const {
     handleSubmit,
     register,
@@ -51,6 +53,7 @@ function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //Handlers
   const submitHandler = async (data) => {
     try {
       const res = await postLogin(data).unwrap();

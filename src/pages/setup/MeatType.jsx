@@ -163,8 +163,6 @@ function MeatType() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
-  console.log(isAddLoading);
-
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
