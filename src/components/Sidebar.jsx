@@ -51,7 +51,11 @@ function Sidebar() {
   }, []); // Emp
 
   useEffect(() => {
-    setActiveModule(location.pathname);
+    const regex = /\/.*\//;
+
+    if (regex.test(location.pathname)) {
+      setActiveModule(location.pathname);
+    }
   }, [location.pathname]);
 
   return (
@@ -96,7 +100,8 @@ function Sidebar() {
                         onClick={() => {
                           // sessionStorage.setItem("activeModule", item.name);
                           setActiveModule(
-                            activeModule === item.path ? "" : item.path
+                            // activeModule === item.path ? "" : item.path
+                            activeModule?.includes(item.path) ? "" : item.path
                           );
                         }}
                       >

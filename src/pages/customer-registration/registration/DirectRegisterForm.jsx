@@ -51,6 +51,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { coverageMapping } from "../../../utils/Constants";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
+import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -187,6 +188,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
     useGetAllStoreTypesQuery({ Status: true });
+  const { data: termDaysData, isLoading: isTermDaysLoading } =
+    useGetAllTermDaysQuery({ Status: true });
 
   //Drawer Functions
   const onSubmit = async (data) => {
@@ -465,13 +468,15 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             10
           ),
           terms: selectedRowData?.terms?.termId,
+          termDaysId: termDaysData?.termDays?.find(
+            (day) => day.id === selectedRowData?.terms?.termDaysId
+          ),
           modeOfPayment:
-            selectedRowData?.modeOfPayment === "CASH"
+            selectedRowData?.modeOfPayment?.toLowerCase() === "cash"
               ? 1
-              : selectedRowData?.modeOfPayment === "ONLINE/CHECK"
+              : selectedRowData?.modeOfPayment?.toLowerCase() === "check/online"
               ? 2
               : null,
-          termDaysId: selectedRowData?.terms?.termDays,
           creditLimit: selectedRowData?.terms?.creditLimit,
           variableDiscount: selectedRowData?.variableDiscount,
           fixedDiscounts:
@@ -490,7 +495,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         setRequirementsMode("owner");
       }
     }
-  }, [open]);
+  }, [open, termDaysData]);
 
   return (
     <>
@@ -683,6 +688,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   className="register__textField"
                   {...register("businessName")}
                   helperText={errors?.businessName?.message}
+                  error={errors?.businessName}
                 />
               </Box>
               <Box className="register__thirdRow__column">
@@ -971,7 +977,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       >
         Confirm cancel of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {/* {watch("businessName") ? watch("businessName") : "client"} */}
+          {watch("businessName") ? watch("businessName") : "client"}
         </span>{" "}
         as a regular customer? <br />
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

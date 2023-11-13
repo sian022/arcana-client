@@ -245,6 +245,7 @@ function TermsAndConditions({ direct, editMode }) {
                   options={termDaysData?.termDays ?? []}
                   loading={isTermDaysLoading}
                   getOptionLabel={(option) => option.days?.toString() ?? ""}
+                  isOptionEqualToValue={() => true}
                   disableClearable
                   value={termsAndConditions["termDaysId"] ?? ""}
                   defaultValue={termsAndConditions["termDaysId"] ?? ""}
@@ -365,6 +366,7 @@ function TermsAndConditions({ direct, editMode }) {
                     clearOnBlur
                     handleHomeEndKeys
                     options={termDaysData?.termDays ?? []}
+                    isOptionEqualToValue={() => true}
                     loading={isTermDaysLoading}
                     getOptionLabel={(option) => option.days?.toString() ?? ""}
                     disableClearable

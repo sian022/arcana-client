@@ -76,6 +76,8 @@ function DirectRegistration() {
     PageSize: rowsPerPage,
   });
 
+  console.log(selectedRowData);
+
   const [patchUpdateRegistrationStatus, { isLoading: isUpdateStatusLoading }] =
     usePatchUpdateRegistrationStatusMutation();
 

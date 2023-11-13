@@ -38,7 +38,7 @@ function TermsAndConditionsTab() {
               Direct Delivery:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              {selectedRowData?.freezer ? "Yes" : "N/A"}
+              {selectedRowData?.freezer ? "Yes" : "No"}
             </Typography>
           </Box>
 

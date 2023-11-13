@@ -252,7 +252,6 @@ function FreebieForm({
     }
   }, [!isFreebieFormOpen]);
 
-  console.log(watch("freebies"));
   return (
     <>
       <CommonDrawer
