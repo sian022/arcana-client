@@ -64,8 +64,7 @@ function LoginPage() {
       navigate("/");
       reset();
     } catch (err) {
-      // alert(err.data.messages);
-      showSnackbar(err.data.messages, "error");
+      showSnackbar(err.data.error.description ?? "Error logging in", "error");
     }
   };
 

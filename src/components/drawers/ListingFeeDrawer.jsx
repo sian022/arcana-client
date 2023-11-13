@@ -95,7 +95,6 @@ function ListingFeeDrawer({
     name: "listingItems",
   });
 
-  console.log(selectedRowData);
   //RTK Query
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsForListingFeeQuery({

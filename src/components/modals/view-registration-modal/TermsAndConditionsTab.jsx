@@ -67,10 +67,12 @@ function TermsAndConditionsTab() {
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
               {/* Credit Limit (P50,000) (45 Days) */}
               {selectedRowData?.terms?.term}{" "}
+              {selectedRowData?.terms?.termId === 2 &&
+                `(${selectedRowData?.terms?.termDays} Day/s)`}
               {selectedRowData?.terms?.termId === 3 &&
                 `(₱${selectedRowData?.terms?.creditLimit?.toLocaleString()}) (${
                   selectedRowData?.terms?.termDays
-                } Days)`}
+                } Day/s)`}
             </Typography>
           </Box>
 

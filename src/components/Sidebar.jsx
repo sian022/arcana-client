@@ -54,7 +54,6 @@ function Sidebar() {
     setActiveModule(location.pathname);
   }, [location.pathname]);
 
-  console.log(activeModule);
   return (
     <>
       <Box

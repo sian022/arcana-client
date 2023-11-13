@@ -173,6 +173,7 @@ function Products() {
     setValue("id", editData.id);
     setValue("itemCode", editData.itemCode);
     setValue("itemDescription", editData.itemDescription);
+    setValue("productCategory", editData?.productCategory);
 
     const foundUom = data?.items.find((item) => item.uom === editData.uom);
     if (foundUom) {

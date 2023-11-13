@@ -7,7 +7,7 @@ import {
   Autocomplete,
   TextField,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../assets/styles/navbar.styles.scss";
 import { formatDate } from "../utils/CustomFunctions";
 import { navigationData } from "../navigation/navigationData";
@@ -35,13 +35,24 @@ import {
 } from "../features/misc/reducers/disclosureSlice";
 
 function Header() {
-  // const [currentPage, setCurrentPage] = useState(navigationData[0]);
-  const [currentPage, setCurrentPage] = useState("");
-
-  const location = useLocation();
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const navigationLabel = navigationData.reduce((accumulator, item) => {
+    if (item.sub) {
+      accumulator.push(...item.sub);
+    }
+    return accumulator;
+  }, []);
+
+  const initialPage =
+    location.pathname === "/"
+      ? navigationData[0]
+      : navigationLabel?.find((item) => location.pathname?.includes(item.path));
+
+  const [currentPage, setCurrentPage] = useState(initialPage);
+
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
   );
@@ -85,13 +96,6 @@ function Header() {
   //   return [];
   // });
 
-  const navigationLabel = navigationData.reduce((accumulator, item) => {
-    if (item.sub) {
-      accumulator.push(...item.sub);
-    }
-    return accumulator;
-  }, []);
-
   const handleNavigate = (_, sub) => {
     setCurrentPage(sub);
     navigate(sub.path);
@@ -121,6 +125,16 @@ function Header() {
     onMenuClose();
   };
 
+  // useEffect(() => {
+  //   if (location.pathname !== "/" || location.pathname !== "") {
+  //     const foundItem = navigationLabel?.find((item) =>
+  //       location.pathname?.includes(item.path)
+  //     );
+  //     setCurrentPage(foundItem);
+  //   }
+  // }, [location.pathname]);
+
+  // console.log(currentPage);
   return (
     <>
       <Box className="navbar">

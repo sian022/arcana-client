@@ -203,6 +203,8 @@ function ForFreebies() {
     }
   };
 
+  console.log(selectedRowData);
+
   const handleAddOpen = () => {
     setDrawerMode("add");
     onDrawerOpen();

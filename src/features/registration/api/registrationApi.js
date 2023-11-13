@@ -57,7 +57,6 @@ export const registrationApi = createApi({
 
     putAddAttachments: builder.mutation({
       query: ({ id, ...body }) => {
-        console.log(body);
         return {
           url: `/Registration/AddAttachments/${id}`,
           method: "PUT",
