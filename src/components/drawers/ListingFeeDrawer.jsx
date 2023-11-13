@@ -29,6 +29,7 @@ import {
   usePostListingFeeMutation,
   usePutUpdateListingFeeMutation,
 } from "../../features/listing-fee/api/listingFeeApi";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 function ListingFeeDrawer({
   editMode,
@@ -43,6 +44,8 @@ function ListingFeeDrawer({
 
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
+
+  const [parent] = useAutoAnimate();
 
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -350,8 +353,10 @@ function ListingFeeDrawer({
               flexDirection: "column",
               gap: "10px",
               maxHeight: "310px",
-              overflow: "auto",
+              overflowX: "hidden",
+              overflowY: "auto",
             }}
+            ref={parent}
           >
             <Box
               sx={{
@@ -363,23 +368,6 @@ function ListingFeeDrawer({
               <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
                 Product Information
               </Typography>
-              {/* <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-                  Remove all
-                </Typography>
-                <IconButton
-                  sx={{ color: "error.main" }}
-                  onClick={() => {
-                    // fields.length <= 1
-                    //   ? handleListingFeeError()
-                    //   : // : remove(fields[index]);
-                    remove();
-                    // append({ itemId: null, unitCost: null });
-                  }}
-                >
-                  <Cancel sx={{ fontSize: "30px" }} />
-                </IconButton>
-              </Box> */}
             </Box>
             {fields.map((item, index) => (
               <Box

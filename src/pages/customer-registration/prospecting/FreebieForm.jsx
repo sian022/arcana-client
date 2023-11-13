@@ -190,11 +190,10 @@ function FreebieForm({
   //Misc Functions
   const handleFreebieError = () => {
     if (fields.length === 1) {
-      setSnackbarMessage("Must have at least 1 freebie");
+      showSnackbar("Must have at least 1 freebie", "error");
     } else if (fields.length === 5) {
-      setSnackbarMessage("Maximum of 5 freebies only");
+      showSnackbar("Maximum of 5 freebies only", "error");
     }
-    showSnackbar(snackbarMessage, "error");
   };
 
   function hasDuplicateItemCodes(data) {
@@ -262,6 +261,7 @@ function FreebieForm({
         disableSubmit={!isValid}
         onSubmit={onConfirmSubmitOpen}
         submitLabel={direct && "Save"}
+        enableAutoAnimate
       >
         {fields.map((item, index) => (
           <Box

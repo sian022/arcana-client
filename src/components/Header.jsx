@@ -176,6 +176,7 @@ function Header() {
             options={navigationLabel}
             getOptionLabel={(option) => option.name}
             disableClearable
+            className="navbar__endButtons__quickNavigate"
             value={currentPage}
             renderInput={(params) => (
               <TextField

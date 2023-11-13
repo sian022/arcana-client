@@ -9,7 +9,7 @@ import {
 import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
-import AccentButton from "./AccentButton";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 function CommonDrawer({
   onClose,
@@ -26,8 +26,11 @@ function CommonDrawer({
   paddingSmall,
   zIndex,
   children,
+  enableAutoAnimate,
   ...otherProps
 }) {
+  const [parent] = useAutoAnimate();
+
   return (
     <Drawer anchor="right" sx={{ zIndex: zIndex && zIndex }} {...otherProps}>
       <Box sx={{ display: "flex", flex: 1 }}>
@@ -62,6 +65,7 @@ function CommonDrawer({
             className={
               paddingSmall ? "commonDrawer__bodyCompact" : "commonDrawer__body"
             }
+            ref={enableAutoAnimate ? parent : null}
           >
             {children}
           </Box>
