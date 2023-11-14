@@ -393,8 +393,8 @@ function FreebieForm({
       >
         Confirm {direct ? "save" : "request"} of freebies for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName && !direct
-            ? selectedRowData.businessName
+          {selectedRowData?.businessName && !direct
+            ? selectedRowData?.businessName
             : "client"}
         </span>
         ?
@@ -408,8 +408,8 @@ function FreebieForm({
         Are you sure you want to cancel {direct ? "save" : "request"} of
         freebies for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName && !direct
-            ? selectedRowData.businessName
+          {selectedRowData?.businessName && !direct
+            ? selectedRowData?.businessName
             : "client"}
         </span>
         ?
@@ -423,8 +423,8 @@ function FreebieForm({
       >
         Continue to release freebies for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
+          {selectedRowData?.businessName
+            ? selectedRowData?.businessName
             : "client"}
         </span>
         ?

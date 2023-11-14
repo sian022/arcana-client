@@ -100,7 +100,7 @@ function UserAccount() {
 
   //RTK Query
   const [postUser, { isLoading: isAddUserLoading }] = usePostUserMutation();
-  const { data, isLoading } = useGetAllUsersQuery({
+  const { data, isLoading, isFetching } = useGetAllUsersQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -218,7 +218,7 @@ function UserAccount() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

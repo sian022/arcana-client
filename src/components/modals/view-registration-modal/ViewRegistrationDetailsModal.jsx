@@ -19,8 +19,8 @@ import { useSelector } from "react-redux";
 import CommonDialog from "../../CommonDialog";
 import { Close } from "@mui/icons-material";
 import {
-  usePutApproveRegistrationMutation,
-  usePutRejectRegistrationMutation,
+  usePutApproveClientMutation,
+  usePutRejectClientMutation,
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 
@@ -71,10 +71,10 @@ function ViewRegistrationDetailsModal({
   navigators[2].disabled = approval && !viewedTabs["Terms and Conditions"];
 
   //RTK Query
-  const [putApproveRegistration, { isLoading: isApproveLoading }] =
-    usePutApproveRegistrationMutation();
-  const [putRejectRegistration, { isLoading: isRejectLoading }] =
-    usePutRejectRegistrationMutation();
+  const [putApproveClient, { isLoading: isApproveLoading }] =
+    usePutApproveClientMutation();
+  const [putRejectClient, { isLoading: isRejectLoading }] =
+    usePutRejectClientMutation();
 
   //Handler Functions
   const handleClose = () => {
@@ -132,7 +132,7 @@ function ViewRegistrationDetailsModal({
 
   const handleApprove = async () => {
     try {
-      await putApproveRegistration({
+      await putApproveClient({
         id: selectedRowData?.id,
       }).unwrap();
       showSnackbar("Client approved successfully", "success");
@@ -155,7 +155,7 @@ function ViewRegistrationDetailsModal({
 
   const handleReject = async () => {
     try {
-      await putRejectRegistration({
+      await putRejectClient({
         id: selectedRowData?.id,
         reason,
       }).unwrap();
@@ -304,6 +304,8 @@ function ViewRegistrationDetailsModal({
                 onChange={(e) => {
                   setReason(e.target.value);
                 }}
+                multiline
+                rows={3}
               />
               <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>
                 <Typography>Confirm reason</Typography>

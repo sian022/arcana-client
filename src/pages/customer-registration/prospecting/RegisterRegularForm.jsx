@@ -219,6 +219,7 @@ function RegisterRegularForm({ open, onClose }) {
     }).unwrap();
   };
 
+  console.log(selectedRowData);
   const addAttachmentsSubmit = async () => {
     const formData = new FormData();
     let attachmentsObject = null;
@@ -844,8 +845,8 @@ function RegisterRegularForm({ open, onClose }) {
       >
         Confirm registration of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
+          {selectedRowData?.businessName
+            ? selectedRowData?.businessName
             : "client"}
         </span>{" "}
         as a regular customer?
@@ -858,8 +859,8 @@ function RegisterRegularForm({ open, onClose }) {
       >
         Confirm cancel of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
+          {selectedRowData?.businessName
+            ? selectedRowData?.businessName
             : "client"}
         </span>{" "}
         as a regular customer? <br />
@@ -876,8 +877,8 @@ function RegisterRegularForm({ open, onClose }) {
       >
         Continue to listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
+          {selectedRowData?.businessName
+            ? selectedRowData?.businessName
             : "client"}
         </span>
         ?

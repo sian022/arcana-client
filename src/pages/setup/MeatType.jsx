@@ -84,7 +84,7 @@ function MeatType() {
 
   //RTK Query
   const [postMeatType, { isLoading: isAddLoading }] = usePostMeatTypeMutation();
-  const { data, isLoading } = useGetAllMeatTypesQuery({
+  const { data, isLoading, isFetching } = useGetAllMeatTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -171,7 +171,7 @@ function MeatType() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

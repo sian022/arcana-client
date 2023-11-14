@@ -46,7 +46,7 @@ function RegistrationApproval() {
       RegistrationStatus: "Rejected",
     });
 
-  const { data, isLoading } = useGetAllClientsQuery({
+  const { data, isLoading, isFetching } = useGetAllClientsQuery({
     Search: search,
     Status: true,
     RegistrationStatus: clientStatus,
@@ -153,7 +153,7 @@ function RegistrationApproval() {
           selectOptions={selectOptions}
           setSelectValue={setOrigin}
         />
-        {isLoading ? (
+        {isFetching ? (
           <CommonTableSkeleton moreCompact />
         ) : (
           <CommonTable

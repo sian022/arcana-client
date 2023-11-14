@@ -83,7 +83,7 @@ function Department() {
   //RTK Query
   const [postDepartment, { isLoading: isAddLoading }] =
     usePostDepartmentMutation();
-  const { data, isLoading } = useGetAllDepartmentsQuery({
+  const { data, isLoading, isFetching } = useGetAllDepartmentsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -171,7 +171,7 @@ function Department() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

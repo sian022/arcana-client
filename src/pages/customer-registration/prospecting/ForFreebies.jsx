@@ -134,7 +134,7 @@ function ForFreebies() {
 
   //RTK Query
   const [postProspect, { isLoading: isAddLoading }] = usePostProspectMutation();
-  const { data, isLoading } = useGetAllApprovedProspectsQuery({
+  const { data, isLoading, isFetching } = useGetAllApprovedProspectsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -275,7 +275,7 @@ function ForFreebies() {
           setStatus={setStatus}
           setSearch={setSearch}
         />
-        {isLoading ? (
+        {isFetching ? (
           <CommonTableSkeleton compact />
         ) : (
           <CommonTable
@@ -516,7 +516,9 @@ function ForFreebies() {
         isLoading={isArchiveLoading}
       >
         Are you sure you want to set prospect{" "}
-        <span style={{ fontWeight: "bold" }}>{selectedRowData.ownersName}</span>{" "}
+        <span style={{ fontWeight: "bold" }}>
+          {selectedRowData?.ownersName}
+        </span>{" "}
         as {status ? "inactive" : "active"}?
       </CommonDialog>
 

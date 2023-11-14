@@ -55,9 +55,10 @@ export const listingFeeApi = createApi({
     // }),
 
     putRejectListingFee: builder.mutation({
-      query: ({ id }) => ({
+      query: ({ id, ...body }) => ({
         url: `/ListingFee/RejectListingFee/${id}`,
         method: "PUT",
+        body: body,
       }),
       invalidatesTags: ["Listing Fee"],
     }),

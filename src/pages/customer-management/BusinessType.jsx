@@ -85,7 +85,7 @@ function BusinessType() {
   //RTK Query
   const [postStoreType, { isLoading: isAddLoading }] =
     usePostStoreTypeMutation();
-  const { data, isLoading } = useGetAllStoreTypesQuery({
+  const { data, isLoading, isFetching } = useGetAllStoreTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -174,7 +174,7 @@ function BusinessType() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

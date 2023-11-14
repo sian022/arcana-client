@@ -82,7 +82,7 @@ function TermDays() {
 
   //RTK Query
   const [postTermDays, { isLoading: isAddLoading }] = usePostTermDaysMutation();
-  const { data, isLoading } = useGetAllTermDaysQuery({
+  const { data, isLoading, isFetching } = useGetAllTermDaysQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -169,7 +169,7 @@ function TermDays() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

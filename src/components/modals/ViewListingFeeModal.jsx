@@ -110,6 +110,7 @@ function ViewListingFeeModal({
     try {
       await putRejectListingFee({
         id: selectedRowData?.approvalId,
+        reason: reason,
       }).unwrap();
       showSnackbar("Listing Fee rejected successfully", "success");
       handleRejectConfirmClose();
@@ -331,6 +332,8 @@ function ViewListingFeeModal({
                 onChange={(e) => {
                   setReason(e.target.value);
                 }}
+                multiline
+                rows={3}
               />
 
               <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>

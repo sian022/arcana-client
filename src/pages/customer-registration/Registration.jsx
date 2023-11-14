@@ -67,7 +67,7 @@ function DirectRegistration() {
       RegistrationStatus: "Rejected",
     });
 
-  const { data, isLoading } = useGetAllClientsQuery({
+  const { data, isLoading, isFetching } = useGetAllClientsQuery({
     Search: search,
     Status: status,
     RegistrationStatus: clientStatus,
@@ -207,7 +207,7 @@ function DirectRegistration() {
           setSelectValue={setOrigin}
         />
 
-        {isLoading ? (
+        {isFetching ? (
           <CommonTableSkeleton moreCompact />
         ) : (
           <CommonTable

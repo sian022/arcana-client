@@ -84,7 +84,7 @@ function Company() {
 
   //RTK Query
   const [postCompany, { isLoading: isAddLoading }] = usePostCompanyMutation();
-  const { data, isLoading } = useGetAllCompaniesQuery({
+  const { data, isLoading, isFetching } = useGetAllCompaniesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -171,7 +171,7 @@ function Company() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

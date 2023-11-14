@@ -53,7 +53,7 @@ function Released() {
   } = useDisclosure();
 
   //RTK Query
-  const { data, isLoading } = useGetAllApprovedProspectsQuery({
+  const { data, isLoading, isFetching } = useGetAllApprovedProspectsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -88,7 +88,7 @@ function Released() {
           sx={{ margin: "15px" }}
         />
 
-        {isLoading ? (
+        {isFetching ? (
           <CommonTableSkeleton compact />
         ) : (
           <CommonTable

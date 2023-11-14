@@ -84,7 +84,7 @@ function ProductCategory() {
   //RTK Query
   const [postProductCategory, { isLoading: isAddLoading }] =
     usePostProductCategoryMutation();
-  const { data, isLoading } = useGetAllProductCategoryQuery({
+  const { data, isLoading, isFetching } = useGetAllProductCategoryQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -170,7 +170,7 @@ function ProductCategory() {
         setStatus={setStatus}
       />
 
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

@@ -97,7 +97,7 @@ function UserRole() {
 
   //RTK Query
   const [postUserRole, { isLoading: isAddLoading }] = usePostUserRoleMutation();
-  const { data, isLoading } = useGetAllUserRolesQuery({
+  const { data, isLoading, isFetching } = useGetAllUserRolesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -206,7 +206,7 @@ function UserRole() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <RoleTable

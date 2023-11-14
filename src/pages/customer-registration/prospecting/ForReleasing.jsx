@@ -159,7 +159,7 @@ function ForReleasing() {
 
   //RTK Query
   const [postProspect, { isLoading: isAddLoading }] = usePostProspectMutation();
-  const { data, isLoading } = useGetAllApprovedProspectsQuery({
+  const { data, isLoading, isFetching } = useGetAllApprovedProspectsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -290,7 +290,7 @@ function ForReleasing() {
           setStatus={setStatus}
           setSearch={setSearch}
         /> */}
-        {isLoading ? (
+        {isFetching ? (
           <CommonTableSkeleton compact />
         ) : (
           <CommonTable

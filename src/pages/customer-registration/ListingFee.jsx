@@ -62,7 +62,7 @@ function ListingFee() {
       ListingFeeStatus: "Rejected",
     });
 
-  const { data, isLoading } = useGetAllListingFeeQuery({
+  const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
     Search: search,
     Status: true,
     ListingFeeStatus: listingFeeStatus,
@@ -161,7 +161,7 @@ function ListingFee() {
           setSearch={setSearch}
         />
 
-        {isLoading ? (
+        {isFetching ? (
           <CommonTableSkeleton moreCompact />
         ) : (
           <CommonTable

@@ -84,7 +84,7 @@ function Location() {
 
   //RTK Query
   const [postLocation, { isLoading: isAddLoading }] = usePostLocationMutation();
-  const { data, isLoading } = useGetAllLocationsQuery({
+  const { data, isLoading, isFetching } = useGetAllLocationsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -171,7 +171,7 @@ function Location() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

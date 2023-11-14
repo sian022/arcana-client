@@ -47,7 +47,7 @@ function ListingFeeApproval() {
       ListingFeeStatus: "Rejected",
     });
 
-  const { data, isLoading } = useGetAllListingFeeQuery({
+  const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
     Search: search,
     Status: true,
     ListingFeeStatus: listingFeeStatus,
@@ -150,7 +150,7 @@ function ListingFeeApproval() {
           />
         </Box>
 
-        {isLoading ? (
+        {isFetching ? (
           <CommonTableSkeleton moreCompact />
         ) : (
           <CommonTable

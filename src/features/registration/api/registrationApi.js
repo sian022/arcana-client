@@ -86,17 +86,34 @@ export const registrationApi = createApi({
       invalidatesTags: ["Registration"],
     }),
 
-    putApproveRegistration: builder.mutation({
+    // putApproveRegistration: builder.mutation({
+    //   query: ({ id }) => ({
+    //     url: `/RegularClients/ApproveForRegularRegistration/${id}`,
+    //     method: "PUT",
+    //   }),
+    //   invalidatesTags: ["Registration"],
+    // }),
+
+    putApproveClient: builder.mutation({
       query: ({ id }) => ({
-        url: `/RegularClients/ApproveForRegularRegistration/${id}`,
+        url: `/RegularClients/ApproveClientRegistration/${id}`,
         method: "PUT",
       }),
       invalidatesTags: ["Registration"],
     }),
 
-    putRejectRegistration: builder.mutation({
+    // putRejectRegistration: builder.mutation({
+    //   query: ({ id, ...body }) => ({
+    //     url: `/RegularClients/RejectRegularRegistration/${id}`,
+    //     method: "PUT",
+    //     body: body,
+    //   }),
+    //   invalidatesTags: ["Registration"],
+    // }),
+
+    putRejectClient: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/RegularClients/RejectRegularRegistration/${id}`,
+        url: `/Clients/RejectClientRegistration/${id}`,
         method: "PUT",
         body: body,
       }),
@@ -120,8 +137,10 @@ export const {
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,
   usePostDirectRegistrationMutation,
-  usePutApproveRegistrationMutation,
-  usePutRejectRegistrationMutation,
+  // usePutApproveRegistrationMutation,
+  // usePutRejectRegistrationMutation,
+  usePutRejectClientMutation,
+  usePutApproveClientMutation,
   usePutAddAttachmentsForDirectMutation,
   usePatchUpdateRegistrationStatusMutation,
 } = registrationApi;

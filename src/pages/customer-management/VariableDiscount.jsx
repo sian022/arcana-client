@@ -87,7 +87,7 @@ function VariableDiscount() {
   //RTK Query
   const [postDiscountType, { isLoading: isAddLoading }] =
     usePostDiscountTypeMutation();
-  const { data, isLoading } = useGetAllDiscountTypesQuery({
+  const { data, isLoading, isFetching } = useGetAllDiscountTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -181,7 +181,7 @@ function VariableDiscount() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

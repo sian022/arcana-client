@@ -383,8 +383,8 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
       >
         Continue to register{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData.businessName
-            ? selectedRowData.businessName
+          {selectedRowData?.businessName
+            ? selectedRowData?.businessName
             : "client"}{" "}
         </span>
         as regular client?

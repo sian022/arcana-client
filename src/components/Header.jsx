@@ -39,7 +39,12 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navigationLabel = navigationData.reduce((accumulator, item) => {
+  const permissions = useSelector((state) => state.permissions?.permissions);
+  const permittedRoutes = navigationData.filter((item) =>
+    permissions?.includes(item.name)
+  );
+
+  const navigationLabel = permittedRoutes.reduce((accumulator, item) => {
     if (item.sub) {
       accumulator.push(...item.sub);
     }

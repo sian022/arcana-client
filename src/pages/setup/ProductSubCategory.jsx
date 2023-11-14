@@ -87,7 +87,7 @@ function ProductSubCategory() {
   //RTK Query
   const [postProductSubCategory, { isLoading: isAddLoading }] =
     usePostProductSubCategoryMutation();
-  const { data, isLoading } = useGetAllProductSubCategoriesQuery({
+  const { data, isLoading, isFetching } = useGetAllProductSubCategoriesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -194,7 +194,7 @@ function ProductSubCategory() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

@@ -84,7 +84,7 @@ function UnitOfMeasurements() {
 
   //RTK Query
   const [postUom, { isLoading: isAddLoading }] = usePostUomMutation();
-  const { data, isLoading } = useGetAllUomsQuery({
+  const { data, isLoading, isFetching } = useGetAllUomsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -170,7 +170,7 @@ function UnitOfMeasurements() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable

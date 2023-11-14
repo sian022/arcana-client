@@ -285,6 +285,8 @@ function ListingFeeDrawer({
     }
   }, [isListingFeeOpen, clientData]);
 
+  console.log(selectedRowData);
+
   return (
     <>
       <CommonDrawer
@@ -356,7 +358,7 @@ function ListingFeeDrawer({
               overflowX: "hidden",
               overflowY: "auto",
             }}
-            ref={parent}
+            // ref={parent}
           >
             <Box
               sx={{
