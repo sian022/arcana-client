@@ -87,78 +87,80 @@ function Sidebar() {
             </IconButton>
           </Box>
           <Box className="sidebar__navigation">
-            {/* {permittedSidebar.map( */}
-            {navigationData.map((item) => (
-              <React.Fragment key={item.id}>
-                <NavLink to={item.path}>
-                  {({ isActive }) => (
-                    <ListItem disablePadding sx={{ px: 2 }}>
-                      <ListItemButton
-                        className={`sidebar__navigation__button  ${
-                          isActive ? "active" : ""
-                        }`}
-                        onClick={() => {
-                          // sessionStorage.setItem("activeModule", item.name);
-                          setActiveModule(
-                            // activeModule === item.path ? "" : item.path
-                            activeModule?.includes(item.path) ? "" : item.path
-                          );
-                        }}
-                      >
-                        <ListItemIcon
-                          className={`sidebar__navigation__button__icon  ${
+            {permittedSidebar.map(
+              // {navigationData.map(
+              (item) => (
+                <React.Fragment key={item.id}>
+                  <NavLink to={item.path}>
+                    {({ isActive }) => (
+                      <ListItem disablePadding sx={{ px: 2 }}>
+                        <ListItemButton
+                          className={`sidebar__navigation__button  ${
                             isActive ? "active" : ""
                           }`}
+                          onClick={() => {
+                            // sessionStorage.setItem("activeModule", item.name);
+                            setActiveModule(
+                              // activeModule === item.path ? "" : item.path
+                              activeModule?.includes(item.path) ? "" : item.path
+                            );
+                          }}
                         >
-                          {getIconElement(item.icon)}
-                        </ListItemIcon>
+                          <ListItemIcon
+                            className={`sidebar__navigation__button__icon  ${
+                              isActive ? "active" : ""
+                            }`}
+                          >
+                            {getIconElement(item.icon)}
+                          </ListItemIcon>
 
-                        <ListItemText>{item.name}</ListItemText>
-                        {/* {sidebarToggled && (
+                          <ListItemText>{item.name}</ListItemText>
+                          {/* {sidebarToggled && (
                         <ListItemText>{item.name}</ListItemText>
                       )} */}
-                      </ListItemButton>
-                    </ListItem>
-                  )}
-                </NavLink>
+                        </ListItemButton>
+                      </ListItem>
+                    )}
+                  </NavLink>
 
-                {item.sub && (
-                  <Collapse
-                    // in={activeModule === item.path}
-                    in={activeModule?.includes(item.path)}
-                    timeout="auto"
-                    unmountOnExit
-                  >
-                    {item.sub.map((subItem) => (
-                      <NavLink to={subItem.path} key={subItem.id}>
-                        {({ isActive }) => (
-                          <ListItem disablePadding sx={{ px: 2 }}>
-                            <ListItemButton
-                              className={`sidebar__navigation__subButton  ${
-                                isActive ? "active" : ""
-                              }`}
-                            >
-                              <ListItemIcon
-                                className={`sidebar__navigation__subButton__icon  ${
+                  {item.sub && (
+                    <Collapse
+                      // in={activeModule === item.path}
+                      in={activeModule?.includes(item.path)}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      {item.sub.map((subItem) => (
+                        <NavLink to={subItem.path} key={subItem.id}>
+                          {({ isActive }) => (
+                            <ListItem disablePadding sx={{ px: 2 }}>
+                              <ListItemButton
+                                className={`sidebar__navigation__subButton  ${
                                   isActive ? "active" : ""
                                 }`}
                               >
-                                {getIconElement(subItem.icon)}
-                              </ListItemIcon>
+                                <ListItemIcon
+                                  className={`sidebar__navigation__subButton__icon  ${
+                                    isActive ? "active" : ""
+                                  }`}
+                                >
+                                  {getIconElement(subItem.icon)}
+                                </ListItemIcon>
 
-                              {/* {sidebarToggled && (
+                                {/* {sidebarToggled && (
                               <ListItemText>{subItem.name}</ListItemText>
                             )} */}
-                              <ListItemText>{subItem.name}</ListItemText>
-                            </ListItemButton>
-                          </ListItem>
-                        )}
-                      </NavLink>
-                    ))}
-                  </Collapse>
-                )}
-              </React.Fragment>
-            ))}
+                                <ListItemText>{subItem.name}</ListItemText>
+                              </ListItemButton>
+                            </ListItem>
+                          )}
+                        </NavLink>
+                      ))}
+                    </Collapse>
+                  )}
+                </React.Fragment>
+              )
+            )}
           </Box>
         </Box>
       </Box>
