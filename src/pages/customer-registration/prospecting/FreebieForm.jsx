@@ -82,7 +82,7 @@ function FreebieForm({
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     register,
     setValue,
     reset,
@@ -256,7 +256,7 @@ function FreebieForm({
       <CommonDrawer
         drawerHeader={updateFreebies ? "Update Freebies" : "Request Freebies"}
         open={isFreebieFormOpen}
-        onClose={onConfirmCancelOpen}
+        onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
         width="1000px"
         disableSubmit={!isValid}
         onSubmit={onConfirmSubmitOpen}
