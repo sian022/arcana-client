@@ -26,6 +26,7 @@ import { sedarApi } from "../features/user-management/api/sedarApi";
 import { userConfigApi } from "../features/authentication/api/userConfigApi";
 import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
 import { disclosureSlice } from "../features/misc/reducers/disclosureSlice";
+import { approverApi } from "../features/user-management/api/approverApi";
 
 export const store = configureStore({
   reducer: {
@@ -50,6 +51,7 @@ export const store = configureStore({
     [companyApi.reducerPath]: companyApi.reducer,
     [userRoleApi.reducerPath]: userRoleApi.reducer,
     [userAccountApi.reducerPath]: userAccountApi.reducer,
+    [approverApi.reducerPath]: approverApi.reducer,
     [prospectApi.reducerPath]: prospectApi.reducer,
     [registrationApi.reducerPath]: registrationApi.reducer,
     [sedarApi.reducerPath]: sedarApi.reducer,
@@ -73,6 +75,7 @@ export const store = configureStore({
       companyApi.middleware,
       userRoleApi.middleware,
       userAccountApi.middleware,
+      approverApi.middleware,
       prospectApi.middleware,
       registrationApi.middleware,
       sedarApi.middleware,

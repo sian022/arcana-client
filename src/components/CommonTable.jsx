@@ -33,6 +33,7 @@ function CommonTable({
   onRegularRegister,
   onUpdateFreebies,
   onCancelFreebies,
+  onManageApprovers,
   page,
   setPage,
   rowsPerPage,
@@ -176,6 +177,9 @@ function CommonTable({
                         onUpdateFreebies={onUpdateFreebies && onUpdateFreebies}
                         onCancelFreebies={onCancelFreebies && onCancelFreebies}
                         onView={onView && onView}
+                        onManageApprovers={
+                          onManageApprovers && onManageApprovers
+                        }
                         item={item}
                         status={status}
                       />

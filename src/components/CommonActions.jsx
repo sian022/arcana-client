@@ -8,6 +8,7 @@ import {
   Edit,
   HowToReg,
   More,
+  PeopleAlt,
   RequestPage,
   Restore,
   Tag,
@@ -25,6 +26,7 @@ function CommonActions({
   onRegularRegister,
   onUpdateFreebies,
   onCancelFreebies,
+  onManageApprovers,
   item,
   status,
 }) {
@@ -50,6 +52,8 @@ function CommonActions({
       onCancelFreebies();
     } else if (action === "viewMore") {
       onView(item);
+    } else if (action === "manageApprovers") {
+      onManageApprovers();
     }
 
     onClose();
@@ -164,6 +168,18 @@ function CommonActions({
           >
             <Cancel />
             Cancel Freebies
+          </MenuItem>
+        )}
+
+        {onManageApprovers && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("manageApprovers");
+            }}
+          >
+            <PeopleAlt />
+            Manage Approvers
           </MenuItem>
         )}
       </Menu>

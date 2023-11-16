@@ -27,6 +27,7 @@ import ListingFeeApproval from "../pages/approval/ListingFeeApproval";
 import VariableDiscount from "../pages/customer-management/VariableDiscount";
 import BusinessType from "../pages/customer-management/BusinessType";
 import Approver from "../pages/user-management/Approver";
+import FreebieApproval from "../pages/approval/FreebieApproval";
 
 export const router = createBrowserRouter([
   {
@@ -155,10 +156,6 @@ export const router = createBrowserRouter([
         path: "approval",
         element: <Approval />,
         children: [
-          // {
-          //   path: "freebie-approval",
-          //   element: <FreebieApproval />,
-          // },
           {
             path: "registration-approval",
             element: <RegistrationApproval />,
@@ -170,6 +167,10 @@ export const router = createBrowserRouter([
           {
             path: "listing-fee-approval",
             element: <ListingFeeApproval />,
+          },
+          {
+            path: "freebie-approval",
+            element: <FreebieApproval />,
           },
         ],
       },

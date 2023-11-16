@@ -1,18 +1,27 @@
-import { Box, TextField } from "@mui/material";
+import { Box, IconButton, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { companySchema } from "../../schema/schema";
+import { approversSchema, companySchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
 import PageHeaderSearch from "../../components/PageHeaderSearch";
+import ControlledAutocomplete from "../../components/ControlledAutocomplete";
+import {
+  Cancel,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from "@mui/icons-material";
+import { useGetAllApproversQuery } from "../../features/user-management/api/approverApi";
+import SecondaryButton from "../../components/SecondaryButton";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 function Approver() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -64,16 +73,16 @@ function Approver() {
 
   const tableMap = [
     {
-      moduleName: "Freebie",
+      moduleName: "Freebie Approval",
     },
     {
-      moduleName: "Registration",
+      moduleName: "Registration Approval",
     },
     {
-      moduleName: "Listing Fee",
+      moduleName: "Listing Fee Approval",
     },
     {
-      moduleName: "Special Discount",
+      moduleName: "Sp. Discount Approval",
     },
   ];
 
@@ -84,13 +93,24 @@ function Approver() {
     register,
     setValue,
     reset,
+    control,
+    watch,
+    getValues,
   } = useForm({
-    resolver: yupResolver(companySchema.schema),
+    resolver: yupResolver(approversSchema.schema),
     mode: "onChange",
-    defaultValues: companySchema.defaultValues,
+    defaultValues: approversSchema.defaultValues,
   });
 
+  const { fields, append, remove, swap } = useFieldArray({
+    control,
+    name: "approvers",
+  });
+
+  const [parent] = useAutoAnimate();
+
   //RTK Query
+  const { data, isLoading, isFetching } = useGetAllApproversQuery();
   // const [postApprover, { isLoading: isAddLoading }] = usePostApproverMutation();
   // const { data, isLoading, isFetching } = useGetAllCompaniesQuery({
   //   Search: search,
@@ -142,18 +162,8 @@ function Approver() {
     onDrawerOpen();
   };
 
-  const handleEditOpen = (editData) => {
-    setDrawerMode("edit");
+  const handleEditOpen = () => {
     onDrawerOpen();
-
-    Object.keys(editData).forEach((key) => {
-      setValue(key, editData[key]);
-    });
-  };
-
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
   };
 
   const handleDrawerClose = () => {
@@ -162,10 +172,19 @@ function Approver() {
     setSelectedId("");
   };
 
+  const handleApproverError = () => {
+    if (fields.length === 1) {
+      setSnackbarMessage("Must have at least 1 approver");
+    }
+
+    onErrorOpen();
+  };
+
   useEffect(() => {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
+  useEffect(() => {}, watch("approvers"));
   return (
     <Box className="commonPageLayout">
       <PageHeaderSearch
@@ -181,9 +200,7 @@ function Approver() {
           mapData={tableMap}
           excludeKeysDisplay={excludeKeysDisplay}
           editable
-          archivable
-          onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          onManageApprovers={handleEditOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -196,19 +213,104 @@ function Approver() {
       <CommonDrawer
         open={isDrawerOpen}
         onClose={handleDrawerClose}
-        drawerHeader={`Manage ${selectedRowData?.moduleName} Approvers`}
+        drawerHeader={`Approver - ${selectedRowData?.moduleName}`}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        width="600px"
         // isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
-        <TextField
-          label="Approver Name"
-          size="small"
-          autoComplete="off"
-          {...register("companyName")}
-          helperText={errors?.companyName?.message}
-          error={errors?.companyName}
-        />
+        <Box
+          sx={{ display: "flex", flexDirection: "column", gap: "10px" }}
+          ref={parent}
+        >
+          {fields.map((item, index) => (
+            <Box
+              key={item.id}
+              sx={{
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <ControlledAutocomplete
+                name={`approvers[${index}].userId`}
+                control={control}
+                options={data || []}
+                getOptionLabel={(option) => option.fullname || ""}
+                getOptionDisabled={(option) => {
+                  const approvers = watch("approvers");
+                  return approvers.some(
+                    (item) => item?.userId?.userId === option.userId
+                  );
+                }}
+                sx={{ flex: 1 }}
+                disableClearable
+                loading={isLoading}
+                isOptionEqualToValue={(option, value) => true}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Approver Name"
+                    required
+                    helperText={errors?.userId?.message}
+                    error={errors?.userId}
+                  />
+                )}
+              />
+
+              <IconButton
+                sx={{ color: "secondary.main" }}
+                onClick={() => {
+                  swap(index, index - 1);
+                }}
+                disabled={index === 0}
+              >
+                <KeyboardArrowUp sx={{ fontSize: "30px" }} />
+              </IconButton>
+
+              <IconButton
+                sx={{ color: "secondary.main" }}
+                onClick={() => {
+                  swap(index, index + 1);
+                }}
+                disabled={index === fields.length - 1}
+              >
+                <KeyboardArrowDown sx={{ fontSize: "30px" }} />
+              </IconButton>
+
+              <IconButton
+                sx={{ color: "error.main" }}
+                onClick={() => {
+                  fields.length <= 1
+                    ? handleApproverError()
+                    : // : remove(fields[index]);
+                      remove(index);
+                }}
+              >
+                <Cancel sx={{ fontSize: "30px" }} />
+              </IconButton>
+            </Box>
+          ))}
+        </Box>
+
+        <SecondaryButton
+          sx={{ width: "150px" }}
+          onClick={() => {
+            // fields.length < 5
+            //   ? append({ itemId: null, unitCost: null })
+            //   : handleListingFeeError();
+            append({
+              userId: null,
+              // moduleName: "",
+              moduleName: selectedRowData?.moduleName,
+              level: null,
+            });
+          }}
+        >
+          Add Approver
+        </SecondaryButton>
       </CommonDrawer>
       <CommonDialog
         open={isArchiveOpen}

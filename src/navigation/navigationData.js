@@ -198,12 +198,12 @@ export const navigationData = [
         path: "/approval/listing-fee-approval",
         icon: "Payment",
       },
-      // {
-      //   id: 4,
-      //   name: "Freebie Approval",
-      //   path: "/approval/freebie-approval",
-      //   icon: "Redeem",
-      // },
+      {
+        id: 4,
+        name: "Freebie Approval",
+        path: "/approval/freebie-approval",
+        icon: "Redeem",
+      },
     ],
   },
   // {
