@@ -384,7 +384,7 @@ export const approversSchema = {
       {
         userId: null,
         moduleName: "",
-        level: null,
+        level: 1,
       },
     ],
   },

@@ -24,7 +24,29 @@ export const approverApi = createApi({
       transformResponse: (response) => response.data,
       transformErrorResponse: (response) => response.data,
     }),
+    addApproversPerModule: builder.mutation({
+      query: (body) => ({
+        url: "/Approvers/AssignApprover",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Approver"],
+    }),
+    getApproverByModule: builder.query({
+      query: (params) => ({
+        url: "/Approver/GetApproverByModule",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Approver"],
+      transformResponse: (response) => response.data,
+      transformErrorResponse: (response) => response.data,
+    }),
   }),
 });
 
-export const { useGetAllApproversQuery } = approverApi;
+export const {
+  useGetAllApproversQuery,
+  useAddApproversPerModuleMutation,
+  useGetApproverByModuleQuery,
+} = approverApi;

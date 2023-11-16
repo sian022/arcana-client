@@ -19,12 +19,16 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
-import { useGetAllApproversQuery } from "../../features/user-management/api/approverApi";
+import {
+  useAddApproversPerModuleMutation,
+  useGetAllApproversQuery,
+  useGetApproverByModuleQuery,
+} from "../../features/user-management/api/approverApi";
 import SecondaryButton from "../../components/SecondaryButton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 function Approver() {
-  const [drawerMode, setDrawerMode] = useState("");
+  const [drawerMode, setDrawerMode] = useState("add");
   const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
@@ -111,6 +115,13 @@ function Approver() {
 
   //RTK Query
   const { data, isLoading, isFetching } = useGetAllApproversQuery();
+  const [addApproversPerModule, { isLoading: isAddApproversLoading }] =
+    useAddApproversPerModuleMutation();
+  const {
+    data: approverByModuleData,
+    isLoading: isApproverByModuleLoading,
+    isFetching: isApproverByModuleFetching,
+  } = useGetApproverByModuleQuery({ ModuleName: "Registration Approval" });
   // const [postApprover, { isLoading: isAddLoading }] = usePostApproverMutation();
   // const { data, isLoading, isFetching } = useGetAllCompaniesQuery({
   //   Search: search,
@@ -127,10 +138,16 @@ function Approver() {
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
-        await postApprover(data).unwrap();
-        setSnackbarMessage("Approver added successfully");
+        await addApproversPerModule({
+          approvers: data.approvers.map((approver) => ({
+            userId: approver.userId.userId,
+            moduleName: approver.moduleName,
+            level: approver.level,
+          })),
+        }).unwrap();
+        setSnackbarMessage("Approvers added successfully");
       } else if (drawerMode === "edit") {
-        await putApprover(data).unwrap();
+        // await putApprover(data).unwrap();
         setSnackbarMessage("Approver updated successfully");
       }
 
@@ -180,11 +197,19 @@ function Approver() {
     onErrorOpen();
   };
 
+  console.log(drawerMode);
   useEffect(() => {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
-  useEffect(() => {}, watch("approvers"));
+  useEffect(() => {
+    // if(!watch("approvers")?.[0]?.moduleName){}
+    if (isDrawerOpen) {
+      setValue("approvers[0].moduleName", selectedRowData?.moduleName);
+    }
+  }, [isDrawerOpen]);
+
+  console.log(getValues());
   return (
     <Box className="commonPageLayout">
       <PageHeaderSearch
@@ -217,7 +242,7 @@ function Approver() {
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
         width="600px"
-        // isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
+        isLoading={isAddApproversLoading}
       >
         <Box
           sx={{ display: "flex", flexDirection: "column", gap: "10px" }}
@@ -263,6 +288,8 @@ function Approver() {
               <IconButton
                 sx={{ color: "secondary.main" }}
                 onClick={() => {
+                  setValue(`approvers[${index}].level`, index);
+                  setValue(`approvers[${index - 1}].level`, index + 1);
                   swap(index, index - 1);
                 }}
                 disabled={index === 0}
@@ -273,6 +300,8 @@ function Approver() {
               <IconButton
                 sx={{ color: "secondary.main" }}
                 onClick={() => {
+                  setValue(`approvers[${index}].level`, index + 2);
+                  setValue(`approvers[${index + 1}].level`, index + 1);
                   swap(index, index + 1);
                 }}
                 disabled={index === fields.length - 1}
@@ -305,7 +334,7 @@ function Approver() {
               userId: null,
               // moduleName: "",
               moduleName: selectedRowData?.moduleName,
-              level: null,
+              level: fields.length + 1,
             });
           }}
         >
