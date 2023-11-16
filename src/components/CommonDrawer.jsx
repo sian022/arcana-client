@@ -26,6 +26,8 @@ function CommonDrawer({
   paddingSmall,
   zIndex,
   children,
+  className,
+  responsiveBreakpoint,
   enableAutoAnimate,
   ...otherProps
 }) {
@@ -33,7 +35,7 @@ function CommonDrawer({
 
   return (
     <Drawer anchor="right" sx={{ zIndex: zIndex && zIndex }} {...otherProps}>
-      <Box sx={{ display: "flex", flex: 1 }}>
+      <Box sx={{ display: "flex", flex: 1 }} className={className}>
         {navigators && (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             {navigators.map((item, i) => (
@@ -43,7 +45,12 @@ function CommonDrawer({
         )}
         <Box
           className="commonDrawer"
-          sx={{ width: width ? `${width} !important` : null }}
+          sx={{
+            width: width ? `${width} !important` : null,
+            [`@media (max-width: ${responsiveBreakpoint})`]: {
+              width: responsiveBreakpoint && "100% !important",
+            },
+          }}
         >
           {!noRibbon && !customRibbonContent && (
             <Box className="commonDrawer__ribbon">

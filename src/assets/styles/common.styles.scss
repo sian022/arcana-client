@@ -9,6 +9,13 @@
   padding: 15px;
   align-items: center;
   gap: 30px;
+  // overflow: auto;
+  overflow: overlay;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 
   & &__title {
     font-weight: bold;
@@ -103,6 +110,10 @@
   height: 100%;
   width: 350px;
   flex: 1;
+
+  // @media (max-width: 999px) {
+  //   width: 90% !important;
+  // }
 
   &__ribbon {
     display: flex;

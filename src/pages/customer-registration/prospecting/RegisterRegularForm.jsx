@@ -12,7 +12,14 @@ import {
 } from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
-import { Check, Close, PushPin } from "@mui/icons-material";
+import {
+  Attachment,
+  Check,
+  Close,
+  Gavel,
+  Person,
+  PushPin,
+} from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { regularRegisterSchema } from "../../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
@@ -118,6 +125,7 @@ function RegisterRegularForm({ open, onClose }) {
     {
       label: "Personal Info",
       isValid: isValid,
+      icon: <Person />,
       disabled: false,
     },
     {
@@ -143,6 +151,7 @@ function RegisterRegularForm({ open, onClose }) {
         const value = termsAndConditions[key];
         return value !== null && value !== "";
       }),
+      icon: <Gavel />,
       disabled: false,
     },
     {
@@ -155,6 +164,7 @@ function RegisterRegularForm({ open, onClose }) {
               (value) => value === null
             )
           : false,
+      icon: <Attachment />,
       disabled: false,
     },
   ];
@@ -219,7 +229,6 @@ function RegisterRegularForm({ open, onClose }) {
     }).unwrap();
   };
 
-  console.log(selectedRowData);
   const addAttachmentsSubmit = async () => {
     const formData = new FormData();
     let attachmentsObject = null;
@@ -365,6 +374,7 @@ function RegisterRegularForm({ open, onClose }) {
               />
             )}
             <Typography>{item.label}</Typography>
+            <span className="register__headers__item__icon">{item.icon}</span>
           </Button>
         ))}
       </Box>
@@ -414,6 +424,7 @@ function RegisterRegularForm({ open, onClose }) {
         submitLabel={"Register"}
         disableSubmit={navigators.some((obj) => obj.isValid === false)}
         onSubmit={onConfirmOpen}
+        responsiveBreakpoint="999px"
       >
         {activeTab === "Personal Info" && (
           <Box className="register">

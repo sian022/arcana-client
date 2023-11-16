@@ -203,8 +203,6 @@ function ForFreebies() {
     }
   };
 
-  console.log(selectedRowData);
-
   const handleAddOpen = () => {
     setDrawerMode("add");
     onDrawerOpen();
@@ -311,6 +309,7 @@ function ForFreebies() {
           onConfirmOpen
         }
         removeButtons
+        responsiveBreakpoint="999px"
       >
         <Box className="register">
           <Box className="register__secondRow">

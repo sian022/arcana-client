@@ -31,18 +31,24 @@ export const navigationData = [
       },
       {
         id: 3,
+        name: "Approver",
+        path: "/user-management/approver",
+        icon: "HowToVote",
+      },
+      {
+        id: 4,
         name: "Company",
         path: "/user-management/company",
         icon: "Business",
       },
       {
-        id: 4,
+        id: 5,
         name: "Department",
         path: "/user-management/department",
         icon: "BusinessCenter",
       },
       {
-        id: 5,
+        id: 6,
         name: "Location",
         path: "/user-management/location",
         icon: "LocationOn",

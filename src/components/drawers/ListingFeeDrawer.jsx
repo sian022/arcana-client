@@ -285,8 +285,6 @@ function ListingFeeDrawer({
     }
   }, [isListingFeeOpen, clientData]);
 
-  console.log(selectedRowData);
-
   return (
     <>
       <CommonDrawer

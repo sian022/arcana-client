@@ -26,6 +26,7 @@ import SpecialDiscountApproval from "../pages/approval/SpecialDiscountApproval";
 import ListingFeeApproval from "../pages/approval/ListingFeeApproval";
 import VariableDiscount from "../pages/customer-management/VariableDiscount";
 import BusinessType from "../pages/customer-management/BusinessType";
+import Approver from "../pages/user-management/Approver";
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
           {
             path: "user-role",
             element: <UserRole />,
+          },
+          {
+            path: "approver",
+            element: <Approver />,
           },
           {
             path: "company",

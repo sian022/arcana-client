@@ -10,7 +10,14 @@ import {
 } from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
 import SecondaryButton from "../../../components/SecondaryButton";
-import { Check, Close, PushPin } from "@mui/icons-material";
+import {
+  Attachment,
+  Check,
+  Close,
+  Gavel,
+  Person,
+  PushPin,
+} from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import {
   directRegisterPersonalSchema,
@@ -135,6 +142,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     {
       label: "Personal Info",
       isValid: isValid,
+      icon: <Person />,
       disabled: false,
     },
     {
@@ -160,6 +168,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         const value = termsAndConditions[key];
         return value !== null && value !== "";
       }),
+      icon: <Gavel />,
       disabled: false,
     },
     {
@@ -172,6 +181,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               (value) => value === null
             )
           : false,
+      icon: <Attachment />,
       // disabled: !navigators[0].isValid || !navigators[1].isValid,
       disabled: false,
     },
@@ -354,7 +364,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 }}
               />
             )}
-            <Typography>{item.label}</Typography>
+            <Typography className="register__headers__item__label">
+              {item.label}
+            </Typography>
+            <span className="register__headers__item__icon">{item.icon}</span>
           </Button>
         ))}
       </Box>
@@ -508,6 +521,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         // onClose={onCancelConfirmOpen}
         onClose={isDirty ? onCancelConfirmOpen : handleDrawerClose}
         width="1000px"
+        responsiveBreakpoint="999px"
         paddingSmall
         // noRibbon
         customRibbonContent={customRibbonContent}

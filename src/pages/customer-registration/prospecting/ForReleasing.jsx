@@ -330,6 +330,7 @@ function ForReleasing() {
           onConfirmOpen
         }
         removeButtons
+        responsiveBreakpoint="999px"
       >
         <Box className="register">
           <Box className="register__secondRow">
