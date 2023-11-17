@@ -129,6 +129,7 @@ function DirectRegistration() {
 
   const excludeKeysDisplay = [
     "id",
+    "requestId",
     "businessAddress",
     "fixedDiscount",
     "ownersAddress",

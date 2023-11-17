@@ -133,7 +133,8 @@ function ViewRegistrationDetailsModal({
   const handleApprove = async () => {
     try {
       await putApproveClient({
-        id: selectedRowData?.id,
+        // id: selectedRowData?.id,
+        id: selectedRowData?.requestId,
       }).unwrap();
       showSnackbar("Client approved successfully", "success");
     } catch (error) {

@@ -103,6 +103,7 @@ function RegistrationApproval() {
 
   const excludeKeysDisplay = [
     "id",
+    "requestId",
     "businessAddress",
     "fixedDiscount",
     "ownersAddress",
