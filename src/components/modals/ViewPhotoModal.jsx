@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import CommonModal from "../CommonModal";
 import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { AttachmentsContext } from "../../context/AttachmentsContext";
 
 function ViewPhotoModal({
   currentViewPhotoLabel,
+  currentViewPhotoLabelCamel,
   currentViewPhoto,
   cloudified,
   ...otherProps
 }) {
   const { onClose, ...noOnClose } = otherProps;
+
+  const { ownersRequirementsIsLink } = useContext(AttachmentsContext);
 
   return (
     <CommonModal width="800px" {...otherProps}>
@@ -28,7 +32,7 @@ function ViewPhotoModal({
             <Box className="attachments__viewModal__signature">
               <img
                 src={
-                  cloudified
+                  ownersRequirementsIsLink[currentViewPhotoLabelCamel]
                     ? currentViewPhoto
                     : URL.createObjectURL(currentViewPhoto)
                 }
@@ -48,8 +52,14 @@ function ViewPhotoModal({
               }}
             >
               <img
+                // src={
+                //   cloudified
+                //     ? currentViewPhoto
+                //     : URL.createObjectURL(currentViewPhoto)
+                // }
+
                 src={
-                  cloudified
+                  ownersRequirementsIsLink[currentViewPhotoLabelCamel]
                     ? currentViewPhoto
                     : URL.createObjectURL(currentViewPhoto)
                 }

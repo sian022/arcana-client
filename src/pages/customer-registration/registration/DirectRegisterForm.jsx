@@ -64,6 +64,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
   const {
     setOwnersRequirements,
+    setOwnersRequirementsIsLink,
     setRepresentativeRequirements,
     setRequirementsMode,
     convertSignatureToBase64,
@@ -506,9 +507,31 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         setRequirementsMode("representative");
       } else {
         setRequirementsMode("owner");
+        setOwnersRequirements({
+          signature: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Signature"
+          )?.documentLink,
+          storePhoto: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Store Photo"
+          )?.documentLink,
+          businessPermit: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Business Permit"
+          )?.documentLink,
+          photoIdOwner: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Photo ID Owner"
+          )?.documentLink,
+        });
+        setOwnersRequirementsIsLink({
+          signature: true,
+          storePhoto: true,
+          businessPermit: true,
+          photoIdOwner: true,
+        });
       }
     }
   }, [open, termDaysData]);
+
+  console.log(selectedRowData);
 
   return (
     <>

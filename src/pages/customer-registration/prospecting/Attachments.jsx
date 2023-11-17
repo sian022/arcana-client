@@ -32,12 +32,16 @@ function Attachments() {
     setRequirementsMode,
     ownersRequirements,
     setOwnersRequirements,
+    ownersRequirementsIsLink,
+    setOwnersRequirementsIsLink,
     representativeRequirements,
     setRepresentativeRequirements,
   } = useContext(AttachmentsContext);
 
   const [currentViewPhoto, setCurrentViewPhoto] = useState(null);
   const [currentViewPhotoLabel, setCurrentViewPhotoLabel] = useState("");
+  const [currentViewPhotoLabelCamel, setCurrentViewPhotoLabelCamel] =
+    useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -105,10 +109,11 @@ function Attachments() {
     }
   };
 
-  const handleViewPhoto = (file, label) => {
+  const handleViewPhoto = (file, label, camel) => {
     onViewPhotoOpen();
     setCurrentViewPhoto(file);
     setCurrentViewPhotoLabel(label);
+    setCurrentViewPhotoLabelCamel(camel);
   };
 
   return (
@@ -140,10 +145,20 @@ function Attachments() {
                   <IconButton
                     className="attachments__column__content__item__viewOwner"
                     onClick={() => {
-                      const convertedSignature = base64ToBlob(
-                        ownersRequirements["signature"]
+                      let convertedSignature;
+                      if (ownersRequirementsIsLink["signature"]) {
+                        convertedSignature = base64ToBlob(
+                          ownersRequirements["signature"]
+                        );
+                      }
+
+                      handleViewPhoto(
+                        ownersRequirementsIsLink["signature"]
+                          ? ownersRequirements["signature"]
+                          : convertedSignature,
+                        "Signature",
+                        "signature"
                       );
-                      handleViewPhoto(convertedSignature, "Signature");
                     }}
                   >
                     <Visibility />
@@ -166,7 +181,8 @@ function Attachments() {
                     onClick={() => {
                       handleViewPhoto(
                         ownersRequirements["storePhoto"],
-                        "Store Photo"
+                        "Store Photo",
+                        "storePhoto"
                       );
                     }}
                   >
@@ -192,7 +208,8 @@ function Attachments() {
                     onClick={() => {
                       handleViewPhoto(
                         ownersRequirements["businessPermit"],
-                        "Business Permit"
+                        "Business Permit",
+                        "businessPermit"
                       );
                     }}
                   >
@@ -218,7 +235,8 @@ function Attachments() {
                     onClick={() => {
                       handleViewPhoto(
                         ownersRequirements["photoIdOwner"],
-                        "Valid ID of Owner"
+                        "Valid ID of Owner",
+                        "photoIdOwner"
                       );
                     }}
                   >
@@ -268,7 +286,11 @@ function Attachments() {
                       const convertedSignature = base64ToBlob(
                         representativeRequirements["signature"]
                       );
-                      handleViewPhoto(convertedSignature, "Signature");
+                      handleViewPhoto(
+                        convertedSignature,
+                        "Signature",
+                        "signature"
+                      );
                     }}
                   >
                     <Visibility />
@@ -293,7 +315,8 @@ function Attachments() {
                     onClick={() => {
                       handleViewPhoto(
                         representativeRequirements["storePhoto"],
-                        "Store Photo"
+                        "Store Photo",
+                        "storePhoto"
                       );
                     }}
                   >
@@ -322,7 +345,8 @@ function Attachments() {
                     onClick={() => {
                       handleViewPhoto(
                         representativeRequirements["businessPermit"],
-                        "Business Permit"
+                        "Business Permit",
+                        "businessPermit"
                       );
                     }}
                   >
@@ -350,7 +374,8 @@ function Attachments() {
                     onClick={() => {
                       handleViewPhoto(
                         representativeRequirements["photoIdOwner"],
-                        "Valid ID of Owner"
+                        "Valid ID of Owner",
+                        "photoIdOwner"
                       );
                     }}
                   >
@@ -379,7 +404,8 @@ function Attachments() {
                     onClick={() => {
                       handleViewPhoto(
                         representativeRequirements["photoIdRepresentative"],
-                        "Valid ID of Representative"
+                        "Valid ID of Representative",
+                        "photoIdRepresentative"
                       );
                     }}
                   >
@@ -408,7 +434,8 @@ function Attachments() {
                     onClick={() => {
                       handleViewPhoto(
                         representativeRequirements["authorizationLetter"],
-                        "Authorization Letter"
+                        "Authorization Letter",
+                        "authorizationLetter"
                       );
                     }}
                   >
@@ -440,6 +467,7 @@ function Attachments() {
       <ViewPhotoModal
         currentViewPhoto={currentViewPhoto}
         currentViewPhotoLabel={currentViewPhotoLabel}
+        currentViewPhotoLabelCamel={currentViewPhotoLabelCamel}
         open={isViewPhotoOpen}
         onClose={onViewPhotoClose}
       />
