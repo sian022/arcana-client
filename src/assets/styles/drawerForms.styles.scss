@@ -181,6 +181,11 @@
   flex: 1;
   height: 100%;
 
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
   &__column {
     display: flex;
     flex-direction: column;
@@ -214,6 +219,11 @@
         // display: grid;
         // grid-template-columns: 1fr 1fr;
 
+        @media (max-width: 999px) {
+          flex-direction: column;
+          gap: 10px;
+        }
+
         & p {
           font-weight: 400;
           font-size: 1rem;
@@ -229,6 +239,19 @@
         display: flex;
         align-items: center;
         position: relative;
+
+        @media (max-width: 999px) {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        &__creditLimit {
+          margin-left: 28px;
+
+          @media (max-width: 999px) {
+            margin-left: 0;
+          }
+        }
       }
     }
   }
@@ -241,6 +264,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+
+  @media (max-width: 850px) {
+    grid-template-columns: 1fr;
+  }
 
   &__viewModal {
     &__title {
@@ -326,12 +353,43 @@
           border: none;
           position: absolute;
           right: 45px;
+
+          @media (max-width: 999px) {
+            right: clamp(0px, 1%, 25px);
+          }
+
+          @media (max-width: 799px) {
+            right: clamp(25px, 1%, 25%);
+            // right: 25%;
+          }
+
+          @media (max-width: 532px) {
+            display: none;
+          }
         }
 
         & &__viewRepresentative {
           border: none;
           position: absolute;
           right: 25px;
+
+          @media (max-width: 999px) {
+            right: clamp(0px, 1%, 25px);
+          }
+
+          @media (max-width: 887px) {
+            // right: clamp(0px, 1%, 25%);
+            right: 0;
+            // right: 25%;
+          }
+
+          @media (max-width: 799px) {
+            right: clamp(25px, 1%, 25%);
+          }
+
+          @media (max-width: 532px) {
+            display: none;
+          }
         }
       }
     }
@@ -363,6 +421,7 @@
 //   }
 // }
 
+//Wild Cards
 .overlay {
   // position: absolute;
   // top: 0;
@@ -373,4 +432,61 @@
   pointer-events: none;
   z-index: 2; /* Make sure it's higher than the buttons */
   filter: grayscale(1);
+}
+
+.termsAndConditionsCancelFreebies {
+  color: $error !important;
+  position: absolute !important;
+  right: 85px !important;
+  top: 408px !important;
+
+  @media (max-width: 999px) {
+    position: relative !important;
+    inset: 0 !important;
+  }
+}
+
+.termsAndConditionsFirstSelect {
+  position: absolute !important;
+  right: -65px !important;
+  top: 10px !important;
+
+  @media (max-width: 999px) {
+    position: relative !important;
+    inset: 0 !important;
+  }
+}
+
+.termsAndConditionsSecondSelect {
+  position: absolute !important;
+  right: -80px !important;
+  top: 6px !important;
+
+  @media (max-width: 999px) {
+    position: relative !important;
+    inset: 0 !important;
+  }
+}
+
+.termsAndConditionsCreditLimit {
+  position: absolute !important;
+  right: 30px !important;
+
+  @media (max-width: 999px) {
+    position: relative !important;
+    inset: 0 !important;
+  }
+}
+
+.termsAndConditionsFixedDiscount {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: absolute;
+  right: -35px;
+
+  @media (max-width: 999px) {
+    position: relative;
+    inset: 0;
+  }
 }

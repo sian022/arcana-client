@@ -249,11 +249,12 @@ function TermsAndConditions({ direct, editMode }) {
                   disableClearable
                   value={termsAndConditions["termDaysId"] ?? ""}
                   defaultValue={termsAndConditions["termDaysId"] ?? ""}
+                  className="termsAndConditionsFirstSelect"
                   sx={{
                     width: "100px",
-                    position: "absolute",
-                    right: "-65px",
-                    top: "10px",
+                    // position: "absolute",
+                    // right: "-65px",
+                    // top: "10px",
                     "& .MuiInputBase-root": {
                       height: "30px",
                     },
@@ -317,7 +318,8 @@ function TermsAndConditions({ direct, editMode }) {
 
             <Box className="terms__column__item__choicesNoSpace">
               <FormControlLabel
-                sx={{ ml: "28px" }}
+                className="terms__column__item__choicesNoSpace__creditLimit"
+                // sx={{ ml: "28px" }}
                 value={3}
                 control={<Radio />}
                 label="Credit Limit"
@@ -327,10 +329,11 @@ function TermsAndConditions({ direct, editMode }) {
                 //  && termDaysData
                 <>
                   <TextField
+                    className="termsAndConditionsCreditLimit"
                     sx={{
                       width: "120px",
-                      position: "absolute",
-                      right: "30px",
+                      // position: "absolute",
+                      // right: "30px",
                       "& .MuiInputBase-root": {
                         height: "30px",
                       },
@@ -372,6 +375,7 @@ function TermsAndConditions({ direct, editMode }) {
                     disableClearable
                     value={termsAndConditions["termDaysId"] ?? ""}
                     defaultValue={termsAndConditions["termDaysId"] ?? ""}
+                    className="termsAndConditionsSecondSelect"
                     sx={{
                       width: "100px",
                       position: "absolute",
@@ -492,13 +496,14 @@ function TermsAndConditions({ direct, editMode }) {
 
             {termsAndConditions["variableDiscount"] === false && (
               <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "5px",
-                  position: "absolute",
-                  right: "-35px",
-                }}
+                className="termsAndConditionsFixedDiscount"
+                // sx={{
+                //   display: "flex",
+                //   alignItems: "center",
+                //   gap: "5px",
+                //   position: "absolute",
+                //   right: "-35px",
+                // }}
               >
                 <TextField
                   sx={{
@@ -538,12 +543,13 @@ function TermsAndConditions({ direct, editMode }) {
             </SecondaryButton>{" "}
             {freebiesDirect?.length > 0 && (
               <IconButton
-                sx={{
-                  color: "error.main",
-                  position: "absolute",
-                  right: "85px",
-                  top: "408px",
-                }}
+                className="termsAndConditionsCancelFreebies"
+                // sx={{
+                //   color: "error.main",
+                //   position: "absolute",
+                //   right: "85px",
+                //   top: "408px",
+                // }}
                 onClick={() => {
                   dispatch(resetFreebies());
                 }}

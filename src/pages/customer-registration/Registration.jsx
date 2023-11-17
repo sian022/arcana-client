@@ -76,8 +76,6 @@ function DirectRegistration() {
     PageSize: rowsPerPage,
   });
 
-  console.log(selectedRowData);
-
   const [patchUpdateRegistrationStatus, { isLoading: isUpdateStatusLoading }] =
     usePatchUpdateRegistrationStatusMutation();
 
@@ -184,8 +182,6 @@ function DirectRegistration() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
-
-  console.log(selectedRowData);
 
   return (
     <>
