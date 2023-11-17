@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -8,6 +8,7 @@ import DirectRegisterForm from "./registration/DirectRegisterForm";
 import {
   useGetAllClientsQuery,
   usePatchUpdateRegistrationStatusMutation,
+  usePutVoidClientRegistrationMutation,
 } from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
@@ -25,6 +26,8 @@ function DirectRegistration() {
   const [count, setCount] = useState(0);
   const [status, setStatus] = useState(true);
   const [editMode, setEditMode] = useState(false);
+
+  const [voidConfirmBox, setVoidConfirmBox] = useState("");
 
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -46,6 +49,12 @@ function DirectRegistration() {
     isOpen: isArchiveOpen,
     onOpen: onArchiveOpen,
     onClose: onArchiveClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isVoidOpen,
+    onOpen: onVoidOpen,
+    onClose: onVoidClose,
   } = useDisclosure();
 
   //RTK Query
@@ -78,6 +87,8 @@ function DirectRegistration() {
 
   const [patchUpdateRegistrationStatus, { isLoading: isUpdateStatusLoading }] =
     usePatchUpdateRegistrationStatusMutation();
+  const [putVoidClientRegistration, { isLoading: isVoidLoading }] =
+    usePutVoidClientRegistrationMutation();
 
   //Constants
   const registrationNavigation = [
@@ -171,6 +182,20 @@ function DirectRegistration() {
     }
   };
 
+  const onVoidSubmit = async () => {
+    try {
+      await patchUpdateRegistrationStatus(selectedRowData?.id).unwrap();
+      onVoidClose();
+      showSnackbar("Client voided successfully", "success");
+    } catch (error) {
+      if (error?.data?.messages) {
+        showSnackbar(error?.data?.messages[0], "error");
+      } else {
+        showSnackbar("Error voiding client", "error");
+      }
+    }
+  };
+
   useEffect(() => {
     const foundItem = registrationNavigation.find(
       (item) => item.case === tabViewing
@@ -221,7 +246,8 @@ function DirectRegistration() {
             // onArchive={true}
             status={status}
             onEdit={handleEditOpen}
-            onArchive={onArchiveOpen}
+            // onArchive={onArchiveOpen}
+            onVoid={onVoidOpen}
           />
         )}
       </Box>
@@ -252,6 +278,46 @@ function DirectRegistration() {
           {selectedRowData?.businessName}
         </span>
         ?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isVoidOpen}
+        onClose={onVoidClose}
+        isLoading={isVoidLoading}
+        onYes={onVoidSubmit}
+        disableYes={voidConfirmBox !== selectedRowData?.businessName}
+      >
+        Are you sure you want to void client{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.businessName}
+        </span>
+        ? <br />
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          (This action cannot be reversed)
+        </span>
+        <br />
+        <Box
+          sx={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
+        >
+          <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
+            To confirm, type "{selectedRowData?.businessName}" in the box below
+          </Typography>
+          <TextField
+            size="small"
+            // fullWidth
+            autoComplete="off"
+            onChange={(e) => {
+              setVoidConfirmBox(e.target.value);
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "error.main", // Set your desired border color here
+                },
+              },
+            }}
+          />
+        </Box>
       </CommonDialog>
     </>
   );

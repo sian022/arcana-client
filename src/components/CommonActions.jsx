@@ -4,11 +4,13 @@ import useDisclosure from "../hooks/useDisclosure";
 import {
   Archive,
   ArrowForward,
+  Block,
   Cancel,
   Edit,
   HowToReg,
   More,
   PeopleAlt,
+  RemoveCircle,
   RequestPage,
   Restore,
   Tag,
@@ -27,6 +29,7 @@ function CommonActions({
   onUpdateFreebies,
   onCancelFreebies,
   onManageApprovers,
+  onVoid,
   item,
   status,
 }) {
@@ -54,6 +57,8 @@ function CommonActions({
       onView(item);
     } else if (action === "manageApprovers") {
       onManageApprovers();
+    } else if (action === "void") {
+      onVoid();
     }
 
     onClose();
@@ -180,6 +185,18 @@ function CommonActions({
           >
             <PeopleAlt />
             Manage Approvers
+          </MenuItem>
+        )}
+
+        {onVoid && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("void");
+            }}
+          >
+            <Block />
+            Void
           </MenuItem>
         )}
       </Menu>

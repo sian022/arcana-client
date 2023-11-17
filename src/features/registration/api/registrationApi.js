@@ -127,6 +127,14 @@ export const registrationApi = createApi({
       }),
       invalidatesTags: ["Registration"],
     }),
+
+    putVoidClientRegistration: builder.mutation({
+      query: (id) => ({
+        url: `/Clients/VoidClientRegistration/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Registration"],
+    }),
   }),
 });
 
@@ -143,4 +151,5 @@ export const {
   usePutApproveClientMutation,
   usePutAddAttachmentsForDirectMutation,
   usePatchUpdateRegistrationStatusMutation,
+  usePutVoidClientRegistrationMutation,
 } = registrationApi;

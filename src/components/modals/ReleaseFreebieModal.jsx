@@ -168,7 +168,11 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
               </Typography>
             </Box>
             <Box sx={{ display: "flex", justifyContent: "end" }}>
-              <IconButton onClick={onCancelConfirmOpen}>
+              <IconButton
+                onClick={
+                  signature || photoProof ? onCancelConfirmOpen : handleCancel
+                }
+              >
                 <Close />
               </IconButton>
             </Box>

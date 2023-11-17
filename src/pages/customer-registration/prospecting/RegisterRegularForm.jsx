@@ -198,6 +198,7 @@ function RegisterRegularForm({ open, onClose }) {
       handleResetForms();
       debounce(onRedirectListingFeeOpen(), 2000);
     } catch (error) {
+      setIsAllApiLoading(false);
       showSnackbar(error.data.messages[0] || "Something went wrong", "error");
       console.log(error);
     }

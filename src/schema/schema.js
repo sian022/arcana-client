@@ -371,6 +371,7 @@ export const requestListingFeeSchema = {
 
 export const approversSchema = {
   schema: yup.object({
+    moduleName: yup.object().required("Module is required"),
     approvers: yup.array().of(
       yup.object({
         userId: yup.object().required("User is required"),
@@ -380,6 +381,7 @@ export const approversSchema = {
     ),
   }),
   defaultValues: {
+    moduleName: "",
     approvers: [
       {
         userId: null,

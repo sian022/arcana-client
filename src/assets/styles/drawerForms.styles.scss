@@ -222,6 +222,9 @@
         @media (max-width: 999px) {
           flex-direction: column;
           gap: 10px;
+
+          align-items: start;
+          margin-left: 20px;
         }
 
         & p {
@@ -243,6 +246,9 @@
         @media (max-width: 999px) {
           flex-direction: column;
           gap: 10px;
+
+          align-items: start;
+          margin-left: 20px;
         }
 
         &__creditLimit {

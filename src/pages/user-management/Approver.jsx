@@ -1,4 +1,10 @@
-import { Box, IconButton, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
@@ -26,6 +32,7 @@ import {
 } from "../../features/user-management/api/approverApi";
 import SecondaryButton from "../../components/SecondaryButton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { navigationData } from "../../navigation/navigationData";
 
 function Approver() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -89,6 +96,8 @@ function Approver() {
       moduleName: "Sp. Discount Approval",
     },
   ];
+
+  const approvalItem = navigationData.find((item) => item.name === "Approval");
 
   //React Hook Form
   const {
@@ -180,6 +189,7 @@ function Approver() {
   };
 
   const handleEditOpen = () => {
+    setDrawerMode("edit");
     onDrawerOpen();
   };
 
@@ -197,7 +207,6 @@ function Approver() {
     onErrorOpen();
   };
 
-  console.log(drawerMode);
   useEffect(() => {
     setPage(0);
   }, [search, status, rowsPerPage]);
@@ -212,7 +221,13 @@ function Approver() {
   console.log(getValues());
   return (
     <Box className="commonPageLayout">
-      <PageHeaderSearch
+      {/* <PageHeaderSearch
+        pageTitle="Approver"
+        onOpen={handleAddOpen}
+        setSearch={setSearch}
+        setStatus={setStatus}
+      /> */}
+      <PageHeaderAdd
         pageTitle="Approver"
         onOpen={handleAddOpen}
         setSearch={setSearch}
@@ -238,16 +253,52 @@ function Approver() {
       <CommonDrawer
         open={isDrawerOpen}
         onClose={handleDrawerClose}
-        drawerHeader={`Approver - ${selectedRowData?.moduleName}`}
+        drawerHeader={
+          drawerMode === "edit"
+            ? `Approver - ${selectedRowData?.moduleName}`
+            : "Add Approvers"
+        }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
         width="600px"
         isLoading={isAddApproversLoading}
       >
+        <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+          Module Name
+        </Typography>
+        <ControlledAutocomplete
+          name={"moduleName"}
+          control={control}
+          options={approvalItem?.sub || []}
+          getOptionLabel={(option) => option.name || ""}
+          // getOptionDisabled={(option) => {
+          //   const approvers = watch("approvers");
+          //   return approvers.some(
+          //     (item) => item?.userId?.userId === option.userId
+          //   );
+          // }}
+          disableClearable
+          loading={isLoading}
+          isOptionEqualToValue={(option, value) => true}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              size="small"
+              label="Module Name"
+              required
+              helperText={errors?.userId?.message}
+              error={errors?.userId}
+            />
+          )}
+        />
+
         <Box
           sx={{ display: "flex", flexDirection: "column", gap: "10px" }}
           ref={parent}
         >
+          <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+            List of Approvers
+          </Typography>
           {fields.map((item, index) => (
             <Box
               key={item.id}
