@@ -42,10 +42,10 @@ export const approverApi = createApi({
       transformErrorResponse: (response) => response.data,
     }),
     putUpdateApproversPerModule: builder.mutation({
-      query: ({ params, ...body }) => ({
-        url: "/Approver/UpdateApproversPerModule",
+      query: ({ moduleName, ...body }) => ({
+        url: `/Approver/UpdateApproversPerModule`,
         method: "PUT",
-        params,
+        params: { moduleName },
         body,
       }),
       invalidatesTags: ["Approver"],

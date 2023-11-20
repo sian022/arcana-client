@@ -550,7 +550,8 @@
     }
 
     &__body {
-      max-height: 300px;
+      // max-height: 300px;
+      max-height: 350px;
       overflow: auto;
       padding-left: 200px;
     }

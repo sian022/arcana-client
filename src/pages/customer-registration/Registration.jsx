@@ -15,6 +15,7 @@ import ViewRegistrationDetailsModal from "../../components/modals/view-registrat
 import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
+import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -55,6 +56,12 @@ function DirectRegistration() {
     isOpen: isVoidOpen,
     onOpen: onVoidOpen,
     onClose: onVoidClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isHistoryOpen,
+    onOpen: onHistoryOpen,
+    onClose: onHistoryClose,
   } = useDisclosure();
 
   //RTK Query
@@ -244,6 +251,7 @@ function DirectRegistration() {
             tableHeads={tableHeads}
             editable
             onView={onViewOpen}
+            onHistory={onHistoryOpen}
             // onArchive={true}
             status={status}
             onEdit={handleEditOpen}
@@ -320,6 +328,8 @@ function DirectRegistration() {
           />
         </Box>
       </CommonDialog>
+
+      <ApprovalHistoryModal open={isHistoryOpen} onClose={onHistoryClose} />
     </>
   );
 }

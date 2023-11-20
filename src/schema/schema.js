@@ -375,7 +375,7 @@ export const approversSchema = {
     approvers: yup.array().of(
       yup.object({
         userId: yup.object().required("User is required"),
-        moduleName: yup.string().required("Module is required"),
+        moduleName: yup.string(),
         level: yup.number().required("Level is required"),
       })
     ),

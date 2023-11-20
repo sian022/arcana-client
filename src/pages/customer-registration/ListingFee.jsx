@@ -11,6 +11,7 @@ import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
+import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -41,6 +42,12 @@ function ListingFee() {
     isOpen: isArchiveOpen,
     onOpen: onArchiveOpen,
     onClose: onArchiveClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isHistoryOpen,
+    onOpen: onHistoryOpen,
+    onClose: onHistoryClose,
   } = useDisclosure();
 
   //RTK Query
@@ -179,6 +186,7 @@ function ListingFee() {
             tableHeads={tableHeads}
             pesoArray={pesoArray}
             onEdit={handleOpenEdit}
+            onHistory={onHistoryOpen}
           />
         )}
       </Box>
@@ -211,6 +219,8 @@ function ListingFee() {
         </span>
         ?
       </CommonDialog>
+
+      <ApprovalHistoryModal open={isHistoryOpen} onClose={onHistoryClose} />
     </>
   );
 }

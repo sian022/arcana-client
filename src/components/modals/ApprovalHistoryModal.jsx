@@ -5,24 +5,26 @@ import {
   Step,
   StepButton,
   StepContent,
+  StepIcon,
   StepLabel,
   Stepper,
   Typography,
 } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
+import { Check, CheckCircle, EventNote, HowToReg } from "@mui/icons-material";
 
-function RegistrationApprovalHistoryModal({ ...otherProps }) {
+function ApprovalHistoryModal({ ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
 
   const steps = [
-    "Requested",
-    "1st Approval",
-    "2nd Approval",
-    "Registered Client",
+    { label: "Requested", icon: <EventNote /> },
+    { label: "1st Approval", icon: <Check /> },
+    { label: "2nd Approval", icon: <CheckCircle /> },
+    { label: "Registered Client", icon: <HowToReg /> },
   ];
 
   return (
-    <CommonModal width="700px" {...otherProps} closeTopRight>
+    <CommonModal width="800px" {...otherProps} closeTopRight>
       <Box className="approvalHistoryModal">
         <Typography className="approvalHistoryModal__title">
           Approval History
@@ -30,22 +32,50 @@ function RegistrationApprovalHistoryModal({ ...otherProps }) {
         <Box className="approvalHistoryModal__content">
           <Box className="approvalHistoryModal__content__headStepper">
             <Stepper alternativeLabel>
-              {steps.map((label, index) => (
-                <Step key={label} activeStep={0}>
-                  <StepLabel>{label}</StepLabel>
+              {steps.map((item, index) => (
+                <Step key={item.label} activeStep={0}>
+                  <StepLabel
+                  // StepIconComponent={() => item.icon}
+                  >
+                    {item.label}
+                  </StepLabel>
                 </Step>
               ))}
             </Stepper>
           </Box>
           <Box className="approvalHistoryModal__content__body">
             <Stepper orientation="vertical">
-              {steps.map((label, index) => (
-                <Step key={label} activeStep={0}>
+              {steps.map((item, index) => (
+                <Step key={item.label} activeStep={0}>
                   <StepLabel sx={{ position: "relative" }}>
                     <span style={{ position: "absolute", left: "-170px" }}>
                       November 17 11:47
                     </span>
-                    {label}
+                    {item.label}
+                  </StepLabel>
+                  <StepContent>Pangit yung store owner</StepContent>
+                </Step>
+              ))}
+
+              {steps.map((item, index) => (
+                <Step key={item.label} activeStep={0}>
+                  <StepLabel sx={{ position: "relative" }}>
+                    <span style={{ position: "absolute", left: "-170px" }}>
+                      November 17 11:47
+                    </span>
+                    {item.label}
+                  </StepLabel>
+                  <StepContent>Pangit yung store owner</StepContent>
+                </Step>
+              ))}
+
+              {steps.map((item, index) => (
+                <Step key={item.label} activeStep={0}>
+                  <StepLabel sx={{ position: "relative" }}>
+                    <span style={{ position: "absolute", left: "-170px" }}>
+                      November 17 11:47
+                    </span>
+                    {item.label}
                   </StepLabel>
                   <StepContent>Pangit yung store owner</StepContent>
                 </Step>
@@ -161,4 +191,4 @@ function RegistrationApprovalHistoryModal({ ...otherProps }) {
   );
 }
 
-export default RegistrationApprovalHistoryModal;
+export default ApprovalHistoryModal;

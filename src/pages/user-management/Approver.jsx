@@ -151,6 +151,7 @@ function Approver() {
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
+    const { moduleName, ...restData } = data;
     try {
       if (drawerMode === "add") {
         await addApproversPerModule({
@@ -162,8 +163,16 @@ function Approver() {
         }).unwrap();
         setSnackbarMessage("Approvers added successfully");
       } else if (drawerMode === "edit") {
-        // await putUpdateApproversPerModule(data).unwrap();
-        console.log(data);
+        console.log(moduleName);
+        await putUpdateApproversPerModule({
+          moduleName: moduleName.name,
+          approvers: restData.approvers.map((approver) => ({
+            userId: approver.userId.userId,
+            level: approver.level,
+          })),
+          // ...restData,
+        }).unwrap();
+        // console.log(data);
         setSnackbarMessage("Approver updated successfully");
       }
 
@@ -227,7 +236,7 @@ function Approver() {
 
   useEffect(() => {
     if (isDrawerOpen && drawerMode === "edit") {
-      const foundModule = navigationData?.find(
+      const foundModule = approvalItem?.sub?.find(
         (item) => item?.name === selectedRowData?.moduleName
       );
       setValue("moduleName", foundModule);
@@ -251,9 +260,10 @@ function Approver() {
     }
   }, [isDrawerOpen]);
 
-  console.log("Approvers: ", data);
-  console.log("Selected Row: ", selectedRowData);
-  console.log("Hook Form: ", getValues());
+  // console.log("Approvers: ", data);
+  // console.log("Selected Row: ", selectedRowData);
+  // console.log("Hook Form: ", getValues());
+
   return (
     <Box className="commonPageLayout">
       {/* <PageHeaderSearch
@@ -296,7 +306,11 @@ function Approver() {
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
         width="600px"
-        isLoading={isAddApproversLoading}
+        isLoading={
+          drawerMode === "add"
+            ? isAddApproversLoading
+            : isUpdateApproversLoading
+        }
       >
         <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
           Module Name

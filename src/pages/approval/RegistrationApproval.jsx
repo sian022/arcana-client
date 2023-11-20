@@ -8,7 +8,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import RegistrationApprovalHistoryModal from "../../components/modals/RegistrationApprovalHistoryModal";
+import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 
 function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -192,10 +192,7 @@ function RegistrationApproval() {
         clientStatus={clientStatus}
       />
 
-      <RegistrationApprovalHistoryModal
-        open={isHistoryOpen}
-        onClose={onHistoryClose}
-      />
+      <ApprovalHistoryModal open={isHistoryOpen} onClose={onHistoryClose} />
     </>
   );
 }

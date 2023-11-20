@@ -11,6 +11,7 @@ import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 
 function ListingFeeApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -26,6 +27,12 @@ function ListingFeeApproval() {
     isOpen: isViewOpen,
     onOpen: onViewOpen,
     onClose: onViewClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isHistoryOpen,
+    onOpen: onHistoryOpen,
+    onClose: onHistoryClose,
   } = useDisclosure();
 
   //RTK Query
@@ -167,6 +174,7 @@ function ListingFeeApproval() {
             onView={onViewOpen}
             tableHeads={tableHeads}
             pesoArray={pesoArray}
+            onHistory={onHistoryOpen}
           />
         )}
       </Box>
@@ -179,6 +187,8 @@ function ListingFeeApproval() {
         approval
         listingFeeStatus={listingFeeStatus}
       />
+
+      <ApprovalHistoryModal open={isHistoryOpen} onClose={onHistoryClose} />
     </>
   );
 }
