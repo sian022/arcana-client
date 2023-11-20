@@ -28,7 +28,8 @@ import {
 import {
   useAddApproversPerModuleMutation,
   useGetAllApproversQuery,
-  useGetApproverByModuleQuery,
+  useGetApproversPerModuleQuery,
+  usePutUpdateApproversPerModuleMutation,
 } from "../../features/user-management/api/approverApi";
 import SecondaryButton from "../../components/SecondaryButton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -73,29 +74,30 @@ function Approver() {
 
   // Constants
   const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-    "users",
+    "approvers",
+    // "id",
+    // "createdAt",
+    // "addedBy",
+    // "updatedAt",
+    // "modifiedBy",
+    // "isActive",
+    // "users",
   ];
 
-  const tableMap = [
-    {
-      moduleName: "Freebie Approval",
-    },
-    {
-      moduleName: "Registration Approval",
-    },
-    {
-      moduleName: "Listing Fee Approval",
-    },
-    {
-      moduleName: "Sp. Discount Approval",
-    },
-  ];
+  // const tableMap = [
+  //   {
+  //     moduleName: "Freebie Approval",
+  //   },
+  //   {
+  //     moduleName: "Registration Approval",
+  //   },
+  //   {
+  //     moduleName: "Listing Fee Approval",
+  //   },
+  //   {
+  //     moduleName: "Sp. Discount Approval",
+  //   },
+  // ];
 
   const approvalItem = navigationData.find((item) => item.name === "Approval");
 
@@ -124,13 +126,17 @@ function Approver() {
 
   //RTK Query
   const { data, isLoading, isFetching } = useGetAllApproversQuery();
+
   const [addApproversPerModule, { isLoading: isAddApproversLoading }] =
     useAddApproversPerModuleMutation();
   const {
-    data: approverByModuleData,
-    isLoading: isApproverByModuleLoading,
-    isFetching: isApproverByModuleFetching,
-  } = useGetApproverByModuleQuery({ ModuleName: "Registration Approval" });
+    data: approversPerModuleData,
+    isLoading: isApproversPerModuleLoading,
+    isFetching: isApproversPerModuleFetching,
+  } = useGetApproversPerModuleQuery();
+  const [putUpdateApproversPerModule, { isLoading: isUpdateApproversLoading }] =
+    usePutUpdateApproversPerModuleMutation();
+
   // const [postApprover, { isLoading: isAddLoading }] = usePostApproverMutation();
   // const { data, isLoading, isFetching } = useGetAllCompaniesQuery({
   //   Search: search,
@@ -156,7 +162,8 @@ function Approver() {
         }).unwrap();
         setSnackbarMessage("Approvers added successfully");
       } else if (drawerMode === "edit") {
-        // await putApprover(data).unwrap();
+        // await putUpdateApproversPerModule(data).unwrap();
+        console.log(data);
         setSnackbarMessage("Approver updated successfully");
       }
 
@@ -218,7 +225,35 @@ function Approver() {
     }
   }, [isDrawerOpen]);
 
-  console.log(getValues());
+  useEffect(() => {
+    if (isDrawerOpen && drawerMode === "edit") {
+      const foundModule = navigationData?.find(
+        (item) => item?.name === selectedRowData?.moduleName
+      );
+      setValue("moduleName", foundModule);
+      // selectedRowData?.approvers?.forEach((item) => {
+      //   append({
+      //     // userId: item?.userId,
+      //     userId: data?.find((user) => user.userId === item.userId),
+      //     moduleName: item?.moduleName,
+      //     level: item?.level,
+      //   });
+      // });
+      const editFields = selectedRowData?.approvers?.map((item, index) => ({
+        // userId: item?.userId,
+        userId: data?.find((user) => user.userId === item.userId),
+        // moduleName:
+        // level: item?.level,
+        level: index + 1,
+      }));
+
+      setValue("approvers", editFields);
+    }
+  }, [isDrawerOpen]);
+
+  console.log("Approvers: ", data);
+  console.log("Selected Row: ", selectedRowData);
+  console.log("Hook Form: ", getValues());
   return (
     <Box className="commonPageLayout">
       {/* <PageHeaderSearch
@@ -233,11 +268,11 @@ function Approver() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {false ? (
+      {isApproversPerModuleFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
-          mapData={tableMap}
+          mapData={approversPerModuleData}
           excludeKeysDisplay={excludeKeysDisplay}
           editable
           onManageApprovers={handleEditOpen}
@@ -245,7 +280,7 @@ function Approver() {
           setPage={setPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
-          count={tableMap.length}
+          count={approversPerModuleData?.length}
           status={status}
         />
       )}

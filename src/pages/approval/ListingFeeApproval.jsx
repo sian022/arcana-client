@@ -99,6 +99,7 @@ function ListingFeeApproval() {
     "approvalId",
     "status",
     "cancellationReason",
+    "requestId",
   ];
 
   const tableHeads = [

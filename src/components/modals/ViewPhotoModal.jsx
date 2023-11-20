@@ -32,7 +32,8 @@ function ViewPhotoModal({
             <Box className="attachments__viewModal__signature">
               <img
                 src={
-                  ownersRequirementsIsLink[currentViewPhotoLabelCamel]
+                  ownersRequirementsIsLink[currentViewPhotoLabelCamel] ||
+                  cloudified
                     ? currentViewPhoto
                     : URL.createObjectURL(currentViewPhoto)
                 }
@@ -59,7 +60,8 @@ function ViewPhotoModal({
                 // }
 
                 src={
-                  ownersRequirementsIsLink[currentViewPhotoLabelCamel]
+                  ownersRequirementsIsLink[currentViewPhotoLabelCamel] ||
+                  cloudified
                     ? currentViewPhoto
                     : URL.createObjectURL(currentViewPhoto)
                 }

@@ -35,6 +35,7 @@ function CommonTable({
   onCancelFreebies,
   onManageApprovers,
   onVoid,
+  onHistory,
   page,
   setPage,
   rowsPerPage,
@@ -182,6 +183,7 @@ function CommonTable({
                           onManageApprovers && onManageApprovers
                         }
                         onVoid={onVoid && onVoid}
+                        onHistory={onHistory && onHistory}
                         item={item}
                         status={status}
                       />

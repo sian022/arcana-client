@@ -271,6 +271,8 @@
 
         &__item {
           display: flex;
+          // display: grid;
+          // grid-template-columns: 1fr 1fr;
           justify-content: space-between;
           align-items: center;
 
@@ -283,6 +285,8 @@
           & &__value {
             font-size: 16px;
             text-align: right;
+            // text-align: left;
+            // width: 250px;
           }
         }
 
@@ -520,5 +524,70 @@
   &__table {
     display: flex;
     flex: 1;
+  }
+}
+
+.approvalHistoryModal {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  & &__title {
+    font-weight: bold;
+    font-size: 22px;
+    text-align: center;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    &__headStepper {
+      // max-width: 500px;
+      // overflow: auto;
+      // margin-left: 50px;
+    }
+
+    &__body {
+      max-height: 300px;
+      overflow: auto;
+      padding-left: 200px;
+    }
+    // &__body {
+    //   display: flex;
+    //   flex-direction: column;
+    //   gap: 20px;
+
+    //   &__item {
+    //     display: flex;
+    //     flex-direction: column;
+    //     max-width: 400px;
+
+    //     & &__title {
+    //       font-weight: 600;
+    //     }
+
+    //     &__subs {
+    //       display: grid;
+    //       grid-template-columns: 1fr 1fr 1fr;
+
+    //       &__label {
+    //         grid-column: span 1;
+    //       }
+
+    //       & &__value {
+    //         grid-column: span 2;
+    //         font-weight: 500;
+    //       }
+    //     }
+    //   }
+    // }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: end;
+    align-items: center;
   }
 }

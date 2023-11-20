@@ -7,6 +7,7 @@ import {
   Block,
   Cancel,
   Edit,
+  History,
   HowToReg,
   More,
   PeopleAlt,
@@ -30,6 +31,7 @@ function CommonActions({
   onCancelFreebies,
   onManageApprovers,
   onVoid,
+  onHistory,
   item,
   status,
 }) {
@@ -59,6 +61,8 @@ function CommonActions({
       onManageApprovers();
     } else if (action === "void") {
       onVoid();
+    } else if (action === "history") {
+      onHistory();
     }
 
     onClose();
@@ -197,6 +201,18 @@ function CommonActions({
           >
             <Block />
             Void
+          </MenuItem>
+        )}
+
+        {onHistory && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("history");
+            }}
+          >
+            <History />
+            History
           </MenuItem>
         )}
       </Menu>

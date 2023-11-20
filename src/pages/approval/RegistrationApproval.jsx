@@ -8,6 +8,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import RegistrationApprovalHistoryModal from "../../components/modals/RegistrationApprovalHistoryModal";
 
 function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -25,6 +26,12 @@ function RegistrationApproval() {
     isOpen: isViewOpen,
     onOpen: onViewOpen,
     onClose: onViewClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isHistoryOpen,
+    onOpen: onHistoryOpen,
+    onClose: onHistoryClose,
   } = useDisclosure();
 
   //RTK Query
@@ -139,6 +146,7 @@ function RegistrationApproval() {
     setCount(data?.totalCount);
   }, [data]);
 
+  console.log(isHistoryOpen);
   return (
     <>
       <Box className="commonPageLayout">
@@ -164,6 +172,7 @@ function RegistrationApproval() {
             moreCompact
             editable
             onView={onViewOpen}
+            onHistory={onHistoryOpen}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
@@ -181,6 +190,11 @@ function RegistrationApproval() {
         onClose={onViewClose}
         approval
         clientStatus={clientStatus}
+      />
+
+      <RegistrationApprovalHistoryModal
+        open={isHistoryOpen}
+        onClose={onHistoryClose}
       />
     </>
   );
