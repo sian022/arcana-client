@@ -156,6 +156,7 @@ function DirectRegistration() {
     "latitude",
     // "storeType",
     "dateOfBirth",
+    "clientApprovalHistories",
   ];
 
   const tableHeads = [

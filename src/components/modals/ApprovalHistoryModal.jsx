@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
+  IconButton,
   Step,
   StepButton,
   StepContent,
@@ -11,10 +12,22 @@ import {
   Typography,
 } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
-import { Check, CheckCircle, EventNote, HowToReg } from "@mui/icons-material";
+import {
+  Cancel,
+  Check,
+  CheckCircle,
+  Circle,
+  Close,
+  EventNote,
+  HowToReg,
+} from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import moment from "moment";
 
 function ApprovalHistoryModal({ ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const steps = [
     { label: "Requested", icon: <EventNote /> },
@@ -24,11 +37,22 @@ function ApprovalHistoryModal({ ...otherProps }) {
   ];
 
   return (
-    <CommonModal width="800px" {...otherProps} closeTopRight>
+    <CommonModal width="650px" {...otherProps}>
       <Box className="approvalHistoryModal">
         <Typography className="approvalHistoryModal__title">
           Approval History
         </Typography>
+        <Box
+          sx={{
+            position: "absolute",
+            right: "20px",
+            top: "20px",
+          }}
+        >
+          <IconButton onClick={onClose}>
+            <Close />
+          </IconButton>
+        </Box>
         <Box className="approvalHistoryModal__content">
           <Box className="approvalHistoryModal__content__headStepper">
             <Stepper alternativeLabel>
@@ -45,41 +69,48 @@ function ApprovalHistoryModal({ ...otherProps }) {
           </Box>
           <Box className="approvalHistoryModal__content__body">
             <Stepper orientation="vertical">
-              {steps.map((item, index) => (
-                <Step key={item.label} activeStep={0}>
-                  <StepLabel sx={{ position: "relative" }}>
-                    <span style={{ position: "absolute", left: "-170px" }}>
-                      November 17 11:47
-                    </span>
-                    {item.label}
-                  </StepLabel>
-                  <StepContent>Pangit yung store owner</StepContent>
-                </Step>
-              ))}
-
-              {steps.map((item, index) => (
-                <Step key={item.label} activeStep={0}>
-                  <StepLabel sx={{ position: "relative" }}>
-                    <span style={{ position: "absolute", left: "-170px" }}>
-                      November 17 11:47
-                    </span>
-                    {item.label}
-                  </StepLabel>
-                  <StepContent>Pangit yung store owner</StepContent>
-                </Step>
-              ))}
-
-              {steps.map((item, index) => (
-                <Step key={item.label} activeStep={0}>
-                  <StepLabel sx={{ position: "relative" }}>
-                    <span style={{ position: "absolute", left: "-170px" }}>
-                      November 17 11:47
-                    </span>
-                    {item.label}
-                  </StepLabel>
-                  <StepContent>Pangit yung store owner</StepContent>
-                </Step>
-              ))}
+              {selectedRowData?.clientApprovalHistories?.map(
+                (approval, index) => (
+                  <Step key={index} active={true}>
+                    <StepLabel
+                      StepIconComponent={() =>
+                        approval?.status === "Rejected" ? (
+                          <Cancel sx={{ color: "error.main" }} />
+                        ) : approval?.status === "Approved" ? (
+                          <CheckCircle sx={{ color: "success.main" }} />
+                        ) : (
+                          <Circle sx={{ color: "gray" }} />
+                        )
+                      }
+                      sx={{ position: "relative" }}
+                    >
+                      <span
+                        style={{
+                          position: "absolute",
+                          left: "-170px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {moment(approval?.createdAt).format("MMMM D HH:mm a")}
+                      </span>
+                      <span style={{ fontWeight: "600" }}>
+                        {approval?.status}
+                      </span>
+                    </StepLabel>
+                    <StepContent>
+                      <Typography fontSize="14px">
+                        Name:{" "}
+                        <span style={{ fontWeight: "500" }}>
+                          {approval?.approver}
+                        </span>
+                      </Typography>
+                      {approval?.reason && (
+                        <Typography>Remarks: {approval?.reason}</Typography>
+                      )}
+                    </StepContent>
+                  </Step>
+                )
+              )}
             </Stepper>
           </Box>
           {/* <Box className="approvalHistoryModal__content__body">

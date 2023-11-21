@@ -192,18 +192,6 @@ function CommonActions({
           </MenuItem>
         )}
 
-        {onVoid && (
-          <MenuItem
-            className="actionsMenuItem"
-            onClick={() => {
-              handleAction("void");
-            }}
-          >
-            <Block />
-            Void
-          </MenuItem>
-        )}
-
         {onHistory && (
           <MenuItem
             className="actionsMenuItem"
@@ -213,6 +201,18 @@ function CommonActions({
           >
             <History />
             History
+          </MenuItem>
+        )}
+
+        {onVoid && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("void");
+            }}
+          >
+            <Block />
+            Void
           </MenuItem>
         )}
       </Menu>

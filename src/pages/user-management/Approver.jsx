@@ -180,7 +180,13 @@ function Approver() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.description) {
+        setSnackbarMessage(error?.data?.error?.description);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} approver`
+        );
+      }
       onErrorOpen();
     }
   };
@@ -262,7 +268,7 @@ function Approver() {
 
   // console.log("Approvers: ", data);
   // console.log("Selected Row: ", selectedRowData);
-  // console.log("Hook Form: ", getValues());
+  console.log("Hook Form: ", getValues());
 
   return (
     <Box className="commonPageLayout">

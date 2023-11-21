@@ -130,6 +130,7 @@ function RegistrationApproval() {
     "latitude",
     // "storeType",
     "dateOfBirth",
+    "clientApprovalHistories",
   ];
 
   //Misc Functions

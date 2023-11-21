@@ -157,7 +157,7 @@ function ViewRegistrationDetailsModal({
   const handleReject = async () => {
     try {
       await putRejectClient({
-        id: selectedRowData?.id,
+        id: selectedRowData?.requestId,
         reason,
       }).unwrap();
       showSnackbar("Client rejected successfully", "success");

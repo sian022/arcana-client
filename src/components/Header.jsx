@@ -33,6 +33,9 @@ import {
   toggleSidebar,
   toggleSidebarSmallScreen,
 } from "../features/misc/reducers/disclosureSlice";
+import { registrationApi } from "../features/registration/api/registrationApi";
+import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
+import { prospectApi } from "../features/prospect/api/prospectApi";
 
 function Header() {
   const dispatch = useDispatch();
@@ -113,6 +116,10 @@ function Header() {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("fullname");
     sessionStorage.removeItem("permissions");
+
+    dispatch(registrationApi.util.resetApiState());
+    dispatch(listingFeeApi.util.resetApiState());
+    dispatch(prospectApi.util.resetApiState());
 
     // localStorage.removeItem("token");
     // localStorage.removeItem("fullname");
