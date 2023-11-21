@@ -28,6 +28,7 @@ import VariableDiscount from "../pages/customer-management/VariableDiscount";
 import BusinessType from "../pages/customer-management/BusinessType";
 import Approver from "../pages/user-management/Approver";
 import FreebieApproval from "../pages/approval/FreebieApproval";
+import Freebies from "../pages/customer-registration/freebies/Freebies";
 
 export const router = createBrowserRouter([
   {
@@ -149,6 +150,10 @@ export const router = createBrowserRouter([
           {
             path: "listing-fee",
             element: <ListingFee />,
+          },
+          {
+            path: "freebies",
+            element: <Freebies />,
           },
         ],
       },

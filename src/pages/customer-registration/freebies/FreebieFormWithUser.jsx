@@ -6,7 +6,7 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import CommonDrawer from "../../../components/CommonDrawer";
-import { Box, IconButton, TextField } from "@mui/material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { Add, Cancel } from "@mui/icons-material";
 import {
@@ -25,8 +25,11 @@ import { debounce } from "../../../utils/CustomFunctions";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import { setFreebies } from "../../../features/registration/reducers/regularRegistrationSlice";
 import useSnackbar from "../../../hooks/useSnackbar";
+import { useGetAllClientsForListingFeeQuery } from "../../../features/registration/api/registrationApi";
 
-function FreebieForm({
+function FreebieFormWithUser({
+  editMode,
+  setEditMode,
   isFreebieFormOpen,
   onFreebieFormClose,
   updateFreebies,
@@ -111,6 +114,11 @@ function FreebieForm({
     usePutFreebiesInformationMutation();
 
   const { data: productData } = useGetAllProductsQuery({ Status: true });
+  const { data: clientData, isLoading: isClientLoading } =
+    useGetAllClientsForListingFeeQuery({
+      Status: true,
+      IncludeRejected: editMode ? editMode : "",
+    });
 
   //Drawer Functions
   const onFreebieSubmit = async (data) => {
@@ -263,6 +271,69 @@ function FreebieForm({
         submitLabel={direct && "Save"}
         enableAutoAnimate
       >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <ControlledAutocomplete
+              name={`clientId`}
+              control={control}
+              options={clientData?.regularClient || []}
+              getOptionLabel={(option) => option.businessName || ""}
+              disableClearable
+              loading={isClientLoading}
+              disabled={editMode}
+              // value={clientData?.regularClient?.find(
+              //   (item) => item.businessName === selectedRowData?.businessName
+              // )}
+              // isOptionEqualToValue={(option, value) => option.id === value.id}
+              isOptionEqualToValue={(option, value) => true}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label="Business Name"
+                  required
+                  helperText={errors?.itemId?.message}
+                  error={errors?.itemId}
+                  sx={{ width: "300px" }}
+                />
+              )}
+              onChange={(_, value) => {
+                setValue(`customerName`, value?.ownersName);
+                return value;
+              }}
+            />
+
+            <Controller
+              control={control}
+              name={`customerName`}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <TextField
+                  label="Customer Name"
+                  size="small"
+                  autoComplete="off"
+                  disabled
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value || ""}
+                  ref={ref}
+                  sx={{ width: "300px" }}
+                />
+              )}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+              Product Information
+            </Typography>
+          </Box>
+        </Box>
+
         {fields.map((item, index) => (
           <Box
             key={item.id}
@@ -451,4 +522,4 @@ function FreebieForm({
   );
 }
 
-export default FreebieForm;
+export default FreebieFormWithUser;

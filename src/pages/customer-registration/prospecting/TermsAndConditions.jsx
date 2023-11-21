@@ -58,7 +58,7 @@ function TermsAndConditions({ direct, editMode }) {
     }
     dispatch(
       setTermsAndConditions({
-        property: "fixedDiscounts",
+        property: "fixedDiscount",
         value: { discountPercentage: parsedValue === "" ? null : parsedValue },
       })
     );
@@ -82,7 +82,7 @@ function TermsAndConditions({ direct, editMode }) {
   //   }
   //   dispatch(
   //     setTermsAndConditions({
-  //       property: "fixedDiscounts",
+  //       property: "fixedDiscount",
   //       value: {
   //         discountPercentage: parseInt(e.target.value),
   //       },
@@ -105,7 +105,7 @@ function TermsAndConditions({ direct, editMode }) {
     if (termsAndConditions["variableDiscount"] === true) {
       dispatch(
         setTermsAndConditions({
-          property: "fixedDiscounts",
+          property: "fixedDiscount",
           value: { discountPercentage: null },
         })
       );
@@ -516,10 +516,10 @@ function TermsAndConditions({ direct, editMode }) {
                   }}
                   type="number"
                   value={
-                    termsAndConditions["fixedDiscounts"].discountPercentage !=
+                    termsAndConditions["fixedDiscount"].discountPercentage !=
                     null
                       ? termsAndConditions[
-                          "fixedDiscounts"
+                          "fixedDiscount"
                         ].discountPercentage.toString()
                       : ""
                   }

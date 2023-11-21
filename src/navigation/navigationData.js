@@ -166,6 +166,12 @@ export const navigationData = [
         name: "Listing Fee",
         icon: "Payment",
       },
+      {
+        id: 4,
+        path: "/customer-registration/freebies",
+        name: "Freebies",
+        icon: "CardGiftCard",
+      },
     ],
   },
   // {

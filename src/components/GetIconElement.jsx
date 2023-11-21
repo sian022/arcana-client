@@ -30,6 +30,7 @@ import {
   LocalOffer,
   SupervisedUserCircle,
   HowToVote,
+  CardGiftcard,
 } from "@mui/icons-material";
 
 export const getIconElement = (iconName) => {
@@ -65,6 +66,7 @@ export const getIconElement = (iconName) => {
     LocalOffer: <LocalOffer />,
     SupervisedUserCircle: <SupervisedUserCircle />,
     HowToVote: <HowToVote />,
+    CardGiftCard: <CardGiftcard />,
   };
 
   return iconMap[iconName] || <IcecreamOutlined />;

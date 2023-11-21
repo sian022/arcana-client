@@ -150,7 +150,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       label: "Terms and Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
         if (
-          key === "fixedDiscounts" &&
+          key === "" &&
           (termsAndConditions[key].discountPercentage === null ||
             termsAndConditions[key].discountPercentage === "" ||
             termsAndConditions[key].discountPercentage === NaN ||
@@ -493,7 +493,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               : null,
           creditLimit: selectedRowData?.terms?.creditLimit,
           variableDiscount: selectedRowData?.variableDiscount,
-          fixedDiscounts:
+          fixedDiscount:
             selectedRowData?.fixedDiscount === null
               ? {
                   discountPercentage: null,

@@ -14,7 +14,7 @@ export const regularRegistrationSlice = createSlice({
         variableDiscount: null,
         termDaysId: null,
         creditLimit: null,
-        fixedDiscounts: {
+        fixedDiscount: {
           discountPercentage: null,
         },
       },
@@ -42,7 +42,7 @@ export const regularRegistrationSlice = createSlice({
         variableDiscount: null,
         termDaysId: null,
         creditLimit: null,
-        fixedDiscounts: {
+        fixedDiscount: {
           discountPercentage: null,
         },
       };

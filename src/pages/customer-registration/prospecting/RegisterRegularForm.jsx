@@ -132,7 +132,7 @@ function RegisterRegularForm({ open, onClose }) {
       label: "Terms and Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
         if (
-          key === "fixedDiscounts" &&
+          key === "fixedDiscount" &&
           (termsAndConditions[key].discountPercentage === null ||
             termsAndConditions[key].discountPercentage === "" ||
             termsAndConditions[key].discountPercentage === NaN ||
@@ -207,11 +207,11 @@ function RegisterRegularForm({ open, onClose }) {
   const addTermsAndConditions = async () => {
     let updatedTermsAndConditions = { ...termsAndConditions };
 
-    // if (termsAndConditions["fixedDiscounts"].discountPercentage === "") {
+    // if (termsAndConditions["fixedDiscount"].discountPercentage === "") {
     //   updatedTermsAndConditions = {
     //     ...termsAndConditions,
-    //     fixedDiscounts: {
-    //       ...termsAndConditions["fixedDiscounts"],
+    //     fixedDiscount: {
+    //       ...termsAndConditions["fixedDiscount"],
     //       discountPercentage: null,
     //     },
     //   };
