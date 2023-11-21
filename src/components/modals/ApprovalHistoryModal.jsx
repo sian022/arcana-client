@@ -71,7 +71,7 @@ function ApprovalHistoryModal({ ...otherProps }) {
             <Stepper orientation="vertical">
               {selectedRowData?.clientApprovalHistories?.map(
                 (approval, index) => (
-                  <Step key={index} active={true}>
+                  <Step key={index} active expanded>
                     <StepLabel
                       StepIconComponent={() =>
                         approval?.status === "Rejected" ? (
