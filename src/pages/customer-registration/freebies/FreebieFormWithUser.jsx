@@ -154,7 +154,7 @@ function FreebieFormWithUser({
         setSnackbarMessage("Freebies requested successfully");
       }
 
-      // dispatch(setSelectedRow(response?.data));
+      dispatch(setSelectedRow(response?.data));
       handleDrawerClose();
       debounce(onRedirectReleaseOpen(), 2000);
       onSuccessOpen();
