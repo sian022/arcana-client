@@ -6,14 +6,17 @@ import { router } from "./navigation/router";
 import "./assets/styles/common.styles.scss";
 import { AppProvider } from "./context/AppContext";
 import { AttachmentsProvider } from "./context/AttachmentsContext";
+import { DirectReleaseProvider } from "./context/DirectReleaseContext";
 
 function App() {
   return (
     <AppProvider>
       <AttachmentsProvider>
-        <ThemeProvider theme={theme}>
-          <RouterProvider router={router} />
-        </ThemeProvider>
+        <DirectReleaseProvider>
+          <ThemeProvider theme={theme}>
+            <RouterProvider router={router} />
+          </ThemeProvider>
+        </DirectReleaseProvider>
       </AttachmentsProvider>
     </AppProvider>
   );

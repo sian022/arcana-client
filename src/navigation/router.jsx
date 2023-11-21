@@ -151,10 +151,10 @@ export const router = createBrowserRouter([
             path: "listing-fee",
             element: <ListingFee />,
           },
-          {
-            path: "freebies",
-            element: <Freebies />,
-          },
+          // {
+          //   path: "freebies",
+          //   element: <Freebies />,
+          // },
         ],
       },
       {
@@ -173,10 +173,10 @@ export const router = createBrowserRouter([
             path: "listing-fee-approval",
             element: <ListingFeeApproval />,
           },
-          {
-            path: "freebie-approval",
-            element: <FreebieApproval />,
-          },
+          // {
+          //   path: "freebie-approval",
+          //   element: <FreebieApproval />,
+          // },
         ],
       },
     ],

@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetFreebies,
@@ -22,6 +22,7 @@ import SecondaryButton from "../../../components/SecondaryButton";
 import useDisclosure from "../../../hooks/useDisclosure";
 import FreebieForm from "./FreebieForm";
 import { Cancel } from "@mui/icons-material";
+import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 
 function TermsAndConditions({ direct, editMode }) {
   const dispatch = useDispatch();
@@ -33,6 +34,9 @@ function TermsAndConditions({ direct, editMode }) {
   const freebiesDirect = useSelector(
     (state) => state.regularRegistration.value.freebies
   );
+
+  const { setPhotoProofDirect, setSignatureDirect } =
+    useContext(DirectReleaseContext);
 
   //Disclosures
   const {

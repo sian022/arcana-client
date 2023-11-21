@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   requestFreebiesSchema,
   requestFreebiesDirectSchema,
@@ -23,8 +23,15 @@ import CommonDialog from "../../../components/CommonDialog";
 import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
 import { debounce } from "../../../utils/CustomFunctions";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
-import { setFreebies } from "../../../features/registration/reducers/regularRegistrationSlice";
+import {
+  resetFreebies,
+  setFreebies,
+} from "../../../features/registration/reducers/regularRegistrationSlice";
 import useSnackbar from "../../../hooks/useSnackbar";
+import {
+  DirectReleaseContext,
+  DirectReleaseProvider,
+} from "../../../context/DirectReleaseContext";
 
 function FreebieForm({
   isFreebieFormOpen,
@@ -41,6 +48,9 @@ function FreebieForm({
     (state) => state.regularRegistration.value.freebies
   );
   const dispatch = useDispatch();
+
+  const { signatureDirect, photoProofDirect } =
+    useContext(DirectReleaseContext);
 
   //Disclosures
   const {
@@ -110,7 +120,8 @@ function FreebieForm({
   const [putFreebiesInformation, { isLoading: isUpdateLoading }] =
     usePutFreebiesInformationMutation();
 
-  const { data: productData } = useGetAllProductsQuery({ Status: true });
+  const { data: productData, isLoading: isProductDataLoading } =
+    useGetAllProductsQuery({ Status: true });
 
   //Drawer Functions
   const onFreebieSubmit = async (data) => {
@@ -251,6 +262,15 @@ function FreebieForm({
     }
   }, [!isFreebieFormOpen]);
 
+  // useEffect(() => {
+  //   if (direct) {
+  //     const freebiesValue = getValues("freebies");
+  //     dispatch(setFreebies(freebiesValue));
+  //   }
+  // }, [dispatch, getValues]);
+
+  // console.log(freebiesDirect);
+
   return (
     <>
       <CommonDrawer
@@ -258,7 +278,9 @@ function FreebieForm({
         open={isFreebieFormOpen}
         onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
         width="1000px"
-        disableSubmit={!isValid}
+        disableSubmit={
+          direct ? !isValid || !photoProofDirect || !signatureDirect : !isValid
+        }
         onSubmit={onConfirmSubmitOpen}
         submitLabel={direct && "Save"}
         enableAutoAnimate
@@ -284,6 +306,7 @@ function FreebieForm({
                   (item) => item?.itemId?.itemCode === option.itemCode
                 );
               }}
+              loading={isProductDataLoading}
               disableClearable
               // isOptionEqualToValue={(option, value) => option.id === value.id}
               isOptionEqualToValue={(option, value) => true}
@@ -368,16 +391,33 @@ function FreebieForm({
             </IconButton>
           </Box>
         ))}
-        <SecondaryButton
-          sx={{ width: "150px" }}
-          onClick={() => {
-            fields.length < 5
-              ? append({ itemId: null, quantity: 1 })
-              : handleFreebieError();
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          Add Freebie
-        </SecondaryButton>
+          <SecondaryButton
+            sx={{ width: "150px" }}
+            onClick={() => {
+              fields.length < 5
+                ? append({ itemId: null, quantity: 1 })
+                : handleFreebieError();
+            }}
+          >
+            Add Freebie
+          </SecondaryButton>
+          {direct && (
+            <SecondaryButton
+              sx={{ width: "150px" }}
+              onClick={onFreebieReleaseOpen}
+              disabled={freebiesDirect?.length === 0}
+            >
+              Release Freebies
+            </SecondaryButton>
+          )}
+        </Box>
       </CommonDrawer>
 
       <CommonDialog
@@ -434,6 +474,7 @@ function FreebieForm({
         open={isFreebieReleaseOpen}
         // open={true}
         onClose={onFreebieReleaseClose}
+        direct={direct}
       />
 
       <SuccessSnackbar

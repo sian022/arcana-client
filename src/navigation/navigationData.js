@@ -166,12 +166,12 @@ export const navigationData = [
         name: "Listing Fee",
         icon: "Payment",
       },
-      {
-        id: 4,
-        path: "/customer-registration/freebies",
-        name: "Freebies",
-        icon: "CardGiftCard",
-      },
+      // {
+      //   id: 4,
+      //   path: "/customer-registration/freebies",
+      //   name: "Freebies",
+      //   icon: "CardGiftCard",
+      // },
     ],
   },
   // {
@@ -204,12 +204,12 @@ export const navigationData = [
         path: "/approval/listing-fee-approval",
         icon: "Payment",
       },
-      {
-        id: 4,
-        name: "Freebie Approval",
-        path: "/approval/freebie-approval",
-        icon: "Redeem",
-      },
+      // {
+      //   id: 4,
+      //   name: "Freebie Approval",
+      //   path: "/approval/freebie-approval",
+      //   icon: "Redeem",
+      // },
     ],
   },
   // {

@@ -40,6 +40,7 @@ import TermsAndConditions from "../prospecting/TermsAndConditions";
 import Attachments from "../prospecting/Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
 import {
+  resetFreebies,
   resetTermsAndConditions,
   setWholeTermsAndConditions,
 } from "../../../features/registration/reducers/regularRegistrationSlice";
@@ -336,6 +337,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     });
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
+    dispatch(resetFreebies());
     setEditMode(false);
     setActiveTab("Personal Info");
   };

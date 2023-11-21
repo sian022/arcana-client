@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -34,9 +34,11 @@ import ErrorSnackbar from "../ErrorSnackbar";
 import CommonDialog from "../CommonDialog";
 import ViewPhotoModal from "./ViewPhotoModal";
 import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
+import { DirectReleaseContext } from "../../context/DirectReleaseContext";
 
-function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
+function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
+  const { open, ...noOpenProps } = otherProps;
 
   const [signature, setSignature] = useState("");
   const [photoProof, setPhotoProof] = useState(null);
@@ -49,6 +51,17 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
   const { fullname } = useSelector((state) => state.login);
 
   const fileUploadRef = useRef();
+
+  const freebiesDirect = useSelector(
+    (state) => state.regularRegistration.value.freebies
+  );
+
+  const {
+    signatureDirect,
+    photoProofDirect,
+    setSignatureDirect,
+    setPhotoProofDirect,
+  } = useContext(DirectReleaseContext);
 
   const {
     isOpen: isCanvasOpen,
@@ -130,10 +143,22 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
     }
   };
 
+  const handleReleaseSave = () => {
+    setPhotoProofDirect(photoProof);
+    setSignatureDirect(signature);
+
+    onClose();
+    onConfirmClose();
+  };
+
   //Misc Functions
   const handleCancel = () => {
     setSignature("");
     setPhotoProof(null);
+
+    direct && setSignatureDirect("");
+    direct && setPhotoProofDirect(null);
+
     onClose();
     onCancelConfirmClose();
   };
@@ -154,6 +179,13 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
     onRegisterOpen();
     onRedirectRegisterClose();
   };
+
+  // useEffect(() => {
+  //   if (direct && open) {
+  //     setSignature(signatureDirect);
+  //     setPhotoProof(photoProofDirect);
+  //   }
+  // }, [open]);
 
   return (
     <>
@@ -224,16 +256,26 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
               </TableHead>
 
               <TableBody>
-                {selectedRowData?.freebies?.[
-                  freebiesLength - 1
-                ].freebieItems?.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{item.itemCode}</TableCell>
-                    <TableCell>{item.itemDescription}</TableCell>
-                    <TableCell>{item.uom}</TableCell>
-                  </TableRow>
-                ))}
+                {direct &&
+                  freebiesDirect?.map((item, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.itemCode}</TableCell>
+                      <TableCell>{item.itemDescription}</TableCell>
+                      <TableCell>{item.uom}</TableCell>
+                    </TableRow>
+                  ))}
+                {!direct &&
+                  selectedRowData?.freebies?.[
+                    freebiesLength - 1
+                  ].freebieItems?.map((item, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.itemCode}</TableCell>
+                      <TableCell>{item.itemDescription}</TableCell>
+                      <TableCell>{item.uom}</TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -332,7 +374,7 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
             onClick={onConfirmOpen}
             disabled={!signature || !photoProof}
           >
-            Release
+            {direct ? "Save" : "Release"}
           </SecondaryButton>
         </Box>
       </CommonModal>
@@ -356,11 +398,11 @@ function ReleaseFreebieModal({ onRedirect, ...otherProps }) {
       <CommonDialog
         open={isConfirmOpen}
         onClose={onConfirmClose}
-        onYes={handleReleaseSubmit}
+        onYes={direct ? handleReleaseSave : handleReleaseSubmit}
         noIcon
         isLoading={isLoading}
       >
-        Confirm release freebies for{" "}
+        Confirm {direct && "save"} release freebies for{" "}
         <span style={{ fontWeight: "bold" }}>
           {selectedRowData?.businessName}
         </span>
