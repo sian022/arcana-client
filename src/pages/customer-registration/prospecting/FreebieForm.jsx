@@ -410,11 +410,14 @@ function FreebieForm({
           </SecondaryButton>
           {direct && (
             <SecondaryButton
-              sx={{ width: "150px" }}
+              sx={{ width: "160px" }}
               onClick={onFreebieReleaseOpen}
-              disabled={freebiesDirect?.length === 0}
+              disabled={
+                // freebiesDirect?.length === 0
+                !isValid && watch("freebies")?.length === 1
+              }
             >
-              Release Freebies
+              Release Freebie(s)
             </SecondaryButton>
           )}
         </Box>

@@ -49,7 +49,6 @@ export const regularRegistrationSlice = createSlice({
     },
     setFreebies: (state, action) => {
       state.value.freebies = action.payload;
-      console.log(action.payload);
     },
     resetFreebies: (state) => {
       state.value.freebies = [];

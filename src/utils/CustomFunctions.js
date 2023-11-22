@@ -103,3 +103,23 @@ export const shallowEqual = (objA, objB) => {
 
   return true;
 };
+
+export const formatOrdinalPrefix = (number) => {
+  const lastDigit = number % 10;
+  const twoDigits = number % 100;
+
+  if (twoDigits >= 11 && twoDigits <= 13) {
+    return `${number}th`;
+  }
+
+  switch (lastDigit) {
+    case 1:
+      return `${number}st`;
+    case 2:
+      return `${number}nd`;
+    case 3:
+      return `${number}rd`;
+    default:
+      return `${number}th`;
+  }
+};

@@ -19,11 +19,6 @@ function ViewPhotoModal({
     requirementsMode,
   } = useContext(AttachmentsContext);
 
-  console.log("Owners Requirements is Link: ", ownersRequirementsIsLink);
-  console.log(
-    "Representative Requirements is Link: ",
-    representativeRequirementsIsLink
-  );
   return (
     <CommonModal width="800px" {...otherProps}>
       <Box className="attachments__viewModal__title">

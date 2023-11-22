@@ -91,8 +91,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     (state) => state.regularRegistration.value.freebies
   );
 
-  console.log(termsAndConditions);
-
   //Disclosures
   const {
     isOpen: isConfirmOpen,
@@ -513,13 +511,18 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               ? 2
               : null,
           creditLimit: selectedRowData?.terms?.creditLimit,
-          variableDiscount: selectedRowData?.variableDiscount,
+          variableDiscount: !selectedRowData?.variableDiscount
+            ? false
+            : selectedRowData?.variableDiscount,
           fixedDiscount:
             selectedRowData?.fixedDiscount === null
               ? {
                   discountPercentage: null,
                 }
-              : selectedRowData?.fixedDiscount,
+              : {
+                  discountPercentage:
+                    selectedRowData?.fixedDiscount?.discountPercentage * 100,
+                },
         })
       );
 

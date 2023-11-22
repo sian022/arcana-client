@@ -35,8 +35,12 @@ function TermsAndConditions({ direct, editMode }) {
     (state) => state.regularRegistration.value.freebies
   );
 
-  const { setPhotoProofDirect, setSignatureDirect } =
-    useContext(DirectReleaseContext);
+  const {
+    photoProofDirect,
+    signatureDirect,
+    setPhotoProofDirect,
+    setSignatureDirect,
+  } = useContext(DirectReleaseContext);
 
   //Disclosures
   const {
@@ -116,6 +120,7 @@ function TermsAndConditions({ direct, editMode }) {
     }
   }, [termsAndConditions["terms"], termsAndConditions["variableDiscount"]]);
 
+  console.log();
   return (
     <Box className="terms">
       <Box className="terms__column">
@@ -556,6 +561,8 @@ function TermsAndConditions({ direct, editMode }) {
                 // }}
                 onClick={() => {
                   dispatch(resetFreebies());
+                  setSignatureDirect(null);
+                  setPhotoProofDirect(null);
                 }}
               >
                 <Cancel sx={{ fontSize: "30px" }} />

@@ -6,6 +6,7 @@ const DirectReleaseProvider = ({ children }) => {
   const [signatureDirect, setSignatureDirect] = useState(null);
   const [photoProofDirect, setPhotoProofDirect] = useState(null);
 
+  console.log(signatureDirect);
   return (
     <DirectReleaseContext.Provider
       value={{

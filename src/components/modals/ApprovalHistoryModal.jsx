@@ -23,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { formatOrdinalPrefix } from "../../utils/CustomFunctions";
 
 function ApprovalHistoryModal({ ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -33,9 +34,24 @@ function ApprovalHistoryModal({ ...otherProps }) {
     { label: "Requested", icon: <EventNote /> },
     { label: "1st Approval", icon: <Check /> },
     { label: "2nd Approval", icon: <CheckCircle /> },
-    { label: "Registered Client", icon: <HowToReg /> },
+    // { label: "Regular Client", icon: <HowToReg /> },
   ];
 
+  const handleActiveStep = (recentLevel, recentStatus) => {
+    if (recentLevel === 0) {
+      return 1;
+    } else if (recentLevel === 1) {
+      return 2;
+    } else if (recentLevel === 2 && recentStatus === "Rejected") {
+      return 2;
+    } else if (recentLevel === 2 && recentStatus === "Approved") {
+      return 3;
+    } else {
+      return 4;
+    }
+  };
+
+  console.log(selectedRowData);
   return (
     <CommonModal width="650px" {...otherProps}>
       <Box className="approvalHistoryModal">
@@ -55,10 +71,25 @@ function ApprovalHistoryModal({ ...otherProps }) {
         </Box>
         <Box className="approvalHistoryModal__content">
           <Box className="approvalHistoryModal__content__headStepper">
-            <Stepper alternativeLabel>
+            <Stepper
+              alternativeLabel
+              activeStep={handleActiveStep(
+                selectedRowData?.clientApprovalHistories?.[0]?.level,
+                selectedRowData?.clientApprovalHistories?.[0]?.status
+              )}
+            >
               {steps.map((item, index) => (
-                <Step key={item.label} activeStep={0}>
+                <Step key={item.label}>
                   <StepLabel
+                  // StepIconComponent={() => (
+                  //   <Cancel
+                  //     sx={{
+                  //       color: "error.main",
+                  //       // width: "1.7rem",
+                  //       // height: "1.7rem",
+                  //     }}
+                  //   />
+                  // )}
                   // StepIconComponent={() => item.icon}
                   >
                     {item.label}
@@ -94,7 +125,8 @@ function ApprovalHistoryModal({ ...otherProps }) {
                         {moment(approval?.createdAt).format("MMMM D HH:mm a")}
                       </span>
                       <span style={{ fontWeight: "600" }}>
-                        {approval?.status}
+                        {approval?.status} -{" "}
+                        {formatOrdinalPrefix(approval?.level)} Approval
                       </span>
                     </StepLabel>
                     <StepContent>
@@ -105,7 +137,12 @@ function ApprovalHistoryModal({ ...otherProps }) {
                         </span>
                       </Typography>
                       {approval?.reason && (
-                        <Typography>Remarks: {approval?.reason}</Typography>
+                        <Typography fontSize="14px">
+                          Remarks:{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {approval?.reason}
+                          </span>
+                        </Typography>
                       )}
                     </StepContent>
                   </Step>

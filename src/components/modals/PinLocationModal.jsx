@@ -56,11 +56,11 @@ function PinLocationModal({
   return (
     <CommonModal {...noOnClose}>
       <Box>
-        <Typography
+        {/* <Typography
           sx={{ fontWeight: "bold", fontSize: "30px", textAlign: "center" }}
         >
           MAMAYA KA NALANG
-        </Typography>
+        </Typography> */}
         <div id="map"></div>
       </Box>
       {/* <Box>
