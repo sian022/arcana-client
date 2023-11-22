@@ -4,7 +4,6 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
 import useSnackbar from "../../hooks/useSnackbar";
-// import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import {
   GoogleMap,
   LoadScript,
@@ -12,13 +11,6 @@ import {
   useJsApiLoader,
   useLoadScript,
 } from "@react-google-maps/api";
-// import {
-//   APIProvider,
-//   AdvancedMarker,
-//   Map,
-//   Marker,
-//   Pin,
-// } from "@vis.gl/react-google-maps";
 
 function PinLocationModal({
   latitude: initialLatitude,
@@ -37,18 +29,35 @@ function PinLocationModal({
 
   const rdfPosition = { lat: 15.095278923422851, lng: 120.6081880242793 };
 
-  const handleMapClick = (event) => {};
-
   const mapStyles = {
     height: "400px",
     width: "100%",
   };
 
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    // googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY,
+  });
+
+  const [map, setMap] = React.useState(null);
+
+  const onLoad = React.useCallback(function callback(map) {
+    // This is just an example of getting and using the map instance!!! don't just blindly copy!
+    const bounds = new window.google.maps.LatLngBounds(rdfPosition);
+    map.fitBounds(bounds);
+
+    setMap(map);
+  }, []);
+
+  const onUnmount = React.useCallback(function callback(map) {
+    setMap(null);
+  }, []);
+
   //Google Maps Functions
 
   const handleSubmit = () => {
-    setLatitude(markerPosition.lat);
-    setLongitude(markerPosition.lng);
+    // setLatitude(markerPosition.lat);
+    // setLongitude(markerPosition.lng);
     onClose();
   };
 
@@ -64,30 +73,6 @@ function PinLocationModal({
       >
         Pin Location
       </Typography>
-      {/* <APIProvider apiKey={import.meta.env.VITE_GOOGLE_API_KEY}>
-        <Box
-          sx={{
-            marginBottom: "20px",
-            height: "400px",
-            width: "600px",
-          }}
-        >
-          <Map
-            zoom={15}
-            center={rdfPosition}
-            gestureHandling={"greedy"}
-            disableDefaultUI={true}
-          >
-            <Marker position={rdfPosition}>
-              <Pin
-                background={"#FBBC04"}
-                glyphColor={"#000"}
-                borderColor={"#000"}
-              />
-            </Marker>
-          </Map>
-        </Box>
-      </APIProvider> */}
 
       <Box
         sx={{
@@ -96,13 +81,27 @@ function PinLocationModal({
           width: "600px",
         }}
       >
-        <LoadScript
+        {isLoaded ? (
+          <GoogleMap
+            mapContainerStyle={mapStyles}
+            center={rdfPosition}
+            zoom={10}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+          >
+            {/* Child components, such as markers, info windows, etc. */}
+            <></>
+          </GoogleMap>
+        ) : (
+          <></>
+        )}
+        {/* <LoadScript
           googleMapsApiKey={import.meta.env.VITE_GOOGLE_API_KEY}
-          loadingElement={() => <CircularProgress />}
+          // loadingElement={() => <CircularProgress sx={{ width: "300px" }} />}
         >
           <GoogleMap
             mapContainerStyle={mapStyles}
-            zoom={20}
+            zoom={16}
             center={rdfPosition}
             onClick={(event) => setMarkerPosition(event.latLng.toJSON())}
           >
@@ -112,7 +111,7 @@ function PinLocationModal({
               onDragEnd={(e) => setMarkerPosition(e.latLng.toJSON())}
             />
           </GoogleMap>
-        </LoadScript>
+        </LoadScript> */}
       </Box>
 
       <Box

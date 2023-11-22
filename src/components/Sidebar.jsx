@@ -88,7 +88,7 @@ function Sidebar() {
           </Box>
           <Box className="sidebar__navigation">
             {permittedSidebar.map(
-              // {navigationData.map(
+              // {/* {navigationData.map( */}
               (item) => (
                 <React.Fragment key={item.id}>
                   <NavLink to={item.path}>
