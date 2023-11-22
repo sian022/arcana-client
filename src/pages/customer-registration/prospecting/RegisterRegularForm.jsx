@@ -53,7 +53,9 @@ function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
   const {
     setOwnersRequirements,
+    setOwnersRequirementsIsLink,
     setRepresentativeRequirements,
+    setRepresentativeRequirementsIsLink,
     setRequirementsMode,
     convertSignatureToBase64,
   } = useContext(AttachmentsContext);
@@ -294,11 +296,18 @@ function RegisterRegularForm({ open, onClose }) {
   const handleResetForms = () => {
     reset();
     setSameAsOwnersAddress(false);
+
     setOwnersRequirements({
       signature: null,
       storePhoto: null,
       businessPermit: null,
       photoIdOwner: null,
+    });
+    setOwnersRequirementsIsLink({
+      signature: false,
+      storePhoto: false,
+      businessPermit: false,
+      photoIdOwner: false,
     });
     setRepresentativeRequirements({
       signature: null,
@@ -308,6 +317,15 @@ function RegisterRegularForm({ open, onClose }) {
       photoIdRepresentative: null,
       authorizationLetter: null,
     });
+    setRepresentativeRequirementsIsLink({
+      signature: false,
+      storePhoto: false,
+      businessPermit: false,
+      photoIdOwner: false,
+      photoIdRepresentative: false,
+      authorizationLetter: false,
+    });
+
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
     setActiveTab("Personal Info");

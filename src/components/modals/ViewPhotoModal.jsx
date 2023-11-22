@@ -13,8 +13,17 @@ function ViewPhotoModal({
 }) {
   const { onClose, ...noOnClose } = otherProps;
 
-  const { ownersRequirementsIsLink } = useContext(AttachmentsContext);
+  const {
+    ownersRequirementsIsLink,
+    representativeRequirementsIsLink,
+    requirementsMode,
+  } = useContext(AttachmentsContext);
 
+  console.log("Owners Requirements is Link: ", ownersRequirementsIsLink);
+  console.log(
+    "Representative Requirements is Link: ",
+    representativeRequirementsIsLink
+  );
   return (
     <CommonModal width="800px" {...otherProps}>
       <Box className="attachments__viewModal__title">
@@ -32,8 +41,14 @@ function ViewPhotoModal({
             <Box className="attachments__viewModal__signature">
               <img
                 src={
-                  ownersRequirementsIsLink[currentViewPhotoLabelCamel] ||
-                  cloudified
+                  requirementsMode === "owner"
+                    ? ownersRequirementsIsLink[currentViewPhotoLabelCamel] ||
+                      cloudified
+                      ? currentViewPhoto
+                      : URL.createObjectURL(currentViewPhoto)
+                    : representativeRequirementsIsLink[
+                        currentViewPhotoLabelCamel
+                      ] || cloudified
                     ? currentViewPhoto
                     : URL.createObjectURL(currentViewPhoto)
                 }
@@ -60,10 +75,18 @@ function ViewPhotoModal({
                 // }
 
                 src={
-                  ownersRequirementsIsLink[currentViewPhotoLabelCamel] ||
-                  cloudified
+                  requirementsMode === "owner"
+                    ? ownersRequirementsIsLink[currentViewPhotoLabelCamel] ||
+                      cloudified
+                      ? currentViewPhoto
+                      : currentViewPhoto instanceof File &&
+                        URL.createObjectURL(currentViewPhoto)
+                    : representativeRequirementsIsLink[
+                        currentViewPhotoLabelCamel
+                      ] || cloudified
                     ? currentViewPhoto
-                    : URL.createObjectURL(currentViewPhoto)
+                    : currentViewPhoto instanceof File &&
+                      URL.createObjectURL(currentViewPhoto)
                 }
                 alt="File preview"
                 style={{

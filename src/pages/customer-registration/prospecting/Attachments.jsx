@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 import CommonModal from "../../../components/CommonModal";
 import { base64ToBlob } from "../../../utils/CustomFunctions";
 import ViewPhotoModal from "../../../components/modals/ViewPhotoModal";
+import { set } from "react-hook-form";
 
 function Attachments() {
   const {
@@ -36,6 +37,8 @@ function Attachments() {
     setOwnersRequirementsIsLink,
     representativeRequirements,
     setRepresentativeRequirements,
+    representativeRequirementsIsLink,
+    setRepresentativeRequirementsIsLink,
   } = useContext(AttachmentsContext);
 
   const [currentViewPhoto, setCurrentViewPhoto] = useState(null);
@@ -146,7 +149,7 @@ function Attachments() {
                     className="attachments__column__content__item__viewOwner"
                     onClick={() => {
                       let convertedSignature;
-                      if (ownersRequirementsIsLink["signature"]) {
+                      if (!ownersRequirementsIsLink["signature"]) {
                         convertedSignature = base64ToBlob(
                           ownersRequirements["signature"]
                         );
@@ -283,15 +286,31 @@ function Attachments() {
                   <IconButton
                     className="attachments__column__content__item__viewRepresentative"
                     onClick={() => {
-                      const convertedSignature = base64ToBlob(
-                        representativeRequirements["signature"]
-                      );
+                      let convertedSignature;
+                      if (!representativeRequirementsIsLink["signature"]) {
+                        convertedSignature = base64ToBlob(
+                          representativeRequirements["signature"]
+                        );
+                      }
+
                       handleViewPhoto(
-                        convertedSignature,
+                        representativeRequirementsIsLink["signature"]
+                          ? representativeRequirements["signature"]
+                          : convertedSignature,
                         "Signature",
                         "signature"
                       );
                     }}
+                    // onClick={() => {
+                    //   const convertedSignature = base64ToBlob(
+                    //     representativeRequirements["signature"]
+                    //   );
+                    //   handleViewPhoto(
+                    //     convertedSignature,
+                    //     "Signature",
+                    //     "signature"
+                    //   );
+                    // }}
                   >
                     <Visibility />
                   </IconButton>
@@ -532,6 +551,10 @@ function Attachments() {
               ...prev,
               storePhoto: e.target.files[0],
             }));
+            setOwnersRequirementsIsLink((prev) => ({
+              ...prev,
+              storePhoto: false,
+            }));
           }}
         />
 
@@ -545,6 +568,10 @@ function Attachments() {
               ...prev,
               businessPermit: e.target.files[0],
             }));
+            setOwnersRequirementsIsLink((prev) => ({
+              ...prev,
+              businessPermit: false,
+            }));
           }}
         />
 
@@ -557,6 +584,10 @@ function Attachments() {
             setOwnersRequirements((prev) => ({
               ...prev,
               photoIdOwner: e.target.files[0],
+            }));
+            setOwnersRequirementsIsLink((prev) => ({
+              ...prev,
+              photoIdOwner: false,
             }));
           }}
         />
@@ -585,6 +616,10 @@ function Attachments() {
               ...prev,
               storePhoto: e.target.files[0],
             }));
+            setRepresentativeRequirementsIsLink((prev) => ({
+              ...prev,
+              storePhoto: false,
+            }));
           }}
         />
 
@@ -597,6 +632,10 @@ function Attachments() {
             setRepresentativeRequirements((prev) => ({
               ...prev,
               businessPermit: e.target.files[0],
+            }));
+            setRepresentativeRequirementsIsLink((prev) => ({
+              ...prev,
+              businessPermit: false,
             }));
           }}
         />
@@ -611,6 +650,10 @@ function Attachments() {
               ...prev,
               photoIdOwner: e.target.files[0],
             }));
+            setRepresentativeRequirementsIsLink((prev) => ({
+              ...prev,
+              photoIdOwner: false,
+            }));
           }}
         />
 
@@ -624,6 +667,10 @@ function Attachments() {
               ...prev,
               photoIdRepresentative: e.target.files[0],
             }));
+            setRepresentativeRequirementsIsLink((prev) => ({
+              ...prev,
+              photoIdRepresentative: false,
+            }));
           }}
         />
 
@@ -636,6 +683,10 @@ function Attachments() {
             setRepresentativeRequirements((prev) => ({
               ...prev,
               authorizationLetter: e.target.files[0],
+            }));
+            setRepresentativeRequirementsIsLink((prev) => ({
+              ...prev,
+              authorizationLetter: false,
             }));
           }}
         />

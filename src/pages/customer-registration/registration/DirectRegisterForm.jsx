@@ -67,6 +67,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     setOwnersRequirements,
     setOwnersRequirementsIsLink,
     setRepresentativeRequirements,
+    setRepresentativeRequirementsIsLink,
     setRequirementsMode,
     convertSignatureToBase64,
   } = useContext(AttachmentsContext);
@@ -89,6 +90,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const freebiesDirect = useSelector(
     (state) => state.regularRegistration.value.freebies
   );
+
+  console.log(termsAndConditions);
 
   //Disclosures
   const {
@@ -321,11 +324,18 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const handleResetForms = () => {
     reset();
     setSameAsOwnersAddress(false);
+
     setOwnersRequirements({
       signature: null,
       storePhoto: null,
       businessPermit: null,
       photoIdOwner: null,
+    });
+    setOwnersRequirementsIsLink({
+      signature: false,
+      storePhoto: false,
+      businessPermit: false,
+      photoIdOwner: false,
     });
     setRepresentativeRequirements({
       signature: null,
@@ -335,6 +345,15 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       photoIdRepresentative: null,
       authorizationLetter: null,
     });
+    setRepresentativeRequirementsIsLink({
+      signature: false,
+      storePhoto: false,
+      businessPermit: false,
+      photoIdOwner: false,
+      photoIdRepresentative: false,
+      authorizationLetter: false,
+    });
+
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
     dispatch(resetFreebies());
@@ -507,6 +526,34 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       // Attachments
       if (selectedRowData?.attachments?.length > 4) {
         setRequirementsMode("representative");
+        setRepresentativeRequirements({
+          signature: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Signature"
+          )?.documentLink,
+          storePhoto: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Store Photo"
+          )?.documentLink,
+          businessPermit: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Business Permit"
+          )?.documentLink,
+          photoIdOwner: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Photo ID Owner"
+          )?.documentLink,
+          photoIdRepresentative: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Photo ID Representative"
+          )?.documentLink,
+          authorizationLetter: selectedRowData?.attachments?.find(
+            (item) => item.documentType === "Authorization Letter"
+          )?.documentLink,
+        });
+        setRepresentativeRequirementsIsLink({
+          signature: true,
+          storePhoto: true,
+          businessPermit: true,
+          photoIdOwner: true,
+          photoIdRepresentative: true,
+          authorizationLetter: true,
+        });
       } else {
         setRequirementsMode("owner");
         setOwnersRequirements({
@@ -532,8 +579,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       }
     }
   }, [open, termDaysData]);
-
-  console.log(selectedRowData);
 
   return (
     <>
