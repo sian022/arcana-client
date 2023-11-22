@@ -1,95 +1,120 @@
-import React from "react";
+import React, { useState } from "react";
 import CommonModal from "../CommonModal";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
+import useSnackbar from "../../hooks/useSnackbar";
+// import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import {
   GoogleMap,
-  MarkerF as Marker,
+  LoadScript,
+  Marker,
+  useJsApiLoader,
   useLoadScript,
 } from "@react-google-maps/api";
-import useSnackbar from "../../hooks/useSnackbar";
-import {
-  MapContainer,
-  TileLayer,
-  useMap,
-} from "https://cdn.esm.sh/react-leaflet";
+// import {
+//   APIProvider,
+//   AdvancedMarker,
+//   Map,
+//   Marker,
+//   Pin,
+// } from "@vis.gl/react-google-maps";
 
 function PinLocationModal({
-  latitude,
+  latitude: initialLatitude,
   setLatitude,
-  longitude,
+  longitude: initialLongitude,
   setLongitude,
   ...otherProps
 }) {
   const { onClose, ...noOnClose } = otherProps;
   const { showSnackbar } = useSnackbar();
 
-  //Google Maps Functions
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY,
+  const [markerPosition, setMarkerPosition] = useState({
+    lat: initialLatitude || 0,
+    lng: initialLongitude || 0,
   });
 
-  const getLocation = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocations.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-        },
-        (error) => {
-          showSnackbar(error.data.messages[0], "error");
-        }
-      );
-    } else {
-      showSnackbar("Geolocation is not supported by this browser.", "error");
-    }
+  const rdfPosition = { lat: 15.095278923422851, lng: 120.6081880242793 };
+
+  const handleMapClick = (event) => {};
+
+  const mapStyles = {
+    height: "400px",
+    width: "100%",
   };
 
-  //Misc Functions
+  //Google Maps Functions
+
   const handleSubmit = () => {
-    // setLatitude("");
-    // setLongitude("");
+    setLatitude(markerPosition.lat);
+    setLongitude(markerPosition.lng);
     onClose();
   };
 
   return (
-    <CommonModal {...noOnClose}>
-      <Box>
-        {/* <Typography
-          sx={{ fontWeight: "bold", fontSize: "30px", textAlign: "center" }}
+    <CommonModal width={"auto"} {...noOnClose}>
+      <Typography
+        sx={{
+          fontWeight: "bold",
+          fontSize: "20px",
+          marginBottom: "10px",
+          // textAlign: "center",
+        }}
+      >
+        Pin Location
+      </Typography>
+      {/* <APIProvider apiKey={import.meta.env.VITE_GOOGLE_API_KEY}>
+        <Box
+          sx={{
+            marginBottom: "20px",
+            height: "400px",
+            width: "600px",
+          }}
         >
-          MAMAYA KA NALANG
-        </Typography> */}
-        <div id="map"></div>
-      </Box>
-      {/* <Box>
-        {!isLoaded ? (
-          <div>Loading...</div>
-        ) : (
+          <Map
+            zoom={15}
+            center={rdfPosition}
+            gestureHandling={"greedy"}
+            disableDefaultUI={true}
+          >
+            <Marker position={rdfPosition}>
+              <Pin
+                background={"#FBBC04"}
+                glyphColor={"#000"}
+                borderColor={"#000"}
+              />
+            </Marker>
+          </Map>
+        </Box>
+      </APIProvider> */}
+
+      <Box
+        sx={{
+          marginBottom: "20px",
+          height: "400px",
+          width: "600px",
+        }}
+      >
+        <LoadScript
+          googleMapsApiKey={import.meta.env.VITE_GOOGLE_API_KEY}
+          loadingElement={() => <CircularProgress />}
+        >
           <GoogleMap
-            zoom={15} // Adjust the zoom level as needed
-            center={{ lat: latitude, lng: longitude }}
-            // mapContainerClassName="map-container"
-            // mapContainerStyle={{ height: "90%", width: "100%" }}
+            mapContainerStyle={mapStyles}
+            zoom={20}
+            center={rdfPosition}
+            onClick={(event) => setMarkerPosition(event.latLng.toJSON())}
           >
             <Marker
-              position={{ lat: latitude, lng: longitude }}
-              clickable
-              title="This is your current location"
+              position={markerPosition}
+              draggable={true}
+              onDragEnd={(e) => setMarkerPosition(e.latLng.toJSON())}
             />
           </GoogleMap>
-        )}
-      </Box> */}
-      {/* <Box sx={{ display: "flex" }}>
-        {!latitude || !longitude ? (
-          <SecondaryButton>Get Location</SecondaryButton>
-        ) : (
-          <SecondaryButton>
-            This location has been registered. Click here againn to close map
-          </SecondaryButton>
-        )}
-      </Box> */}
+        </LoadScript>
+      </Box>
+
       <Box
         sx={{ display: "flex", justifyContent: "end", gap: "10px" }}
         className="roleTaggingModal__actions"

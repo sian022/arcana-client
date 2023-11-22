@@ -33,6 +33,7 @@ import {
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,
   usePutRegisterClientMutation,
+  usePutUpdateClientInformationMutation,
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 import PinLocationModal from "../../../components/modals/PinLocationModal";
@@ -199,6 +200,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const [putAddAttachmentsForDirect, { isLoading: isAttachmentsLoading }] =
     usePutAddAttachmentsForDirectMutation();
 
+  const [putUpdateClientInformation, { isLoading: isUpdateClientLoading }] =
+    usePutUpdateClientInformationMutation();
+
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
     useGetAllStoreTypesQuery({ Status: true });
   const { data: termDaysData, isLoading: isTermDaysLoading } =
@@ -224,24 +228,47 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         termsId: termsAndConditions?.terms,
       };
 
-      const response = await postDirectRegistration({
-        ...transformedData,
-        ...transformedTermsAndConditions,
-        ...(freebiesDirect?.length > 0
-          ? {
-              freebies: freebiesDirect.map((freebie) => ({
-                itemId: freebie.itemId.id,
-              })),
-            }
-          : {}),
-      }).unwrap();
+      let response;
 
-      await addAttachmentsSubmit(response?.data?.id);
+      if (editMode) {
+        response = await putUpdateClientInformation({
+          clientId: selectedRowData?.id,
+          ...transformedData,
+          ...transformedTermsAndConditions,
+          ...(freebiesDirect?.length > 0
+            ? {
+                freebies: freebiesDirect.map((freebie) => ({
+                  itemId: freebie.itemId.id,
+                })),
+              }
+            : {}),
+        }).unwrap();
+
+        await addAttachmentsSubmit(response?.data?.id);
+      } else {
+        response = await postDirectRegistration({
+          ...transformedData,
+          ...transformedTermsAndConditions,
+          ...(freebiesDirect?.length > 0
+            ? {
+                freebies: freebiesDirect.map((freebie) => ({
+                  itemId: freebie.itemId.id,
+                })),
+              }
+            : {}),
+        }).unwrap();
+
+        await addAttachmentsSubmit(response?.data?.id);
+      }
+
       setIsAllApiLoading(false);
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
 
-      showSnackbar("Client registered successfully", "success");
+      showSnackbar(
+        `Client ${editMode ? "updated" : "registered"}  successfully`,
+        "success"
+      );
       onConfirmClose();
       onClose();
       handleResetForms();
@@ -1050,7 +1077,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         isLoading={isAllApiLoading}
         noIcon
       >
-        Confirm registration of{" "}
+        Confirm {editMode ? "update" : "registration"} of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {watch("businessName") ? watch("businessName") : "client"}
         </span>{" "}

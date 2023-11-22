@@ -55,6 +55,15 @@ export const registrationApi = createApi({
       invalidatesTags: ["Registration"],
     }),
 
+    putUpdateClientInformation: builder.mutation({
+      query: ({ clientId, ...body }) => ({
+        url: `/Client/UpdateClientInformation/${clientId}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Registration"],
+    }),
+
     putAddAttachments: builder.mutation({
       query: ({ id, ...body }) => {
         return {
@@ -150,6 +159,7 @@ export const {
   usePutRejectClientMutation,
   usePutApproveClientMutation,
   usePutAddAttachmentsForDirectMutation,
+  usePutUpdateClientInformationMutation,
   usePatchUpdateRegistrationStatusMutation,
   usePutVoidClientRegistrationMutation,
 } = registrationApi;

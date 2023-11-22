@@ -51,7 +51,6 @@ function ApprovalHistoryModal({ ...otherProps }) {
     }
   };
 
-  console.log(selectedRowData);
   return (
     <CommonModal width="650px" {...otherProps}>
       <Box className="approvalHistoryModal">
