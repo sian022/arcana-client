@@ -431,6 +431,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const handleNext = () => {
     if (activeTab === "Personal Info") {
       setActiveTab("Terms and Conditions");
+      dispatch(setSelectedRow(getValues()));
     } else if (activeTab === "Terms and Conditions") {
       setActiveTab("Attachments");
     }

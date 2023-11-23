@@ -189,7 +189,11 @@ function ListingFeeApproval() {
         listingFeeStatus={listingFeeStatus}
       />
 
-      <ApprovalHistoryModal open={isHistoryOpen} onClose={onHistoryClose} />
+      <ApprovalHistoryModal
+        open={isHistoryOpen}
+        onClose={onHistoryClose}
+        variant="listingFee"
+      />
     </>
   );
 }

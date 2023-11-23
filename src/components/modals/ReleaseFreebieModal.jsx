@@ -230,9 +230,11 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
               </Box>
               <Box>
                 <Typography>
-                  <span>Transaction no:</span>{" "}
-                  {selectedRowData?.freebies?.[freebiesLength - 1]
-                    ?.transactionNumber || ""}
+                  <span>Transaction No:</span>{" "}
+                  {direct
+                    ? "Pending"
+                    : selectedRowData?.freebies?.[freebiesLength - 1]
+                        ?.transactionNumber || ""}
                 </Typography>
                 <Typography>
                   <span>Date:</span> {moment().format("MMM DD, YYYY")}

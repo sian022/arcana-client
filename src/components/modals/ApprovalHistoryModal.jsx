@@ -73,7 +73,11 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
             <Stepper
               alternativeLabel
               activeStep={
+                variant === "registration" &&
                 selectedRowData?.clientApprovalHistories?.length === 0
+                  ? 1
+                  : variant === "listingFee" &&
+                    selectedRowData?.listingFeeApprovalHistories?.length === 0
                   ? 1
                   : handleActiveStep(
                       selectedRowData?.clientApprovalHistories?.[0]?.level,
@@ -103,103 +107,105 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
           </Box>
           <Box className="approvalHistoryModal__content__body">
             <Stepper orientation="vertical">
-              {selectedRowData?.clientApprovalHistories?.map(
-                (approval, index) => (
-                  <Step key={index} active expanded>
-                    <StepLabel
-                      StepIconComponent={() =>
-                        approval?.status === "Rejected" ? (
-                          <Cancel sx={{ color: "error.main" }} />
-                        ) : approval?.status === "Approved" ? (
-                          <CheckCircle sx={{ color: "success.main" }} />
-                        ) : (
-                          <Circle sx={{ color: "gray" }} />
-                        )
-                      }
-                      sx={{ position: "relative" }}
-                    >
-                      <span
-                        style={{
-                          position: "absolute",
-                          left: "-170px",
-                          fontWeight: "600",
-                        }}
+              {variant === "registration" &&
+                selectedRowData?.clientApprovalHistories?.map(
+                  (approval, index) => (
+                    <Step key={index} active expanded>
+                      <StepLabel
+                        StepIconComponent={() =>
+                          approval?.status === "Rejected" ? (
+                            <Cancel sx={{ color: "error.main" }} />
+                          ) : approval?.status === "Approved" ? (
+                            <CheckCircle sx={{ color: "success.main" }} />
+                          ) : (
+                            <Circle sx={{ color: "gray" }} />
+                          )
+                        }
+                        sx={{ position: "relative" }}
                       >
-                        {moment(approval?.createdAt).format("MMMM D HH:mm a")}
-                      </span>
-                      <span style={{ fontWeight: "600" }}>
-                        {approval?.status} -{" "}
-                        {formatOrdinalPrefix(approval?.level)} Approval
-                      </span>
-                    </StepLabel>
-                    <StepContent>
-                      <Typography fontSize="14px">
-                        Name:{" "}
-                        <span style={{ fontWeight: "500" }}>
-                          {approval?.approver}
+                        <span
+                          style={{
+                            position: "absolute",
+                            left: "-170px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {moment(approval?.createdAt).format("MMMM D HH:mm a")}
                         </span>
-                      </Typography>
-                      {approval?.reason && (
+                        <span style={{ fontWeight: "600" }}>
+                          {approval?.status} -{" "}
+                          {formatOrdinalPrefix(approval?.level)} Approval
+                        </span>
+                      </StepLabel>
+                      <StepContent>
                         <Typography fontSize="14px">
-                          Remarks:{" "}
+                          Name:{" "}
                           <span style={{ fontWeight: "500" }}>
-                            {approval?.reason}
+                            {approval?.approver}
                           </span>
                         </Typography>
-                      )}
-                    </StepContent>
-                  </Step>
-                )
-              )}
+                        {approval?.reason && (
+                          <Typography fontSize="14px">
+                            Remarks:{" "}
+                            <span style={{ fontWeight: "500" }}>
+                              {approval?.reason}
+                            </span>
+                          </Typography>
+                        )}
+                      </StepContent>
+                    </Step>
+                  )
+                )}
 
-              {selectedRowData?.listingFeeApprovalHistories?.map(
-                (approval, index) => (
-                  <Step key={index} active expanded>
-                    <StepLabel
-                      StepIconComponent={() =>
-                        approval?.status === "Rejected" ? (
-                          <Cancel sx={{ color: "error.main" }} />
-                        ) : approval?.status === "Approved" ? (
-                          <CheckCircle sx={{ color: "success.main" }} />
-                        ) : (
-                          <Circle sx={{ color: "gray" }} />
-                        )
-                      }
-                      sx={{ position: "relative" }}
-                    >
-                      <span
-                        style={{
-                          position: "absolute",
-                          left: "-170px",
-                          fontWeight: "600",
-                        }}
+              {variant === "listingFee" &&
+                selectedRowData?.listingFeeApprovalHistories?.map(
+                  (approval, index) => (
+                    <Step key={index} active expanded>
+                      <StepLabel
+                        StepIconComponent={() =>
+                          approval?.status === "Rejected" ? (
+                            <Cancel sx={{ color: "error.main" }} />
+                          ) : approval?.status === "Approved" ? (
+                            <CheckCircle sx={{ color: "success.main" }} />
+                          ) : (
+                            <Circle sx={{ color: "gray" }} />
+                          )
+                        }
+                        sx={{ position: "relative" }}
                       >
-                        {moment(approval?.createdAt).format("MMMM D HH:mm a")}
-                      </span>
-                      <span style={{ fontWeight: "600" }}>
-                        {approval?.status} -{" "}
-                        {formatOrdinalPrefix(approval?.level)} Approval
-                      </span>
-                    </StepLabel>
-                    <StepContent>
-                      <Typography fontSize="14px">
-                        Name:{" "}
-                        <span style={{ fontWeight: "500" }}>
-                          {approval?.approver}
+                        <span
+                          style={{
+                            position: "absolute",
+                            left: "-170px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {moment(approval?.createdAt).format("MMMM D HH:mm a")}
                         </span>
-                      </Typography>
-                      {approval?.reason && (
+                        <span style={{ fontWeight: "600" }}>
+                          {approval?.status} -{" "}
+                          {formatOrdinalPrefix(approval?.level)} Approval
+                        </span>
+                      </StepLabel>
+                      <StepContent>
                         <Typography fontSize="14px">
-                          Remarks:{" "}
+                          Name:{" "}
                           <span style={{ fontWeight: "500" }}>
-                            {approval?.reason}
+                            {approval?.approver}
                           </span>
                         </Typography>
-                      )}
-                    </StepContent>
-                  </Step>
-                )
-              )}
+                        {approval?.reason && (
+                          <Typography fontSize="14px">
+                            Remarks:{" "}
+                            <span style={{ fontWeight: "500" }}>
+                              {approval?.reason}
+                            </span>
+                          </Typography>
+                        )}
+                      </StepContent>
+                    </Step>
+                  )
+                )}
             </Stepper>
           </Box>
           {/* <Box className="approvalHistoryModal__content__body">

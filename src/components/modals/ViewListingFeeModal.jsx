@@ -92,7 +92,8 @@ function ViewListingFeeModal({
     try {
       await putApproveListingFee({
         // id: selectedRowData?.listingFeeId,
-        id: selectedRowData?.approvalId,
+        // id: selectedRowData?.approvalId,
+        id: selectedRowData?.requestId,
       }).unwrap();
       showSnackbar("Listing Fee approved successfully", "success");
       onApproveConfirmClose();
@@ -109,7 +110,8 @@ function ViewListingFeeModal({
   const handleReject = async () => {
     try {
       await putRejectListingFee({
-        id: selectedRowData?.approvalId,
+        // id: selectedRowData?.approvalId,
+        id: selectedRowData?.requestId,
         reason: reason,
       }).unwrap();
       showSnackbar("Listing Fee rejected successfully", "success");

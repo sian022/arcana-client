@@ -122,6 +122,7 @@ function ListingFee() {
     "status",
     "cancellationReason",
     "requestId",
+    "listingFeeApprovalHistories",
   ];
 
   const tableHeads = [
@@ -220,7 +221,11 @@ function ListingFee() {
         ?
       </CommonDialog>
 
-      <ApprovalHistoryModal open={isHistoryOpen} onClose={onHistoryClose} />
+      <ApprovalHistoryModal
+        open={isHistoryOpen}
+        onClose={onHistoryClose}
+        variant="listingFee"
+      />
     </>
   );
 }
