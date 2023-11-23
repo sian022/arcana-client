@@ -66,6 +66,8 @@ function RegisterRegularForm({ open, onClose }) {
   const [longitude, setLongitude] = useState(120.6075827);
   const [activeTab, setActiveTab] = useState("Personal Info");
   const [sameAsOwnersAddress, setSameAsOwnersAddress] = useState(false);
+  const [includeAuthorizedRepresentative, setIncludeAuthorizedRepresentative] =
+    useState(false);
   const [isAllApiLoading, setIsAllApiLoading] = useState(false);
 
   const { ownersRequirements, representativeRequirements, requirementsMode } =
@@ -426,6 +428,13 @@ function RegisterRegularForm({ open, onClose }) {
     }
   }, [sameAsOwnersAddress]);
 
+  useEffect(() => {
+    if (!includeAuthorizedRepresentative) {
+      setValue("authorizedRepresentative", "");
+      setValue("authorizedRepresentativePosition", "");
+    }
+  }, [includeAuthorizedRepresentative]);
+
   return (
     <>
       <CommonDrawer
@@ -482,7 +491,9 @@ function RegisterRegularForm({ open, onClose }) {
                           {...field}
                           className="register__textField"
                           label="Date of Birth"
-                          slotProps={{ textField: { size: "small" } }}
+                          slotProps={{
+                            textField: { size: "small", required: true },
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -527,6 +538,7 @@ function RegisterRegularForm({ open, onClose }) {
                 <TextField
                   label="TIN Number"
                   size="small"
+                  type="number"
                   autoComplete="off"
                   required
                   className="register__textField"
@@ -547,7 +559,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Unit No."
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.houseNumber ?? ""}
@@ -556,7 +568,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Street Name"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.streetName ?? ""}
@@ -686,7 +698,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Unit No."
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       onChange={onChange}
                       onBlur={onBlur}
@@ -707,7 +719,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Street Name"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       helperText={errors?.streetName?.message}
                       error={errors?.streetName}
@@ -790,16 +802,29 @@ function RegisterRegularForm({ open, onClose }) {
               </Box>
             </Box>
             <Box className="register__secondRow">
-              <Typography className="register__title">
-                Authorized Representative Details
-              </Typography>
+              <Box className="register__titleBox">
+                <Typography className="register__title">
+                  Authorized Representative Details
+                </Typography>
+                <Checkbox
+                  sx={{ ml: "10px" }}
+                  checked={includeAuthorizedRepresentative}
+                  onChange={(e) => {
+                    setIncludeAuthorizedRepresentative((prev) => !prev);
+                  }}
+                />
+                <Typography variant="subtitle2">
+                  Include authorized representative
+                </Typography>
+              </Box>
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
                   <TextField
                     label="Full Name"
                     size="small"
                     autoComplete="off"
-                    required
+                    // required
+                    disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentative")}
                     helperText={errors?.authorizedRepresentative?.message}
@@ -809,7 +834,8 @@ function RegisterRegularForm({ open, onClose }) {
                     label="Position"
                     size="small"
                     autoComplete="off"
-                    required
+                    // required
+                    disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentativePosition")}
                     helperText={

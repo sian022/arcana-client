@@ -79,6 +79,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const [longitude, setLongitude] = useState(120.6075827);
   const [activeTab, setActiveTab] = useState("Personal Info");
   const [sameAsOwnersAddress, setSameAsOwnersAddress] = useState(false);
+  const [includeAuthorizedRepresentative, setIncludeAuthorizedRepresentative] =
+    useState(false);
   const [isAllApiLoading, setIsAllApiLoading] = useState(false);
 
   const { ownersRequirements, representativeRequirements, requirementsMode } =
@@ -611,6 +613,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     }
   }, [open, termDaysData]);
 
+  useEffect(() => {
+    if (!includeAuthorizedRepresentative) {
+      setValue("authorizedRepresentative", "");
+      setValue("authorizedRepresentativePosition", "");
+    }
+  }, [includeAuthorizedRepresentative]);
+
   return (
     <>
       <CommonDrawer
@@ -686,7 +695,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           {...field}
                           className="register__textField"
                           label="Date of Birth"
-                          slotProps={{ textField: { size: "small" } }}
+                          slotProps={{
+                            textField: { size: "small", required: true },
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -717,6 +728,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 <Typography className="register__title">TIN Number</Typography>
                 <TextField
                   label="TIN Number"
+                  type="number"
                   size="small"
                   autoComplete="off"
                   required
@@ -724,6 +736,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   {...register("tinNumber")}
                   helperText={errors?.tinNumber?.message}
                   error={errors?.tinNumber}
+                  InputProps={{ inputProps: { step: "any" } }}
                 />
               </Box>
             </Box>
@@ -738,7 +751,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       label="Unit No."
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       {...register("ownersAddress.houseNumber")}
                       helperText={errors?.ownersAddress?.houseNumber?.message}
@@ -748,7 +761,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       label="Street Name"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       {...register("ownersAddress.streetName")}
                       helperText={errors?.ownersAddress?.streetName?.message}
@@ -861,8 +874,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   onChange={() => {
                     setSameAsOwnersAddress((prev) => !prev);
                   }}
-                  disabled={Object.values(watch("ownersAddress")).some(
-                    (value) => !value
+                  // disabled={Object.values(watch("ownersAddress")).some(
+                  //   (value) => !value
+                  // )}
+                  disabled={Object.entries(watch("ownersAddress")).some(
+                    ([key, value]) =>
+                      key !== "houseNumber" && key !== "streetName" && !value
                   )}
                   title={
                     !Object.values(watch("ownersAddress")).some(
@@ -887,7 +904,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       label="Unit No."
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       onChange={onChange}
                       onBlur={onBlur}
@@ -908,7 +925,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       label="Street Name"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       helperText={errors?.businessAddress?.streetName?.message}
                       error={errors?.businessAddress?.streetName}
@@ -993,16 +1010,29 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               </Box>
             </Box>
             <Box className="register__secondRow">
-              <Typography className="register__title">
-                Authorized Representative Details
-              </Typography>
+              <Box className="register__titleBox">
+                <Typography className="register__title">
+                  Authorized Representative Details
+                </Typography>
+                <Checkbox
+                  sx={{ ml: "10px" }}
+                  checked={includeAuthorizedRepresentative}
+                  onChange={(e) => {
+                    setIncludeAuthorizedRepresentative((prev) => !prev);
+                  }}
+                />
+                <Typography variant="subtitle2">
+                  Include authorized representative
+                </Typography>
+              </Box>
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
                   <TextField
                     label="Full Name"
                     size="small"
                     autoComplete="off"
-                    required
+                    // required
+                    disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentative")}
                     helperText={errors?.authorizedRepresentative?.message}
@@ -1012,7 +1042,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     label="Position"
                     size="small"
                     autoComplete="off"
-                    required
+                    // required
+                    disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentativePosition")}
                     helperText={
