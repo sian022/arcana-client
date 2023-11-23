@@ -30,6 +30,7 @@ import {
   usePutUpdateListingFeeMutation,
 } from "../../features/listing-fee/api/listingFeeApi";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { NumericFormat } from "react-number-format";
 
 function ListingFeeDrawer({
   editMode,
@@ -285,6 +286,7 @@ function ListingFeeDrawer({
     }
   }, [isListingFeeOpen, clientData]);
 
+  console.log(getValues());
   return (
     <>
       <CommonDrawer
@@ -474,22 +476,28 @@ function ListingFeeDrawer({
                   control={control}
                   name={`listingItems[${index}].unitCost`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
+                    <NumericFormat
                       label="Unit Cost"
-                      type="number"
+                      type="text"
                       size="small"
+                      customInput={TextField}
                       autoComplete="off"
-                      onChange={(e) => {
-                        onChange(e);
+                      // onChange={(e) => {
+                      //   onChange(e);
+                      //   handleRecalculateTotalAmount();
+                      // }}
+                      onValueChange={(e) => {
+                        onChange(Number(e.value));
                         handleRecalculateTotalAmount();
                       }}
                       onBlur={onBlur}
                       value={value || ""}
                       ref={ref}
                       required
-                      InputProps={{
-                        inputProps: { min: 0 },
-                      }}
+                      // InputProps={{
+                      //   inputProps: { min: 0 },
+                      // }}
+                      thousandSeparator=","
                     />
                   )}
                 />

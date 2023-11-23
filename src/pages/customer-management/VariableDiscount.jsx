@@ -173,6 +173,17 @@ function VariableDiscount() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
+  useEffect(() => {
+    if (isDrawerOpen) {
+      setValue(
+        "minimumAmount",
+        data?.discount[data?.discount?.length - 1]?.minimumAmount + 1
+      );
+    }
+  }, [isDrawerOpen]);
+
+  console.log(getValues());
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -221,6 +232,8 @@ function VariableDiscount() {
           error={errors?.minimumAmount}
           type="number"
           inputProps={{ min: 0 }}
+          disabled
+          // value={data?.discount[data?.discount?.length - 1]?.minimumAmount + 1}
         />
 
         <TextField
