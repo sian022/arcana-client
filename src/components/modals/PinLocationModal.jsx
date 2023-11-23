@@ -102,7 +102,7 @@ function PinLocationModal({
           <GoogleMap
             mapContainerStyle={mapStyles}
             zoom={16}
-            center={rdfPosition}
+          center={rdfPosition}
             onClick={(event) => setMarkerPosition(event.latLng.toJSON())}
           >
             <Marker
