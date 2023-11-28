@@ -181,7 +181,7 @@ function ForFreebies() {
         setSnackbarMessage("Prospect updated successfully");
       }
 
-      dispatch(setSelectedRow(response?.data));
+      dispatch(setSelectedRow(response?.value));
       onConfirmClose();
       handleDrawerClose();
 

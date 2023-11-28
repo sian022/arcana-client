@@ -30,8 +30,8 @@ export const companyApi = createApi({
         method: "GET",
       }),
       providesTags: ["Company"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putCompany: builder.mutation({
       query: ({ id, ...body }) => ({

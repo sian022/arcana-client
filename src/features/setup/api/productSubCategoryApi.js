@@ -30,8 +30,8 @@ export const productSubCategoryApi = createApi({
         method: "GET",
       }),
       providesTags: ["Product Sub Category"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putProductSubCategory: builder.mutation({
       query: ({ id, ...body }) => ({

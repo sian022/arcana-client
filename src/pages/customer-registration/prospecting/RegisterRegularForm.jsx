@@ -437,23 +437,57 @@ function RegisterRegularForm({ open, onClose }) {
     setValue("clientId", selectedRowData?.id);
   }, [open]);
 
-  useEffect(() => {
-    if (sameAsOwnersAddress) {
-      setValue("houseNumber", selectedRowData?.ownersAddress?.houseNumber);
-      setValue("streetName", selectedRowData?.ownersAddress?.streetName);
-      setValue("barangayName", selectedRowData?.ownersAddress?.barangayName);
-      setValue("city", selectedRowData?.ownersAddress?.city);
-      setValue("province", selectedRowData?.ownersAddress?.province);
+  const handleSameAsOwnersAddress = () => {
+    setSameAsOwnersAddress((prev) => !prev);
+    if (!sameAsOwnersAddress) {
+      setValue("houseNumber", selectedRowData?.ownersAddress?.houseNumber, {
+        shouldValidate: true,
+      });
+      setValue("streetName", selectedRowData?.ownersAddress?.streetName, {
+        shouldValidate: true,
+      });
+      setValue("barangayName", selectedRowData?.ownersAddress?.barangayName, {
+        shouldValidate: true,
+      });
+      setValue("city", selectedRowData?.ownersAddress?.city, {
+        shouldValidate: true,
+      });
+      setValue("province", selectedRowData?.ownersAddress?.province, {
+        shouldValidate: true,
+      });
     } else {
-      setValue("houseNumber", "");
-      setValue("streetName", "");
-      setValue("barangayName", "");
-      setValue("city", "");
-      setValue("province", "");
+      setValue("houseNumber", "", { shouldValidate: true });
+      setValue("streetName", "", { shouldValidate: true });
+      setValue("barangayName", "", { shouldValidate: true });
+      setValue("city", "", { shouldValidate: true });
+      setValue("province", "", { shouldValidate: true });
     }
-
-    trigger();
-  }, [sameAsOwnersAddress]);
+  };
+  // useEffect(() => {
+  //   if (sameAsOwnersAddress) {
+  //     setValue("houseNumber", selectedRowData?.ownersAddress?.houseNumber, {
+  //       shouldValidate: true,
+  //     });
+  //     setValue("streetName", selectedRowData?.ownersAddress?.streetName, {
+  //       shouldValidate: true,
+  //     });
+  //     setValue("barangayName", selectedRowData?.ownersAddress?.barangayName, {
+  //       shouldValidate: true,
+  //     });
+  //     setValue("city", selectedRowData?.ownersAddress?.city, {
+  //       shouldValidate: true,
+  //     });
+  //     setValue("province", selectedRowData?.ownersAddress?.province, {
+  //       shouldValidate: true,
+  //     });
+  //   } else {
+  //     setValue("houseNumber", "", { shouldValidate: true });
+  //     setValue("streetName", "", { shouldValidate: true });
+  //     setValue("barangayName", "");
+  //     setValue("city", "");
+  //     setValue("province", "");
+  //   }
+  // }, [sameAsOwnersAddress]);
 
   useEffect(() => {
     if (!includeAuthorizedRepresentative) {
@@ -723,8 +757,9 @@ function RegisterRegularForm({ open, onClose }) {
                 <Checkbox
                   sx={{ ml: "10px" }}
                   checked={sameAsOwnersAddress}
-                  onChange={(e) => {
-                    setSameAsOwnersAddress((prev) => !prev);
+                  onChange={() => {
+                    // setSameAsOwnersAddress((prev) => !prev);
+                    handleSameAsOwnersAddress();
                   }}
                 />
                 <Typography variant="subtitle2">

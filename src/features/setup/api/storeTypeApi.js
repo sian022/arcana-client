@@ -30,8 +30,8 @@ export const storeTypeApi = createApi({
         method: "GET",
       }),
       providesTags: ["Store Type"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putStoreType: builder.mutation({
       query: ({ id, ...body }) => ({

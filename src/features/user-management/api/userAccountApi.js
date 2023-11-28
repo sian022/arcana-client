@@ -30,8 +30,8 @@ export const userAccountApi = createApi({
         method: "GET",
       }),
       providesTags: ["User"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putUser: builder.mutation({
       query: ({ id, password, ...body }) => ({

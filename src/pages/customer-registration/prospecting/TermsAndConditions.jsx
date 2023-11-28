@@ -1,7 +1,9 @@
 import {
   Autocomplete,
   Box,
+  Checkbox,
   FormControlLabel,
+  FormGroup,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -146,6 +148,7 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
     }
   }, []);
 
+  console.log(termsAndConditions);
   return (
     <Box className="terms">
       <Box className="terms__column">
@@ -531,6 +534,30 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
               label="Online/Check"
             />
           </RadioGroup>
+          {/* <FormGroup
+            row
+            className="terms__column__item__choices"
+            sx={{ marginY: "10px" }}
+          >
+            <FormControlLabel
+              control={<Checkbox sx={{ marginRight: "10px" }} />}
+              value={2}
+              label="Cash"
+              onChange={(e) => {
+                dispatch(
+                  setTermsAndConditions({
+                    property: "modeOfPayment",
+                    value: parseInt(e.target.value),
+                  })
+                );
+              }}
+            />
+            <FormControlLabel
+              value={2}
+              control={<Checkbox sx={{ marginRight: "10px" }} />}
+              label="Online/Check"
+            />
+          </FormGroup> */}
         </Box>
 
         <Box className="terms__column__item">

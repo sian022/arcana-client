@@ -22,8 +22,8 @@ export const registrationApi = createApi({
         method: "GET",
       }),
       providesTags: ["Registration"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
 
     getAllClientsForListingFee: builder.query({
@@ -33,8 +33,8 @@ export const registrationApi = createApi({
         method: "GET",
       }),
       providesTags: ["Registration"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
 
     putRegisterClient: builder.mutation({

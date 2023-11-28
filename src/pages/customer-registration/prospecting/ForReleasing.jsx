@@ -205,6 +205,7 @@ function ForReleasing() {
         setSnackbarMessage("Prospect updated successfully");
       }
 
+      dispatch(setSelectedRow(response?.value));
       onConfirmClose();
       handleDrawerClose();
 
@@ -564,7 +565,7 @@ function ForReleasing() {
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
       >
-        Are you sure you want to set prospect {selectedRowData.ownersName} as{" "}
+        Are you sure you want to set prospect {selectedRowData?.ownersName} as{" "}
         {status ? "inactive" : "active"}?
       </CommonDialog>
 

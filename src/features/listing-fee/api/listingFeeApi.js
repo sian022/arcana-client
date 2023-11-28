@@ -22,8 +22,8 @@ export const listingFeeApi = createApi({
         method: "POST",
       }),
       invalidatesTags: ["Listing Fee"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
 
     getAllListingFee: builder.query({

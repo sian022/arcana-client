@@ -30,8 +30,8 @@ export const discountTypeApi = createApi({
         method: "GET",
       }),
       providesTags: ["Discount Type"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putDiscountType: builder.mutation({
       query: ({ id, ...body }) => ({

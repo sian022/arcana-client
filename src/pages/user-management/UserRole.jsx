@@ -125,7 +125,14 @@ function UserRole() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} user role`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -143,9 +150,12 @@ function UserRole() {
         "success"
       );
     } catch (error) {
-      // setSnackbarMessage(error.data.messages[0]);
-      // onErrorOpen();
-      showSnackbar(error.data.messages[0], "error");
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving user role");
+      }
+      onErrorOpen();
     }
   };
 
@@ -159,7 +169,12 @@ function UserRole() {
       setSnackbarMessage("User Role tagged successfully");
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error tagging user role");
+      }
+
       onErrorOpen();
     }
   };

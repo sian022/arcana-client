@@ -45,8 +45,9 @@ function PageHeaderAddTabs({
               >
                 <Badge
                   badgeContent={item.badge}
-                  color="primary"
+                  color="notification"
                   invisible={item.case === tabViewing}
+                  sx={{ color: "white !important" }}
                 >
                   <Typography
                     sx={{

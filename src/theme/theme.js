@@ -7,6 +7,7 @@ const colorSchemes = {
     accent: "#766bb9",
     error: "#BB0000",
     success: "#009c7a",
+    notification: "#F30737",
     // error: "#F30737",
   },
 };
@@ -27,6 +28,9 @@ export const theme = createTheme({
     },
     success: {
       main: colorSchemes.light.success,
+    },
+    notification: {
+      main: colorSchemes.light.notification,
     },
     white: {
       main: "#FFFFFF",

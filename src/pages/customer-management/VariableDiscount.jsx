@@ -113,7 +113,16 @@ function VariableDiscount() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${
+            drawerMode === "add" ? "adding" : "updating"
+          } variable discount`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -127,7 +136,12 @@ function VariableDiscount() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving variable discount");
+      }
+
       onErrorOpen();
     }
   };
@@ -181,8 +195,6 @@ function VariableDiscount() {
       );
     }
   }, [isDrawerOpen]);
-
-  console.log(getValues());
 
   return (
     <Box className="commonPageLayout">

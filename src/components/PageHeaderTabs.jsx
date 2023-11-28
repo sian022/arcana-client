@@ -44,8 +44,9 @@ function PageHeaderTabs({
               >
                 <Badge
                   badgeContent={!item.isBadgeLoading ? item.badge : <></>}
-                  color="primary"
+                  color="notification"
                   invisible={item.case === tabViewing}
+                  sx={{ color: "white !important" }}
                 >
                   <Typography
                     sx={{

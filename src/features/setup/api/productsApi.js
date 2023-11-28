@@ -30,8 +30,8 @@ export const productsApi = createApi({
         method: "GET",
       }),
       providesTags: ["Products"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putProduct: builder.mutation({
       query: ({ id, ...body }) => ({

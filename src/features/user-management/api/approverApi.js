@@ -21,8 +21,8 @@ export const approverApi = createApi({
         method: "GET",
       }),
       providesTags: ["Approver"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     addApproversPerModule: builder.mutation({
       query: (body) => ({
@@ -38,8 +38,8 @@ export const approverApi = createApi({
         method: "GET",
       }),
       providesTags: ["Approver"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putUpdateApproversPerModule: builder.mutation({
       query: ({ moduleName, ...body }) => ({

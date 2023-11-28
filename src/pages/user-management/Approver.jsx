@@ -180,8 +180,8 @@ function Approver() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      if (error?.data?.error?.description) {
-        setSnackbarMessage(error?.data?.error?.description);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
       } else {
         setSnackbarMessage(
           `Error ${drawerMode === "add" ? "adding" : "updating"} approver`
@@ -200,7 +200,12 @@ function Approver() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving user account");
+      }
+
       onErrorOpen();
     }
   };

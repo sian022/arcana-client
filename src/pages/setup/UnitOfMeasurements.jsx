@@ -109,7 +109,14 @@ function UnitOfMeasurements() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} UOM`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -123,7 +130,12 @@ function UnitOfMeasurements() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving UOM");
+      }
+
       onErrorOpen();
     }
   };

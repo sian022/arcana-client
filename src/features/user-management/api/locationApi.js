@@ -30,8 +30,8 @@ export const locationApi = createApi({
         method: "GET",
       }),
       providesTags: ["Location"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putLocation: builder.mutation({
       query: ({ id, ...body }) => ({

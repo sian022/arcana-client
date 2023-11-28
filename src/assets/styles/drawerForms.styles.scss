@@ -212,8 +212,12 @@
       & &__choices {
         display: flex;
         justify-content: center;
-        // justify-content: left;
         align-items: center;
+
+        // display: grid;
+        // grid-template-columns: 1fr 1fr;
+        // margin-left: 10px;
+
         position: relative;
         gap: 20px;
         // display: grid;

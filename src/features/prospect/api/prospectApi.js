@@ -30,8 +30,8 @@ export const prospectApi = createApi({
         method: "GET",
       }),
       providesTags: ["Prospecting"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     // getAllRejectedProspects: builder.query({
     //   query: (params) => ({
@@ -50,8 +50,8 @@ export const prospectApi = createApi({
         method: "GET",
       }),
       providesTags: ["Prospecting"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     getAllRequestedProspects: builder.query({
       query: (params) => ({
@@ -60,8 +60,8 @@ export const prospectApi = createApi({
         method: "GET",
       }),
       providesTags: ["Prospecting"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putProspect: builder.mutation({
       query: ({ id, ...body }) => ({

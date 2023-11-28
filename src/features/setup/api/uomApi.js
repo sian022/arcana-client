@@ -13,7 +13,7 @@ export const uomApi = createApi({
       );
     },
   }),
-  tagTypes: ["Meat Type"],
+  tagTypes: ["UOM"],
   endpoints: (builder) => ({
     postUom: builder.mutation({
       query: (body) => ({
@@ -21,7 +21,7 @@ export const uomApi = createApi({
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["Meat Type"],
+      invalidatesTags: ["UOM"],
     }),
     getAllUoms: builder.query({
       query: (params) => ({
@@ -29,9 +29,9 @@ export const uomApi = createApi({
         url: "/Uom/GetUom",
         method: "GET",
       }),
-      providesTags: ["Meat Type"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      providesTags: ["UOM"],
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putUom: builder.mutation({
       query: ({ id, ...body }) => ({
@@ -39,14 +39,14 @@ export const uomApi = createApi({
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["Meat Type"],
+      invalidatesTags: ["UOM"],
     }),
     patchUomStatus: builder.mutation({
       query: (id) => ({
         url: `/Uom/UpdateUomStatus/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["Meat Type"],
+      invalidatesTags: ["UOM"],
     }),
   }),
 });

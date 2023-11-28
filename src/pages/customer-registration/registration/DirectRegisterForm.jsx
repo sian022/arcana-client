@@ -85,6 +85,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     useState(false);
   const [isAllApiLoading, setIsAllApiLoading] = useState(false);
 
+  const [isInitialized, setIsInitialzied] = useState(false);
+
   const { ownersRequirements, representativeRequirements, requirementsMode } =
     useContext(AttachmentsContext);
 
@@ -253,7 +255,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             : {}),
         }).unwrap();
 
-        await addAttachmentsSubmit(response?.data?.id);
+        await addAttachmentsSubmit(response?.value?.id);
       } else {
         response = await postDirectRegistration({
           ...transformedData,
@@ -267,7 +269,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             : {}),
         }).unwrap();
 
-        await addAttachmentsSubmit(response?.data?.id);
+        await addAttachmentsSubmit(response?.value?.id);
       }
 
       setIsAllApiLoading(false);
@@ -488,30 +490,71 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     e.target.value = inputValue;
   };
 
-  //UseEffects
-  useEffect(() => {
-    if (sameAsOwnersAddress) {
+  const handleSameAsOwnersAddress = () => {
+    setSameAsOwnersAddress((prev) => !prev);
+    if (!sameAsOwnersAddress) {
       setValue(
         "businessAddress.houseNumber",
-        watch("ownersAddress.houseNumber")
+        watch("ownersAddress.houseNumber"),
+        { shouldValidate: true }
       );
-      setValue("businessAddress.streetName", watch("ownersAddress.streetName"));
       setValue(
-        "businessAddress.barangayName",
-        watch("ownersAddress.barangayName")
-      );
-      setValue("businessAddress.city", watch("ownersAddress.city"));
-      setValue("businessAddress.province", watch("ownersAddress.province"));
+        "businessAddress.streetName",
+        watch("ownersAddress.streetName"),
+        { shouldValidate: true }
+      ),
+        setValue(
+          "businessAddress.barangayName",
+          watch("ownersAddress.barangayName"),
+          { shouldValidate: true }
+        );
+      setValue("businessAddress.city", watch("ownersAddress.city"), {
+        shouldValidate: true,
+      }),
+        setValue("businessAddress.province", watch("ownersAddress.province"), {
+          shouldValidate: true,
+        });
     } else {
-      setValue("businessAddress.houseNumber", "");
-      setValue("businessAddress.streetName", "");
-      setValue("businessAddress.barangayName", "");
-      setValue("businessAddress.city", "");
-      setValue("businessAddress.province", "");
+      setValue("businessAddress.houseNumber", "", { shouldValidate: true });
+      setValue("businessAddress.streetName", "", { shouldValidate: true });
+      setValue("businessAddress.barangayName", "", { shouldValidate: true });
+      setValue("businessAddress.city", "", { shouldValidate: true });
+      setValue("businessAddress.province", "", { shouldValidate: true });
     }
+  };
 
-    trigger();
-  }, [sameAsOwnersAddress]);
+  //UseEffects
+  // useEffect(() => {
+  //   if (sameAsOwnersAddress) {
+  //     setValue(
+  //       "businessAddress.houseNumber",
+  //       watch("ownersAddress.houseNumber"),
+  //       { shouldValidate: true }
+  //     );
+  //     setValue(
+  //       "businessAddress.streetName",
+  //       watch("ownersAddress.streetName"),
+  //       { shouldValidate: true }
+  //     ),
+  //       setValue(
+  //         "businessAddress.barangayName",
+  //         watch("ownersAddress.barangayName"),
+  //         { shouldValidate: true }
+  //       );
+  //     setValue("businessAddress.city", watch("ownersAddress.city"), {
+  //       shouldValidate: true,
+  //     }),
+  //       setValue("businessAddress.province", watch("ownersAddress.province"), {
+  //         shouldValidate: true,
+  //       });
+  //   } else {
+  //     setValue("businessAddress.houseNumber", "", { shouldValidate: true });
+  //     setValue("businessAddress.streetName", "", { shouldValidate: true });
+  //     setValue("businessAddress.barangayName", "", { shouldValidate: true });
+  //     setValue("businessAddress.city", "", { shouldValidate: true });
+  //     setValue("businessAddress.province", "", { shouldValidate: true });
+  //   }
+  // }, [sameAsOwnersAddress]);
 
   useEffect(() => {
     if (editMode) {
@@ -1002,7 +1045,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   sx={{ ml: "10px" }}
                   checked={sameAsOwnersAddress}
                   onChange={() => {
-                    setSameAsOwnersAddress((prev) => !prev);
+                    // setSameAsOwnersAddress((prev) => !prev);
+                    handleSameAsOwnersAddress();
                   }}
                   // disabled={Object.values(watch("ownersAddress")).some(
                   //   (value) => !value

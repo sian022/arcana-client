@@ -109,7 +109,16 @@ function ProductCategory() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${
+            drawerMode === "add" ? "adding" : "updating"
+          } product category`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -123,7 +132,12 @@ function ProductCategory() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving product category");
+      }
+
       onErrorOpen();
     }
   };
