@@ -23,8 +23,9 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import FreebieForm from "./FreebieForm";
 import { Cancel } from "@mui/icons-material";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
+import { NumericFormat } from "react-number-format";
 
-function TermsAndConditions({ direct, editMode }) {
+function TermsAndConditions({ direct, editMode, directStoreType }) {
   const dispatch = useDispatch();
   const { showSnackbar } = useSnackbar();
 
@@ -34,6 +35,7 @@ function TermsAndConditions({ direct, editMode }) {
   const freebiesDirect = useSelector(
     (state) => state.regularRegistration.value.freebies
   );
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const {
     photoProofDirect,
@@ -74,7 +76,8 @@ function TermsAndConditions({ direct, editMode }) {
 
   const handleCreditLimitChange = (e) => {
     const parsedValue =
-      e.target.value !== "" ? parseInt(e.target.value) : e.target.value;
+      // e.target.value !== "" ? parseInt(e.target.value) : e.target.value;
+      e.value !== "" ? parseInt(e.value) : e.value;
     dispatch(
       setTermsAndConditions({
         property: "creditLimit",
@@ -120,7 +123,27 @@ function TermsAndConditions({ direct, editMode }) {
     }
   }, [termsAndConditions["terms"], termsAndConditions["variableDiscount"]]);
 
-  console.log();
+  useEffect(() => {
+    if (!direct) {
+      dispatch(
+        setTermsAndConditions({
+          property: "typeOfCustomer",
+          value:
+            selectedRowData?.storeType === "Dealer" ? "Dealer" : "Retailer",
+        })
+      );
+    }
+
+    if (direct && directStoreType) {
+      dispatch(
+        setTermsAndConditions({
+          property: "typeOfCustomer",
+          value: directStoreType === "Dealer" ? "Dealer" : "Retailer",
+        })
+      );
+    }
+  }, []);
+
   return (
     <Box className="terms">
       <Box className="terms__column">
@@ -164,11 +187,13 @@ function TermsAndConditions({ direct, editMode }) {
           >
             <FormControlLabel
               value="Dealer"
+              disabled
               control={<Radio />}
               label="Dealer"
             />
             <FormControlLabel
               value="Retailer"
+              disabled
               control={<Radio />}
               label="Retailer"
             />
@@ -337,12 +362,44 @@ function TermsAndConditions({ direct, editMode }) {
               {termsAndConditions["terms"] === 3 && (
                 //  && termDaysData
                 <>
-                  <TextField
+                  <NumericFormat
+                    className="termsAndConditionsCreditLimit"
+                    customInput={TextField}
+                    sx={{
+                      width: "120px",
+                      "& .MuiInputBase-root": {
+                        height: "30px",
+                      },
+                    }}
+                    type="text"
+                    value={
+                      termsAndConditions["creditLimit"] != null
+                        ? termsAndConditions["creditLimit"].toString()
+                        : ""
+                    }
+                    onValueChange={(e) => {
+                      handleCreditLimitChange(e);
+                    }}
+                    // onChange={(e) => {
+                    //   handleCreditLimitChange(e);
+                    // }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment
+                          position="start"
+                          style={{ marginLeft: -3 }}
+                        >
+                          ₱
+                        </InputAdornment>
+                      ),
+                    }}
+                    thousandSeparator=","
+                  />
+
+                  {/* <TextField
                     className="termsAndConditionsCreditLimit"
                     sx={{
                       width: "120px",
-                      // position: "absolute",
-                      // right: "30px",
                       "& .MuiInputBase-root": {
                         height: "30px",
                       },
@@ -354,12 +411,6 @@ function TermsAndConditions({ direct, editMode }) {
                         : ""
                     }
                     onChange={(e) => {
-                      // dispatch(
-                      //   setTermsAndConditions({
-                      //     property: "creditLimit",
-                      //     value: parseInt(e.target.value) ?? 0,
-                      //   })
-                      // );
                       handleCreditLimitChange(e);
                     }}
                     InputProps={{
@@ -372,7 +423,8 @@ function TermsAndConditions({ direct, editMode }) {
                         </InputAdornment>
                       ),
                     }}
-                  />
+                  /> */}
+
                   <Autocomplete
                     selectOnFocus
                     clearOnBlur

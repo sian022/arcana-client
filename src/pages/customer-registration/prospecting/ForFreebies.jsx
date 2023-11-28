@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import AddArchiveSearchMixin from "../../../components/mixins/AddArchiveSearchMixin";
 import useDisclosure from "../../../hooks/useDisclosure";
-import { Autocomplete, Box, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CommonTable from "../../../components/CommonTable";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { prospectSchema } from "../../../schema/schema";
@@ -20,11 +26,15 @@ import { useDispatch, useSelector } from "react-redux";
 import CommonDialog from "../../../components/CommonDialog";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
-import { debounce } from "../../../utils/CustomFunctions";
+import {
+  debounce,
+  handlePhoneNumberInput,
+} from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import SecondaryButton from "../../../components/SecondaryButton";
 import AccentButton from "../../../components/AccentButton";
+import SuccessButton from "../../../components/SuccessButton";
 
 function ForFreebies() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -342,6 +352,13 @@ function ForFreebies() {
                 label="Phone Number"
                 size="small"
                 autoComplete="off"
+                type="number"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">+63</InputAdornment>
+                  ),
+                  onInput: handlePhoneNumberInput,
+                }}
                 required
                 {...register("phoneNumber")}
                 helperText={errors?.phoneNumber?.message}
@@ -354,6 +371,7 @@ function ForFreebies() {
                 disabled={!editMode && drawerMode === "edit"}
                 label="Email Address"
                 size="small"
+                type="email"
                 autoComplete="off"
                 required
                 {...register("emailAddress")}
@@ -486,9 +504,9 @@ function ForFreebies() {
         </Box>
         <Box className="commonDrawer__actions">
           {drawerMode !== "edit" || editMode ? (
-            <SecondaryButton onClick={onConfirmOpen} disabled={!isValid}>
+            <SuccessButton onClick={onConfirmOpen} disabled={!isValid}>
               Submit
-            </SecondaryButton>
+            </SuccessButton>
           ) : null}
           {drawerMode === "edit" && (
             <AccentButton

@@ -286,7 +286,6 @@ function ListingFeeDrawer({
     }
   }, [isListingFeeOpen, clientData]);
 
-  console.log(getValues());
   return (
     <>
       <CommonDrawer
@@ -482,10 +481,6 @@ function ListingFeeDrawer({
                       size="small"
                       customInput={TextField}
                       autoComplete="off"
-                      // onChange={(e) => {
-                      //   onChange(e);
-                      //   handleRecalculateTotalAmount();
-                      // }}
                       onValueChange={(e) => {
                         onChange(Number(e.value));
                         handleRecalculateTotalAmount();
@@ -494,9 +489,6 @@ function ListingFeeDrawer({
                       value={value || ""}
                       ref={ref}
                       required
-                      // InputProps={{
-                      //   inputProps: { min: 0 },
-                      // }}
                       thousandSeparator=","
                     />
                   )}

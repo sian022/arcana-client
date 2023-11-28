@@ -174,10 +174,10 @@ function VariableDiscount() {
   }, [search, status, rowsPerPage]);
 
   useEffect(() => {
-    if (isDrawerOpen) {
+    if (isDrawerOpen && drawerMode === "add") {
       setValue(
         "minimumAmount",
-        data?.discount[data?.discount?.length - 1]?.minimumAmount + 1
+        data?.discount[data?.discount?.length - 1]?.maximumAmount + 1
       );
     }
   }, [isDrawerOpen]);

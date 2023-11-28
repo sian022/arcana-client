@@ -10,6 +10,7 @@ import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import SuccessButton from "./SuccessButton";
 
 function CommonDrawer({
   onClose,
@@ -78,7 +79,7 @@ function CommonDrawer({
           </Box>
           {!removeButtons && (
             <Box className="commonDrawer__actions">
-              <SecondaryButton
+              <SuccessButton
                 onClick={onSubmit}
                 disabled={disableSubmit || isLoading}
               >
@@ -87,7 +88,7 @@ function CommonDrawer({
                 ) : (
                   <>{submitLabel || "Submit"}</>
                 )}
-              </SecondaryButton>
+              </SuccessButton>
               <DangerButton onClick={onClose} disabled={isLoading}>
                 Close
               </DangerButton>

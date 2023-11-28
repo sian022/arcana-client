@@ -304,6 +304,11 @@ function UserAccount() {
             getOptionLabel={(option) =>
               option.general_info.full_id_number_full_name
             }
+            // getOptionDisabled={(option) =>
+            //   data?.users?.some(
+            //     (item) => item?.itemId?.itemCode === option.itemCode
+            //   )
+            // }
             renderInput={(params) => (
               <TextField {...params} size="small" label="Employee ID" />
             )}

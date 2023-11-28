@@ -26,6 +26,7 @@ import {
   usePutRejectListingFeeMutation,
 } from "../../features/listing-fee/api/listingFeeApi";
 import useSnackbar from "../../hooks/useSnackbar";
+import SuccessButton from "../SuccessButton";
 
 function ViewListingFeeModal({
   // setEditMode,
@@ -263,9 +264,9 @@ function ViewListingFeeModal({
               right: "40px",
             }}
           >
-            <SecondaryButton onClick={onApproveConfirmOpen}>
+            <SuccessButton onClick={onApproveConfirmOpen}>
               Approve{" "}
-            </SecondaryButton>
+            </SuccessButton>
             <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
           </Box>
         )}

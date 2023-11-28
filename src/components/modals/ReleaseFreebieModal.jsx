@@ -35,6 +35,7 @@ import CommonDialog from "../CommonDialog";
 import ViewPhotoModal from "./ViewPhotoModal";
 import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
 import { DirectReleaseContext } from "../../context/DirectReleaseContext";
+import SuccessButton from "../SuccessButton";
 
 function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -292,31 +293,38 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                 </Typography>
                 <Box className="releaseFreebieModal__footer__attachments__signature__stack">
                   {signature ? (
-                    <Box
-                      sx={{
-                        width: "100px",
-                        // height: "20px",
-                        display: "flex",
-                        justifyContent: "center",
-                        position: "absolute",
-                        top: -20,
-                      }}
-                    >
-                      <img
-                        src={signature}
-                        width="70px"
-                        onClick={onCanvasOpen}
-                      />
-                    </Box>
+                    <>
+                      <Box
+                        sx={{
+                          width: "100px",
+                          // height: "20px",
+                          display: "flex",
+                          justifyContent: "center",
+                          position: "absolute",
+                          top: -20,
+                        }}
+                      >
+                        <img
+                          src={signature}
+                          width="70px"
+                          onClick={onCanvasOpen}
+                        />
+                      </Box>
+                      <Typography>{selectedRowData?.ownersName}</Typography>
+                    </>
                   ) : (
-                    <SecondaryButton onClick={onCanvasOpen}>
-                      Sign here
-                    </SecondaryButton>
+                    <>
+                      <SecondaryButton
+                        sx={{ minWidth: "130px" }}
+                        onClick={onCanvasOpen}
+                      >
+                        Sign here
+                      </SecondaryButton>
+                      <Typography sx={{ fontSize: "0.8rem" }}>
+                        Received the above <br /> items in good condition
+                      </Typography>
+                    </>
                   )}
-
-                  <Typography>
-                    Received the above <br /> items in good condition
-                  </Typography>
                 </Box>
               </Box>
               <Box className="releaseFreebieModal__footer__attachments__photo">
@@ -372,12 +380,12 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
         </Box>
         <Box className="releaseFreebieModal__actionsEnd">
           {/* <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton> */}
-          <SecondaryButton
+          <SuccessButton
             onClick={onConfirmOpen}
             disabled={!signature || !photoProof}
           >
             {direct ? "Save" : "Release"}
-          </SecondaryButton>
+          </SuccessButton>
         </Box>
       </CommonModal>
 

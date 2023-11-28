@@ -23,6 +23,7 @@ import {
   usePutRejectClientMutation,
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
+import SuccessButton from "../../SuccessButton";
 
 function ViewRegistrationDetailsModal({
   approval,
@@ -236,7 +237,7 @@ function ViewRegistrationDetailsModal({
                   </AccentButton>
                 )} */}
               {activeTab !== "Attachments" && (
-                <SecondaryButton onClick={handleNext}>Next</SecondaryButton>
+                <SuccessButton onClick={handleNext}>Next</SuccessButton>
               )}
               {/* </Box> */}
               {activeTab === "Attachments" &&
@@ -250,9 +251,9 @@ function ViewRegistrationDetailsModal({
                         gap: "10px",
                       }}
                     >
-                      <SecondaryButton onClick={onApproveConfirmOpen}>
+                      <SuccessButton onClick={onApproveConfirmOpen}>
                         Approve
-                      </SecondaryButton>
+                      </SuccessButton>
                       <DangerButton onClick={onRejectConfirmOpen}>
                         Reject
                       </DangerButton>

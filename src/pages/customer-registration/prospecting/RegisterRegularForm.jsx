@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   IconButton,
+  InputAdornment,
   TextField,
   Typography,
   debounce,
@@ -48,6 +49,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
+import SuccessButton from "../../../components/SuccessButton";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -112,12 +114,13 @@ function RegisterRegularForm({ open, onClose }) {
   // React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     register,
     setValue,
     reset,
     getValues,
     control,
+    watch,
   } = useForm({
     resolver: yupResolver(regularRegisterSchema.schema),
     mode: "onChange",
@@ -129,6 +132,10 @@ function RegisterRegularForm({ open, onClose }) {
     {
       label: "Personal Info",
       isValid: isValid,
+      // isValid: includeAuthorizedRepresentative
+      //   ? watch("authorizedRepresentative") &&
+      //     watch("authorizedRepresentativePosition")
+      //   : isValid,
       icon: <Person />,
       disabled: false,
     },
@@ -298,6 +305,7 @@ function RegisterRegularForm({ open, onClose }) {
   const handleResetForms = () => {
     reset();
     setSameAsOwnersAddress(false);
+    setIncludeAuthorizedRepresentative(false);
 
     setOwnersRequirements({
       signature: null,
@@ -351,8 +359,16 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   const handleDisableNext = () => {
-    if (activeTab === "Personal Info" && navigators[0].isValid === false) {
-      return true;
+    if (activeTab === "Personal Info") {
+      if (navigators[0].isValid === false) {
+        return true;
+      } else if (
+        includeAuthorizedRepresentative &&
+        (!watch("authorizedRepresentative") ||
+          !watch("authorizedRepresentativePosition"))
+      ) {
+        return true;
+      }
     } else if (
       activeTab === "Terms and Conditions" &&
       navigators[1].isValid === false
@@ -401,13 +417,21 @@ function RegisterRegularForm({ open, onClose }) {
       </Box>
       <IconButton
         sx={{ color: "white !important" }}
-        onClick={onCancelConfirmOpen}
+        // onClick={onCancelConfirmOpen}
+        onClick={isDirty ? onCancelConfirmOpen : handleDrawerClose}
       >
         <Close />
       </IconButton>
     </Box>
   );
 
+  const handlePhoneNumberInput = (e) => {
+    const maxLength = 10;
+    const inputValue = e.target.value.toString().slice(0, maxLength);
+    e.target.value = inputValue;
+  };
+
+  //UseEffects
   useEffect(() => {
     setValue("clientId", selectedRowData?.id);
   }, [open]);
@@ -444,7 +468,8 @@ function RegisterRegularForm({ open, onClose }) {
           // true
         }
         paddingSmall
-        onClose={onCancelConfirmOpen}
+        // onClose={onCancelConfirmOpen}
+        onClose={isDirty ? onCancelConfirmOpen : handleDrawerClose}
         width="1000px"
         // noRibbon
         removeButtons
@@ -524,12 +549,24 @@ function RegisterRegularForm({ open, onClose }) {
                   /> */}
                   <TextField
                     label="Phone Number"
+                    type="number"
                     size="small"
                     autoComplete="off"
                     required
-                    className="register__textField"
-                    disabled
                     value={selectedRowData?.phoneNumber ?? ""}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Typography sx={{ color: "#9E9E9E" }}>+63</Typography>
+                        </InputAdornment>
+                      ),
+                      onInput: handlePhoneNumberInput,
+                    }}
+                    disabled
+                    className="register__textField"
+                    // {...register("phoneNumber")}
+                    // helperText={errors?.phoneNumber?.message}
+                    // error={errors?.phoneNumber}
                   />
                 </Box>
               </Box>
@@ -653,11 +690,15 @@ function RegisterRegularForm({ open, onClose }) {
                   options={storeTypeData?.storeTypes}
                   getOptionLabel={(option) => option.storeTypeName}
                   disableClearable
-                  value={storeTypeData?.storeTypes?.find(
+                  // value={storeTypeData?.storeTypes?.find(
+                  //   (store) =>
+                  //     store.storeTypeName === selectedRowData?.storeType
+                  // )}
+                  defaultValue={storeTypeData?.storeTypes?.find(
                     (store) =>
                       store.storeTypeName === selectedRowData?.storeType
                   )}
-                  disabled
+                  // disabled
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -864,20 +905,17 @@ function RegisterRegularForm({ open, onClose }) {
             <DangerButton onClick={handleBack}>Back</DangerButton>
           )}
           {activeTab !== "Attachments" && (
-            <SecondaryButton
-              onClick={handleNext}
-              disabled={handleDisableNext()}
-            >
+            <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
               Next
-            </SecondaryButton>
+            </SuccessButton>
           )}
           {activeTab === "Attachments" && (
-            <SecondaryButton
+            <SuccessButton
               onClick={onConfirmOpen}
               disabled={navigators.some((obj) => obj.isValid === false)}
             >
               Register
-            </SecondaryButton>
+            </SuccessButton>
           )}
         </Box>
       </CommonDrawer>

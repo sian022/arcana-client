@@ -10,6 +10,7 @@ import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
 import SecondaryAlert from "../assets/images/SecondaryAlert.png";
 import QuestionAlert from "../assets/images/QuestionAlert.png";
+import SuccessButton from "./SuccessButton";
 
 function CommonDialog({
   onClose,

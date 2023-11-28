@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   IconButton,
+  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
@@ -61,6 +62,7 @@ import moment from "moment";
 import { coverageMapping } from "../../../utils/Constants";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
+import SuccessButton from "../../../components/SuccessButton";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -148,6 +150,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     {
       label: "Personal Info",
       isValid: isValid,
+      // isValid: includeAuthorizedRepresentative
+      //   ? watch("authorizedRepresentative") &&
+      //     watch("authorizedRepresentativePosition")
+      //   : isValid,
       icon: <Person />,
       disabled: false,
     },
@@ -351,6 +357,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const handleResetForms = () => {
     reset();
     setSameAsOwnersAddress(false);
+    setIncludeAuthorizedRepresentative(false);
 
     setOwnersRequirements({
       signature: null,
@@ -448,14 +455,25 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   };
 
   const handleDisableNext = () => {
-    if (activeTab === "Personal Info" && navigators[0].isValid === false) {
-      return true;
+    if (activeTab === "Personal Info") {
+      if (navigators[0].isValid === false) {
+        return true;
+      } else if (
+        includeAuthorizedRepresentative &&
+        (!watch("authorizedRepresentative") ||
+          !watch("authorizedRepresentativePosition"))
+      ) {
+        return true;
+      }
     } else if (
       activeTab === "Terms and Conditions" &&
       navigators[1].isValid === false
     ) {
       return true;
     }
+
+    // Default case when none of the conditions for disabling the next button are met
+    return false;
   };
 
   const handleRedirectListingFeeYes = () => {
@@ -463,6 +481,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     onListingFeeOpen();
   };
 
+  const handlePhoneNumberInput = (e) => {
+    const maxLength = 10;
+    const inputValue = e.target.value.toString().slice(0, maxLength);
+    e.target.value = inputValue;
+  };
+
+  //UseEffects
   useEffect(() => {
     if (sameAsOwnersAddress) {
       setValue(
@@ -714,9 +739,16 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
                   <TextField
                     label="Phone Number"
+                    type="number"
                     size="small"
                     autoComplete="off"
                     required
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">+63</InputAdornment>
+                      ),
+                      onInput: handlePhoneNumberInput,
+                    }}
                     className="register__textField"
                     {...register("phoneNumber")}
                     helperText={errors?.phoneNumber?.message}
@@ -747,7 +779,27 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 </Typography>
                 <Box className="register__secondRow">
                   <Box className="register__secondRow__content">
-                    <TextField
+                    <Controller
+                      name="ownersAddress.houseNumber"
+                      control={control}
+                      defaultValue="" // Set your default value here if needed
+                      rules={{ required: "Unit number is required" }} // Add your validation rules here
+                      render={({ field }) => (
+                        <TextField
+                          label="Unit No."
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          {...field}
+                          helperText={
+                            errors?.ownersAddress?.houseNumber?.message
+                          }
+                          error={errors?.ownersAddress?.houseNumber}
+                        />
+                      )}
+                    />
+                    {/* <TextField
                       label="Unit No."
                       size="small"
                       autoComplete="off"
@@ -756,8 +808,29 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       {...register("ownersAddress.houseNumber")}
                       helperText={errors?.ownersAddress?.houseNumber?.message}
                       error={errors?.ownersAddress?.houseNumber}
+                    /> */}
+
+                    <Controller
+                      name="ownersAddress.streetName"
+                      control={control}
+                      defaultValue="" // Set your default value here if needed
+                      rules={{ required: "Street name is required" }} // Add your validation rules here
+                      render={({ field }) => (
+                        <TextField
+                          label="Street Name"
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          {...field}
+                          helperText={
+                            errors?.ownersAddress?.streetName?.message
+                          }
+                          error={errors?.ownersAddress?.streetName}
+                        />
+                      )}
                     />
-                    <TextField
+                    {/* <TextField
                       label="Street Name"
                       size="small"
                       autoComplete="off"
@@ -766,8 +839,29 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       {...register("ownersAddress.streetName")}
                       helperText={errors?.ownersAddress?.streetName?.message}
                       error={errors?.ownersAddress?.streetName}
+                    /> */}
+
+                    <Controller
+                      name="ownersAddress.barangayName"
+                      control={control}
+                      defaultValue="" // Set your default value here if needed
+                      rules={{ required: "Barangay is required" }} // Add your validation rules here
+                      render={({ field }) => (
+                        <TextField
+                          label="Barangay"
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          {...field}
+                          helperText={
+                            errors?.ownersAddress?.barangayName?.message
+                          }
+                          error={errors?.ownersAddress?.barangayName}
+                        />
+                      )}
                     />
-                    <TextField
+                    {/* <TextField
                       label="Barangay"
                       size="small"
                       autoComplete="off"
@@ -776,10 +870,28 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       {...register("ownersAddress.barangayName")}
                       helperText={errors?.ownersAddress?.barangayName?.message}
                       error={errors?.ownersAddress?.barangayName}
-                    />
+                    /> */}
                   </Box>
                   <Box className="register__secondRow__content">
-                    <TextField
+                    <Controller
+                      name="ownersAddress.city"
+                      control={control}
+                      defaultValue="" // Set your default value here if needed
+                      rules={{ required: "Municipality/City is required" }} // Add your validation rules here
+                      render={({ field }) => (
+                        <TextField
+                          label="Municipality/City"
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          {...field}
+                          helperText={errors?.ownersAddress?.city?.message}
+                          error={errors?.ownersAddress?.city}
+                        />
+                      )}
+                    />
+                    {/* <TextField
                       label="Municipality/City"
                       size="small"
                       autoComplete="off"
@@ -788,17 +900,36 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       {...register("ownersAddress.city")}
                       helperText={errors?.ownersAddress?.city?.message}
                       error={errors?.ownersAddress?.city}
+                    /> */}
+
+                    <Controller
+                      name="ownersAddress.province"
+                      control={control}
+                      defaultValue="" // Set your default value here if needed
+                      rules={{ required: "Province is required" }} // Add your validation rules here
+                      render={({ field }) => (
+                        <TextField
+                          label="Province"
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          {...field}
+                          helperText={errors?.ownersAddress?.province?.message}
+                          error={errors?.ownersAddress?.province}
+                        />
+                      )}
                     />
-                    <TextField
+                    {/* <TextField
                       label="Province"
                       size="small"
                       autoComplete="off"
                       required
                       className="register__textField"
-                      {...register("ownersAddress.province")}
+                      // {...register("ownersAddress.province")}
                       helperText={errors?.ownersAddress?.province?.message}
                       error={errors?.ownersAddress?.province}
-                    />
+                    /> */}
                   </Box>
                 </Box>
               </Box>
@@ -1058,7 +1189,11 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         )}
 
         {activeTab === "Terms and Conditions" && (
-          <TermsAndConditions direct editMode={editMode} />
+          <TermsAndConditions
+            direct
+            editMode={editMode}
+            directStoreType={watch("storeTypeId")?.storeTypeName}
+          />
         )}
 
         {activeTab === "Attachments" && <Attachments />}
@@ -1074,20 +1209,17 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             <DangerButton onClick={handleBack}>Back</DangerButton>
           )}
           {activeTab !== "Attachments" && (
-            <SecondaryButton
-              onClick={handleNext}
-              disabled={handleDisableNext()}
-            >
+            <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
               Next
-            </SecondaryButton>
+            </SuccessButton>
           )}
           {activeTab === "Attachments" && (
-            <SecondaryButton
+            <SuccessButton
               onClick={onConfirmOpen}
               disabled={navigators.some((obj) => obj.isValid === false)}
             >
               Register
-            </SecondaryButton>
+            </SuccessButton>
           )}
         </Box>
       </CommonDrawer>
