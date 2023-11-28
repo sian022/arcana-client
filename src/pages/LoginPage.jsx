@@ -57,14 +57,14 @@ function LoginPage() {
   const submitHandler = async (data) => {
     try {
       const res = await postLogin(data).unwrap();
-      dispatch(setUserDetails(res?.data));
-      dispatch(setFullname(res?.data?.fullname));
-      dispatch(setToken(res?.data?.token));
-      dispatch(setPermissisons(res?.data?.permission));
+      dispatch(setUserDetails(res?.value));
+      dispatch(setFullname(res?.value?.fullname));
+      dispatch(setToken(res?.value?.token));
+      dispatch(setPermissisons(res?.value?.permission));
       navigate("/");
       reset();
     } catch (err) {
-      showSnackbar(err.data.error.description ?? "Error logging in", "error");
+      showSnackbar(err.value.error.description ?? "Error logging in", "error");
     }
   };
 

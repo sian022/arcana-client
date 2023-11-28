@@ -7,7 +7,6 @@ function PersonalInfoTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const isRepresentativeRequirements = selectedRowData?.attachments?.length > 4;
 
-  console.log(selectedRowData);
   return (
     <Box className="viewRegistrationModal__personalInfo">
       <Typography className="viewRegistrationModal__personalInfo__header">

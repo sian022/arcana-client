@@ -137,6 +137,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     getValues,
     control,
     watch,
+    trigger,
   } = useForm({
     resolver: yupResolver(directRegisterPersonalSchema.schema),
     // resolver: yupResolver(regularRegisterSchema.schema),
@@ -149,11 +150,11 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const navigators = [
     {
       label: "Personal Info",
-      isValid: isValid,
-      // isValid: includeAuthorizedRepresentative
-      //   ? watch("authorizedRepresentative") &&
-      //     watch("authorizedRepresentativePosition")
-      //   : isValid,
+      // isValid: isValid,
+      isValid: includeAuthorizedRepresentative
+        ? watch("authorizedRepresentative") &&
+          watch("authorizedRepresentativePosition")
+        : isValid,
       icon: <Person />,
       disabled: false,
     },
@@ -508,6 +509,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setValue("businessAddress.city", "");
       setValue("businessAddress.province", "");
     }
+
+    trigger();
   }, [sameAsOwnersAddress]);
 
   useEffect(() => {
@@ -783,13 +786,11 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       name="ownersAddress.houseNumber"
                       control={control}
                       defaultValue="" // Set your default value here if needed
-                      rules={{ required: "Unit number is required" }} // Add your validation rules here
                       render={({ field }) => (
                         <TextField
                           label="Unit No."
                           size="small"
                           autoComplete="off"
-                          required
                           className="register__textField"
                           {...field}
                           helperText={
@@ -814,13 +815,11 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       name="ownersAddress.streetName"
                       control={control}
                       defaultValue="" // Set your default value here if needed
-                      rules={{ required: "Street name is required" }} // Add your validation rules here
                       render={({ field }) => (
                         <TextField
                           label="Street Name"
                           size="small"
                           autoComplete="off"
-                          required
                           className="register__textField"
                           {...field}
                           helperText={
@@ -1135,7 +1134,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   )}
                 />
 
-                <SecondaryButton onClick={onPinLocationOpen}>
+                <SecondaryButton
+                  sx={{ maxHeight: "40px" }}
+                  onClick={onPinLocationOpen}
+                >
                   Pin Location &nbsp; <PushPin />
                 </SecondaryButton>
               </Box>

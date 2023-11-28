@@ -138,15 +138,15 @@ function ViewRegistrationDetailsModal({
         id: selectedRowData?.requestId,
       }).unwrap();
       showSnackbar("Client approved successfully", "success");
+      onApproveConfirmClose();
+      handleClose();
     } catch (error) {
-      showSnackbar(
-        error?.data?.messages[0] || "Error approving client",
-        "error"
-      );
+      if (error?.data?.error) {
+        showSnackbar(error?.data?.error?.description, "error");
+      } else {
+        showSnackbar("Error approving client");
+      }
     }
-
-    onApproveConfirmClose();
-    handleClose();
   };
 
   const handleRejectConfirmClose = () => {

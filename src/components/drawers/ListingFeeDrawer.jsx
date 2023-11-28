@@ -303,7 +303,9 @@ function ListingFeeDrawer({
               name={`clientId`}
               control={control}
               options={clientData?.regularClient || []}
-              getOptionLabel={(option) => option.businessName || ""}
+              getOptionLabel={(option) =>
+                option.businessName + " - " + option.ownersName || ""
+              }
               disableClearable
               loading={isClientLoading}
               disabled={redirect || editMode}

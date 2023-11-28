@@ -121,6 +121,7 @@ function RegisterRegularForm({ open, onClose }) {
     getValues,
     control,
     watch,
+    trigger,
   } = useForm({
     resolver: yupResolver(regularRegisterSchema.schema),
     mode: "onChange",
@@ -450,6 +451,8 @@ function RegisterRegularForm({ open, onClose }) {
       setValue("city", "");
       setValue("province", "");
     }
+
+    trigger();
   }, [sameAsOwnersAddress]);
 
   useEffect(() => {
@@ -837,7 +840,10 @@ function RegisterRegularForm({ open, onClose }) {
                   )}
                 />
 
-                <SecondaryButton onClick={onPinLocationOpen}>
+                <SecondaryButton
+                  sx={{ maxHeight: "40px" }}
+                  onClick={onPinLocationOpen}
+                >
                   Pin Location &nbsp; <PushPin />
                 </SecondaryButton>
               </Box>

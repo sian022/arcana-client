@@ -56,8 +56,9 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
     useGetAllTermDaysQuery({ Status: true });
 
   const handleFixedDiscountChange = (e) => {
-    const parsedValue =
-      e.target.value !== "" ? parseInt(e.target.value) : e.target.value;
+    let parsedValue =
+      e.target.value !== "" ? parseFloat(e.target.value) : e.target.value;
+
     if (
       (parsedValue < 0 || parsedValue > 10) &&
       parsedValue !== "" &&
@@ -66,6 +67,7 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
       showSnackbar("Value must be between 0% and 10%", "error");
       return;
     }
+
     dispatch(
       setTermsAndConditions({
         property: "fixedDiscount",
