@@ -100,8 +100,8 @@ function ViewListingFeeModal({
       onApproveConfirmClose();
       onClose();
     } catch (error) {
-      if (error?.data?.messages) {
-        showSnackbar(error?.data?.messages[0], "error");
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
       } else {
         showSnackbar("Error approving listing fee", "error");
       }
@@ -119,8 +119,8 @@ function ViewListingFeeModal({
       handleRejectConfirmClose();
       onClose();
     } catch (error) {
-      if (error?.data?.messages) {
-        showSnackbar(error?.data?.messages[0], "error");
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
       } else {
         showSnackbar("Error rejecting listing fee", "error");
       }

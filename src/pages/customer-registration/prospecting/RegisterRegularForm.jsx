@@ -132,11 +132,11 @@ function RegisterRegularForm({ open, onClose }) {
   const navigators = [
     {
       label: "Personal Info",
-      isValid: isValid,
-      // isValid: includeAuthorizedRepresentative
-      //   ? watch("authorizedRepresentative") &&
-      //     watch("authorizedRepresentativePosition")
-      //   : isValid,
+      // isValid: isValid,
+      isValid: includeAuthorizedRepresentative
+        ? watch("authorizedRepresentative") &&
+          watch("authorizedRepresentativePosition")
+        : isValid,
       icon: <Person />,
       disabled: false,
     },
@@ -157,6 +157,13 @@ function RegisterRegularForm({ open, onClose }) {
         if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
           return true;
         } else if (termsAndConditions["terms"] !== 3 && key === "creditLimit") {
+          return true;
+        }
+
+        if (key === "modeOfPayment") {
+          if (termsAndConditions[key]?.length === 0) {
+            return false;
+          }
           return true;
         }
 
@@ -211,8 +218,11 @@ function RegisterRegularForm({ open, onClose }) {
       debounce(onRedirectListingFeeOpen(), 2000);
     } catch (error) {
       setIsAllApiLoading(false);
-      showSnackbar(error.data.messages[0] || "Something went wrong", "error");
-      console.log(error);
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error registering client", "error");
+      }
     }
   };
 

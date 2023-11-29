@@ -31,6 +31,8 @@ export const productSchema = {
     uomId: yup.object().required("UOM is required"),
     productSubCategoryId: yup.object().required("Subcategory is required"),
     meatTypeId: yup.object().required("Meat type is required"),
+    price: yup.number().required("Price is required"),
+    effectivityDate: yup.date().required("Effectivity date is required"),
   }),
   defaultValues: {
     itemCode: "",
@@ -38,6 +40,8 @@ export const productSchema = {
     uomId: null,
     productSubCategoryId: null,
     meatTypeId: null,
+    price: null,
+    effectivityDate: null,
   },
 };
 

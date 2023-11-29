@@ -86,6 +86,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const [isAllApiLoading, setIsAllApiLoading] = useState(false);
 
   const [isInitialized, setIsInitialzied] = useState(false);
+  const [isPhoneNumberShrinked, setIsPhoneNumberShrinked] = useState(false);
 
   const { ownersRequirements, representativeRequirements, requirementsMode } =
     useContext(AttachmentsContext);
@@ -155,7 +156,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       // isValid: isValid,
       isValid: includeAuthorizedRepresentative
         ? watch("authorizedRepresentative") &&
-          watch("authorizedRepresentativePosition")
+          watch("authorizedRepresentativePosition") &&
+          isValid
         : isValid,
       icon: <Person />,
       disabled: false,
@@ -177,6 +179,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
           return true;
         } else if (termsAndConditions["terms"] !== 3 && key === "creditLimit") {
+          return true;
+        }
+
+        if (key === "modeOfPayment") {
+          if (termsAndConditions[key]?.length === 0) {
+            return false;
+          }
           return true;
         }
 
@@ -287,7 +296,14 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
       setIsAllApiLoading(false);
-      console.log(error);
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar(
+          `Error ${editMode ? "updating" : "registering"} client`,
+          "error"
+        );
+      }
     }
   };
 
@@ -443,7 +459,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const handleNext = () => {
     if (activeTab === "Personal Info") {
       setActiveTab("Terms and Conditions");
-      dispatch(setSelectedRow(getValues()));
+      // dispatch(setSelectedRow(getValues()));
+      dispatch(
+        setSelectedRow({
+          ...getValues(),
+          dateOfBirth: getValues().dateOfBirth.format("YYYY-MM-DD"),
+        })
+      );
     } else if (activeTab === "Terms and Conditions") {
       setActiveTab("Attachments");
     }
@@ -799,6 +821,11 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     {...register("phoneNumber")}
                     helperText={errors?.phoneNumber?.message}
                     error={errors?.phoneNumber}
+                    // onFocus={() => setIsPhoneNumberShrinked(true)}
+                    // onBlur={(e) => setIsPhoneNumberShrinked(!!e.target.value)}
+                    // InputLabelProps={{
+                    //   shrink: isPhoneNumberShrinked,
+                    // }}
                   />
                 </Box>
               </Box>

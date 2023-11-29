@@ -12,15 +12,14 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { transformKey } from "../utils/CustomFunctions";
-import CommonActions from "./CommonActions";
-import NoData from "../assets/images/no-data.jpg";
+import { transformKey } from "../../utils/CustomFunctions";
+import CommonActions from "../CommonActions";
+import NoData from "../../assets/images/no-data.jpg";
 import { useDispatch } from "react-redux";
-import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
-import CommonTableSkeleton from "./CommonTableSkeleton";
+import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import { Visibility } from "@mui/icons-material";
 
-function CommonTable({
+function ProductsTable({
   mapData,
   excludeKeys,
   excludeKeysDisplay,
@@ -48,8 +47,6 @@ function CommonTable({
   moreCompact,
   percentageArray,
   pesoArray,
-  viewMoreKey,
-  onViewMoreClick,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -152,13 +149,10 @@ function CommonTable({
                       });
                     }
 
-                    if (viewMoreKey === keys) {
+                    if (keys === "itemPriceChanges") {
                       return (
                         <TableCell>
-                          <IconButton
-                            sx={{ color: "secondary.main" }}
-                            onClick={onViewMoreClick}
-                          >
+                          <IconButton sx={{ color: "secondary.main" }}>
                             <Visibility />
                           </IconButton>
                         </TableCell>
@@ -230,4 +224,4 @@ function CommonTable({
   );
 }
 
-export default CommonTable;
+export default ProductsTable;

@@ -160,9 +160,15 @@ function ListingFeeDrawer({
       handleDrawerClose();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error?.data?.messages || "Something went wrong");
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${editMod ? "updating" : "adding"} listing fee`
+        );
+      }
+
       onErrorOpen();
-      console.log(error);
     }
 
     onConfirmSubmitClose();

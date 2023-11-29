@@ -139,7 +139,12 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
       debounce(onRedirectRegisterOpen(), 2000);
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error releasing freebies");
+      }
+
       onErrorOpen();
     }
   };

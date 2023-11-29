@@ -4,7 +4,7 @@ import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, get, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
@@ -22,6 +22,12 @@ import { useGetAllUomsQuery } from "../../features/setup/api/uomApi";
 import { useGetAllProductSubCategoriesQuery } from "../../features/setup/api/productSubCategoryApi";
 import { useGetAllMeatTypesQuery } from "../../features/setup/api/meatTypeApi";
 import { useSelector } from "react-redux";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import moment from "moment";
+import { NumericFormat } from "react-number-format";
+import ProductsTable from "../../components/customTables/ProductsTable";
+import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -60,6 +66,12 @@ function Products() {
     onClose: onErrorClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isPriceOpen,
+    onOpen: onPriceOpen,
+    onClose: onPriceClose,
+  } = useDisclosure();
+
   // Constants
   const excludeKeysDisplay = [
     "id",
@@ -67,7 +79,7 @@ function Products() {
     "isActive",
     "addedBy",
     "modifiedBy",
-    "itemPriceChanges",
+    // "itemPriceChanges",
   ];
 
   const tableHeads = [
@@ -77,6 +89,7 @@ function Products() {
     "Product Category",
     "Product Sub Category",
     "Meat Type",
+    "Price Details",
   ];
 
   //React Hook Form
@@ -245,6 +258,7 @@ function Products() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
+  console.log(getValues());
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -271,6 +285,8 @@ function Products() {
           count={count}
           status={status}
           tableHeads={tableHeads}
+          viewMoreKey={"itemPriceChanges"}
+          onViewMoreClick={onPriceOpen}
         />
       )}
 
@@ -369,6 +385,57 @@ function Products() {
             />
           )}
         />
+
+        <Controller
+          control={control}
+          name={"price"}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <NumericFormat
+              label="Price (₱)"
+              type="text"
+              size="small"
+              customInput={TextField}
+              autoComplete="off"
+              onValueChange={(e) => {
+                onChange(Number(e.value));
+              }}
+              onBlur={onBlur}
+              value={value || ""}
+              ref={ref}
+              required
+              thousandSeparator=","
+              helperText={errors?.price?.message}
+              error={errors?.price}
+            />
+          )}
+        />
+
+        {drawerMode === "edit" && (
+          <Controller
+            name="effectivityDate"
+            control={control}
+            render={({ field }) => (
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DatePicker
+                  {...field}
+                  label="Price Effectivity Date"
+                  slotProps={{
+                    textField: { size: "small", required: true },
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      helperText={errors?.effectivityDate?.message}
+                      error={errors?.effectivityDate}
+                    />
+                  )}
+                  minDate={moment()}
+                  // maxDate={moment().subtract(18, "years")}
+                />
+              </LocalizationProvider>
+            )}
+          />
+        )}
       </CommonDrawer>
 
       <CommonDialog
@@ -396,6 +463,8 @@ function Products() {
         onClose={onErrorClose}
         message={snackbarMessage}
       />
+
+      <PriceDetailsModal open={isPriceOpen} onClose={onPriceClose} />
     </Box>
   );
 }

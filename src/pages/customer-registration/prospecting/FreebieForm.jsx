@@ -162,9 +162,17 @@ function FreebieForm({
       debounce(onRedirectReleaseOpen(), 2000);
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error?.data?.messages || "Something went wrong");
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${
+            updateFreebies ? "updating" : "adding"
+          } freebies for prospect`
+        );
+      }
+
       onErrorOpen();
-      console.log(error);
     }
 
     onConfirmSubmitClose();

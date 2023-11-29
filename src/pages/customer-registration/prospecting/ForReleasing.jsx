@@ -217,8 +217,14 @@ function ForReleasing() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
-      onConfirmClose();
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} prospect`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -232,7 +238,12 @@ function ForReleasing() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving prospect");
+      }
+
       onErrorOpen();
     }
   };

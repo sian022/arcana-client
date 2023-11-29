@@ -197,8 +197,8 @@ function DirectRegistration() {
       onVoidClose();
       showSnackbar("Client voided successfully", "success");
     } catch (error) {
-      if (error?.data?.messages) {
-        showSnackbar(error?.data?.messages[0], "error");
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
       } else {
         showSnackbar("Error voiding client", "error");
       }

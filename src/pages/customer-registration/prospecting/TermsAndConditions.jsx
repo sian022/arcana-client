@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetFreebies,
@@ -30,6 +30,8 @@ import { NumericFormat } from "react-number-format";
 function TermsAndConditions({ direct, editMode, directStoreType }) {
   const dispatch = useDispatch();
   const { showSnackbar } = useSnackbar();
+
+  const [selectedValues, setSelectedValues] = useState([]);
 
   const termsAndConditions = useSelector(
     (state) => state.regularRegistration.value.termsAndConditions
@@ -147,6 +149,42 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
       );
     }
   }, []);
+
+  const handleCheckboxChange = (modeOfPaymentId) => {
+    // Check if the modeOfPaymentId is already in the array
+    const isSelected = termsAndConditions.modeOfPayment.some(
+      (item) => item.modeOfPaymentId === modeOfPaymentId
+    );
+
+    // Dispatch the action to update the Redux state
+    dispatch(
+      setTermsAndConditions({
+        property: "modeOfPayment",
+        value: isSelected
+          ? termsAndConditions.modeOfPayment.filter(
+              (item) => item.modeOfPaymentId !== modeOfPaymentId
+            )
+          : [...termsAndConditions.modeOfPayment, { modeOfPaymentId }],
+      })
+    );
+  };
+
+  // const handleCheckboxChange = (modeOfPaymentId) => {
+  //   // Check if the modeOfPaymentId is already in the array
+  //   const isSelected = selectedValues.some(
+  //     (item) => item.modeOfPaymentId === modeOfPaymentId
+  //   );
+
+  //   if (isSelected) {
+  //     // If modeOfPaymentId is already selected, remove it from the array
+  //     setSelectedValues((prevValues) =>
+  //       prevValues.filter((item) => item.modeOfPaymentId !== modeOfPaymentId)
+  //     );
+  //   } else {
+  //     // If modeOfPaymentId is not selected, add it to the array
+  //     setSelectedValues((prevValues) => [...prevValues, { modeOfPaymentId }]);
+  //   }
+  // };
 
   console.log(termsAndConditions);
   return (
@@ -514,7 +552,8 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
           <Box className="terms__column__item__title">
             <Typography>Mode of Payment</Typography>
           </Box>
-          <RadioGroup
+
+          {/* <RadioGroup
             row
             className="terms__column__item__choices"
             value={termsAndConditions["modeOfPayment"]}
@@ -533,31 +572,38 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
               control={<Radio />}
               label="Online/Check"
             />
-          </RadioGroup>
-          {/* <FormGroup
+          </RadioGroup> */}
+
+          <FormGroup
             row
             className="terms__column__item__choices"
             sx={{ marginY: "10px" }}
           >
             <FormControlLabel
               control={<Checkbox sx={{ marginRight: "10px" }} />}
-              value={2}
+              value={1}
               label="Cash"
-              onChange={(e) => {
-                dispatch(
-                  setTermsAndConditions({
-                    property: "modeOfPayment",
-                    value: parseInt(e.target.value),
-                  })
-                );
+              // onChange={(e) => {
+              //   dispatch(
+              //     setTermsAndConditions({
+              //       property: "modeOfPayment",
+              //       value: parseInt(e.target.value),
+              //     })
+              //   );
+              // }}
+              onChange={() => {
+                handleCheckboxChange(1);
               }}
             />
             <FormControlLabel
               value={2}
               control={<Checkbox sx={{ marginRight: "10px" }} />}
               label="Online/Check"
+              onChange={() => {
+                handleCheckboxChange(2);
+              }}
             />
-          </FormGroup> */}
+          </FormGroup>
         </Box>
 
         <Box className="terms__column__item">

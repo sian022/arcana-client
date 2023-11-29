@@ -141,10 +141,10 @@ function ViewRegistrationDetailsModal({
       onApproveConfirmClose();
       handleClose();
     } catch (error) {
-      if (error?.data?.error) {
-        showSnackbar(error?.data?.error?.description, "error");
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
       } else {
-        showSnackbar("Error approving client");
+        showSnackbar("Error approving client", "error");
       }
     }
   };
@@ -163,10 +163,11 @@ function ViewRegistrationDetailsModal({
       }).unwrap();
       showSnackbar("Client rejected successfully", "success");
     } catch (error) {
-      showSnackbar(
-        error?.data?.messages[0] || "Error rejecting client",
-        "error"
-      );
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error rejecting client", "error");
+      }
     }
 
     handleRejectConfirmClose();
