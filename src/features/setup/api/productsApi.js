@@ -48,6 +48,13 @@ export const productsApi = createApi({
       }),
       invalidatesTags: ["Products"],
     }),
+    postAddPriceChange: builder.mutation({
+      query: (body) => ({
+        url: "/PriceChange/AddNewPriceChange",
+        method: "POST",
+        body: body,
+      }),
+    }),
   }),
 });
 
@@ -56,4 +63,5 @@ export const {
   useGetAllProductsQuery,
   usePutProductMutation,
   usePatchProductStatusMutation,
+  usePostAddPriceChangeMutation,
 } = productsApi;

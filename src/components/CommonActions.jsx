@@ -9,6 +9,7 @@ import {
   Edit,
   History,
   HowToReg,
+  MonetizationOn,
   More,
   PeopleAlt,
   Print,
@@ -32,6 +33,7 @@ function CommonActions({
   onCancelFreebies,
   onManageApprovers,
   onPrintFreebies,
+  onAddPriceChange,
   onVoid,
   onHistory,
   item,
@@ -67,6 +69,8 @@ function CommonActions({
       onHistory();
     } else if (action === "printFreebies") {
       onPrintFreebies();
+    } else if (action === "addPriceChange") {
+      onAddPriceChange();
     }
 
     onClose();
@@ -193,6 +197,18 @@ function CommonActions({
           >
             <PeopleAlt />
             Manage Approvers
+          </MenuItem>
+        )}
+
+        {onAddPriceChange && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("addPriceChange");
+            }}
+          >
+            <MonetizationOn />
+            Add Price Change
           </MenuItem>
         )}
 

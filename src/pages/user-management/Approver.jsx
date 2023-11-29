@@ -155,15 +155,15 @@ function Approver() {
     try {
       if (drawerMode === "add") {
         await addApproversPerModule({
+          moduleName: moduleName.name,
           approvers: data.approvers.map((approver) => ({
             userId: approver.userId.userId,
-            moduleName: approver.moduleName,
+            // moduleName: approver.moduleName,
             level: approver.level,
           })),
         }).unwrap();
         setSnackbarMessage("Approvers added successfully");
       } else if (drawerMode === "edit") {
-        console.log(moduleName);
         await putUpdateApproversPerModule({
           moduleName: moduleName.name,
           approvers: restData.approvers.map((approver) => ({

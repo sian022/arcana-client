@@ -11,6 +11,7 @@ import {
 import PersonalInfoTab from "./PersonalInfoTab";
 import TermsAndConditionsTab from "./TermsAndConditionsTab";
 import AttachmentsTab from "./AttachmentsTab";
+
 import SecondaryButton from "../../SecondaryButton";
 import DangerButton from "../../DangerButton";
 import AccentButton from "../../AccentButton";
@@ -24,6 +25,7 @@ import {
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 import SuccessButton from "../../SuccessButton";
+import ListingFeeTab from "./ListingFeeTab";
 
 function ViewRegistrationDetailsModal({
   approval,
@@ -66,6 +68,7 @@ function ViewRegistrationDetailsModal({
     { label: "Personal Info", disabled: false },
     { label: "Terms and Conditions", disabled: false },
     { label: "Attachments", disabled: false },
+    { label: "Listing Fee", disabled: false },
   ];
 
   navigators[1].disabled = approval && !viewedTabs["Personal Info"];
@@ -185,6 +188,7 @@ function ViewRegistrationDetailsModal({
     <>
       <CommonModal
         width="800px"
+        // width="900px"
         height="670px"
         disablePadding
         ribbon
@@ -196,6 +200,7 @@ function ViewRegistrationDetailsModal({
           {activeTab === "Personal Info" && <PersonalInfoTab />}
           {activeTab === "Terms and Conditions" && <TermsAndConditionsTab />}
           {activeTab === "Attachments" && <AttachmentsTab />}
+          {activeTab === "Listing Fee" && <ListingFeeTab />}
           <Box
             sx={{
               display: "flex",

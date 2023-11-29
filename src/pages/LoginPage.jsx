@@ -64,7 +64,12 @@ function LoginPage() {
       navigate("/");
       reset();
     } catch (err) {
-      showSnackbar(err.value.error.description ?? "Error logging in", "error");
+      console.log(err);
+      if (err?.data?.error?.message) {
+        showSnackbar(err?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error logging in", "error");
+      }
     }
   };
 

@@ -1,4 +1,4 @@
-import { Box, TextField } from "@mui/material";
+import { Box, Checkbox, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
@@ -6,7 +6,7 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { Controller, get, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { productSchema } from "../../schema/schema";
+import { productEditSchema, productSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
@@ -28,6 +28,7 @@ import moment from "moment";
 import { NumericFormat } from "react-number-format";
 import ProductsTable from "../../components/customTables/ProductsTable";
 import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
+import PriceChangeDrawer from "../../components/drawers/PriceChangeDrawer";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -38,6 +39,7 @@ function Products() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [changePrice, setChangePrice] = useState(false);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -72,6 +74,12 @@ function Products() {
     onClose: onPriceClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isAddPriceOpen,
+    onOpen: onAddPriceOpen,
+    onClose: onAddPriceClose,
+  } = useDisclosure();
+
   // Constants
   const excludeKeysDisplay = [
     "id",
@@ -79,6 +87,8 @@ function Products() {
     "isActive",
     "addedBy",
     "modifiedBy",
+    "latestPriceChange",
+    "nextPriceChange",
     // "itemPriceChanges",
   ];
 
@@ -95,18 +105,24 @@ function Products() {
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     register,
     setValue,
     reset,
     getValues,
     control,
   } = useForm({
-    resolver: yupResolver(productSchema.schema),
+    resolver: yupResolver(
+      drawerMode === "add" ? productSchema.schema : productEditSchema.schema
+    ),
     mode: "onChange",
-    defaultValues: productSchema.defaultValues,
+    defaultValues:
+      drawerMode === "add"
+        ? productSchema.defaultValues
+        : productEditSchema.defaultValues,
   });
 
+  console.log(getValues());
   //RTK Query
   const [postProduct, { isLoading: isAddLoading }] = usePostProductMutation();
   const { data, isLoading, isFetching } = useGetAllProductsQuery({
@@ -131,6 +147,7 @@ function Products() {
         uomId: { id: uomId },
         productSubCategoryId: { id: productSubCategoryId },
         meatTypeId: { id: meatTypeId },
+        priceChange,
         ...restData
       } = data;
 
@@ -143,16 +160,28 @@ function Products() {
         }).unwrap();
         setSnackbarMessage("Product added successfully");
       } else if (drawerMode === "edit") {
-        await putProduct({
-          ...restData,
-          uomId,
-          productSubCategoryId,
-          meatTypeId,
-        }).unwrap();
-        setSnackbarMessage("Product updated successfully");
+        if (changePrice) {
+          await putProduct({
+            ...restData,
+            uomId,
+            productSubCategoryId,
+            meatTypeId,
+            price: priceChange,
+          }).unwrap();
+          setSnackbarMessage("Product updated successfully");
+        } else if (!changePrice) {
+          await putProduct({
+            ...restData,
+            uomId,
+            productSubCategoryId,
+            meatTypeId,
+          }).unwrap();
+          setSnackbarMessage("Product updated successfully");
+        }
       }
 
       onDrawerClose();
+      setChangePrice(false);
       reset();
       onSuccessOpen();
     } catch (error) {
@@ -195,11 +224,11 @@ function Products() {
   const handleEditOpen = (editData) => {
     setDrawerMode("edit");
     onDrawerOpen();
-
     setValue("id", editData.id);
     setValue("itemCode", editData.itemCode);
     setValue("itemDescription", editData.itemDescription);
     setValue("productCategory", editData?.productCategory);
+    setValue("price", editData?.latestPriceChange?.price);
 
     const foundUom = data?.items.find((item) => item.uom === editData.uom);
     if (foundUom) {
@@ -247,6 +276,7 @@ function Products() {
   const handleDrawerClose = () => {
     onDrawerClose();
     setSelectedId("");
+    setChangePrice(false);
     reset();
   };
 
@@ -258,7 +288,13 @@ function Products() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
-  console.log(getValues());
+  useEffect(() => {
+    if (!changePrice) {
+      setValue("priceChange", null);
+      setValue("effectivityDate", null);
+    }
+  }, [changePrice]);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -285,8 +321,9 @@ function Products() {
           count={count}
           status={status}
           tableHeads={tableHeads}
-          viewMoreKey={"itemPriceChanges"}
+          viewMoreKey={"priceChangeHistories"}
           onViewMoreClick={onPriceOpen}
+          onAddPriceChange={onAddPriceOpen}
         />
       )}
 
@@ -295,6 +332,7 @@ function Products() {
         onClose={handleDrawerClose}
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Product"}
         onSubmit={handleSubmit(onDrawerSubmit)}
+        disableSubmit={!isValid}
         isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
@@ -345,7 +383,6 @@ function Products() {
             />
           )}
           onChange={(_, value) => {
-            console.log(value);
             setValue("productCategory", value?.productCategoryName);
             return value;
           }}
@@ -391,7 +428,7 @@ function Products() {
           name={"price"}
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <NumericFormat
-              label="Price (₱)"
+              label={drawerMode === "add" ? "Price (₱)" : "Current Price (₱)"}
               type="text"
               size="small"
               customInput={TextField}
@@ -406,35 +443,81 @@ function Products() {
               thousandSeparator=","
               helperText={errors?.price?.message}
               error={errors?.price}
+              disabled={drawerMode === "edit"}
             />
           )}
         />
 
         {drawerMode === "edit" && (
-          <Controller
-            name="effectivityDate"
-            control={control}
-            render={({ field }) => (
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <DatePicker
-                  {...field}
-                  label="Price Effectivity Date"
-                  slotProps={{
-                    textField: { size: "small", required: true },
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              gap: "5px",
+            }}
+          >
+            <Checkbox
+              checked={changePrice}
+              onChange={() => {
+                setChangePrice((prev) => !prev);
+              }}
+            />
+            <Typography>Change price</Typography>
+          </Box>
+        )}
+
+        {drawerMode === "edit" && changePrice && (
+          <>
+            <Controller
+              control={control}
+              name={"priceChange"}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <NumericFormat
+                  label="Price Change (₱)"
+                  type="text"
+                  size="small"
+                  customInput={TextField}
+                  autoComplete="off"
+                  onValueChange={(e) => {
+                    onChange(Number(e.value));
                   }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      helperText={errors?.effectivityDate?.message}
-                      error={errors?.effectivityDate}
-                    />
-                  )}
-                  minDate={moment()}
-                  // maxDate={moment().subtract(18, "years")}
+                  onBlur={onBlur}
+                  value={value || ""}
+                  ref={ref}
+                  required
+                  thousandSeparator=","
+                  helperText={errors?.price?.message}
+                  error={errors?.price}
                 />
-              </LocalizationProvider>
-            )}
-          />
+              )}
+            />
+
+            <Controller
+              name="effectivityDate"
+              control={control}
+              render={({ field }) => (
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DatePicker
+                    {...field}
+                    label="Price Effectivity Date"
+                    slotProps={{
+                      textField: { size: "small", required: true },
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        helperText={errors?.effectivityDate?.message}
+                        error={errors?.effectivityDate}
+                      />
+                    )}
+                    minDate={moment()}
+                    // maxDate={moment().subtract(18, "years")}
+                  />
+                </LocalizationProvider>
+              )}
+            />
+          </>
         )}
       </CommonDrawer>
 
@@ -465,6 +548,8 @@ function Products() {
       />
 
       <PriceDetailsModal open={isPriceOpen} onClose={onPriceClose} />
+
+      <PriceChangeDrawer open={isAddPriceOpen} onClose={onAddPriceClose} />
     </Box>
   );
 }

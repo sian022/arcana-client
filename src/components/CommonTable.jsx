@@ -36,6 +36,7 @@ function CommonTable({
   onUpdateFreebies,
   onCancelFreebies,
   onManageApprovers,
+  onAddPriceChange,
   onVoid,
   onHistory,
   onPrintFreebies,
@@ -200,6 +201,7 @@ function CommonTable({
                         onManageApprovers={
                           onManageApprovers && onManageApprovers
                         }
+                        onAddPriceChange={onAddPriceChange && onAddPriceChange}
                         onVoid={onVoid && onVoid}
                         onHistory={onHistory && onHistory}
                         onPrintFreebies={onPrintFreebies && onPrintFreebies}
