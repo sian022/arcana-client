@@ -58,11 +58,33 @@ function PersonalInfoTab() {
               Owner's Address:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              #{selectedRowData?.ownersAddress?.houseNumber}{" "}
+              {`${
+                selectedRowData?.ownersAddress?.houseNumber
+                  ? `#${selectedRowData.ownersAddress.houseNumber} `
+                  : ""
+              }${
+                selectedRowData?.ownersAddress?.streetName
+                  ? `${selectedRowData.ownersAddress.streetName} `
+                  : ""
+              }${
+                selectedRowData?.ownersAddress?.barangayName
+                  ? `${selectedRowData.ownersAddress.barangayName}, `
+                  : ""
+              }${
+                selectedRowData?.ownersAddress?.city
+                  ? `${selectedRowData.ownersAddress.city}, `
+                  : ""
+              }${
+                selectedRowData?.ownersAddress?.province
+                  ? `${selectedRowData.ownersAddress.province}`
+                  : ""
+              }`}
+
+              {/* #{selectedRowData?.ownersAddress?.houseNumber}{" "}
               {selectedRowData?.ownersAddress?.streetName}{" "}
               {selectedRowData?.ownersAddress?.barangayName},{" "}
               {selectedRowData?.ownersAddress?.city},{" "}
-              {selectedRowData?.ownersAddress?.province}
+              {selectedRowData?.ownersAddress?.province} */}
             </Typography>
           </Box>
 
@@ -80,11 +102,32 @@ function PersonalInfoTab() {
               Business Address:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              #{selectedRowData?.businessAddress?.houseNumber}{" "}
+              {`${
+                selectedRowData?.businessAddress?.houseNumber
+                  ? `#${selectedRowData.businessAddress.houseNumber} `
+                  : ""
+              }${
+                selectedRowData?.businessAddress?.streetName
+                  ? `${selectedRowData.businessAddress.streetName} `
+                  : ""
+              }${
+                selectedRowData?.businessAddress?.barangayName
+                  ? `${selectedRowData.businessAddress.barangayName}, `
+                  : ""
+              }${
+                selectedRowData?.businessAddress?.city
+                  ? `${selectedRowData.businessAddress.city}, `
+                  : ""
+              }${
+                selectedRowData?.businessAddress?.province
+                  ? `${selectedRowData.businessAddress.province}`
+                  : ""
+              }`}
+              {/* #{selectedRowData?.businessAddress?.houseNumber}{" "}
               {selectedRowData?.businessAddress?.streetName}{" "}
               {selectedRowData?.businessAddress?.barangayName},{" "}
               {selectedRowData?.businessAddress?.city},{" "}
-              {selectedRowData?.businessAddress?.province}
+              {selectedRowData?.businessAddress?.province} */}
             </Typography>
           </Box>
 

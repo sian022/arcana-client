@@ -227,12 +227,26 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                 </Typography>
                 <Typography>
                   <span>Address: </span>
+                  {`${address?.houseNumber ? `#${address.houseNumber}` : ""}${
+                    address?.houseNumber &&
+                    (address?.streetName || address?.barangayName)
+                      ? ", "
+                      : ""
+                  }${address?.streetName ? `${address.streetName}` : ""}${
+                    address?.streetName && address?.barangayName ? ", " : ""
+                  }${address?.barangayName ? `${address.barangayName}` : ""}${
+                    address?.city ? `, ${address.city}` : ""
+                  }${address?.province ? `, ${address.province}` : ""}`}
+                </Typography>
+
+                {/* <Typography>
+                  <span>Address: </span>
                   {`#${address?.houseNumber || ""} ${
                     address?.streetName || ""
                   } ${address?.barangayName || ""}, ${address?.city || ""}, ${
                     address?.province || ""
                   }`}
-                </Typography>
+                </Typography> */}
               </Box>
               <Box>
                 <Typography>

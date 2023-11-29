@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 import useDisclosure from "../../../hooks/useDisclosure";
 import ViewPhotoModal from "../ViewPhotoModal";
 
-function ListingFeeTab() {
+function FreebiesTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //Disclosures
@@ -36,7 +36,7 @@ function ListingFeeTab() {
         <Box className="viewRegistrationModal__listingFee__content">
           <Box className="viewRegistrationModal__listingFee__content__titleGroup">
             <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
-              Listing Fee
+              Freebies
             </Typography>
             <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
               Product Information
@@ -137,4 +137,4 @@ function ListingFeeTab() {
   );
 }
 
-export default ListingFeeTab;
+export default FreebiesTab;

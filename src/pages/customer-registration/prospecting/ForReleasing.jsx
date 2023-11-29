@@ -562,6 +562,7 @@ function ForReleasing() {
 
       <ReleaseFreebieModal
         open={isFreebieReleaseOpen}
+        // open={true}
         onClose={onFreebieReleaseClose}
       />
 

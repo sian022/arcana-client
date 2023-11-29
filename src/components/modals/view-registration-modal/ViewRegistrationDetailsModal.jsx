@@ -26,6 +26,7 @@ import {
 import useSnackbar from "../../../hooks/useSnackbar";
 import SuccessButton from "../../SuccessButton";
 import ListingFeeTab from "./ListingFeeTab";
+import FreebiesTab from "./FreebiesTab";
 
 function ViewRegistrationDetailsModal({
   approval,
@@ -69,6 +70,7 @@ function ViewRegistrationDetailsModal({
     { label: "Terms and Conditions", disabled: false },
     { label: "Attachments", disabled: false },
     { label: "Listing Fee", disabled: false },
+    { label: "Freebies", disabled: false },
   ];
 
   navigators[1].disabled = approval && !viewedTabs["Personal Info"];
@@ -123,6 +125,10 @@ function ViewRegistrationDetailsModal({
       setActiveTab("Terms and Conditions");
     } else if (activeTab === "Terms and Conditions") {
       setActiveTab("Attachments");
+    } else if (activeTab === "Attachments") {
+      setActiveTab("Listing Fee");
+    } else if (activeTab === "Listing Fee") {
+      setActiveTab("Freebies");
     }
   };
 
@@ -131,6 +137,10 @@ function ViewRegistrationDetailsModal({
       setActiveTab("Personal Info");
     } else if (activeTab === "Attachments") {
       setActiveTab("Terms and Conditions");
+    } else if (activeTab === "Listing Fee") {
+      setActiveTab("Attachments");
+    } else if (activeTab === "Freebies") {
+      setActiveTab("Listing Fee");
     }
   };
 
@@ -201,6 +211,7 @@ function ViewRegistrationDetailsModal({
           {activeTab === "Terms and Conditions" && <TermsAndConditionsTab />}
           {activeTab === "Attachments" && <AttachmentsTab />}
           {activeTab === "Listing Fee" && <ListingFeeTab />}
+          {activeTab === "Freebies" && <FreebiesTab />}
           <Box
             sx={{
               display: "flex",
@@ -242,11 +253,13 @@ function ViewRegistrationDetailsModal({
                     Edit
                   </AccentButton>
                 )} */}
-              {activeTab !== "Attachments" && (
+              {activeTab !== navigators[navigators?.length - 1]?.label && (
                 <SuccessButton onClick={handleNext}>Next</SuccessButton>
               )}
               {/* </Box> */}
-              {activeTab === "Attachments" &&
+              {activeTab ===
+                // "Listing Fee"
+                navigators[navigators?.length - 1]?.label &&
                 approval &&
                 clientStatus === "Under review" && (
                   <>

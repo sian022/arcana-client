@@ -32,7 +32,14 @@ function CommonModal({
         className="commonModal"
       >
         {closeTopRight && (
-          <Box sx={{ display: "flex", justifyContent: "end" }}>
+          <Box
+            // sx={{ display: "flex", justifyContent: "end" }}
+            sx={{
+              position: "absolute",
+              right: "20px",
+              top: "20px",
+            }}
+          >
             <IconButton onClick={onClose}>
               <Close />
             </IconButton>

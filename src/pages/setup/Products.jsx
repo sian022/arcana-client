@@ -547,7 +547,11 @@ function Products() {
         message={snackbarMessage}
       />
 
-      <PriceDetailsModal open={isPriceOpen} onClose={onPriceClose} />
+      <PriceDetailsModal
+        open={isPriceOpen}
+        // open={true}
+        onClose={onPriceClose}
+      />
 
       <PriceChangeDrawer open={isAddPriceOpen} onClose={onAddPriceClose} />
     </Box>
