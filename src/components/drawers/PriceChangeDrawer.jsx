@@ -11,7 +11,10 @@ import {
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
 import { Add, Cancel, Search } from "@mui/icons-material";
-import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
+import {
+  useGetAllProductsQuery,
+  usePostAddPriceChangeMutation,
+} from "../../features/setup/api/productsApi";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
 import ErrorSnackbar from "../ErrorSnackbar";
@@ -79,8 +82,25 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
   //RTK Query
 
   //Drawer Functions
+  const [postAddPriceChange, { isLoading: isAddPriceChangeLoading }] =
+    usePostAddPriceChangeMutation();
 
-  const onPriceChangeSubmit = () => {};
+  const onPriceChangeSubmit = async (data) => {
+    try {
+      await postAddPriceChange(data).unwrap();
+      showSnackbar("Price Change added successfully", "success");
+      onClose();
+      reset();
+      onConfirmSubmitClose();
+    } catch (error) {
+      console.log(error);
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error adding Price Change", "error");
+      }
+    }
+  };
 
   const handleDrawerClose = () => {
     onClose();
@@ -122,6 +142,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
       setValue("itemId", selectedRowData?.id);
     }
   }, [open]);
+
   return (
     <>
       <CommonDrawer
@@ -143,7 +164,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
           name={"price"}
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <NumericFormat
-              label="Price (₱)"
+              label="Price Change (₱)"
               type="text"
               size="small"
               customInput={TextField}
@@ -181,7 +202,6 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
                   />
                 )}
                 minDate={moment()}
-                // maxDate={moment().subtract(18, "years")}
               />
             </LocalizationProvider>
           )}
@@ -192,14 +212,12 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onPriceChangeSubmit)}
-        // isLoading={editMode ? isUpdateLoading : isAddLoading}
+        isLoading={isAddPriceChangeLoading}
         noIcon
       >
-        Confirm {editMode ? "update" : "adding"} of listing fee for{" "}
+        Confirm adding of price change for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {watch("clientId.businessName")
-            ? watch("clientId.businessName")
-            : "client"}
+          {selectedRowData?.itemCode || "item"}
         </span>
         ?
       </CommonDialog>

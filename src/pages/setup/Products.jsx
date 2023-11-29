@@ -122,7 +122,6 @@ function Products() {
         : productEditSchema.defaultValues,
   });
 
-  console.log(getValues());
   //RTK Query
   const [postProduct, { isLoading: isAddLoading }] = usePostProductMutation();
   const { data, isLoading, isFetching } = useGetAllProductsQuery({
@@ -423,32 +422,33 @@ function Products() {
           )}
         />
 
-        <Controller
-          control={control}
-          name={"price"}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <NumericFormat
-              label={drawerMode === "add" ? "Price (₱)" : "Current Price (₱)"}
-              type="text"
-              size="small"
-              customInput={TextField}
-              autoComplete="off"
-              onValueChange={(e) => {
-                onChange(Number(e.value));
-              }}
-              onBlur={onBlur}
-              value={value || ""}
-              ref={ref}
-              required
-              thousandSeparator=","
-              helperText={errors?.price?.message}
-              error={errors?.price}
-              disabled={drawerMode === "edit"}
-            />
-          )}
-        />
+        {drawerMode === "add" && (
+          <Controller
+            control={control}
+            name={"price"}
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <NumericFormat
+                label="Price (₱)"
+                type="text"
+                size="small"
+                customInput={TextField}
+                autoComplete="off"
+                onValueChange={(e) => {
+                  onChange(Number(e.value));
+                }}
+                onBlur={onBlur}
+                value={value || ""}
+                ref={ref}
+                required
+                thousandSeparator=","
+                helperText={errors?.price?.message}
+                error={errors?.price}
+              />
+            )}
+          />
+        )}
 
-        {drawerMode === "edit" && (
+        {/* {drawerMode === "edit" && (
           <Box
             sx={{
               display: "flex",
@@ -518,7 +518,7 @@ function Products() {
               )}
             />
           </>
-        )}
+        )} */}
       </CommonDrawer>
 
       <CommonDialog

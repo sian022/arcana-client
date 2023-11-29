@@ -54,6 +54,7 @@ export const productsApi = createApi({
         method: "POST",
         body: body,
       }),
+      invalidatesTags: ["Products"],
     }),
   }),
 });

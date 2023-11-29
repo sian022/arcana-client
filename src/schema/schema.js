@@ -52,9 +52,9 @@ export const productEditSchema = {
     uomId: yup.object().required("UOM is required"),
     productSubCategoryId: yup.object().required("Subcategory is required"),
     meatTypeId: yup.object().required("Meat type is required"),
-    price: yup.number().required("Price is required"),
-    effectivityDate: yup.date().required("Effectivity date is required"),
-    priceChange: yup.number().required("Price change is required"),
+    // price: yup.number().required("Price is required"),
+    // effectivityDate: yup.date().required("Effectivity date is required"),
+    // priceChange: yup.number().required("Price change is required"),
   }),
   defaultValues: {
     itemCode: "",
@@ -62,9 +62,9 @@ export const productEditSchema = {
     uomId: null,
     productSubCategoryId: null,
     meatTypeId: null,
-    price: null,
-    effectivityDate: null,
-    priceChange: null,
+    // price: null,
+    // effectivityDate: null,
+    // priceChange: null,
   },
 };
 // export const productChangePriceSchema = {
@@ -447,9 +447,10 @@ export const approversSchema = {
 
 export const priceChangeSchema = {
   schema: yup.object({
-    itemId: yup.object().required("Product is required"),
+    itemId: yup.number().required("Product is required"),
     price: yup.number().required("Price is required"),
-    effectivityDate: yup.date().required("Effectivity date is required"),
+    effectivityDate: yup.date(),
+    // .required("Effectivity date is required"),
   }),
   defaultValues: {
     itemId: null,
