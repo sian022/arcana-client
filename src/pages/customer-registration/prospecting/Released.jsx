@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 import useDisclosure from "../../../hooks/useDisclosure";
 import RegisterRegularForm from "./RegisterRegularForm";
+import PrintFreebiesModal from "../../../components/modals/PrintFreebiesModal";
 
 function Released() {
   const [search, setSearch] = useState("");
@@ -50,6 +51,12 @@ function Released() {
     isOpen: isRegisterOpen,
     onOpen: onRegisterOpen,
     onClose: onRegisterClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isPrintOpen,
+    onOpen: onPrintOpen,
+    onClose: onPrintClose,
   } = useDisclosure();
 
   //RTK Query
@@ -105,12 +112,19 @@ function Released() {
             count={count}
             status={status}
             compact
+            onPrintFreebies={onPrintOpen}
           />
         )}
       </Box>
 
       {/* <AttachmentsProvider> */}
       <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+
+      <PrintFreebiesModal
+        open={isPrintOpen}
+        // open={true}
+        onClose={onPrintClose}
+      />
       {/* </AttachmentsProvider> */}
     </>
   );

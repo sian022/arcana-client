@@ -11,6 +11,7 @@ import {
   HowToReg,
   More,
   PeopleAlt,
+  Print,
   RemoveCircle,
   RequestPage,
   Restore,
@@ -30,6 +31,7 @@ function CommonActions({
   onUpdateFreebies,
   onCancelFreebies,
   onManageApprovers,
+  onPrintFreebies,
   onVoid,
   onHistory,
   item,
@@ -63,6 +65,8 @@ function CommonActions({
       onVoid();
     } else if (action === "history") {
       onHistory();
+    } else if (action === "printFreebies") {
+      onPrintFreebies();
     }
 
     onClose();
@@ -201,6 +205,18 @@ function CommonActions({
           >
             <History />
             History
+          </MenuItem>
+        )}
+
+        {onPrintFreebies && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("printFreebies");
+            }}
+          >
+            <Print />
+            Print Freebies
           </MenuItem>
         )}
 

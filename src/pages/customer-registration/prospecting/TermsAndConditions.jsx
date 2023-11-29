@@ -27,7 +27,7 @@ import { Cancel } from "@mui/icons-material";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat } from "react-number-format";
 
-function TermsAndConditions({ direct, editMode, directStoreType }) {
+function TermsAndConditions({ direct, editMode, storeType }) {
   const dispatch = useDispatch();
   const { showSnackbar } = useSnackbar();
 
@@ -130,21 +130,31 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
   }, [termsAndConditions["terms"], termsAndConditions["variableDiscount"]]);
 
   useEffect(() => {
-    if (!direct) {
-      dispatch(
-        setTermsAndConditions({
-          property: "typeOfCustomer",
-          value:
-            selectedRowData?.storeType === "Dealer" ? "Dealer" : "Retailer",
-        })
-      );
-    }
+    // if (!direct) {
+    //   dispatch(
+    //     setTermsAndConditions({
+    //       property: "typeOfCustomer",
+    //       value:
+    //         // selectedRowData?.storeType === "Dealer" ? "Dealer" : "Retailer",
+    //         storeType.storeType === "Dealer" ? "Dealer" : "Retailer",
+    //     })
+    //   );
+    // }
 
-    if (direct && directStoreType) {
+    // if (direct && storeType) {
+    //   dispatch(
+    //     setTermsAndConditions({
+    //       property: "typeOfCustomer",
+    //       value: storeType === "Dealer" ? "Dealer" : "Retailer",
+    //     })
+    //   );
+    // }
+
+    if (storeType) {
       dispatch(
         setTermsAndConditions({
           property: "typeOfCustomer",
-          value: directStoreType === "Dealer" ? "Dealer" : "Retailer",
+          value: storeType === "Dealer" ? "Dealer" : "Retailer",
         })
       );
     }
@@ -186,7 +196,6 @@ function TermsAndConditions({ direct, editMode, directStoreType }) {
   //   }
   // };
 
-  console.log(termsAndConditions);
   return (
     <Box className="terms">
       <Box className="terms__column">

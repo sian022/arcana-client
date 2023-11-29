@@ -1265,7 +1265,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           <TermsAndConditions
             direct
             editMode={editMode}
-            directStoreType={watch("storeTypeId")?.storeTypeName}
+            storeType={watch("storeTypeId")?.storeTypeName}
           />
         )}
 

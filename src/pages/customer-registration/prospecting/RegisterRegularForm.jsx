@@ -50,6 +50,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
 import SuccessButton from "../../../components/SuccessButton";
+import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -135,7 +136,8 @@ function RegisterRegularForm({ open, onClose }) {
       // isValid: isValid,
       isValid: includeAuthorizedRepresentative
         ? watch("authorizedRepresentative") &&
-          watch("authorizedRepresentativePosition")
+          watch("authorizedRepresentativePosition") &&
+          isValid
         : isValid,
       icon: <Person />,
       disabled: false,
@@ -202,9 +204,16 @@ function RegisterRegularForm({ open, onClose }) {
 
   //Drawer Functions
   const onSubmit = async (data) => {
+    const transformedData = {
+      ...data,
+      // dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
+      storeTypeId: data?.storeTypeId?.id,
+    };
+
     try {
       setIsAllApiLoading(true);
-      await putRegisterClient(data).unwrap();
+      // await putRegisterClient(data).unwrap();
+      await putRegisterClient(transformedData).unwrap();
       await addTermsAndConditions();
       await addAttachmentsSubmit();
       setIsAllApiLoading(false);
@@ -445,6 +454,12 @@ function RegisterRegularForm({ open, onClose }) {
   //UseEffects
   useEffect(() => {
     setValue("clientId", selectedRowData?.id);
+    setValue(
+      "storeTypeId",
+      storeTypeData?.storeTypes?.find(
+        (store) => store.storeTypeName === selectedRowData?.storeType
+      )
+    );
   }, [open]);
 
   const handleSameAsOwnersAddress = () => {
@@ -506,6 +521,7 @@ function RegisterRegularForm({ open, onClose }) {
     }
   }, [includeAuthorizedRepresentative]);
 
+  console.log(getValues());
   return (
     <>
       <CommonDrawer
@@ -733,7 +749,36 @@ function RegisterRegularForm({ open, onClose }) {
                 <Typography className="register__title">
                   Business Type
                 </Typography>
-                <Autocomplete
+
+                <ControlledAutocomplete
+                  name={"storeTypeId"}
+                  control={control}
+                  options={storeTypeData?.storeTypes || []}
+                  getOptionLabel={(option) => option.storeTypeName}
+                  disableClearable
+                  // value={storeTypeData?.storeTypes?.find(
+                  //   (store) => store.storeTypeName === selectedStoreType
+                  // )}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  // defaultValue={storeTypeData?.storeTypes?.find(
+                  //   (store) =>
+                  //     store.storeTypeName === selectedRowData?.storeType
+                  // )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Business Type"
+                      required
+                      helperText={errors?.storeTypeId?.message}
+                      error={errors?.storeTypeId}
+                    />
+                  )}
+                />
+
+                {/* <Autocomplete
                   options={storeTypeData?.storeTypes}
                   getOptionLabel={(option) => option.storeTypeName}
                   disableClearable
@@ -756,7 +801,7 @@ function RegisterRegularForm({ open, onClose }) {
                       error={errors?.storeTypeId}
                     />
                   )}
-                />
+                /> */}
               </Box>
             </Box>
             <Box className="register__secondRow">
@@ -941,7 +986,9 @@ function RegisterRegularForm({ open, onClose }) {
           </Box>
         )}
 
-        {activeTab === "Terms and Conditions" && <TermsAndConditions />}
+        {activeTab === "Terms and Conditions" && (
+          <TermsAndConditions storeType={watch("storeTypeId")?.storeTypeName} />
+        )}
 
         {activeTab === "Attachments" && <Attachments />}
 

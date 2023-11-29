@@ -38,6 +38,7 @@ function CommonTable({
   onManageApprovers,
   onVoid,
   onHistory,
+  onPrintFreebies,
   page,
   setPage,
   rowsPerPage,
@@ -201,6 +202,7 @@ function CommonTable({
                         }
                         onVoid={onVoid && onVoid}
                         onHistory={onHistory && onHistory}
+                        onPrintFreebies={onPrintFreebies && onPrintFreebies}
                         item={item}
                         status={status}
                       />

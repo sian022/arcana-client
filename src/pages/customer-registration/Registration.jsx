@@ -16,6 +16,7 @@ import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
+import PrintFreebiesModal from "../../components/modals/PrintFreebiesModal";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -62,6 +63,12 @@ function DirectRegistration() {
     isOpen: isHistoryOpen,
     onOpen: onHistoryOpen,
     onClose: onHistoryClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isPrintOpen,
+    onOpen: onPrintOpen,
+    onClose: onPrintClose,
   } = useDisclosure();
 
   //RTK Query
@@ -258,6 +265,7 @@ function DirectRegistration() {
             onEdit={handleEditOpen}
             // onArchive={onArchiveOpen}
             onVoid={onVoidOpen}
+            onPrintFreebies={onPrintOpen}
           />
         )}
       </Box>
@@ -331,6 +339,12 @@ function DirectRegistration() {
       </CommonDialog>
 
       <ApprovalHistoryModal open={isHistoryOpen} onClose={onHistoryClose} />
+
+      <PrintFreebiesModal
+        open={isPrintOpen}
+        // open={true}
+        onClose={onPrintClose}
+      />
     </>
   );
 }

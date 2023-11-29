@@ -268,6 +268,7 @@ export const regularRegisterSchema = {
     latitude: yup.string(),
     // .required("Latitude is required")
     birthDate: yup.date().required("Birthdate is required"),
+    storeTypeId: yup.object().required("Business type is required"),
   }),
   defaultValues: {
     clientId: null,
@@ -283,6 +284,7 @@ export const regularRegisterSchema = {
     longitude: "155.1",
     latitude: "122.2",
     birthDate: null,
+    storeTypeId: null,
   },
 };
 
@@ -304,7 +306,7 @@ export const directRegisterPersonalSchema = {
     dateOfBirth: yup.date().required("Birthdate is required"),
     tinNumber: yup.string().required("TIN number is required"),
     businessName: yup.string().required("Business name is required"),
-    storeTypeId: yup.object().required("Store type is required"),
+    storeTypeId: yup.object().required("Business type is required"),
     emailAddress: yup.string().required("Email address is required"),
     cluster: yup.number().required("Cluster is required").integer(),
     businessAddress: yup
