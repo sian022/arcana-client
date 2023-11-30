@@ -10,7 +10,7 @@ export const regularRegistrationSlice = createSlice({
         directDelivery: null,
         bookingCoverageId: null,
         terms: null,
-        modeOfPayment: [],
+        modeOfPayments: [],
         variableDiscount: null,
         termDaysId: null,
         creditLimit: null,
@@ -20,6 +20,12 @@ export const regularRegistrationSlice = createSlice({
       },
       directFreebie: {
         freebies: [],
+        // freebies: [
+        //   {
+        //     itemId: null,
+        //     quantity: 1,
+        //   },
+        // ],
       },
     },
   },
@@ -48,10 +54,10 @@ export const regularRegistrationSlice = createSlice({
       };
     },
     setFreebies: (state, action) => {
-      state.value.freebies = action.payload;
+      state.value.directFreebie.freebies = action.payload;
     },
     resetFreebies: (state) => {
-      state.value.freebies = [];
+      state.value.directFreebie.freebies = [];
     },
   },
 });

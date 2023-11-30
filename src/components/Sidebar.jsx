@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { navigationData } from "../navigation/navigationData";
 import {
@@ -21,6 +21,7 @@ import {
   toggleSidebar,
   toggleSidebarSmallScreen,
 } from "../features/misc/reducers/disclosureSlice";
+import { AppContext } from "../context/AppContext";
 
 function Sidebar() {
   const [activeModule, setActiveModule] = useState("");
@@ -37,6 +38,8 @@ function Sidebar() {
   const sidebarSmallScreenToggled = useSelector(
     (state) => state.disclosure.sidebarSmallScreen
   );
+
+  const { notifications } = useContext(AppContext);
 
   useEffect(() => {
     const handleResize = () => {
@@ -115,6 +118,24 @@ function Sidebar() {
                           </ListItemIcon>
 
                           <ListItemText>{item.name}</ListItemText>
+
+                          {item.notification && (
+                            <Box
+                              sx={{
+                                bgcolor: "notification.main",
+                                borderRadius: "50%",
+                                width: "12%",
+                                // height: "20px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                color: "white !important",
+                              }}
+                            >
+                              {notifications[item.notification] > 0 &&
+                                notifications[item.notification]}
+                            </Box>
+                          )}
                           {/* {sidebarToggled && (
                         <ListItemText>{item.name}</ListItemText>
                       )} */}
@@ -151,6 +172,23 @@ function Sidebar() {
                               <ListItemText>{subItem.name}</ListItemText>
                             )} */}
                                 <ListItemText>{subItem.name}</ListItemText>
+                                {subItem.notification && (
+                                  <Box
+                                    sx={{
+                                      bgcolor: "notification.main",
+                                      borderRadius: "50%",
+                                      width: "10%",
+                                      // height: "20px",
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      color: "white !important",
+                                    }}
+                                  >
+                                    {notifications[subItem.notification] > 0 &&
+                                      notifications[subItem.notification]}
+                                  </Box>
+                                )}
                               </ListItemButton>
                             </ListItem>
                           )}

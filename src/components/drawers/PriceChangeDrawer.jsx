@@ -159,6 +159,15 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
           disabled
           value={selectedRowData?.itemCode}
         />
+
+        <NumericFormat
+          customInput={TextField}
+          label="Current Price (₱)"
+          size="small"
+          disabled
+          value={selectedRowData?.latestPriceChange?.price}
+          thousandSeparator=","
+        />
         <Controller
           control={control}
           name={"price"}

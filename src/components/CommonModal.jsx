@@ -12,6 +12,7 @@ function CommonModal({
   height,
   maxHeight,
   closeTopRight,
+  customOnClose,
   ...otherProps
 }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -40,7 +41,7 @@ function CommonModal({
               top: "20px",
             }}
           >
-            <IconButton onClick={onClose}>
+            <IconButton onClick={customOnClose ? customOnClose : onClose}>
               <Close />
             </IconButton>
           </Box>

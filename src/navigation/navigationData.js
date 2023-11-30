@@ -159,6 +159,7 @@ export const navigationData = [
         path: "/customer-registration/registration",
         name: "Registration",
         icon: "PersonAdd",
+        notification: "rejectedClient",
       },
       {
         id: 3,
@@ -191,18 +192,21 @@ export const navigationData = [
         name: "Registration Approval",
         path: "/approval/registration-approval",
         icon: "HowToReg",
+        notification: "pendingClient",
       },
       {
         id: 2,
         name: "Sp. Discount Approval",
         path: "/approval/sp-discount-approval",
         icon: "LocalOffer",
+        // notification: "approvedgClient",
       },
       {
         id: 3,
         name: "Listing Fee Approval",
         path: "/approval/listing-fee-approval",
         icon: "Payment",
+        notification: "rejectedClient",
       },
       // {
       //   id: 4,

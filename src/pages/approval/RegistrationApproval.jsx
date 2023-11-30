@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
+import { AppContext } from "../../context/AppContext";
 
 function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -20,6 +21,7 @@ function RegistrationApproval() {
   const [count, setCount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -35,23 +37,23 @@ function RegistrationApproval() {
   } = useDisclosure();
 
   //RTK Query
-  const { data: pendingData, isLoading: isPendingLoading } =
-    useGetAllClientsQuery({
-      Status: true,
-      RegistrationStatus: "Under review",
-    });
+  // const { data: pendingData, isLoading: isPendingLoading } =
+  //   useGetAllClientsQuery({
+  //     Status: true,
+  //     RegistrationStatus: "Under review",
+  //   });
 
-  const { data: approvedData, isLoading: isApprovedLoading } =
-    useGetAllClientsQuery({
-      Status: true,
-      RegistrationStatus: "Approved",
-    });
+  // const { data: approvedData, isLoading: isApprovedLoading } =
+  //   useGetAllClientsQuery({
+  //     Status: true,
+  //     RegistrationStatus: "Approved",
+  //   });
 
-  const { data: rejectedData, isLoading: isRejectedLoading } =
-    useGetAllClientsQuery({
-      Status: true,
-      RegistrationStatus: "Rejected",
-    });
+  // const { data: rejectedData, isLoading: isRejectedLoading } =
+  //   useGetAllClientsQuery({
+  //     Status: true,
+  //     RegistrationStatus: "Rejected",
+  //   });
 
   const { data, isLoading, isFetching } = useGetAllClientsQuery({
     Search: search,
@@ -68,19 +70,19 @@ function RegistrationApproval() {
       case: 1,
       name: "Pending Clients",
       registrationStatus: "Under review",
-      badge: pendingData?.totalCount || 0,
+      badge: notifications["pendingClient"],
     },
     {
       case: 2,
       name: "Approved Clients",
       registrationStatus: "Approved",
-      badge: approvedData?.totalCount || 0,
+      badge: notifications["approvedClient"],
     },
     {
       case: 3,
       name: "Rejected Clients",
       registrationStatus: "Rejected",
-      badge: rejectedData?.totalCount || 0,
+      badge: notifications["rejectedClient"],
     },
   ];
 
@@ -131,6 +133,8 @@ function RegistrationApproval() {
     // "storeType",
     "dateOfBirth",
     "clientApprovalHistories",
+    "freebies",
+    "modeOfPayments",
   ];
 
   //Misc Functions

@@ -40,6 +40,10 @@
     max-height: 550px;
   }
 
+  @media print {
+    margin: 25px;
+  }
+
   & span {
     font-weight: 600;
   }

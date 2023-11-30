@@ -54,6 +54,7 @@ function PageHeaderTabs({
                       fontWeight: "bold",
                       color: "secondary.main",
                       textAlign: "center",
+                      marginTop: "3px",
                     }}
                   >
                     {item.name}

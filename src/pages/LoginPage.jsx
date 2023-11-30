@@ -7,7 +7,7 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../assets/styles/login.styles.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { usePostLoginMutation } from "../features/authentication/api/loginApi";
@@ -26,11 +26,14 @@ import MisLogo from "../assets/images/MIS-logo.png";
 import SystemLogoName from "../assets/images/SystemLogoName.png";
 import useSnackbar from "../hooks/useSnackbar";
 import SecondaryButton from "../components/SecondaryButton";
+import { AppContext } from "../context/AppContext";
 
 function LoginPage() {
   const { showSnackbar } = useSnackbar();
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const { refetchNotifications } = useContext(AppContext);
 
   //RTK Query
   const [postLogin, { isLoading }] = usePostLoginMutation();
@@ -62,6 +65,8 @@ function LoginPage() {
       dispatch(setToken(res?.value?.token));
       dispatch(setPermissisons(res?.value?.permission));
       navigate("/");
+      refetchNotifications();
+
       reset();
     } catch (err) {
       console.log(err);

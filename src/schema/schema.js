@@ -276,6 +276,8 @@ export const requestFreebiesDirectSchema = {
       yup.object({
         itemId: yup.object().required("Product Code Required"),
         quantity: yup.number().required("Quantity is required"),
+        uom: yup.string(),
+        itemDescription: yup.string(),
       })
     ),
   }),
@@ -284,6 +286,8 @@ export const requestFreebiesDirectSchema = {
       {
         itemId: null,
         quantity: 1,
+        uom: "",
+        itemDescription: "",
       },
     ],
   },

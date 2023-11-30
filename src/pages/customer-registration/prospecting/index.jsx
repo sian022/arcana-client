@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import { Storefront } from "@mui/icons-material";
@@ -11,60 +11,68 @@ import ForFreebies from "./ForFreebies";
 import ForReleasing from "./ForReleasing";
 import StoreTypeSkeleton from "../../../components/skeletons/StoreTypeSkeleton";
 import { useGetAllApprovedProspectsQuery } from "../../../features/prospect/api/prospectApi";
+import { AppContext } from "../../../context/AppContext";
 
 function Prospect() {
   const [tabViewing, setTabViewing] = useState(1);
 
   const badges = useSelector((state) => state.badge.value);
 
+  const { notifications, isNotificationFetching } = useContext(AppContext);
+
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
   );
   const dispatch = useDispatch();
 
-  const { data, isLoading } = useGetAllStoreTypesQuery();
+  const { data, isLoading } = useGetAllStoreTypesQuery({ Status: true });
 
-  const { data: forFreebiesData, isLoading: isForFreebiesLoading } =
-    useGetAllApprovedProspectsQuery({
-      Status: true,
-      StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
-    });
+  // const { data: forFreebiesData, isLoading: isForFreebiesLoading } =
+  //   useGetAllApprovedProspectsQuery({
+  //     Status: true,
+  //     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
+  //   });
 
-  const { data: forReleasingData, isLoading: isForReleasingLoading } =
-    useGetAllApprovedProspectsQuery({
-      Status: true,
-      StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
-      FreebieStatus: "For Releasing",
-    });
+  // const { data: forReleasingData, isLoading: isForReleasingLoading } =
+  //   useGetAllApprovedProspectsQuery({
+  //     Status: true,
+  //     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
+  //     FreebieStatus: "For Releasing",
+  //   });
 
-  const { data: releasedData, isLoading: isReleasedLoading } =
-    useGetAllApprovedProspectsQuery({
-      Status: true,
-      StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
-      FreebieStatus: "Released",
-    });
+  // const { data: releasedData, isLoading: isReleasedLoading } =
+  //   useGetAllApprovedProspectsQuery({
+  //     Status: true,
+  //     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
+  //     FreebieStatus: "Released",
+  //   });
 
   const prospectNavigation = [
     {
       case: 1,
       name: "For Freebies",
       // badge: badges["forFreebies"],
-      badge: forFreebiesData?.totalCount || 0,
-      isBadgeLoading: isForFreebiesLoading,
+      // badge: forFreebiesData?.totalCount || 0,
+      badge: notifications["forFreebies"],
+      isBadgeLoading: isNotificationFetching,
     },
     {
       case: 2,
       name: "For Releasing",
       // badge: badges["forReleasing"],
-      badge: forReleasingData?.totalCount || 0,
-      isBadgeLoading: isForReleasingLoading,
+      // badge: forReleasingData?.totalCount || 0,
+      // isBadgeLoading: isForReleasingLoading,
+      badge: notifications["forReleasing"],
+      isBadgeLoading: isNotificationFetching,
     },
     {
       case: 3,
       name: "Released",
       // badge: badges["released"],
-      badge: releasedData?.totalCount || 0,
-      isBadgeLoading: isReleasedLoading,
+      // badge: releasedData?.totalCount || 0,
+      // isBadgeLoading: isReleasedLoading,
+      badge: notifications["released"],
+      isBadgeLoading: isNotificationFetching,
     },
   ];
 
@@ -146,6 +154,7 @@ function Prospect() {
                   gap: "20px",
                   maxWidth: "900px",
                   flexWrap: "wrap",
+                  // marginLeft: "20px",
                   justifyContent: "center",
                   // alignItems: "center",
                   overflow: "auto",

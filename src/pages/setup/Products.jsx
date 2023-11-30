@@ -88,7 +88,8 @@ function Products() {
     "addedBy",
     "modifiedBy",
     "latestPriceChange",
-    "nextPriceChange",
+    // "priceChangeHistories",
+    "futurePriceChanges",
     // "itemPriceChanges",
   ];
 

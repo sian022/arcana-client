@@ -56,6 +56,13 @@ export const productsApi = createApi({
       }),
       invalidatesTags: ["Products"],
     }),
+    deletePriceChange: builder.mutation({
+      query: (id) => ({
+        url: `/PriceChange/DeletePriceChange/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Products"],
+    }),
   }),
 });
 
@@ -65,4 +72,5 @@ export const {
   usePutProductMutation,
   usePatchProductStatusMutation,
   usePostAddPriceChangeMutation,
+  useDeletePriceChangeMutation,
 } = productsApi;

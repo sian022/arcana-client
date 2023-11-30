@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
@@ -17,6 +17,7 @@ import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import PrintFreebiesModal from "../../components/modals/PrintFreebiesModal";
+import { AppContext } from "../../context/AppContext";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -33,6 +34,8 @@ function DirectRegistration() {
 
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -72,23 +75,23 @@ function DirectRegistration() {
   } = useDisclosure();
 
   //RTK Query
-  const { data: pendingData, isLoading: isPendingLoading } =
-    useGetAllClientsQuery({
-      Status: status,
-      RegistrationStatus: "Under review",
-    });
+  // const { data: pendingData, isLoading: isPendingLoading } =
+  //   useGetAllClientsQuery({
+  //     Status: status,
+  //     RegistrationStatus: "Under review",
+  //   });
 
-  const { data: approvedData, isLoading: isApprovedLoading } =
-    useGetAllClientsQuery({
-      Status: status,
-      RegistrationStatus: "Approved",
-    });
+  // const { data: approvedData, isLoading: isApprovedLoading } =
+  //   useGetAllClientsQuery({
+  //     Status: status,
+  //     RegistrationStatus: "Approved",
+  //   });
 
-  const { data: rejectedData, isLoading: isRejectedLoading } =
-    useGetAllClientsQuery({
-      Status: status,
-      RegistrationStatus: "Rejected",
-    });
+  // const { data: rejectedData, isLoading: isRejectedLoading } =
+  //   useGetAllClientsQuery({
+  //     Status: status,
+  //     RegistrationStatus: "Rejected",
+  //   });
 
   const { data, isLoading, isFetching } = useGetAllClientsQuery({
     Search: search,
@@ -110,19 +113,19 @@ function DirectRegistration() {
       case: 1,
       name: "Pending Clients",
       registrationStatus: "Under review",
-      badge: pendingData?.totalCount || 0,
+      badge: notifications["pendingClient"],
     },
     {
       case: 2,
       name: "Approved Clients",
       registrationStatus: "Approved",
-      badge: approvedData?.totalCount || 0,
+      badge: notifications["approvedClient"],
     },
     {
       case: 3,
       name: "Rejected Clients",
       registrationStatus: "Rejected",
-      badge: rejectedData?.totalCount || 0,
+      badge: notifications["rejectedClient"],
     },
   ];
 
@@ -164,6 +167,8 @@ function DirectRegistration() {
     // "storeType",
     "dateOfBirth",
     "clientApprovalHistories",
+    "freebies",
+    "modeOfPayments",
   ];
 
   const tableHeads = [
@@ -184,7 +189,6 @@ function DirectRegistration() {
     try {
       await patchUpdateRegistrationStatus(selectedRowData?.id).unwrap();
       onArchiveClose();
-      console.log(selectedRowData?.id);
       showSnackbar(
         `Client ${status ? "archived" : "restored"} successfully`,
         "success"

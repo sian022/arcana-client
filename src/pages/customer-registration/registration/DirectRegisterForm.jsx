@@ -182,7 +182,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           return true;
         }
 
-        if (key === "modeOfPayment") {
+        if (key === "modeOfPayments") {
           if (termsAndConditions[key]?.length === 0) {
             return false;
           }
@@ -627,12 +627,19 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           termDaysId: termDaysData?.termDays?.find(
             (day) => day.id === selectedRowData?.terms?.termDaysId
           ),
-          modeOfPayment:
-            selectedRowData?.modeOfPayment?.toLowerCase() === "cash"
-              ? 1
-              : selectedRowData?.modeOfPayment?.toLowerCase() === "check/online"
-              ? 2
-              : null,
+          // modeOfPayment:
+          //   selectedRowData?.modeOfPayment?.toLowerCase() === "cash"
+          //     ? 1
+          //     : selectedRowData?.modeOfPayment?.toLowerCase() === "check/online"
+          //     ? 2
+          //     : null,
+          // modeOfPayments: selectedRowData?.modeOfPayments,
+          // modeOfPayments: selectedRowData?.modeOfPayments?.map(
+          //   (item) => item.id
+          // ),
+          modeOfPayments: selectedRowData?.modeOfPayments?.map((payment) => ({
+            modeOfPaymentId: payment.id,
+          })),
           creditLimit: selectedRowData?.terms?.creditLimit,
           variableDiscount: !selectedRowData?.variableDiscount
             ? false

@@ -268,16 +268,15 @@ function FreebieForm({
     if (direct && freebiesDirect?.length === 0) {
       reset();
     }
-  }, [!isFreebieFormOpen]);
+  }, [isFreebieFormOpen]);
 
-  // useEffect(() => {
-  //   if (direct) {
-  //     const freebiesValue = getValues("freebies");
-  //     dispatch(setFreebies(freebiesValue));
-  //   }
-  // }, [dispatch, getValues]);
-
-  // console.log(freebiesDirect);
+  useEffect(() => {
+    if (direct) {
+      // const freebiesValue = getValues("freebies");
+      const freebiesValue = watch("freebies");
+      dispatch(setFreebies([...freebiesValue]));
+    }
+  }, [watch("freebies")]);
 
   return (
     <>
@@ -374,16 +373,33 @@ function FreebieForm({
               )}
             />
 
-            <TextField
+            {/* <TextField
               label="Quantity"
               size="small"
               autoComplete="off"
-              value={1}
+              // value={1}
               disabled
               // sx={{ width: "100px" }}
-              {...register(`freebies[${index}].quantity`)}
+              // {...register(`freebies[${index}].quantity`)}
               helperText={errors?.freebies?.quantity?.message}
               error={errors?.freebies?.quantity}
+            /> */}
+
+            <Controller
+              control={control}
+              name={`freebies[${index}].quantity`}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <TextField
+                  label="Quantity"
+                  size="small"
+                  autoComplete="off"
+                  disabled
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value || ""}
+                  ref={ref}
+                />
+              )}
             />
 
             <IconButton
@@ -419,10 +435,13 @@ function FreebieForm({
           {direct && (
             <SecondaryButton
               sx={{ width: "160px" }}
-              onClick={onFreebieReleaseOpen}
+              onClick={() => {
+                // dispatch(setSelectedRow(...selectedRowData, freebies: {}))
+                onFreebieReleaseOpen();
+              }}
               disabled={
                 // freebiesDirect?.length === 0
-                !isValid && watch("freebies")?.length === 1
+                !isValid || watch("freebies")?.length === 0
               }
             >
               Release Freebie(s)

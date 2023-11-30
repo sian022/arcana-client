@@ -56,7 +56,16 @@ function TermsAndConditionsTab() {
               Mode of Payment:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              {selectedRowData?.modeOfPayment}
+              {/* {selectedRowData?.modeOfPayment} */}
+              {selectedRowData?.modeOfPayments?.some((item) => item.id === 1) &&
+                "Cash"}{" "}
+              {selectedRowData?.modeOfPayments?.some((item) => item.id === 1) &&
+                selectedRowData?.modeOfPayments?.some(
+                  (item) => item.id === 2
+                ) &&
+                "&"}{" "}
+              {selectedRowData?.modeOfPayments?.some((item) => item.id === 2) &&
+                "Online / Check"}
             </Typography>
           </Box>
 

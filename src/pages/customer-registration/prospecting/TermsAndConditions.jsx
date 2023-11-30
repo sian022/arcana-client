@@ -162,40 +162,41 @@ function TermsAndConditions({ direct, editMode, storeType }) {
 
   const handleCheckboxChange = (modeOfPaymentId) => {
     // Check if the modeOfPaymentId is already in the array
-    const isSelected = termsAndConditions.modeOfPayment.some(
+    const isSelected = termsAndConditions.modeOfPayments.some(
       (item) => item.modeOfPaymentId === modeOfPaymentId
     );
 
     // Dispatch the action to update the Redux state
     dispatch(
       setTermsAndConditions({
-        property: "modeOfPayment",
+        property: "modeOfPayments",
         value: isSelected
-          ? termsAndConditions.modeOfPayment.filter(
+          ? termsAndConditions.modeOfPayments.filter(
               (item) => item.modeOfPaymentId !== modeOfPaymentId
             )
-          : [...termsAndConditions.modeOfPayment, { modeOfPaymentId }],
+          : [...termsAndConditions.modeOfPayments, { modeOfPaymentId }],
       })
     );
   };
 
-  // const handleCheckboxChange = (modeOfPaymentId) => {
-  //   // Check if the modeOfPaymentId is already in the array
+  // const handleCheckboxChange = (modeOfPaymentsId) => {
+  //   // Check if the modeOfPaymentsId is already in the array
   //   const isSelected = selectedValues.some(
-  //     (item) => item.modeOfPaymentId === modeOfPaymentId
+  //     (item) => item.modeOfPaymentsId === modeOfPaymentsId
   //   );
 
   //   if (isSelected) {
-  //     // If modeOfPaymentId is already selected, remove it from the array
+  //     // If modeOfPaymentsId is already selected, remove it from the array
   //     setSelectedValues((prevValues) =>
-  //       prevValues.filter((item) => item.modeOfPaymentId !== modeOfPaymentId)
+  //       prevValues.filter((item) => item.modeOfPaymentsId !== modeOfPaymentsId)
   //     );
   //   } else {
-  //     // If modeOfPaymentId is not selected, add it to the array
-  //     setSelectedValues((prevValues) => [...prevValues, { modeOfPaymentId }]);
+  //     // If modeOfPaymentsId is not selected, add it to the array
+  //     setSelectedValues((prevValues) => [...prevValues, { modeOfPaymentsId }]);
   //   }
   // };
 
+  console.log(termsAndConditions);
   return (
     <Box className="terms">
       <Box className="terms__column">
@@ -565,11 +566,11 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           {/* <RadioGroup
             row
             className="terms__column__item__choices"
-            value={termsAndConditions["modeOfPayment"]}
+            value={termsAndConditions["modeOfPayments"]}
             onChange={(e) => {
               dispatch(
                 setTermsAndConditions({
-                  property: "modeOfPayment",
+                  property: "modeOfPayments",
                   value: parseInt(e.target.value),
                 })
               );
@@ -592,14 +593,22 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               control={<Checkbox sx={{ marginRight: "10px" }} />}
               value={1}
               label="Cash"
+              // checked={termsAndConditions["modeOfPayments"]?.includes(1)}
+              // checked={termsAndConditions["modeOfPayments"]?.includes({
+              //   modeOfPaymentId: 1,
+              // })}
               // onChange={(e) => {
               //   dispatch(
               //     setTermsAndConditions({
-              //       property: "modeOfPayment",
+              //       property: "modeOfPayments",
               //       value: parseInt(e.target.value),
               //     })
               //   );
               // }}
+
+              checked={termsAndConditions["modeOfPayments"]?.some(
+                (item) => item.modeOfPaymentId === 1
+              )}
               onChange={() => {
                 handleCheckboxChange(1);
               }}
@@ -608,6 +617,13 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               value={2}
               control={<Checkbox sx={{ marginRight: "10px" }} />}
               label="Online/Check"
+              // checked={termsAndConditions["modeOfPayments"]?.includes(2)}
+              // checked={termsAndConditions["modeOfPayments"]?.includes({
+              //   modeOfPaymentId: 2,
+              // })}
+              checked={termsAndConditions["modeOfPayments"]?.some(
+                (item) => item.modeOfPaymentId === 2
+              )}
               onChange={() => {
                 handleCheckboxChange(2);
               }}

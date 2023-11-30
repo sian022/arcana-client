@@ -36,14 +36,18 @@ import ViewPhotoModal from "./ViewPhotoModal";
 import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
 import { DirectReleaseContext } from "../../context/DirectReleaseContext";
 import SuccessButton from "../SuccessButton";
+import { useReactToPrint } from "react-to-print";
+import "../../assets/styles/print.styles.scss";
 
-function PrintFreebiesModal({ ...otherProps }) {
+function PrintFreebiesModal({ registration, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
   const { open, ...noOpenProps } = otherProps;
 
   const [signature, setSignature] = useState("");
   const [photoProof, setPhotoProof] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -53,16 +57,14 @@ function PrintFreebiesModal({ ...otherProps }) {
 
   const fileUploadRef = useRef();
 
-  const freebiesDirect = useSelector(
-    (state) => state.regularRegistration.value.freebies
-  );
-
   const {
     signatureDirect,
     photoProofDirect,
     setSignatureDirect,
     setPhotoProofDirect,
   } = useContext(DirectReleaseContext);
+
+  const printRef = useRef(null);
 
   const {
     isOpen: isCanvasOpen,
@@ -107,7 +109,20 @@ function PrintFreebiesModal({ ...otherProps }) {
   } = useDisclosure();
 
   //Functions
-  const handlePrint = () => {};
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    onBeforeGetContent: () => {
+      setIsLoading(true);
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 500);
+      });
+    },
+    onAfterPrint: () => {
+      setIsLoading(false);
+    },
+  });
 
   // useEffect(() => {
   //   if (direct && open) {
@@ -118,93 +133,114 @@ function PrintFreebiesModal({ ...otherProps }) {
 
   return (
     <>
-      <CommonModal width="900px" {...noOnCloseProps}>
-        <Box className="releaseFreebieModal">
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box className="releaseFreebieModal__logo">
-              <img src={rdfLogo} alt="RDF Logo" />
-              <Typography>
-                Purok 6, Brgy. Lara, <br /> City of San Fernando, Pampanga,
-                Philippines
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", justifyContent: "end" }}>
+      <CommonModal width="900px" {...otherProps} closeTopRight>
+        <Box className="releaseFreebieModal" ref={printRef}>
+          {selectedRowData?.freebies?.length > 0 ? (
+            <>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Box className="releaseFreebieModal__logo">
+                  <img src={rdfLogo} alt="RDF Logo" />
+                  <Typography>
+                    Purok 6, Brgy. Lara, <br /> City of San Fernando, Pampanga,
+                    Philippines
+                  </Typography>
+                </Box>
+                {/* <Box sx={{ display: "flex", justifyContent: "end" }}>
               <IconButton onClick={onClose}>
                 <Close />
               </IconButton>
-            </Box>
-          </Box>
-
-          <Box className="releaseFreebieModal__header">
-            <Typography className="releaseFreebieModal__header__title">
-              Move Order Slip (Freebie)
-            </Typography>
-            <Box className="releaseFreebieModal__header__customerDetails">
-              <Box>
-                <Typography>
-                  <span>Customer:</span> {selectedRowData?.businessName || ""}
-                </Typography>
-                <Typography>
-                  <span>Address: </span>
-                  {`#${address?.houseNumber || ""} ${
-                    address?.streetName || ""
-                  } ${address?.barangayName || ""}, ${address?.city || ""}, ${
-                    address?.province || ""
-                  }`}
-                </Typography>
+            </Box> */}
               </Box>
-              <Box>
-                <Typography>
-                  <span>Transaction No:</span>{" "}
-                  {selectedRowData?.freebies?.[freebiesLength - 1] || "N/A"}
+              <Box className="releaseFreebieModal__header">
+                <Typography className="releaseFreebieModal__header__title">
+                  Move Order Slip (Freebie)
                 </Typography>
-                <Typography>
-                  <span>Date:</span> {moment().format("MMM DD, YYYY")}
-                </Typography>
+                <Box className="releaseFreebieModal__header__customerDetails">
+                  <Box>
+                    <Typography>
+                      <span>Customer:</span>{" "}
+                      {selectedRowData?.businessName || ""}
+                    </Typography>
+                    <Typography>
+                      <span>Address: </span>
+                      {`${
+                        address?.houseNumber ? `#${address.houseNumber}` : ""
+                      }${
+                        address?.houseNumber &&
+                        (address?.streetName || address?.barangayName)
+                          ? ", "
+                          : ""
+                      }${address?.streetName ? `${address.streetName}` : ""}${
+                        address?.streetName && address?.barangayName ? ", " : ""
+                      }${
+                        address?.barangayName ? `${address.barangayName}` : ""
+                      }${address?.city ? `, ${address.city}` : ""}${
+                        address?.province ? `, ${address.province}` : ""
+                      }`}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography>
+                      <span>Transaction No:</span>{" "}
+                      {selectedRowData?.freebies?.[freebiesLength - 1]
+                        ?.transactionNumber || "N/A"}
+                    </Typography>
+                    <Typography>
+                      <span>Date:</span> {moment().format("MMM DD, YYYY")}
+                    </Typography>
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          </Box>
-          <TableContainer className="releaseFreebieModal__tableContainer">
-            <Table>
-              <TableHead
-                sx={{
-                  bgcolor: "#fff",
-                }}
-              >
-                <TableRow>
-                  <TableCell>Qty</TableCell>
-                  <TableCell>Product Code</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell>UOM</TableCell>
-                </TableRow>
-              </TableHead>
+              <TableContainer className="releaseFreebieModal__tableContainer">
+                <Table>
+                  <TableHead
+                    sx={{
+                      bgcolor: "#fff",
+                    }}
+                  >
+                    <TableRow>
+                      <TableCell>Qty</TableCell>
+                      <TableCell>Product Code</TableCell>
+                      <TableCell>Description</TableCell>
+                      <TableCell>UOM</TableCell>
+                    </TableRow>
+                  </TableHead>
 
-              <TableBody>
-                {selectedRowData?.freebies?.[
-                  freebiesLength - 1
-                ].freebieItems?.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{item.itemCode}</TableCell>
-                    <TableCell>{item.itemDescription}</TableCell>
-                    <TableCell>{item.uom}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Box className="releaseFreebieModal__footer">
-            <Typography>
-              <span>Prepared by:</span> {fullname ?? "user"}
-            </Typography>
-            <Box className="releaseFreebieModal__footer__attachments">
-              <Box className="releaseFreebieModal__footer__attachments__signature">
+                  <TableBody>
+                    {selectedRowData?.freebies?.[
+                      freebiesLength - 1
+                    ].freebieItems?.map((item, i) => (
+                      <TableRow key={i}>
+                        <TableCell>{item.quantity}</TableCell>
+                        <TableCell>{item.itemCode}</TableCell>
+                        <TableCell>{item.itemDescription}</TableCell>
+                        <TableCell>{item.uom}</TableCell>
+                      </TableRow>
+                    ))}
+
+                    {selectedRowData?.freebies?.[
+                      freebiesLength - 1
+                    ].freebies?.map((item, i) => (
+                      <TableRow key={i}>
+                        <TableCell>{item.quantity}</TableCell>
+                        <TableCell>{item.itemCode}</TableCell>
+                        <TableCell>{item.itemDescription}</TableCell>
+                        <TableCell>{item.uom}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Box className="releaseFreebieModal__footer">
                 <Typography>
-                  <span>Received by:</span>
+                  <span>Prepared by:</span> {fullname ?? "user"}
                 </Typography>
-                <Box className="releaseFreebieModal__footer__attachments__signature__stack">
-                  {signature && (
-                    <>
+                <Box className="releaseFreebieModal__footer__attachments">
+                  <Box className="releaseFreebieModal__footer__attachments__signature">
+                    <Typography>
+                      <span>Received by:</span>
+                    </Typography>
+                    <Box className="releaseFreebieModal__footer__attachments__signature__stack">
                       <Box
                         sx={{
                           width: "100px",
@@ -216,17 +252,18 @@ function PrintFreebiesModal({ ...otherProps }) {
                         }}
                       >
                         <img
-                          src={signature}
+                          src={
+                            selectedRowData?.freebies?.[freebiesLength - 1]
+                              ?.eSignature
+                          }
                           width="70px"
                           onClick={onCanvasOpen}
                         />
                       </Box>
                       <Typography>{selectedRowData?.ownersName}</Typography>
-                    </>
-                  )}
-                </Box>
-              </Box>
-              <Box className="releaseFreebieModal__footer__attachments__photo">
+                    </Box>
+                  </Box>
+                  {/* <Box className="releaseFreebieModal__footer__attachments__photo">
                 <Input
                   type="file"
                   sx={{ display: "none" }}
@@ -269,14 +306,17 @@ function PrintFreebiesModal({ ...otherProps }) {
                 {/* <IconButton title="Take a picture">
                   <PhotoCamera />
                 </IconButton> */}
-
-                <Typography>
-                  Upload Photo of Customer <br />
-                  Receiving the Freebies
-                </Typography>
+                  {/* <Typography>
+                Upload Photo of Customer <br />
+                Receiving the Freebies
+              </Typography> */}
+                  {/* </Box> */}
+                </Box>
               </Box>
-            </Box>
-          </Box>
+            </>
+          ) : (
+            <div>No freebies</div>
+          )}
         </Box>
         <Box className="releaseFreebieModal__actionsEnd">
           {/* <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton> */}
@@ -285,9 +325,14 @@ function PrintFreebiesModal({ ...otherProps }) {
               // onConfirmOpen
               handlePrint
             }
+            disabled={isLoading}
           >
             {/* {direct ? "Save" : "Release"} */}
-            Print
+            {isLoading ? (
+              <CircularProgress size="20px" color="white" />
+            ) : (
+              "Print"
+            )}
           </SuccessButton>
         </Box>
       </CommonModal>

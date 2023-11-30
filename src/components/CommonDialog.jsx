@@ -9,6 +9,8 @@ import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
 import SecondaryAlert from "../assets/images/SecondaryAlert.png";
+import ErrorAlert from "../assets/images/ErrorAlert.png";
+import WarningAlert from "../assets/images/WarningAlert.png";
 import QuestionAlert from "../assets/images/QuestionAlert.png";
 import SuccessButton from "./SuccessButton";
 
@@ -48,7 +50,8 @@ function CommonDialog({
                 ? customImageSource
                 : noIcon
                 ? QuestionAlert
-                : SecondaryAlert
+                : // : SecondaryAlert
+                  ErrorAlert
             }
             alt="alert-img"
           />

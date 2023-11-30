@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box } from "@mui/material";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
@@ -12,6 +12,7 @@ import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
+import { AppContext } from "../../context/AppContext";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -24,6 +25,8 @@ function ListingFee() {
 
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -83,19 +86,19 @@ function ListingFee() {
       case: 1,
       name: "Pending Listing Fee",
       listingFeeStatus: "Under review",
-      badge: pendingData?.totalCount || 0,
+      badge: notifications["pendingListingFee"],
     },
     {
       case: 2,
       name: "Approved Listing Fee",
       listingFeeStatus: "Approved",
-      badge: approvedData?.totalCount || 0,
+      badge: notifications["approvedListingFee"],
     },
     {
       case: 3,
       name: "Rejected Listing Fee",
       listingFeeStatus: "Rejected",
-      badge: rejectedData?.totalCount || 0,
+      badge: notifications["rejectedListingFee"],
     },
   ];
 

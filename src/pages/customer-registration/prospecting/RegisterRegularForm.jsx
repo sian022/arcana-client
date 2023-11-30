@@ -521,7 +521,6 @@ function RegisterRegularForm({ open, onClose }) {
     }
   }, [includeAuthorizedRepresentative]);
 
-  console.log(getValues());
   return (
     <>
       <CommonDrawer

@@ -36,6 +36,7 @@ import {
 import { registrationApi } from "../features/registration/api/registrationApi";
 import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
 import { prospectApi } from "../features/prospect/api/prospectApi";
+import { notificationApi } from "../features/notification/api/notificationApi";
 
 function Header() {
   const dispatch = useDispatch();
@@ -120,6 +121,7 @@ function Header() {
     dispatch(registrationApi.util.resetApiState());
     dispatch(listingFeeApi.util.resetApiState());
     dispatch(prospectApi.util.resetApiState());
+    dispatch(notificationApi.util.resetApiState());
 
     // localStorage.removeItem("token");
     // localStorage.removeItem("fullname");

@@ -329,7 +329,9 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                           onClick={onCanvasOpen}
                         />
                       </Box>
-                      <Typography>{selectedRowData?.ownersName}</Typography>
+                      <Typography sx={{ maxWidth: "180px" }}>
+                        {selectedRowData?.ownersName}
+                      </Typography>
                     </>
                   ) : (
                     <>
@@ -369,6 +371,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                       bgcolor: "white !important",
                       position: "absolute",
                       right: "305px",
+                      // right: signature ? "330px" : "305px",
                       bottom: "83px",
                     }}
                   >
