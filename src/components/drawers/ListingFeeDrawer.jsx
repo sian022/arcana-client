@@ -79,6 +79,12 @@ function ListingFeeDrawer({
     onClose: onErrorClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isClientConfirmationOpen,
+    onOpen: onClientConfirmationOpen,
+    onClose: onClientConfirmationClose,
+  } = useDisclosure();
+
   //React Hook Form
   const {
     handleSubmit,
@@ -203,13 +209,6 @@ function ListingFeeDrawer({
     onErrorOpen();
   };
 
-  const handleRemoveAll = () => {
-    // Loop through the items and remove them one by one
-    for (let i = fields.length - 1; i >= 0; i--) {
-      remove(i);
-    }
-  };
-
   function hasDuplicateItemCodes(data) {
     const itemCodes = new Set();
 
@@ -234,6 +233,10 @@ function ListingFeeDrawer({
     });
 
     setTotalAmount(total);
+  };
+
+  const handleConfirmation = (value) => {
+    // onClientConfirmationOpen();
   };
 
   //UseEffects
@@ -339,14 +342,32 @@ function ListingFeeDrawer({
               )}
               onChange={(_, value) => {
                 setValue(`customerName`, value?.ownersName);
+                // handleConfirmation(value);
+                // remove();
+                // append({
+                //   itemId: null,
+                //   sku: 1,
+                //   unitCost: null,
+                // });
+                // return value;
 
-                remove();
-                append({
-                  itemId: null,
-                  sku: 1,
-                  unitCost: null,
-                });
-                return value;
+                if (watch("clientId")) {
+                  const confirm = window.confirm(
+                    "Are you sure you want to confirm?"
+                  );
+
+                  if (confirm && watch("clientId")) {
+                    remove();
+                    append({
+                      itemId: null,
+                      sku: 1,
+                      unitCost: null,
+                    });
+                    return value;
+                  }
+                } else {
+                  return value;
+                }
               }}
             />
 
@@ -625,6 +646,21 @@ function ListingFeeDrawer({
         onYes={handleDrawerClose}
       >
         Are you sure you want to cancel {editMode ? "update" : "adding"} of
+        listing fee for{" "}
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          {watch("clientId.businessName")
+            ? watch("clientId.businessName")
+            : "client"}
+        </span>
+        ?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isClientConfirmationOpen}
+        onClose={onClientConfirmationClose}
+        onYes={true}
+      >
+        Are you sure you want to confirm {editMode ? "update" : "adding"} of
         listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {watch("clientId.businessName")

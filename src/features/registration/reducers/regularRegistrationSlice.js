@@ -44,7 +44,7 @@ export const regularRegistrationSlice = createSlice({
         directDelivery: null,
         bookingCoverageId: null,
         terms: null,
-        modeOfPayment: [],
+        modeOfPayments: [],
         variableDiscount: null,
         termDaysId: null,
         creditLimit: null,

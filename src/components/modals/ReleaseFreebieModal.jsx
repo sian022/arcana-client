@@ -25,7 +25,7 @@ import {
 } from "@mui/icons-material";
 import useDisclosure from "../../hooks/useDisclosure";
 import SignatureCanvasModal from "./SignatureCanvasModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { usePutReleaseProspectMutation } from "../../features/prospect/api/prospectApi";
 import { base64ToBlob, debounce } from "../../utils/CustomFunctions";
@@ -36,6 +36,7 @@ import ViewPhotoModal from "./ViewPhotoModal";
 import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
 import { DirectReleaseContext } from "../../context/DirectReleaseContext";
 import SuccessButton from "../SuccessButton";
+import { notificationApi } from "../../features/notification/api/notificationApi";
 
 function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -56,6 +57,8 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
   const freebiesDirect = useSelector(
     (state) => state.regularRegistration.value.freebies
   );
+
+  const dispatch = useDispatch();
 
   const {
     signatureDirect,
@@ -138,6 +141,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
       setSnackbarMessage("Freebie released successfully");
       debounce(onRedirectRegisterOpen(), 2000);
       onSuccessOpen();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);

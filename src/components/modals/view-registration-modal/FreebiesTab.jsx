@@ -38,58 +38,64 @@ function FreebiesTab() {
             <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
               Freebies
             </Typography>
-            <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
-              Product Information
-            </Typography>
+            {selectedRowData?.freebies?.length > 0 && (
+              <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
+                Product Information
+              </Typography>
+            )}
           </Box>
 
-          <Box className="viewListingFeeModal__table">
-            <TableContainer
-              sx={{
-                maxHeight: "280px",
-                overflow: "auto",
-                // width: "620px",
-                maxWidth: "700px",
-                borderRadius: "10px",
-              }}
-            >
-              <Table>
-                <TableHead
-                  sx={{
-                    bgcolor: "white !important",
-                  }}
-                >
-                  <TableRow>
-                    <TableCell sx={{ color: "black !important" }}>
-                      Item Code
-                    </TableCell>
-                    <TableCell sx={{ color: "black !important" }}>
-                      Item Description
-                    </TableCell>
-                    <TableCell sx={{ color: "black !important" }}>
-                      UOM
-                    </TableCell>
-                    <TableCell sx={{ color: "black !important" }}>
-                      Quantity
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
+          {selectedRowData?.freebies?.length === 0 ? (
+            <div>No freebies</div>
+          ) : (
+            <Box className="viewListingFeeModal__table">
+              <TableContainer
+                sx={{
+                  maxHeight: "280px",
+                  overflow: "auto",
+                  // width: "620px",
+                  maxWidth: "700px",
+                  borderRadius: "10px",
+                }}
+              >
+                <Table>
+                  <TableHead
+                    sx={{
+                      bgcolor: "white !important",
+                    }}
+                  >
+                    <TableRow>
+                      <TableCell sx={{ color: "black !important" }}>
+                        Item Code
+                      </TableCell>
+                      <TableCell sx={{ color: "black !important" }}>
+                        Item Description
+                      </TableCell>
+                      <TableCell sx={{ color: "black !important" }}>
+                        UOM
+                      </TableCell>
+                      <TableCell sx={{ color: "black !important" }}>
+                        Quantity
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                <TableBody>
-                  {selectedRowData?.freebies?.map((item) =>
-                    item?.freebies?.map((freebie) => (
-                      <TableRow key={freebie.id}>
-                        <TableCell>{freebie.itemCode}</TableCell>
-                        <TableCell>{freebie.itemDescription}</TableCell>
-                        <TableCell>{freebie.uom}</TableCell>
-                        <TableCell>{freebie.quantity}</TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
+                  <TableBody>
+                    {selectedRowData?.freebies?.map((item) =>
+                      item?.freebies?.map((freebie) => (
+                        <TableRow key={freebie.id}>
+                          <TableCell>{freebie.itemCode}</TableCell>
+                          <TableCell>{freebie.itemDescription}</TableCell>
+                          <TableCell>{freebie.uom}</TableCell>
+                          <TableCell>{freebie.quantity}</TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          )}
         </Box>
       </Box>
     </>

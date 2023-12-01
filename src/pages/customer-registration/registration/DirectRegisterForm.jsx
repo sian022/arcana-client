@@ -50,6 +50,7 @@ import {
 import {
   base64ToBlob,
   convertToTitleCase,
+  debounce,
   shallowEqual,
 } from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
@@ -168,7 +169,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       label: "Terms and Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
         if (
-          key === "" &&
+          key === "fixedDiscount" &&
           (termsAndConditions[key].discountPercentage === null ||
             termsAndConditions[key].discountPercentage === "" ||
             termsAndConditions[key].discountPercentage === NaN ||
@@ -194,6 +195,34 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         const value = termsAndConditions[key];
         return value !== null && value !== "";
       }),
+      // isValid: Object.keys(termsAndConditions).every((key) => {
+      //   if (
+      //     key === "" &&
+      //     (termsAndConditions[key].discountPercentage === null ||
+      //       termsAndConditions[key].discountPercentage === "" ||
+      //       termsAndConditions[key].discountPercentage === NaN ||
+      //       termsAndConditions[key].discountPercentage === undefined) &&
+      //     termsAndConditions["variableDiscount"] === false
+      //   ) {
+      //     return false;
+      //   }
+
+      //   if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
+      //     return true;
+      //   } else if (termsAndConditions["terms"] !== 3 && key === "creditLimit") {
+      //     return true;
+      //   }
+
+      //   if (key === "modeOfPayments") {
+      //     if (termsAndConditions[key]?.length === 0) {
+      //       return false;
+      //     }
+      //     return true;
+      //   }
+
+      //   const value = termsAndConditions[key];
+      //   return value !== null && value !== "";
+      // }),
       icon: <Gavel />,
       disabled: false,
     },
@@ -245,6 +274,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         ...data,
         dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
         storeTypeId: data?.storeTypeId?.id,
+        clientId: selectedRowData?.id,
       };
 
       const transformedTermsAndConditions = {
@@ -298,7 +328,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       onConfirmClose();
       onClose();
       handleResetForms();
-      debounce(onRedirectListingFeeOpen(), 2000);
+      if (!editMode) {
+        debounce(onRedirectListingFeeOpen(), 2000);
+      }
+
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
@@ -324,11 +357,17 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       ownersRequirements["signature"] &&
       !(ownersRequirements["signature"] instanceof Blob)
     ) {
-      const convertedSignature = new File(
-        [base64ToBlob(ownersRequirements["signature"])],
-        `signature_${Date.now()}.jpg`,
-        { type: "image/jpeg" }
-      );
+      let convertedSignature;
+      if (ownersRequirements["signature"]?.includes("data:")) {
+        convertedSignature = new File(
+          [base64ToBlob(ownersRequirements["signature"])],
+          `signature_${Date.now()}.jpg`,
+          { type: "image/jpeg" }
+        );
+      } else {
+        convertedSignature = ownersRequirements["signature"];
+      }
+
       setOwnersRequirements((prevOwnersRequirements) => ({
         ...prevOwnersRequirements,
         signature: convertedSignature,
@@ -340,13 +379,19 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     } else if (
       requirementsMode === "representative" &&
       representativeRequirements["signature"] &&
-      !(ownersRequirements["representative"] instanceof Blob)
+      !(representativeRequirements["signature"] instanceof Blob)
     ) {
-      const convertedSignature = new File(
-        [base64ToBlob(representativeRequirements["signature"])],
-        `signature_${Date.now()}.jpg`,
-        { type: "image/jpeg" }
-      );
+      let convertedSignature;
+      if (representativeRequirements["signature"]?.includes("data:")) {
+        convertedSignature = new File(
+          [base64ToBlob(representativeRequirements["signature"])],
+          `signature_${Date.now()}.jpg`,
+          { type: "image/jpeg" }
+        );
+      } else {
+        convertedSignature = representativeRequirements["signature"];
+      }
+
       setRepresentativeRequirements((prevRepresentativeRequirements) => ({
         ...prevRepresentativeRequirements,
         signature: convertedSignature,
@@ -1305,7 +1350,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               onClick={onConfirmOpen}
               disabled={navigators.some((obj) => obj.isValid === false)}
             >
-              Register
+              {editMode ? "Update" : "Register"}
             </SuccessButton>
           )}
         </Box>

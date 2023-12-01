@@ -192,7 +192,7 @@ function VariableDiscount() {
     if (isDrawerOpen && drawerMode === "add") {
       setValue(
         "minimumAmount",
-        data?.discount[data?.discount?.length - 1]?.maximumAmount + 1
+        data?.discount[data?.discount?.length - 1]?.maximumAmount + 0.000001
       );
     }
   }, [isDrawerOpen]);

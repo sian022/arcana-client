@@ -32,6 +32,7 @@ import {
   DirectReleaseContext,
   DirectReleaseProvider,
 } from "../../../context/DirectReleaseContext";
+import { notificationApi } from "../../../features/notification/api/notificationApi";
 
 function FreebieForm({
   isFreebieFormOpen,
@@ -161,6 +162,7 @@ function FreebieForm({
       handleDrawerClose();
       debounce(onRedirectReleaseOpen(), 2000);
       onSuccessOpen();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);

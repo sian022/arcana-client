@@ -163,7 +163,7 @@ function RegisterRegularForm({ open, onClose }) {
           return true;
         }
 
-        if (key === "modeOfPayment") {
+        if (key === "modeOfPayments") {
           if (termsAndConditions[key]?.length === 0) {
             return false;
           }

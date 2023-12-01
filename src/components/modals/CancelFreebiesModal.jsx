@@ -144,14 +144,16 @@ function CancelFreebiesModal({ ...otherProps }) {
               </TableHead>
 
               <TableBody>
-                {selectedRowData?.freebies?.[0].freebieItems?.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{item.itemCode}</TableCell>
-                    <TableCell>{item.itemDescription}</TableCell>
-                    <TableCell>{item.uom}</TableCell>
-                  </TableRow>
-                ))}
+                {selectedRowData?.freebies?.[0]?.freebieItems?.map(
+                  (item, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.itemCode}</TableCell>
+                      <TableCell>{item.itemDescription}</TableCell>
+                      <TableCell>{item.uom}</TableCell>
+                    </TableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           </TableContainer>
