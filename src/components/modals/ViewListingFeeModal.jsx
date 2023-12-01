@@ -20,7 +20,7 @@ import DangerButton from "../DangerButton";
 import AccentButton from "../AccentButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   usePutApproveListingFeeMutation,
   usePutRejectListingFeeMutation,
@@ -43,6 +43,8 @@ function ViewListingFeeModal({
   const [totalAmount, setTotalAmount] = useState(0);
 
   const { showSnackbar } = useSnackbar();
+
+  const dispatch = useDispatch();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -100,7 +102,7 @@ function ViewListingFeeModal({
       showSnackbar("Listing Fee approved successfully", "success");
       onApproveConfirmClose();
       onClose();
-      notificationApi.util.invalidateTags();
+      dispatch(notificationApi.util.invalidateTags());
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -120,7 +122,7 @@ function ViewListingFeeModal({
       showSnackbar("Listing Fee rejected successfully", "success");
       handleRejectConfirmClose();
       onClose();
-      notificationApi.util.invalidateTags();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");

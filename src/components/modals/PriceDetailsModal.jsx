@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -33,7 +33,7 @@ import { useDeletePriceChangeMutation } from "../../features/setup/api/productsA
 import useSnackbar from "../../hooks/useSnackbar";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 
-function PriceDetailsModal({ data, ...otherProps }) {
+function PriceDetailsModal({ isFetching, data, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
 
   const dispatch = useDispatch();
@@ -61,18 +61,23 @@ function PriceDetailsModal({ data, ...otherProps }) {
     onClose();
   };
 
-  console.log(selectedRowData);
-
+  // console.log(selectedRowData);
+  // console.log(data?.find((item) => item.id === selectedRowData?.id));
   const onArchiveSubmit = async () => {
     try {
       await deletePriceChange(
         selectedRowData?.futurePriceChanges?.[futurePriceIndex]?.id
-      );
+      ).unwrap();
+
       // dispatch(setSelectedRow());
       showSnackbar("Price change successfully deleted!", "success");
-      dispatch(
-        setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
-      );
+
+      // if (!isFetching) {
+      //   dispatch(
+      //     setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
+      //   );
+      // }
+
       onArchiveClose();
     } catch (error) {
       if (error?.data?.error?.message) {
@@ -82,6 +87,14 @@ function PriceDetailsModal({ data, ...otherProps }) {
       }
     }
   };
+
+  useEffect(() => {
+    if (!isFetching) {
+      dispatch(
+        setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
+      );
+    }
+  }, [isFetching]);
 
   return (
     <>
@@ -176,6 +189,7 @@ function PriceDetailsModal({ data, ...otherProps }) {
                   <TertiaryButton
                     sx={{ maxHeight: "25px" }}
                     onClick={() => setManageMode((prev) => !prev)}
+                    disabled={selectedRowData?.futurePriceChanges?.length === 0}
                   >
                     {manageMode ? "Done" : "Manage"}
                   </TertiaryButton>

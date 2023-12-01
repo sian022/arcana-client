@@ -27,6 +27,7 @@ function ListingFeeTab() {
 
   //Disclosures
 
+  console.log(selectedRowData);
   return (
     <>
       <Box className="viewRegistrationModal__listingFee">
@@ -88,45 +89,6 @@ function ListingFeeTab() {
                       <TableCell>₱ {item.unitCost?.toLocaleString()}</TableCell>
                     </TableRow>
                   ))}
-                  <TableRow>
-                    <TableCell>aaaaaaaaaaaa</TableCell>
-                    <TableCell>aaaaaaaaaaaa</TableCell>
-                    <TableCell>aaaaaaaaaaaa</TableCell>
-                    <TableCell>aaaaaaaaaaaa</TableCell>
-                    <TableCell>₱ aaaaaaaaaaaa</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>₱ aaaa</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>₱ aaaa</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>₱ aaaa</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>₱ aaaa</TableCell>
-                  </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>

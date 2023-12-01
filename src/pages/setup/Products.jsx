@@ -125,7 +125,7 @@ function Products() {
 
   //RTK Query
   const [postProduct, { isLoading: isAddLoading }] = usePostProductMutation();
-  const { data, isLoading, isFetching } = useGetAllProductsQuery({
+  const { data, isLoading, isFetching, refetch } = useGetAllProductsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -295,7 +295,6 @@ function Products() {
     }
   }, [changePrice]);
 
-  console.log(getValues());
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -551,6 +550,7 @@ function Products() {
 
       <PriceDetailsModal
         data={data?.items}
+        isFetching={isFetching}
         open={isPriceOpen}
         // open={true}
         onClose={onPriceClose}

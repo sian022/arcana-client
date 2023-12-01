@@ -4,7 +4,7 @@ import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { variableDiscountSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
@@ -18,6 +18,7 @@ import {
   usePutDiscountTypeMutation,
 } from "../../features/setup/api/discountTypeApi";
 import { useSelector } from "react-redux";
+import { NumericFormat } from "react-number-format";
 
 function VariableDiscount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -235,7 +236,29 @@ function VariableDiscount() {
         disableSubmit={!isValid}
         isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
-        <TextField
+        <Controller
+          control={control}
+          name={"minimumAmount"}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <NumericFormat
+              label="Minimum Amount (₱)"
+              type="text"
+              size="small"
+              customInput={TextField}
+              autoComplete="off"
+              onValueChange={(e) => {
+                onChange(Number(e.value));
+              }}
+              onBlur={onBlur}
+              value={value || ""}
+              ref={ref}
+              required
+              thousandSeparator=","
+              disabled={data?.discount?.length > 0}
+            />
+          )}
+        />
+        {/* <TextField
           label="Minimum Amount (₱)"
           size="small"
           autoComplete="off"
@@ -246,9 +269,30 @@ function VariableDiscount() {
           inputProps={{ min: 0 }}
           disabled={data?.discount?.length > 0}
           // value={data?.discount[data?.discount?.length - 1]?.minimumAmount + 1}
-        />
+        /> */}
 
-        <TextField
+        <Controller
+          control={control}
+          name={"maximumAmount"}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <NumericFormat
+              label="Maximum Amount (₱)"
+              type="text"
+              size="small"
+              customInput={TextField}
+              autoComplete="off"
+              onValueChange={(e) => {
+                onChange(Number(e.value));
+              }}
+              onBlur={onBlur}
+              value={value || ""}
+              ref={ref}
+              required
+              thousandSeparator=","
+            />
+          )}
+        />
+        {/* <TextField
           label="Maximum Amount (₱)"
           size="small"
           autoComplete="off"
@@ -257,9 +301,31 @@ function VariableDiscount() {
           error={errors?.maximumAmount}
           type="number"
           inputProps={{ min: 0 }}
-        />
+        /> */}
 
-        <TextField
+        <Controller
+          control={control}
+          name={"minimumPercentage"}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <NumericFormat
+              label="Minimum Percentage"
+              type="text"
+              size="small"
+              customInput={TextField}
+              autoComplete="off"
+              onValueChange={(e) => {
+                onChange(Number(e.value));
+              }}
+              onBlur={onBlur}
+              value={value || ""}
+              ref={ref}
+              required
+              thousandSeparator=","
+              inputProps={{ min: 0 }}
+            />
+          )}
+        />
+        {/* <TextField
           label="Minimum Percentage"
           size="small"
           autoComplete="off"
@@ -268,9 +334,31 @@ function VariableDiscount() {
           error={errors?.minimumPercentage}
           type="number"
           inputProps={{ min: 0 }}
-        />
+        /> */}
 
-        <TextField
+        <Controller
+          control={control}
+          name={"maximumPercentage"}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <NumericFormat
+              label="Maximum Percentage"
+              type="text"
+              size="small"
+              customInput={TextField}
+              autoComplete="off"
+              onValueChange={(e) => {
+                onChange(Number(e.value));
+              }}
+              onBlur={onBlur}
+              value={value || ""}
+              ref={ref}
+              required
+              thousandSeparator=","
+              inputProps={{ min: 0 }}
+            />
+          )}
+        />
+        {/* <TextField
           label="Maximum Percentage"
           size="small"
           autoComplete="off"
@@ -279,7 +367,7 @@ function VariableDiscount() {
           error={errors?.maximumPercentage}
           type="number"
           inputProps={{ min: 0 }}
-        />
+        /> */}
       </CommonDrawer>
       <CommonDialog
         open={isArchiveOpen}

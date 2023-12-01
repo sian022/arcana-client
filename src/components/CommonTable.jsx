@@ -170,6 +170,7 @@ function CommonTable({
                     return (
                       <TableCell key={k}>
                         {pesoArray && pesoArray.includes(keys) && "₱ "}
+                        {keys === "phoneNumber" && "+63"}
 
                         {percentageArray && percentageArray.includes(keys)
                           ? item[keys] * 100

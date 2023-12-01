@@ -290,7 +290,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                 {!direct &&
                   selectedRowData?.freebies?.[
                     freebiesLength - 1
-                  ].freebieItems?.map((item, i) => (
+                  ]?.freebieItems?.map((item, i) => (
                     <TableRow key={i}>
                       <TableCell>{item.quantity}</TableCell>
                       <TableCell>{item.itemCode}</TableCell>

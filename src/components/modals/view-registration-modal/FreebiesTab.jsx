@@ -70,63 +70,22 @@ function FreebiesTab() {
                       UOM
                     </TableCell>
                     <TableCell sx={{ color: "black !important" }}>
-                      SKU
-                    </TableCell>
-                    <TableCell sx={{ color: "black !important" }}>
-                      Unit Cost
+                      Quantity
                     </TableCell>
                   </TableRow>
                 </TableHead>
 
                 <TableBody>
-                  {selectedRowData?.listingItems?.map((item) => (
-                    <TableRow>
-                      <TableCell>{item.itemCode}</TableCell>
-                      <TableCell>{item.itemDescription}</TableCell>
-                      <TableCell>{item.uom}</TableCell>
-                      <TableCell>{item.sku}</TableCell>
-                      <TableCell>₱ {item.unitCost?.toLocaleString()}</TableCell>
-                    </TableRow>
-                  ))}
-                  <TableRow>
-                    <TableCell>aaaaaaaaaaaa</TableCell>
-                    <TableCell>aaaaaaaaaaaa</TableCell>
-                    <TableCell>aaaaaaaaaaaa</TableCell>
-                    <TableCell>aaaaaaaaaaaa</TableCell>
-                    <TableCell>₱ aaaaaaaaaaaa</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>₱ aaaa</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>₱ aaaa</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>₱ aaaa</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>aaaa</TableCell>
-                    <TableCell>₱ aaaa</TableCell>
-                  </TableRow>
+                  {selectedRowData?.freebies?.map((item) => {
+                    item?.freebies?.map((freebie) => (
+                      <TableRow>
+                        <TableCell>{freebie.itemCode}</TableCell>
+                        <TableCell>{freebie.itemDescription}</TableCell>
+                        <TableCell>{freebie.uom}</TableCell>
+                        <TableCell>{freebie.quantity}</TableCell>
+                      </TableRow>
+                    ));
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>

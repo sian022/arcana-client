@@ -193,7 +193,7 @@ function ForFreebies() {
 
       reset();
       onSuccessOpen();
-      notificationApi.util.invalidateTags();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
@@ -215,7 +215,7 @@ function ForFreebies() {
         `Prospect ${status ? "archived" : "restored"} successfully`
       );
       onSuccessOpen();
-      notificationApi.util.invalidateTags();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);

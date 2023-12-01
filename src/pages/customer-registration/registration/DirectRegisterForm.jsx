@@ -299,7 +299,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       onClose();
       handleResetForms();
       debounce(onRedirectListingFeeOpen(), 2000);
-      notificationApi.util.invalidateTags();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
       setIsAllApiLoading(false);
@@ -644,16 +644,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           termDaysId: termDaysData?.termDays?.find(
             (day) => day.id === selectedRowData?.terms?.termDaysId
           ),
-          // modeOfPayment:
-          //   selectedRowData?.modeOfPayment?.toLowerCase() === "cash"
-          //     ? 1
-          //     : selectedRowData?.modeOfPayment?.toLowerCase() === "check/online"
-          //     ? 2
-          //     : null,
-          // modeOfPayments: selectedRowData?.modeOfPayments,
-          // modeOfPayments: selectedRowData?.modeOfPayments?.map(
-          //   (item) => item.id
-          // ),
           modeOfPayments: selectedRowData?.modeOfPayments?.map((payment) => ({
             modeOfPaymentId: payment.id,
           })),

@@ -162,7 +162,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
 
   const handleCheckboxChange = (modeOfPaymentId) => {
     // Check if the modeOfPaymentId is already in the array
-    const isSelected = termsAndConditions.modeOfPayments.some(
+    const isSelected = termsAndConditions?.modeOfPayments?.some(
       (item) => item.modeOfPaymentId === modeOfPaymentId
     );
 
@@ -178,23 +178,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
       })
     );
   };
-
-  // const handleCheckboxChange = (modeOfPaymentsId) => {
-  //   // Check if the modeOfPaymentsId is already in the array
-  //   const isSelected = selectedValues.some(
-  //     (item) => item.modeOfPaymentsId === modeOfPaymentsId
-  //   );
-
-  //   if (isSelected) {
-  //     // If modeOfPaymentsId is already selected, remove it from the array
-  //     setSelectedValues((prevValues) =>
-  //       prevValues.filter((item) => item.modeOfPaymentsId !== modeOfPaymentsId)
-  //     );
-  //   } else {
-  //     // If modeOfPaymentsId is not selected, add it to the array
-  //     setSelectedValues((prevValues) => [...prevValues, { modeOfPaymentsId }]);
-  //   }
-  // };
 
   console.log(termsAndConditions);
   return (
@@ -563,27 +546,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             <Typography>Mode of Payment</Typography>
           </Box>
 
-          {/* <RadioGroup
-            row
-            className="terms__column__item__choices"
-            value={termsAndConditions["modeOfPayments"]}
-            onChange={(e) => {
-              dispatch(
-                setTermsAndConditions({
-                  property: "modeOfPayments",
-                  value: parseInt(e.target.value),
-                })
-              );
-            }}
-          >
-            <FormControlLabel value={1} control={<Radio />} label="Cash" />
-            <FormControlLabel
-              value={2}
-              control={<Radio />}
-              label="Online/Check"
-            />
-          </RadioGroup> */}
-
           <FormGroup
             row
             className="terms__column__item__choices"
@@ -593,19 +555,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               control={<Checkbox sx={{ marginRight: "10px" }} />}
               value={1}
               label="Cash"
-              // checked={termsAndConditions["modeOfPayments"]?.includes(1)}
-              // checked={termsAndConditions["modeOfPayments"]?.includes({
-              //   modeOfPaymentId: 1,
-              // })}
-              // onChange={(e) => {
-              //   dispatch(
-              //     setTermsAndConditions({
-              //       property: "modeOfPayments",
-              //       value: parseInt(e.target.value),
-              //     })
-              //   );
-              // }}
-
               checked={termsAndConditions["modeOfPayments"]?.some(
                 (item) => item.modeOfPaymentId === 1
               )}
@@ -617,10 +566,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               value={2}
               control={<Checkbox sx={{ marginRight: "10px" }} />}
               label="Online/Check"
-              // checked={termsAndConditions["modeOfPayments"]?.includes(2)}
-              // checked={termsAndConditions["modeOfPayments"]?.includes({
-              //   modeOfPaymentId: 2,
-              // })}
               checked={termsAndConditions["modeOfPayments"]?.some(
                 (item) => item.modeOfPaymentId === 2
               )}

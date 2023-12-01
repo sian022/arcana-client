@@ -226,7 +226,7 @@ function RegisterRegularForm({ open, onClose }) {
       onClose();
       handleResetForms();
       debounce(onRedirectListingFeeOpen(), 2000);
-      notificationApi.util.invalidateTags();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       setIsAllApiLoading(false);
       if (error?.data?.error?.message) {

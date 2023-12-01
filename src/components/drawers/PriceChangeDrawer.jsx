@@ -84,9 +84,18 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
   const [postAddPriceChange, { isLoading: isAddPriceChangeLoading }] =
     usePostAddPriceChangeMutation();
 
+  console.log(getValues());
+
   const onPriceChangeSubmit = async (data) => {
+    const { effectivityDate, ...noDate } = data;
+    const transformedDate = moment(effectivityDate).format("YYYY-MM-DD");
+
     try {
-      await postAddPriceChange(data).unwrap();
+      // await postAddPriceChange(data).unwrap();
+      await postAddPriceChange({
+        effectivityDate: transformedDate,
+        ...noDate,
+      }).unwrap();
       showSnackbar("Price Change added successfully", "success");
       onClose();
       reset();

@@ -16,7 +16,7 @@ import SecondaryButton from "../../SecondaryButton";
 import DangerButton from "../../DangerButton";
 import AccentButton from "../../AccentButton";
 import useDisclosure from "../../../hooks/useDisclosure";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CommonDialog from "../../CommonDialog";
 import { Close } from "@mui/icons-material";
 import {
@@ -51,6 +51,8 @@ function ViewRegistrationDetailsModal({
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const { showSnackbar } = useSnackbar();
+
+  const dispatch = useDispatch();
 
   //Disclosures
   const {
@@ -154,7 +156,7 @@ function ViewRegistrationDetailsModal({
       showSnackbar("Client approved successfully", "success");
       onApproveConfirmClose();
       handleClose();
-      notificationApi.util.invalidateTags();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -177,7 +179,7 @@ function ViewRegistrationDetailsModal({
         reason,
       }).unwrap();
       showSnackbar("Client rejected successfully", "success");
-      notificationApi.util.invalidateTags();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
