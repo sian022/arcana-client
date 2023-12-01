@@ -76,16 +76,16 @@ function FreebiesTab() {
                 </TableHead>
 
                 <TableBody>
-                  {selectedRowData?.freebies?.map((item) => {
+                  {selectedRowData?.freebies?.map((item) =>
                     item?.freebies?.map((freebie) => (
-                      <TableRow>
+                      <TableRow key={freebie.id}>
                         <TableCell>{freebie.itemCode}</TableCell>
                         <TableCell>{freebie.itemDescription}</TableCell>
                         <TableCell>{freebie.uom}</TableCell>
                         <TableCell>{freebie.quantity}</TableCell>
                       </TableRow>
-                    ));
-                  })}
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

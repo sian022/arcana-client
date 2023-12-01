@@ -138,7 +138,9 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                   <TextField
                     size="small"
                     value={
-                      selectedRowData?.latestPriceChange?.price?.toLocaleString() ||
+                      // selectedRowData?.latestPriceChange?.price?.toLocaleString() ||
+                      // ""
+                      selectedRowData?.priceChangeHistories?.[0]?.price?.toLocaleString() ||
                       ""
                     }
                     readOnly
@@ -168,8 +170,13 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                     size="small"
                     readOnly
                     value={
+                      // moment(
+                      //   selectedRowData?.latestPriceChange?.effectivityDate
+                      // ).format("MMMM D") || ""
+
                       moment(
-                        selectedRowData?.latestPriceChange?.effectivityDate
+                        selectedRowData?.priceChangeHistories?.[0]?
+                          .effectivityDate
                       ).format("MMMM D") || ""
                     }
                     sx={{ pointerEvents: "none" }}
