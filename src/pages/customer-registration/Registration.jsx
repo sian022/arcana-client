@@ -169,6 +169,7 @@ function DirectRegistration() {
     "clientApprovalHistories",
     "freebies",
     "modeOfPayments",
+    "updateHistories",
   ];
 
   const tableHeads = [

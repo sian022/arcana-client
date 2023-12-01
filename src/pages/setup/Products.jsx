@@ -295,6 +295,7 @@ function Products() {
     }
   }, [changePrice]);
 
+  console.log(getValues());
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -549,6 +550,7 @@ function Products() {
       />
 
       <PriceDetailsModal
+        data={data?.items}
         open={isPriceOpen}
         // open={true}
         onClose={onPriceClose}

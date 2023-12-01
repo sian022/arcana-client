@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box, Button, TextField, debounce } from "@mui/material";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
@@ -12,6 +12,7 @@ import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
+import { AppContext } from "../../context/AppContext";
 
 function ListingFeeApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -21,6 +22,8 @@ function ListingFeeApproval() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -36,23 +39,23 @@ function ListingFeeApproval() {
   } = useDisclosure();
 
   //RTK Query
-  const { data: pendingData, isLoading: isPendingLoading } =
-    useGetAllListingFeeQuery({
-      Status: true,
-      ListingFeeStatus: "Under review",
-    });
+  // const { data: pendingData, isLoading: isPendingLoading } =
+  //   useGetAllListingFeeQuery({
+  //     Status: true,
+  //     ListingFeeStatus: "Under review",
+  //   });
 
-  const { data: approvedData, isLoading: isApprovedLoading } =
-    useGetAllListingFeeQuery({
-      Status: true,
-      ListingFeeStatus: "Approved",
-    });
+  // const { data: approvedData, isLoading: isApprovedLoading } =
+  //   useGetAllListingFeeQuery({
+  //     Status: true,
+  //     ListingFeeStatus: "Approved",
+  //   });
 
-  const { data: rejectedData, isLoading: isRejectedLoading } =
-    useGetAllListingFeeQuery({
-      Status: true,
-      ListingFeeStatus: "Rejected",
-    });
+  // const { data: rejectedData, isLoading: isRejectedLoading } =
+  //   useGetAllListingFeeQuery({
+  //     Status: true,
+  //     ListingFeeStatus: "Rejected",
+  //   });
 
   const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
     Search: search,
@@ -68,19 +71,19 @@ function ListingFeeApproval() {
       case: 1,
       name: "Pending Listing Fee",
       listingFeeStatus: "Under review",
-      badge: pendingData?.totalCount || 0,
+      badge: notifications["pendingListingFee"],
     },
     {
       case: 2,
       name: "Approved Listing Fee",
       listingFeeStatus: "Approved",
-      badge: approvedData?.totalCount || 0,
+      badge: notifications["approvedListingFee"],
     },
     {
       case: 3,
       name: "Rejected Listing Fee",
       listingFeeStatus: "Rejected",
-      badge: rejectedData?.totalCount || 0,
+      badge: notifications["rejectedListingFee"],
     },
   ];
 

@@ -54,23 +54,23 @@ function ListingFee() {
   } = useDisclosure();
 
   //RTK Query
-  const { data: pendingData, isLoading: isPendingLoading } =
-    useGetAllListingFeeQuery({
-      Status: true,
-      ListingFeeStatus: "Under review",
-    });
+  // const { data: pendingData, isLoading: isPendingLoading } =
+  //   useGetAllListingFeeQuery({
+  //     Status: true,
+  //     ListingFeeStatus: "Under review",
+  //   });
 
-  const { data: approvedData, isLoading: isApprovedLoading } =
-    useGetAllListingFeeQuery({
-      Status: true,
-      ListingFeeStatus: "Approved",
-    });
+  // const { data: approvedData, isLoading: isApprovedLoading } =
+  //   useGetAllListingFeeQuery({
+  //     Status: true,
+  //     ListingFeeStatus: "Approved",
+  //   });
 
-  const { data: rejectedData, isLoading: isRejectedLoading } =
-    useGetAllListingFeeQuery({
-      Status: true,
-      ListingFeeStatus: "Rejected",
-    });
+  // const { data: rejectedData, isLoading: isRejectedLoading } =
+  //   useGetAllListingFeeQuery({
+  //     Status: true,
+  //     ListingFeeStatus: "Rejected",
+  //   });
 
   const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
     Search: search,
@@ -155,6 +155,8 @@ function ListingFee() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
+
+  console.log(data);
 
   return (
     <>

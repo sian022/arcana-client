@@ -51,6 +51,7 @@ import moment from "moment";
 import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
 import SuccessButton from "../../../components/SuccessButton";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
+import { notificationApi } from "../../../features/notification/api/notificationApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -225,6 +226,7 @@ function RegisterRegularForm({ open, onClose }) {
       onClose();
       handleResetForms();
       debounce(onRedirectListingFeeOpen(), 2000);
+      notificationApi.util.invalidateTags();
     } catch (error) {
       setIsAllApiLoading(false);
       if (error?.data?.error?.message) {

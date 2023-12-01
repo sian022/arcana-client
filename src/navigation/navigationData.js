@@ -147,6 +147,7 @@ export const navigationData = [
     path: "/customer-registration",
     name: "Customer Registration",
     icon: "AddBusiness",
+    notifications: ["rejectedClient", "rejectedListingFee"],
     sub: [
       {
         id: 1,
@@ -159,13 +160,14 @@ export const navigationData = [
         path: "/customer-registration/registration",
         name: "Registration",
         icon: "PersonAdd",
-        notification: "rejectedClient",
+        notifications: ["rejectedClient"],
       },
       {
         id: 3,
         path: "/customer-registration/listing-fee",
         name: "Listing Fee",
         icon: "Payment",
+        notifications: ["rejectedListingFee"],
       },
       // {
       //   id: 4,
@@ -186,27 +188,28 @@ export const navigationData = [
     path: "/approval",
     name: "Approval",
     icon: "Approval",
+    notifications: ["pendingClient", "pendingListingFee"],
     sub: [
       {
         id: 1,
         name: "Registration Approval",
         path: "/approval/registration-approval",
         icon: "HowToReg",
-        notification: "pendingClient",
+        notifications: ["pendingClient"],
       },
       {
         id: 2,
         name: "Sp. Discount Approval",
         path: "/approval/sp-discount-approval",
         icon: "LocalOffer",
-        // notification: "approvedgClient",
+        // notifications: "approvedgClient",
       },
       {
         id: 3,
         name: "Listing Fee Approval",
         path: "/approval/listing-fee-approval",
         icon: "Payment",
-        notification: "rejectedClient",
+        notifications: ["pendingListingFee"],
       },
       // {
       //   id: 4,

@@ -21,6 +21,7 @@ import CommonDialog from "../CommonDialog";
 import { requestListingFeeSchema } from "../../schema/schema";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import {
+  registrationApi,
   useGetAllClientsForListingFeeQuery,
   useGetAllClientsQuery,
 } from "../../features/registration/api/registrationApi";
@@ -100,11 +101,14 @@ function ListingFeeDrawer({
   });
 
   //RTK Query
-  const { data: clientData, isLoading: isClientLoading } =
-    useGetAllClientsForListingFeeQuery({
-      Status: true,
-      IncludeRejected: editMode ? editMode : "",
-    });
+  const {
+    data: clientData,
+    isLoading: isClientLoading,
+    refetch: refetchClients,
+  } = useGetAllClientsForListingFeeQuery({
+    Status: true,
+    IncludeRejected: editMode ? editMode : "",
+  });
   const { data: productData, isLoading: isProductLoading } =
     useGetAllProductsQuery({ Status: true });
 
@@ -159,12 +163,14 @@ function ListingFeeDrawer({
       dispatch(setSelectedRow(response?.data));
       handleDrawerClose();
       onSuccessOpen();
+      refetchClients();
     } catch (error) {
+      console.log(error);
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
       } else {
         setSnackbarMessage(
-          `Error ${editMod ? "updating" : "adding"} listing fee`
+          `Error ${editMode ? "updating" : "adding"} listing fee`
         );
       }
 
@@ -333,6 +339,13 @@ function ListingFeeDrawer({
               )}
               onChange={(_, value) => {
                 setValue(`customerName`, value?.ownersName);
+
+                remove();
+                append({
+                  itemId: null,
+                  sku: 1,
+                  unitCost: null,
+                });
                 return value;
               }}
             />
@@ -393,13 +406,33 @@ function ListingFeeDrawer({
                   options={productData?.items || []}
                   getOptionLabel={(option) => option.itemCode || ""}
                   getOptionDisabled={(option) => {
-                    const freebies = watch("listingItems");
-                    return freebies.some(
-                      (item) => item?.itemId?.itemCode === option.itemCode
+                    const listingFees = watch("listingItems");
+                    // const isListingFeeRepeating = listingFees.some(
+                    //   (item) => item?.itemId?.itemCode === option.itemCode
+                    // );
+
+                    const isListingFeeRepeating = Array.isArray(listingFees)
+                      ? listingFees.some(
+                          (item) => item?.itemId?.itemCode === option.itemCode
+                        )
+                      : false;
+
+                    const selectedClientData = watch("clientId");
+
+                    const isListingFeeRepeatingBackend =
+                      selectedClientData?.listingFees?.some((item) =>
+                        item?.listingItems?.some(
+                          (item) => item?.itemCode === option.itemCode
+                        )
+                      );
+
+                    return (
+                      isListingFeeRepeating || isListingFeeRepeatingBackend
                     );
                   }}
                   disableClearable
                   loading={isProductLoading}
+                  disabled={!watch("clientId")}
                   // isOptionEqualToValue={(option, value) => option.id === value.id}
                   isOptionEqualToValue={(option, value) => true}
                   renderInput={(params) => (
@@ -498,6 +531,7 @@ function ListingFeeDrawer({
                       ref={ref}
                       required
                       thousandSeparator=","
+                      disabled={!watch("clientId")}
                     />
                   )}
                 />

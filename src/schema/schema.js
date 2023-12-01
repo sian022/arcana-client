@@ -420,7 +420,6 @@ export const requestListingFeeSchema = {
         itemId: null,
         sku: 1,
         unitCost: null,
-        // quantity: null,
       },
     ],
   },

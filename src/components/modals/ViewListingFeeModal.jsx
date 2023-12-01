@@ -27,6 +27,7 @@ import {
 } from "../../features/listing-fee/api/listingFeeApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import SuccessButton from "../SuccessButton";
+import { notificationApi } from "../../features/notification/api/notificationApi";
 
 function ViewListingFeeModal({
   // setEditMode,
@@ -99,6 +100,7 @@ function ViewListingFeeModal({
       showSnackbar("Listing Fee approved successfully", "success");
       onApproveConfirmClose();
       onClose();
+      notificationApi.util.invalidateTags();
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -118,6 +120,7 @@ function ViewListingFeeModal({
       showSnackbar("Listing Fee rejected successfully", "success");
       handleRejectConfirmClose();
       onClose();
+      notificationApi.util.invalidateTags();
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");

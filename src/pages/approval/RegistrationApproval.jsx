@@ -135,6 +135,7 @@ function RegistrationApproval() {
     "clientApprovalHistories",
     "freebies",
     "modeOfPayments",
+    "updateHistories",
   ];
 
   //Misc Functions

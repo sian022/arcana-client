@@ -34,6 +34,7 @@ import {
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,
   usePutRegisterClientMutation,
+  usePutUpdateClientAttachmentsMutation,
   usePutUpdateClientInformationMutation,
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
@@ -63,6 +64,7 @@ import { coverageMapping } from "../../../utils/Constants";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
 import SuccessButton from "../../../components/SuccessButton";
+import { notificationApi } from "../../../features/notification/api/notificationApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -222,6 +224,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const [putUpdateClientInformation, { isLoading: isUpdateClientLoading }] =
     usePutUpdateClientInformationMutation();
+  const [
+    putUpdateClientAttachments,
+    { isLoading, isUpdateAttachmentsLoading },
+  ] = usePutUpdateClientAttachmentsMutation();
 
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
     useGetAllStoreTypesQuery({ Status: true });
@@ -293,6 +299,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       onClose();
       handleResetForms();
       debounce(onRedirectListingFeeOpen(), 2000);
+      notificationApi.util.invalidateTags();
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
       setIsAllApiLoading(false);
@@ -304,6 +311,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           "error"
         );
       }
+      console.log(error);
     }
   };
 
@@ -331,7 +339,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       };
     } else if (
       requirementsMode === "representative" &&
-      representativeRequirements["signature"]
+      representativeRequirements["signature"] &&
+      !(ownersRequirements["representative"] instanceof Blob)
     ) {
       const convertedSignature = new File(
         [base64ToBlob(representativeRequirements["signature"])],
@@ -360,11 +369,19 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       });
     }
 
-    await putAddAttachmentsForDirect({
-      // id: selectedRowData?.id,
-      id: clientId,
-      formData,
-    }).unwrap();
+    if (editMode) {
+      await putUpdateClientAttachments({
+        id: selectedRowData?.id,
+        // id: clientId,
+        formData,
+      }).unwrap();
+    } else {
+      await putAddAttachmentsForDirect({
+        // id: selectedRowData?.id,
+        id: clientId,
+        formData,
+      }).unwrap();
+    }
   };
 
   const handleDrawerClose = () => {

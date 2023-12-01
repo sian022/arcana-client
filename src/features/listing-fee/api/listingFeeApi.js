@@ -33,8 +33,8 @@ export const listingFeeApi = createApi({
         method: "GET",
       }),
       providesTags: ["Listing Fee"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
 
     putApproveListingFee: builder.mutation({

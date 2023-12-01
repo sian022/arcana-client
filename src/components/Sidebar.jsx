@@ -119,7 +119,7 @@ function Sidebar() {
 
                           <ListItemText>{item.name}</ListItemText>
 
-                          {item.notification && (
+                          {item.notifications && (
                             <Box
                               sx={{
                                 bgcolor: "notification.main",
@@ -132,8 +132,16 @@ function Sidebar() {
                                 color: "white !important",
                               }}
                             >
-                              {notifications[item.notification] > 0 &&
-                                notifications[item.notification]}
+                              {item?.notifications?.reduce(
+                                (sum, notification) =>
+                                  sum + parseInt(notifications[notification]),
+                                0
+                              ) > 0 &&
+                                item?.notifications?.reduce(
+                                  (sum, notification) =>
+                                    sum + parseInt(notifications[notification]),
+                                  0
+                                )}
                             </Box>
                           )}
                           {/* {sidebarToggled && (
@@ -172,7 +180,7 @@ function Sidebar() {
                               <ListItemText>{subItem.name}</ListItemText>
                             )} */}
                                 <ListItemText>{subItem.name}</ListItemText>
-                                {subItem.notification && (
+                                {/* {subItem.notification && (
                                   <Box
                                     sx={{
                                       bgcolor: "notification.main",
@@ -187,6 +195,33 @@ function Sidebar() {
                                   >
                                     {notifications[subItem.notification] > 0 &&
                                       notifications[subItem.notification]}
+                                  </Box>
+                                )} */}
+                                {subItem?.notifications && (
+                                  <Box
+                                    sx={{
+                                      bgcolor: "notification.main",
+                                      borderRadius: "50%",
+                                      width: "12%",
+                                      // height: "20px",
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      color: "white !important",
+                                    }}
+                                  >
+                                    {subItem?.notifications?.reduce(
+                                      (sum, notification) =>
+                                        sum +
+                                        parseInt(notifications[notification]),
+                                      0
+                                    ) > 0 &&
+                                      subItem?.notifications?.reduce(
+                                        (sum, notification) =>
+                                          sum +
+                                          parseInt(notifications[notification]),
+                                        0
+                                      )}
                                   </Box>
                                 )}
                               </ListItemButton>

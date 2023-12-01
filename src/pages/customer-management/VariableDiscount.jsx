@@ -244,7 +244,7 @@ function VariableDiscount() {
           error={errors?.minimumAmount}
           type="number"
           inputProps={{ min: 0 }}
-          disabled
+          disabled={data?.discount?.length > 0}
           // value={data?.discount[data?.discount?.length - 1]?.minimumAmount + 1}
         />
 

@@ -27,6 +27,7 @@ import useSnackbar from "../../../hooks/useSnackbar";
 import SuccessButton from "../../SuccessButton";
 import ListingFeeTab from "./ListingFeeTab";
 import FreebiesTab from "./FreebiesTab";
+import { notificationApi } from "../../../features/notification/api/notificationApi";
 
 function ViewRegistrationDetailsModal({
   approval,
@@ -153,6 +154,7 @@ function ViewRegistrationDetailsModal({
       showSnackbar("Client approved successfully", "success");
       onApproveConfirmClose();
       handleClose();
+      notificationApi.util.invalidateTags();
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -175,6 +177,7 @@ function ViewRegistrationDetailsModal({
         reason,
       }).unwrap();
       showSnackbar("Client rejected successfully", "success");
+      notificationApi.util.invalidateTags();
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");

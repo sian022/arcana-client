@@ -78,7 +78,6 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
     defaultValues: priceChangeSchema.defaultValues,
   });
 
-  console.log(getValues());
   //RTK Query
 
   //Drawer Functions

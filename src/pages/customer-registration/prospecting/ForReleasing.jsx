@@ -39,6 +39,7 @@ import CancelFreebiesModal from "../../../components/modals/CancelFreebiesModal"
 import SecondaryButton from "../../../components/SecondaryButton";
 import AccentButton from "../../../components/AccentButton";
 import SuccessButton from "../../../components/SuccessButton";
+import { notificationApi } from "../../../features/notification/api/notificationApi";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -216,6 +217,7 @@ function ForReleasing() {
 
       reset();
       onSuccessOpen();
+      notificationApi.util.invalidateTags();
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
@@ -237,6 +239,7 @@ function ForReleasing() {
         `Prospect ${status ? "archived" : "restored"} successfully`
       );
       onSuccessOpen();
+      notificationApi.util.invalidateTags();
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);

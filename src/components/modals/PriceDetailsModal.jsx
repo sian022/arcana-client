@@ -24,16 +24,19 @@ import {
   EventNote,
   HowToReg,
 } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import TertiaryButton from "../TertiaryButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useDeletePriceChangeMutation } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
+import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 
-function PriceDetailsModal({ ...otherProps }) {
+function PriceDetailsModal({ data, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
+
+  const dispatch = useDispatch();
 
   const [manageMode, setManageMode] = useState(false);
   const [futurePriceIndex, setFuturePriceIndex] = useState(0);
@@ -58,6 +61,8 @@ function PriceDetailsModal({ ...otherProps }) {
     onClose();
   };
 
+  console.log(selectedRowData);
+
   const onArchiveSubmit = async () => {
     try {
       await deletePriceChange(
@@ -65,6 +70,9 @@ function PriceDetailsModal({ ...otherProps }) {
       );
       // dispatch(setSelectedRow());
       showSnackbar("Price change successfully deleted!", "success");
+      dispatch(
+        setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
+      );
       onArchiveClose();
     } catch (error) {
       if (error?.data?.error?.message) {
@@ -116,7 +124,10 @@ function PriceDetailsModal({ ...otherProps }) {
                 <Box>
                   <TextField
                     size="small"
-                    value={selectedRowData?.latestPriceChange?.price || ""}
+                    value={
+                      selectedRowData?.latestPriceChange?.price?.toLocaleString() ||
+                      ""
+                    }
                     readOnly
                     sx={{ pointerEvents: "none" }}
                     InputProps={{
@@ -146,7 +157,7 @@ function PriceDetailsModal({ ...otherProps }) {
                     value={
                       moment(
                         selectedRowData?.latestPriceChange?.effectivityDate
-                      ).format("MMMM DD") || ""
+                      ).format("MMMM D") || ""
                     }
                     sx={{ pointerEvents: "none" }}
                   />
@@ -178,7 +189,7 @@ function PriceDetailsModal({ ...otherProps }) {
                           <Step expanded>
                             <StepLabel sx={{ position: "relative" }}>
                               <span style={{ fontWeight: "600" }}>
-                                ₱ {item.price}
+                                ₱ {item.price?.toLocaleString()}
                               </span>
                               {manageMode && (
                                 <IconButton
@@ -234,7 +245,7 @@ function PriceDetailsModal({ ...otherProps }) {
                               StepIconProps={{ icon: "" }}
                             >
                               <span style={{ fontWeight: "600" }}>
-                                ₱ {item.price}
+                                ₱ {item.price?.toLocaleString()}
                               </span>
                             </StepLabel>
                             <StepContent>
@@ -270,7 +281,10 @@ function PriceDetailsModal({ ...otherProps }) {
       >
         Are you sure you want to archive price change of <br />
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          ₱ {selectedRowData?.futurePriceChanges?.[futurePriceIndex]?.price}
+          ₱{" "}
+          {selectedRowData?.futurePriceChanges?.[
+            futurePriceIndex
+          ]?.price?.toLocaleString()}
         </span>
         ?
       </CommonDialog>
