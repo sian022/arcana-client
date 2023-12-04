@@ -1,18 +1,102 @@
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import CommonPageIndex from "../../components/CommonPageIndex";
+import { ArrowCircleRight } from "@mui/icons-material";
+import { Box, Typography } from "@mui/material";
 
 function Setup() {
-  return <CommonPageIndex pathname="/product-setup" title="Product Setup" />;
-  // const location = useLocation()
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // if (location.pathname === "/setup") {
-  //   return (
-  //     <div>Setup</div>
-  //   )
-  // }
+  if (location.pathname === "/product-setup") {
+    return (
+      <Box className="pageIndex">
+        <Box className="pageIndex__banner">
+          <Typography className="pageIndex__banner__title">
+            Product Setup
+          </Typography>
+        </Box>
 
-  // return <Outlet />
+        <Box className="pageIndex__navigators">
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("products")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Products
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and product items and their price change
+              </Typography>
+            </Box>
+            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+          </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("product-category")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Product Category
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and create product category
+              </Typography>
+            </Box>
+            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+          </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("product-sub-category")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Product Sub Category
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and create product sub category
+              </Typography>
+            </Box>
+            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+          </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("meat-type")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Meat Type
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and create meat types
+              </Typography>
+            </Box>
+            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+          </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("uom")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Unit of Measurements
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and create unit of measurements
+              </Typography>
+            </Box>
+            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+          </Box>
+        </Box>
+      </Box>
+    );
+  }
+  return <Outlet />;
 }
 
 export default Setup;

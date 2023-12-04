@@ -1,23 +1,72 @@
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import CommonPageIndex from "../../components/CommonPageIndex";
+import { Box, Typography } from "@mui/material";
+import { ArrowCircleRight } from "@mui/icons-material";
 
 function CustomerManagement() {
-  return (
-    <CommonPageIndex
-      pathname="/customer-management"
-      title="Customer Management"
-    />
-  );
-  // const location = useLocation()
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // if (location.pathname === "/discount") {
-  //   return (
-  //     <div>Customer Management</div>
-  //   )
-  // }
+  if (location.pathname === "/customer-management") {
+    return (
+      <Box className="pageIndex">
+        <Box className="pageIndex__banner">
+          <Typography className="pageIndex__banner__title">
+            Customer Management
+          </Typography>
+        </Box>
 
-  // return <Outlet />
+        <Box className="pageIndex__navigators">
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("business-type")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Business Type
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and create business type
+              </Typography>
+            </Box>
+            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+          </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("variable-discount")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Variable Discount
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage variable discount amount and percentage ranges
+              </Typography>
+            </Box>
+            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+          </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("term-days")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Term Days
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and create term days
+              </Typography>
+            </Box>
+            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+          </Box>
+        </Box>
+      </Box>
+    );
+  }
+  return <Outlet />;
 }
 
 export default CustomerManagement;
