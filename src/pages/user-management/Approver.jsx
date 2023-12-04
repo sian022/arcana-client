@@ -273,7 +273,7 @@ function Approver() {
 
   // console.log("Approvers: ", data);
   // console.log("Selected Row: ", selectedRowData);
-  console.log("Hook Form: ", getValues());
+  // console.log("Hook Form: ", getValues());
 
   return (
     <Box className="commonPageLayout">
@@ -331,12 +331,11 @@ function Approver() {
           control={control}
           options={approvalItem?.sub || []}
           getOptionLabel={(option) => option.name || ""}
-          // getOptionDisabled={(option) => {
-          //   const approvers = watch("approvers");
-          //   return approvers.some(
-          //     (item) => item?.userId?.userId === option.userId
-          //   );
-          // }}
+          getOptionDisabled={(option) => {
+            return approversPerModuleData.some(
+              (item) => item?.moduleName === option.name
+            );
+          }}
           disableClearable
           loading={isLoading}
           isOptionEqualToValue={(option, value) => true}
