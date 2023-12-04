@@ -51,6 +51,28 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     }
   };
 
+  const combinedHistories = [
+    ...(selectedRowData?.clientApprovalHistories || []),
+    ...(selectedRowData?.updateHistories || []),
+  ];
+
+  const combinedListingFeeHistories = [
+    ...(selectedRowData?.listingFeeApprovalHistories || []),
+    ...(selectedRowData?.updateHistories || []),
+  ];
+
+  combinedHistories.sort(
+    (a, b) =>
+      new Date(b.createdAt || b.updatedAt) -
+      new Date(a.createdAt || a.updatedAt)
+  );
+
+  combinedListingFeeHistories.sort(
+    (a, b) =>
+      new Date(b.createdAt || b.updatedAt) -
+      new Date(a.createdAt || a.updatedAt)
+  );
+
   return (
     <CommonModal width="650px" {...otherProps}>
       <Box className="approvalHistoryModal">
@@ -105,9 +127,71 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
               ))}
             </Stepper>
           </Box>
+
           <Box className="approvalHistoryModal__content__body">
             <Stepper orientation="vertical">
               {variant === "registration" &&
+                combinedHistories.map((history, index) => (
+                  <Step key={index} active expanded>
+                    <StepLabel
+                      StepIconComponent={() =>
+                        history?.status === "Rejected" ? (
+                          <Cancel sx={{ color: "error.main" }} />
+                        ) : history?.status === "Approved" ? (
+                          <CheckCircle sx={{ color: "success.main" }} />
+                        ) : (
+                          // <Circle sx={{ color: "gray" }} />
+                          <Circle sx={{ color: "primary.main" }} />
+                        )
+                      }
+                      sx={{ position: "relative" }}
+                    >
+                      <span
+                        style={{
+                          position: "absolute",
+                          left: "-170px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {moment(
+                          history?.createdAt || history?.updatedAt
+                        ).format("MMMM D HH:mm a")}
+                      </span>
+                      <span
+                        style={{
+                          fontWeight: "700",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {!history?.status
+                          ? "Rerequested"
+                          : `${history?.status} - ${formatOrdinalPrefix(
+                              history?.level
+                            )} Approval`}
+                      </span>
+                    </StepLabel>
+
+                    {!!history?.createdAt && (
+                      <StepContent>
+                        <Typography fontSize="14px">
+                          Name:{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {history?.approver}
+                          </span>
+                        </Typography>
+                        {history?.reason && (
+                          <Typography fontSize="14px">
+                            Remarks:{" "}
+                            <span style={{ fontWeight: "500" }}>
+                              {history?.reason}
+                            </span>
+                          </Typography>
+                        )}
+                      </StepContent>
+                    )}
+                  </Step>
+                ))}
+              {/* {variant === "registration" &&
                 selectedRowData?.clientApprovalHistories?.map(
                   (approval, index) => (
                     <Step key={index} active expanded>
@@ -132,7 +216,13 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         >
                           {moment(approval?.createdAt).format("MMMM D HH:mm a")}
                         </span>
-                        <span style={{ fontWeight: "600" }}>
+
+                        <span
+                          style={{
+                            fontWeight: "700",
+                            textTransform: "uppercase",
+                          }}
+                        >
                           {approval?.status} -{" "}
                           {formatOrdinalPrefix(approval?.level)} Approval
                         </span>
@@ -157,7 +247,93 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                   )
                 )}
 
+              {variant === "registration" &&
+                selectedRowData?.updateHistories?.map((update, index) => (
+                  <Step key={index} active expanded>
+                    <StepLabel sx={{ position: "relative" }}>
+                      <span
+                        style={{
+                          position: "absolute",
+                          left: "-170px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {moment(update?.updatedAt).format("MMMM D HH:mm a")}
+                      </span>
+                      <span
+                        style={{
+                          fontWeight: "700",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Rerequested
+                      </span>
+                    </StepLabel>
+                  </Step>
+                ))} */}
+
               {variant === "listingFee" &&
+                combinedListingFeeHistories.map((history, index) => (
+                  <Step key={index} active expanded>
+                    <StepLabel
+                      StepIconComponent={() =>
+                        history?.status === "Rejected" ? (
+                          <Cancel sx={{ color: "error.main" }} />
+                        ) : history?.status === "Approved" ? (
+                          <CheckCircle sx={{ color: "success.main" }} />
+                        ) : (
+                          // <Circle sx={{ color: "gray" }} />
+                          <Circle sx={{ color: "primary.main" }} />
+                        )
+                      }
+                      sx={{ position: "relative" }}
+                    >
+                      <span
+                        style={{
+                          position: "absolute",
+                          left: "-170px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {moment(
+                          history?.createdAt || history?.updatedAt
+                        ).format("MMMM D HH:mm a")}
+                      </span>
+                      <span
+                        style={{
+                          fontWeight: "700",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {!history?.status
+                          ? "Rerequested"
+                          : `${history?.status} - ${formatOrdinalPrefix(
+                              history?.level
+                            )} Approval`}
+                      </span>
+                    </StepLabel>
+
+                    {!!history?.createdAt && (
+                      <StepContent>
+                        <Typography fontSize="14px">
+                          Name:{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {history?.approver}
+                          </span>
+                        </Typography>
+                        {history?.reason && (
+                          <Typography fontSize="14px">
+                            Remarks:{" "}
+                            <span style={{ fontWeight: "500" }}>
+                              {history?.reason}
+                            </span>
+                          </Typography>
+                        )}
+                      </StepContent>
+                    )}
+                  </Step>
+                ))}
+              {/* {variant === "listingFee" &&
                 selectedRowData?.listingFeeApprovalHistories?.map(
                   (approval, index) => (
                     <Step key={index} active expanded>
@@ -206,108 +382,32 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     </Step>
                   )
                 )}
+              {variant === "listingFee" &&
+                selectedRowData?.updateHistories?.map((update, index) => (
+                  <Step key={index} active expanded>
+                    <StepLabel sx={{ position: "relative" }}>
+                      <span
+                        style={{
+                          position: "absolute",
+                          left: "-170px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {moment(update?.updatedAt).format("MMMM D HH:mm a")}
+                      </span>
+                      <span
+                        style={{
+                          fontWeight: "700",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Rerequested
+                      </span>
+                    </StepLabel>
+                  </Step>
+                ))} */}
             </Stepper>
           </Box>
-          {/* <Box className="approvalHistoryModal__content__body">
-            <Box className="approvalHistoryModal__content__body__item">
-              <Typography className="approvalHistoryModal__content__body__item__title">
-                Registration
-              </Typography>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Name:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Department:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Position:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box className="approvalHistoryModal__content__body__item">
-              <Typography className="approvalHistoryModal__content__body__item__title">
-                Registration
-              </Typography>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Name:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Department:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Position:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box className="approvalHistoryModal__content__body__item">
-              <Typography className="approvalHistoryModal__content__body__item__title">
-                Registration
-              </Typography>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Name:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Department:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-
-              <Box className="approvalHistoryModal__content__body__item__subs">
-                <Typography className="approvalHistoryModal__content__body__item__subs__label">
-                  Position:
-                </Typography>
-                <Typography className="approvalHistoryModal__content__body__item__subs__value">
-                  Sian Dela Cruz
-                </Typography>
-              </Box>
-            </Box>
-          </Box> */}
         </Box>
       </Box>
       {/* <Box className="approvalHistoryModal__actions">

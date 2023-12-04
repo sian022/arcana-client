@@ -6,6 +6,7 @@ import {
   MenuItem,
   Autocomplete,
   TextField,
+  Divider,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import "../assets/styles/navbar.styles.scss";
@@ -65,6 +66,8 @@ function Header() {
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
   );
+
+  const fullName = useSelector((state) => state.login.fullname);
 
   const {
     isOpen: isMenuOpen,
@@ -217,6 +220,18 @@ function Header() {
         onClose={onMenuClose}
         anchorEl={anchorRef.current}
       >
+        <MenuItem
+          sx={{
+            pointerEvents: "none",
+            // maxWidth: "250px",
+            width: "220px",
+            whiteSpace: "pre-wrap",
+            textAlign: "center",
+          }}
+        >
+          {fullName}
+        </MenuItem>
+        <Divider variant="middle" />
         <MenuItem
           className="actionsMenuItem"
           onClick={() => handleActions("changePassword")}

@@ -28,6 +28,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
+  usePostValidateClientMutation,
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,
   usePutRegisterClientMutation,
@@ -203,6 +204,9 @@ function RegisterRegularForm({ open, onClose }) {
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
 
+  const [postValidateClient, { isLoading: isValidateClientLoading }] =
+    usePostValidateClientMutation();
+
   //Drawer Functions
   const onSubmit = async (data) => {
     const transformedData = {
@@ -364,9 +368,24 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   //Misc Functions
-  const handleNext = () => {
+  const handleNext = async () => {
     if (activeTab === "Personal Info") {
       setActiveTab("Terms and Conditions");
+
+      try {
+        await postValidateClient({
+          businessName: watch("businessName"),
+          fullName: watch("ownersName"),
+          businessTypeId: watch("storeTypeId")?.id,
+        }).unwrap();
+      } catch (error) {
+        if (error?.data?.error?.message) {
+          showSnackbar(error?.data?.error?.message, "error");
+        } else {
+          showSnackbar("Client already exists", "error");
+        }
+        return;
+      }
     } else if (activeTab === "Terms and Conditions") {
       setActiveTab("Attachments");
     }
@@ -1005,7 +1024,13 @@ function RegisterRegularForm({ open, onClose }) {
           )}
           {activeTab !== "Attachments" && (
             <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
-              Next
+              {isValidateClientLoading ? (
+                <>
+                  <CircularProgress size="20px" />
+                </>
+              ) : (
+                "Next"
+              )}
             </SuccessButton>
           )}
           {activeTab === "Attachments" && (

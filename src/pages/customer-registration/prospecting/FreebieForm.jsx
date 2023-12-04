@@ -46,7 +46,7 @@ function FreebieForm({
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const clientId = selectedRowData?.id || selectedRowData?.clientId;
   const freebiesDirect = useSelector(
-    (state) => state.regularRegistration.value.freebies
+    (state) => state.regularRegistration.value.directFreebie.freebies
   );
   const dispatch = useDispatch();
 
@@ -231,6 +231,7 @@ function FreebieForm({
     return false;
   }
 
+  console.log(freebiesDirect);
   //UseEffects
   useEffect(() => {
     if (!direct) {
@@ -272,13 +273,13 @@ function FreebieForm({
     }
   }, [isFreebieFormOpen]);
 
-  useEffect(() => {
-    if (direct) {
-      // const freebiesValue = getValues("freebies");
-      const freebiesValue = watch("freebies");
-      dispatch(setFreebies([...freebiesValue]));
-    }
-  }, [watch("freebies")]);
+  // useEffect(() => {
+  //   if (direct) {
+  //     // const freebiesValue = getValues("freebies");
+  //     // const freebiesValue = watch("freebies");
+  //     // dispatch(setFreebies([...freebiesValue]));
+  //   }
+  // }, [watch("freebies")]);
 
   return (
     <>
@@ -439,6 +440,8 @@ function FreebieForm({
               sx={{ width: "160px" }}
               onClick={() => {
                 // dispatch(setSelectedRow(...selectedRowData, freebies: {}))
+                // const freebiesValue = watch("freebies");
+                dispatch(setFreebies(watch("freebies")));
                 onFreebieReleaseOpen();
               }}
               disabled={

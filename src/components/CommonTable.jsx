@@ -52,6 +52,7 @@ function CommonTable({
   pesoArray,
   viewMoreKey,
   onViewMoreClick,
+  disableActions,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -208,6 +209,7 @@ function CommonTable({
                         onPrintFreebies={onPrintFreebies && onPrintFreebies}
                         item={item}
                         status={status}
+                        disableActions={disableActions}
                       />
                     </TableCell>
                   )}

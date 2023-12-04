@@ -55,7 +55,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
   const fileUploadRef = useRef();
 
   const freebiesDirect = useSelector(
-    (state) => state.regularRegistration.value.freebies
+    (state) => state.regularRegistration.value.directFreebie.freebies
   );
 
   const dispatch = useDispatch();
@@ -154,8 +154,8 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
   };
 
   const handleReleaseSave = () => {
-    setPhotoProofDirect(photoProof);
-    setSignatureDirect(signature);
+    // setPhotoProofDirect(photoProof);
+    // setSignatureDirect(signature);
 
     onClose();
     onConfirmClose();
@@ -180,7 +180,11 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
         type: "image/jpeg",
       });
 
-      setPhotoProof(renamedFile);
+      if (direct) {
+        setPhotoProofDirect(renamedFile);
+      } else {
+        setPhotoProof(renamedFile);
+      }
     }
     // setPhotoProof(file);
   };
@@ -286,7 +290,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                   freebiesDirect?.map((item, i) => (
                     <TableRow key={i}>
                       <TableCell>{item.quantity}</TableCell>
-                      <TableCell>{item.itemCode}</TableCell>
+                      <TableCell>{item.itemId?.itemCode}</TableCell>
                       <TableCell>{item.itemDescription}</TableCell>
                       <TableCell>{item.uom}</TableCell>
                     </TableRow>
@@ -315,7 +319,77 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                   <span>Received by:</span>
                 </Typography>
                 <Box className="releaseFreebieModal__footer__attachments__signature__stack">
-                  {signature ? (
+                  {direct ? (
+                    signatureDirect ? (
+                      <>
+                        <Box
+                          sx={{
+                            width: "100px",
+                            display: "flex",
+                            justifyContent: "center",
+                            position: "absolute",
+                            top: -20,
+                          }}
+                        >
+                          <img
+                            src={signatureDirect}
+                            width="70px"
+                            onClick={onCanvasOpen}
+                          />
+                        </Box>
+                        <Typography sx={{ maxWidth: "180px" }} minWidth="100px">
+                          {selectedRowData?.ownersName}
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <SecondaryButton
+                          sx={{ minWidth: "130px" }}
+                          onClick={onCanvasOpen}
+                        >
+                          Sign here
+                        </SecondaryButton>
+                        <Typography sx={{ fontSize: "0.8rem" }}>
+                          Received the above <br /> items in good condition
+                        </Typography>
+                      </>
+                    )
+                  ) : signature ? (
+                    <>
+                      <Box
+                        sx={{
+                          width: "100px",
+                          display: "flex",
+                          justifyContent: "center",
+                          position: "absolute",
+                          top: -20,
+                        }}
+                      >
+                        <img
+                          src={signature}
+                          width="70px"
+                          onClick={onCanvasOpen}
+                        />
+                      </Box>
+                      <Typography sx={{ maxWidth: "180px" }} minWidth="100px">
+                        {selectedRowData?.ownersName}
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      <SecondaryButton
+                        sx={{ minWidth: "130px" }}
+                        onClick={onCanvasOpen}
+                      >
+                        Sign here
+                      </SecondaryButton>
+                      <Typography sx={{ fontSize: "0.8rem" }}>
+                        Received the above <br /> items in good condition
+                      </Typography>
+                    </>
+                  )}
+
+                  {/* {signature ? (
                     <>
                       <Box
                         sx={{
@@ -333,7 +407,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                           onClick={onCanvasOpen}
                         />
                       </Box>
-                      <Typography sx={{ maxWidth: "180px" }}>
+                      <Typography sx={{ maxWidth: "180px" }} minWidth="100px">
                         {selectedRowData?.ownersName}
                       </Typography>
                     </>
@@ -349,7 +423,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                         Received the above <br /> items in good condition
                       </Typography>
                     </>
-                  )}
+                  )} */}
                 </Box>
               </Box>
               <Box className="releaseFreebieModal__footer__attachments__photo">
@@ -385,7 +459,12 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
 
                 <IconButton
                   title="Upload photo"
-                  className={photoProof && "filled"}
+                  className={
+                    (direct && photoProofDirect) || (!direct && photoProof)
+                      ? "filled"
+                      : ""
+                  }
+                  // className={photoProof && "filled"}
                   onClick={() => {
                     fileUploadRef.current.click();
                   }}
@@ -408,7 +487,11 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
           {/* <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton> */}
           <SuccessButton
             onClick={onConfirmOpen}
-            disabled={!signature || !photoProof}
+            disabled={
+              direct
+                ? !signatureDirect || !photoProofDirect
+                : !signature || !photoProof
+            }
           >
             {direct ? "Save" : "Release"}
           </SuccessButton>
@@ -418,8 +501,10 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
       <SignatureCanvasModal
         open={isCanvasOpen}
         onClose={onCanvasClose}
-        signature={signature}
-        setSignature={setSignature}
+        // signature={signature}
+        signature={direct ? signatureDirect : signature}
+        // setSignature={setSignature}
+        setSignature={direct ? setSignatureDirect : setSignature}
       />
 
       <ViewPhotoModal

@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
@@ -10,6 +10,62 @@ function CommonPageIndex({ pathname, title }) {
       <Box className="pageIndex">
         <Box className="pageIndex__banner">
           <Typography className="pageIndex__banner__title">{title}</Typography>
+        </Box>
+
+        <Box className="pageIndex__navigators">
+          <Box className="pageIndex__navigators__item">
+            <Typography className="pageIndex__navigators__item__title">
+              User Account
+            </Typography>
+            <Typography className="pageIndex__navigators__item__subTitle">
+              Manage user accounts
+            </Typography>
+          </Box>
+
+          <Box className="pageIndex__navigators__item">
+            <Typography className="pageIndex__navigators__item__title">
+              User Account
+            </Typography>
+            <Typography className="pageIndex__navigators__item__subTitle">
+              Manage user accounts
+            </Typography>
+          </Box>
+
+          <Box className="pageIndex__navigators__item">
+            <Typography className="pageIndex__navigators__item__title">
+              User Account
+            </Typography>
+            <Typography className="pageIndex__navigators__item__subTitle">
+              Manage user accounts
+            </Typography>
+          </Box>
+
+          <Box className="pageIndex__navigators__item">
+            <Typography className="pageIndex__navigators__item__title">
+              User Account
+            </Typography>
+            <Typography className="pageIndex__navigators__item__subTitle">
+              Manage user accounts
+            </Typography>
+          </Box>
+
+          <Box className="pageIndex__navigators__item">
+            <Typography className="pageIndex__navigators__item__title">
+              User Account
+            </Typography>
+            <Typography className="pageIndex__navigators__item__subTitle">
+              Manage user accounts
+            </Typography>
+          </Box>
+
+          <Box className="pageIndex__navigators__item">
+            <Typography className="pageIndex__navigators__item__title">
+              User Account
+            </Typography>
+            <Typography className="pageIndex__navigators__item__subTitle">
+              Manage user accounts
+            </Typography>
+          </Box>
         </Box>
 
         {/* <Box sx={{ display: "flex" }}>

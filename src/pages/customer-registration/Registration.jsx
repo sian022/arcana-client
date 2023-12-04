@@ -170,6 +170,7 @@ function DirectRegistration() {
     "freebies",
     "modeOfPayments",
     "updateHistories",
+    "listingFees",
   ];
 
   const tableHeads = [
@@ -180,6 +181,8 @@ function DirectRegistration() {
     "Business Type",
     "Requested By",
   ];
+
+  const disableActions = ["printFreebies"];
 
   const handleEditOpen = () => {
     setEditMode(true);
@@ -271,6 +274,11 @@ function DirectRegistration() {
             // onArchive={onArchiveOpen}
             onVoid={onVoidOpen}
             onPrintFreebies={onPrintOpen}
+            disableActions={
+              (!selectedRowData?.freebies ||
+                selectedRowData?.freebies?.length === 0) &&
+              disableActions
+            }
           />
         )}
       </Box>

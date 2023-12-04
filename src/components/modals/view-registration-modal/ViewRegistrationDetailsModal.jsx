@@ -28,6 +28,7 @@ import SuccessButton from "../../SuccessButton";
 import ListingFeeTab from "./ListingFeeTab";
 import FreebiesTab from "./FreebiesTab";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
+import { listingFeeApi } from "../../../features/listing-fee/api/listingFeeApi";
 
 function ViewRegistrationDetailsModal({
   approval,
@@ -180,6 +181,7 @@ function ViewRegistrationDetailsModal({
       }).unwrap();
       showSnackbar("Client rejected successfully", "success");
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
+      dispatch(listingFeeApi.util.invalidateTags(["Listing Fee"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");

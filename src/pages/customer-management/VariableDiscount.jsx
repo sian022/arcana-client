@@ -65,6 +65,8 @@ function VariableDiscount() {
     "updateAt",
     "modifiedBy",
     "isActive",
+    "totalActives",
+    "currentAmount",
   ];
 
   const pesoArray = ["minimumAmount", "maximumAmount"];
@@ -192,7 +194,8 @@ function VariableDiscount() {
     if (isDrawerOpen && drawerMode === "add") {
       setValue(
         "minimumAmount",
-        data?.discount[data?.discount?.length - 1]?.maximumAmount + 0.000001
+        // data?.discount[data?.discount?.length - 1]?.maximumAmount + 0.000001
+        Math.ceil(data?.discount[data?.discount?.length - 1]?.maximumAmount)
       );
     }
   }, [isDrawerOpen]);
@@ -254,7 +257,7 @@ function VariableDiscount() {
               ref={ref}
               required
               thousandSeparator=","
-              disabled={data?.discount?.length > 0}
+              disabled={data?.discount?.length > 0 && drawerMode === "add"}
             />
           )}
         />

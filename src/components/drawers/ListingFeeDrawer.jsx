@@ -46,6 +46,8 @@ function ListingFeeDrawer({
 
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
+  const [isClientChangeConfirmed, setIsClientChangeConfirmed] = useState(false);
+  const [confirmationValue, setConfirmationValue] = useState(null);
 
   const [parent] = useAutoAnimate();
 
@@ -239,6 +241,19 @@ function ListingFeeDrawer({
     // onClientConfirmationOpen();
   };
 
+  const resetListingFee = (clientId) => {
+    remove();
+    append({
+      itemId: null,
+      sku: 1,
+      unitCost: null,
+    });
+
+    setValue("clientId", clientId);
+    setValue(`customerName`, clientId.ownersName);
+    onClientConfirmationClose();
+  };
+
   //UseEffects
   // useEffect(() => {
   //   setValue("clientId", clientId);
@@ -341,30 +356,10 @@ function ListingFeeDrawer({
                 />
               )}
               onChange={(_, value) => {
-                setValue(`customerName`, value?.ownersName);
-                // handleConfirmation(value);
-                // remove();
-                // append({
-                //   itemId: null,
-                //   sku: 1,
-                //   unitCost: null,
-                // });
-                // return value;
-
-                if (watch("clientId")) {
-                  const confirm = window.confirm(
-                    "Are you sure you want to confirm?"
-                  );
-
-                  if (confirm && watch("clientId")) {
-                    remove();
-                    append({
-                      itemId: null,
-                      sku: 1,
-                      unitCost: null,
-                    });
-                    return value;
-                  }
+                if (watch("clientId") && watch("listingItems")[0]?.itemId) {
+                  onClientConfirmationOpen();
+                  setConfirmationValue(value);
+                  return watch("clientId");
                 } else {
                   return value;
                 }
@@ -658,16 +653,12 @@ function ListingFeeDrawer({
       <CommonDialog
         open={isClientConfirmationOpen}
         onClose={onClientConfirmationClose}
-        onYes={true}
+        onYes={() => resetListingFee(confirmationValue)}
       >
-        Are you sure you want to confirm {editMode ? "update" : "adding"} of
-        listing fee for{" "}
+        Are you sure you want to change client?
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {watch("clientId.businessName")
-            ? watch("clientId.businessName")
-            : "client"}
+          (FREEBIES WILL BE RESET)
         </span>
-        ?
       </CommonDialog>
 
       <SuccessSnackbar

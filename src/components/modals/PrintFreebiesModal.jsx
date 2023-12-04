@@ -186,7 +186,7 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                         ?.transactionNumber || "N/A"}
                     </Typography>
                     <Typography>
-                      <span>Date:</span> {moment().format("MMM DD, YYYY")}
+                      <span>Date:</span> {moment().format("MMM D, YYYY")}
                     </Typography>
                   </Box>
                 </Box>

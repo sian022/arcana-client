@@ -31,7 +31,7 @@ function PersonalInfoTab() {
               Birthday:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              {moment(selectedRowData?.dateOfBirth).format("MMMM DD, YYYY")}
+              {moment(selectedRowData?.dateOfBirth).format("MMMM D, YYYY")}
             </Typography>
           </Box>
 

@@ -224,6 +224,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  gap: 40px;
 
   &__banner {
     background: linear-gradient(to right, #544d91, #243448);
@@ -234,6 +235,28 @@
       color: white;
       font-weight: bold;
       font-size: 30px;
+    }
+  }
+
+  &__navigators {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+
+    &__item {
+      background-color: $secondary;
+      border-radius: 20px;
+      padding: 20px;
+
+      & &__title {
+        font-size: 20px;
+        font-weight: 600;
+        color: white;
+      }
+
+      & &__subTitle {
+        color: #cccccc;
+      }
     }
   }
 }

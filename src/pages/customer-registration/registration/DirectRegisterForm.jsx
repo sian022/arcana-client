@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   IconButton,
   InputAdornment,
   TextField,
@@ -30,10 +31,12 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
   usePostDirectRegistrationMutation,
+  usePostValidateClientMutation,
   usePutAddAttachmentsForDirectMutation,
   usePutAddAttachmentsMutation,
   usePutAddTermsAndCondtionsMutation,
   usePutRegisterClientMutation,
+  usePutReleaseFreebiesMutation,
   usePutUpdateClientAttachmentsMutation,
   usePutUpdateClientInformationMutation,
 } from "../../../features/registration/api/registrationApi";
@@ -66,6 +69,7 @@ import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
+import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -93,6 +97,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const { ownersRequirements, representativeRequirements, requirementsMode } =
     useContext(AttachmentsContext);
+
+  const {
+    signatureDirect,
+    photoProofDirect,
+    setSignatureDirect,
+    setPhotoProofDirect,
+  } = useContext(DirectReleaseContext);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const termsAndConditions = useSelector(
@@ -241,7 +252,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       disabled: false,
     },
   ];
-  navigators[1].disabled = !navigators[0].isValid;
+  // navigators[1].disabled = !navigators[0].isValid;
+  navigators[1].disabled = true;
   navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
 
   //RTK Query
@@ -258,10 +270,16 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     { isLoading, isUpdateAttachmentsLoading },
   ] = usePutUpdateClientAttachmentsMutation();
 
+  const [putReleaseFreebies, { isLoading: isReleaseFreebiesLoading }] =
+    usePutReleaseFreebiesMutation();
+
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
     useGetAllStoreTypesQuery({ Status: true });
   const { data: termDaysData, isLoading: isTermDaysLoading } =
     useGetAllTermDaysQuery({ Status: true });
+
+  const [postValidateClient, { isLoading: isValidateClientLoading }] =
+    usePostValidateClientMutation();
 
   //Drawer Functions
   const onSubmit = async (data) => {
@@ -315,6 +333,27 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         }).unwrap();
 
         await addAttachmentsSubmit(response?.value?.id);
+      }
+
+      if (freebiesDirect && signatureDirect && photoProofDirect) {
+        const signatureFile = new File(
+          [base64ToBlob(signatureDirect)],
+          `signature_${Date.now()}.jpg`,
+          { type: "image/jpeg" }
+        );
+
+        const formData = new FormData();
+        formData.append("PhotoProof", photoProofDirect);
+        formData.append("ESignature", signatureFile);
+
+        await putReleaseFreebies({
+          id: response?.value?.id,
+          body: formData,
+        }).unwrap();
+
+        setPhotoProofDirect(null);
+        setSignatureDirect(null);
+        dispatch(resetFreebies());
       }
 
       setIsAllApiLoading(false);
@@ -518,8 +557,23 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   );
 
   //Misc Functions
-  const handleNext = () => {
+  const handleNext = async () => {
     if (activeTab === "Personal Info") {
+      try {
+        await postValidateClient({
+          businessName: watch("businessName"),
+          fullName: watch("ownersName"),
+          businessTypeId: watch("storeTypeId")?.id,
+        }).unwrap();
+      } catch (error) {
+        if (error?.data?.error?.message) {
+          showSnackbar(error?.data?.error?.message, "error");
+        } else {
+          showSnackbar("Client already exists", "error");
+        }
+        return;
+      }
+
       setActiveTab("Terms and Conditions");
       // dispatch(setSelectedRow(getValues()));
       dispatch(
@@ -559,7 +613,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       return true;
     }
 
-    // Default case when none of the conditions for disabling the next button are met
     return false;
   };
 
@@ -1342,7 +1395,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           )}
           {activeTab !== "Attachments" && (
             <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
-              Next
+              {isValidateClientLoading ? (
+                <>
+                  <CircularProgress size="20px" />
+                </>
+              ) : (
+                "Next"
+              )}
             </SuccessButton>
           )}
           {activeTab === "Attachments" && (

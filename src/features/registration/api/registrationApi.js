@@ -153,6 +153,23 @@ export const registrationApi = createApi({
       }),
       invalidatesTags: ["Registration"],
     }),
+
+    putReleaseFreebies: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/Freebies/ReleaseFreebies/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Registration"],
+    }),
+
+    postValidateClient: builder.mutation({
+      query: (body) => ({
+        url: `/Validation/ValidateClient`,
+        method: "POST",
+        body: body,
+      }),
+    }),
   }),
 });
 
@@ -172,4 +189,6 @@ export const {
   usePatchUpdateRegistrationStatusMutation,
   usePutVoidClientRegistrationMutation,
   usePutUpdateClientAttachmentsMutation,
+  usePutReleaseFreebiesMutation,
+  usePostValidateClientMutation,
 } = registrationApi;

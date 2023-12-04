@@ -136,6 +136,7 @@ function RegistrationApproval() {
     "freebies",
     "modeOfPayments",
     "updateHistories",
+    "listingFees",
   ];
 
   //Misc Functions

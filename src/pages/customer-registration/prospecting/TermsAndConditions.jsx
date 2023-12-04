@@ -37,7 +37,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     (state) => state.regularRegistration.value.termsAndConditions
   );
   const freebiesDirect = useSelector(
-    (state) => state.regularRegistration.value.freebies
+    (state) => state.regularRegistration.value.directFreebie.freebies
   );
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 

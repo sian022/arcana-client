@@ -21,6 +21,7 @@ import {
 import { useSelector } from "react-redux";
 import useDisclosure from "../../../hooks/useDisclosure";
 import ViewPhotoModal from "../ViewPhotoModal";
+import NoData from "../../../assets/images/no-data.jpg";
 
 function FreebiesTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -38,23 +39,24 @@ function FreebiesTab() {
             <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
               Freebies
             </Typography>
-            {selectedRowData?.freebies?.length > 0 && (
-              <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
-                Product Information
-              </Typography>
-            )}
+            {selectedRowData?.freebies &&
+              selectedRowData?.freebies?.length > 0 && (
+                <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
+                  Product Information
+                </Typography>
+              )}
           </Box>
 
-          {selectedRowData?.freebies?.length === 0 ? (
-            <div>No freebies</div>
-          ) : (
+          {selectedRowData?.freebies &&
+          selectedRowData?.freebies?.length > 0 ? (
             <Box className="viewListingFeeModal__table">
               <TableContainer
                 sx={{
                   maxHeight: "280px",
                   overflow: "auto",
-                  // width: "620px",
-                  maxWidth: "700px",
+                  width: "620px",
+                  // width: "700px",
+                  // maxWidth: "700px",
                   borderRadius: "10px",
                 }}
               >
@@ -94,6 +96,20 @@ function FreebiesTab() {
                   </TableBody>
                 </Table>
               </TableContainer>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                margin: "auto",
+              }}
+            >
+              <img src={NoData} alt="no-data" style={{ width: "400px" }} />
+              <Typography fontSize="18px" fontWeight={500}>
+                No Freebies Found
+              </Typography>
             </Box>
           )}
         </Box>
