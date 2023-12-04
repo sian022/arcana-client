@@ -195,7 +195,7 @@ function VariableDiscount() {
       setValue(
         "minimumAmount",
         // data?.discount[data?.discount?.length - 1]?.maximumAmount + 0.000001
-        Math.ceil(data?.discount[data?.discount?.length - 1]?.maximumAmount)
+        Math.ceil(data?.discount[data?.discount?.length - 1]?.maximumAmount) + 1
       );
     }
   }, [isDrawerOpen]);
