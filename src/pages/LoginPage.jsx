@@ -28,7 +28,6 @@ import SystemLogoName from "../assets/images/SystemLogoName.png";
 import useSnackbar from "../hooks/useSnackbar";
 import SecondaryButton from "../components/SecondaryButton";
 import { AppContext } from "../context/AppContext";
-import { useGetAllBarangaysQuery } from "../features/location/api/phLocationsApi";
 
 function LoginPage() {
   const { showSnackbar } = useSnackbar();

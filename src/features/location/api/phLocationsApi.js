@@ -4,67 +4,54 @@ import { decryptString } from "../../../utils/CustomFunctions";
 export const phLocationsApi = createApi({
   reducerPath: "phLocationsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://ph-locations-api.buonzz.com/v1",
-    // prepareHeaders: (headers) => {
-    //   headers.set("Accept", "application/json");
-    //   headers.set(
-    //     "Authorization",
-    //     `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-    //   );
-    // },
+    // baseUrl: "https://ph-locations-api.buonzz.com/v1",
+    baseUrl: "https://psgc.gitlab.io/api",
+    // baseUrl: "https://psgc.vercel.app/api",
+    prepareHeaders: (headers) => {
+      headers.set("Accept", "application/json");
+      //   headers.set(
+      //     "Authorization",
+      //     `Bearer ${decryptString(sessionStorage.getItem("token"))}`
+      //   );
+      // },
+      // headers.set("Accept", "text/html");
+    },
   }),
 
   tagTypes: ["PH Locations"],
   endpoints: (builder) => ({
-    getAllBarangays: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/barangays",
-        method: "GET",
-      }),
-      providesTags: ["PH Locations"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
-    }),
-
-    getAllCities: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/cities",
-        method: "GET",
-      }),
-      providesTags: ["PH Locations"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
-    }),
-
     getAllProvinces: builder.query({
-      query: (params) => ({
-        params: params,
+      query: () => ({
+        // params: params,
         url: "/provinces",
         method: "GET",
       }),
-      providesTags: ["PH Locations"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      // providesTags: ["PH Locations"],
+      invalidatesTags: ["PH Location"],
     }),
 
-    getAllRegions: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/regions",
+    getMunicipalitiesByProvince: builder.query({
+      query: ({ provinceCode }) => ({
+        // params: params,
+        url: `/provinces/${provinceCode}/cities-municipalities`,
         method: "GET",
       }),
       providesTags: ["PH Locations"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+    }),
+
+    getBarangaysByMunicipality: builder.query({
+      query: ({ municipalityCode }) => ({
+        // params: params,
+        url: `/cities-municipalities/${municipalityCode}/barangays`,
+        method: "GET",
+      }),
+      // providesTags: ["PH Locations"],
     }),
   }),
 });
 
 export const {
-  useGetAllBarangaysQuery,
-  useGetAllCitiesQuery,
   useGetAllProvincesQuery,
-  useGetAllRegionsQuery,
+  useGetMunicipalitiesByProvinceQuery,
+  useGetBarangaysByMunicipalityQuery,
 } = phLocationsApi;

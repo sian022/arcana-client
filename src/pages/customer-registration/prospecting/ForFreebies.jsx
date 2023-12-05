@@ -41,11 +41,6 @@ import AccentButton from "../../../components/AccentButton";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
-import {
-  useGetAllBarangaysQuery,
-  useGetAllCitiesQuery,
-  useGetAllProvincesQuery,
-} from "../../../features/location/api/phLocationsApi";
 
 function ForFreebies() {
   const [drawerMode, setDrawerMode] = useState("");

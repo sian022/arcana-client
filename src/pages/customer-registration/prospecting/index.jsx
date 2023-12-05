@@ -12,6 +12,7 @@ import ForReleasing from "./ForReleasing";
 import StoreTypeSkeleton from "../../../components/skeletons/StoreTypeSkeleton";
 import { useGetAllApprovedProspectsQuery } from "../../../features/prospect/api/prospectApi";
 import { AppContext } from "../../../context/AppContext";
+import ForFreebiesWithLocations from "./ForFreebiesWithLocations";
 
 function Prospect() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -77,7 +78,8 @@ function Prospect() {
   ];
 
   const tabComponents = {
-    1: <ForFreebies />,
+    // 1: <ForFreebies />,
+    1: <ForFreebiesWithLocations />,
     2: <ForReleasing />,
     3: <Released />,
   };

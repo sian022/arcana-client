@@ -42,9 +42,10 @@ import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
 import {
-  useGetAllBarangaysQuery,
-  useGetAllCitiesQuery,
+  phLocationsApi,
   useGetAllProvincesQuery,
+  useGetBarangaysByMunicipalityQuery,
+  useGetMunicipalitiesByProvinceQuery,
 } from "../../../features/location/api/phLocationsApi";
 
 function ForFreebiesWithLocations() {
@@ -58,6 +59,9 @@ function ForFreebiesWithLocations() {
   const [count, setCount] = useState(0);
   const [newProspectName, setNewProspectName] = useState("");
   const [editMode, setEditMode] = useState(false);
+
+  const [provinceCode, setProvinceCode] = useState("");
+  const [municipalityCode, setMunicipalityCode] = useState("");
 
   const dispatch = useDispatch();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -148,11 +152,11 @@ function ForFreebiesWithLocations() {
     watch,
     getValues,
   } = useForm({
-    resolver: yupResolver(prospectSchema.schema),
-    // resolver: yupResolver(prospectWithLocationsSchema.schema),
+    // resolver: yupResolver(prospectSchema.schema),
+    resolver: yupResolver(prospectWithLocationsSchema.schema),
     mode: "onChange",
-    defaultValues: prospectSchema.defaultValues,
-    // defaultValues: prospectWithLocationsSchema.defaultValues,
+    // defaultValues: prospectSchema.defaultValues,
+    defaultValues: prospectWithLocationsSchema.defaultValues,
   });
 
   //RTK Query
@@ -170,17 +174,30 @@ function ForFreebiesWithLocations() {
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
 
-  // const { data: provinceData, isFetching: isProvinceFetching } =
-  //   useGetAllProvincesQuery();
-  // const { data: cityData, isFetching: isCityFetching } = useGetAllCitiesQuery();
-  // const { data: barangayData, isFetching: isBarangayFetching } =
-  //   useGetAllBarangaysQuery();
+  const {
+    data: provinceData,
+    isFetching: isProvinceFetching,
+    isLoading: isProvinceLoading,
+  } = useGetAllProvincesQuery();
+
+  const { data: municipalityData, isFetching: isMunicipalityFetching } =
+    useGetMunicipalitiesByProvinceQuery(
+      provinceCode ? { provinceCode } : undefined
+    ) || { data: null, isFetching: false };
+
+  const { data: barangaysData, isFetching: isBarangayFetching } =
+    useGetBarangaysByMunicipalityQuery(
+      municipalityCode ? { municipalityCode } : undefined
+    ) || { data: null, isFetching: false };
 
   //Drawer Handlers
   const onDrawerSubmit = async (data) => {
     try {
       const {
         storeTypeId: { id },
+        province: { name: provinceName },
+        city: { name: cityName },
+        barangayName: { name: barangayNameAlt },
         ...restData
       } = data;
 
@@ -190,12 +207,18 @@ function ForFreebiesWithLocations() {
         response = await postProspect({
           ...restData,
           storeTypeId: id,
+          province: provinceName,
+          city: cityName,
+          barangayName: barangayNameAlt,
         }).unwrap();
         setSnackbarMessage("Prospect added successfully");
       } else if (drawerMode === "edit") {
         response = await putProspect({
           ...restData,
           storeTypeId: id,
+          province: provinceName,
+          city: cityName,
+          barangayName: barangayNameAlt,
         }).unwrap();
         setSnackbarMessage("Prospect updated successfully");
       }
@@ -311,6 +334,7 @@ function ForFreebiesWithLocations() {
     }
   }, [isDrawerOpen]);
 
+  console.log(isProvinceFetching);
   return (
     <>
       <Box>
@@ -466,105 +490,7 @@ function ForFreebiesWithLocations() {
           <Box className="register__secondRow">
             <Typography className="register__title">Address</Typography>
             <Box className="register__secondRow__content">
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Unit No."
-                size="small"
-                autoComplete="off"
-                // required
-                {...register("houseNumber")}
-                helperText={errors?.houseNumber?.message}
-                error={errors?.houseNumber}
-              />
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Street"
-                size="small"
-                autoComplete="off"
-                // required
-                {...register("streetName")}
-                helperText={errors?.streetName?.message}
-                error={errors?.streetName}
-              />
-
-              {/* <ControlledAutocomplete
-                disabled={
-                  (!editMode && drawerMode === "edit") || !watch("city")
-                }
-                name={"barangayName"}
-                control={control}
-                options={
-                  barangayData?.filter(
-                    (barangay) =>
-                      barangay?.city_code === watch("barangayName")?.id
-                  ) || []
-                }
-                getOptionLabel={(option) => option.name}
-                disableClearable
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                loading={isBarangayFetching}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label="Barangay"
-                    required
-                    helperText={errors?.city?.message}
-                    error={errors?.city}
-                  />
-                )}
-              /> */}
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Barangay"
-                size="small"
-                autoComplete="off"
-                required
-                {...register("barangayName")}
-                helperText={errors?.barangayName?.message}
-                error={errors?.barangayName}
-              />
-            </Box>
-            <Box className="register__secondRow__content">
-              {/* <ControlledAutocomplete
-                disabled={
-                  (!editMode && drawerMode === "edit") || !watch("province")
-                }
-                name={"city"}
-                control={control}
-                options={
-                  cityData?.filter(
-                    (city) => city?.province_code === watch("province")?.id
-                  ) || []
-                }
-                getOptionLabel={(option) => option.name}
-                disableClearable
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                loading={isCityFetching}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label="Municipality/City"
-                    required
-                    helperText={errors?.city?.message}
-                    error={errors?.city}
-                  />
-                )}
-              /> */}
-
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Municipality/City"
-                size="small"
-                autoComplete="off"
-                required
-                {...register("city")}
-                helperText={errors?.city?.message}
-                error={errors?.city}
-              />
-
-              {/* <ControlledAutocomplete
+              <ControlledAutocomplete
                 disabled={!editMode && drawerMode === "edit"}
                 name={"province"}
                 control={control}
@@ -574,7 +500,7 @@ function ForFreebiesWithLocations() {
                 // value={storeTypeData?.storeTypes?.find(
                 //   (store) => store.storeTypeName === selectedStoreType
                 // )}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
+                isOptionEqualToValue={(option, value) => true}
                 loading={isProvinceFetching}
                 renderInput={(params) => (
                   <TextField
@@ -586,9 +512,17 @@ function ForFreebiesWithLocations() {
                     error={errors?.province}
                   />
                 )}
-              /> */}
+                onChange={(_, value) => {
+                  dispatch(phLocationsApi.util.resetApiState());
+                  setValue("city", null);
+                  setValue("barangayName", null);
+                  setProvinceCode(value?.code);
+                  // setMunicipalityCode(null);
+                  return value;
+                }}
+              />
 
-              <TextField
+              {/* <TextField
                 disabled={!editMode && drawerMode === "edit"}
                 label="Province"
                 size="small"
@@ -597,6 +531,112 @@ function ForFreebiesWithLocations() {
                 {...register("province")}
                 helperText={errors?.province?.message}
                 error={errors?.province}
+              /> */}
+
+              <ControlledAutocomplete
+                disabled={
+                  (!editMode && drawerMode === "edit") || !watch("province")
+                }
+                name={"city"}
+                control={control}
+                // options={
+                //   cityData?.filter(
+                //     (city) => city?.province_code === watch("province")?.id
+                //   ) || []
+                // }
+                options={isMunicipalityFetching ? [] : municipalityData || []}
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                isOptionEqualToValue={(option, value) => true}
+                loading={isMunicipalityFetching}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Municipality/City"
+                    required
+                    helperText={errors?.city?.message}
+                    error={errors?.city}
+                  />
+                )}
+                onChange={(_, value) => {
+                  setValue("barangayName", null);
+                  setMunicipalityCode(value?.code);
+                  return value;
+                }}
+              />
+
+              {/* <TextField
+                disabled={!editMode && drawerMode === "edit"}
+                label="Municipality/City"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("city")}
+                helperText={errors?.city?.message}
+                error={errors?.city}
+              /> */}
+
+              <ControlledAutocomplete
+                disabled={
+                  (!editMode && drawerMode === "edit") || !watch("city")
+                }
+                name={"barangayName"}
+                control={control}
+                // options={
+                //   barangaysData?.filter(
+                //     (barangay) =>
+                //       barangay?.city_code === watch("barangayName")?.id
+                //   ) || []
+                // }
+                options={isBarangayFetching ? [] : barangaysData || []}
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                loading={isBarangayFetching}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Barangay"
+                    required
+                    helperText={errors?.barangayName?.message}
+                    error={errors?.barangayName}
+                  />
+                )}
+              />
+              {/* <TextField
+                disabled={!editMode && drawerMode === "edit"}
+                label="Barangay"
+                size="small"
+                autoComplete="off"
+                required
+                {...register("barangayName")}
+                helperText={errors?.barangayName?.message}
+                error={errors?.barangayName}
+              /> */}
+            </Box>
+            <Box className="register__secondRow__content">
+              <TextField
+                disabled={!editMode && drawerMode === "edit"}
+                label="Unit No."
+                size="small"
+                autoComplete="off"
+                // required
+                {...register("houseNumber")}
+                helperText={errors?.houseNumber?.message}
+                error={errors?.houseNumber}
+              />
+
+              <TextField
+                disabled={!editMode && drawerMode === "edit"}
+                label="Street"
+                size="small"
+                autoComplete="off"
+                // required
+                {...register("streetName")}
+                helperText={errors?.streetName?.message}
+                error={errors?.streetName}
               />
             </Box>
           </Box>
