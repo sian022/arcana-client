@@ -90,7 +90,7 @@ function TermsAndConditionsTab() {
               Discount:
             </Typography>
             <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-              {selectedRowData?.fixedDiscount
+              {selectedRowData?.fixedDiscount?.discountPercentage
                 ? `Fixed (${
                     selectedRowData?.fixedDiscount?.discountPercentage
                     // * 100

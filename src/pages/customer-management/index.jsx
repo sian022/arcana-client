@@ -30,7 +30,11 @@ function CustomerManagement() {
                 Manage and create business type
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -45,7 +49,11 @@ function CustomerManagement() {
                 Manage variable discount amount and percentage ranges
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -60,7 +68,11 @@ function CustomerManagement() {
                 Manage and create term days
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
         </Box>
       </Box>

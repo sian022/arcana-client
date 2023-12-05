@@ -75,6 +75,7 @@ function Header() {
   );
 
   const fullName = useSelector((state) => state.login.fullname);
+  const roleName = useSelector((state) => state.login.roleName);
 
   const {
     isOpen: isMenuOpen,
@@ -121,6 +122,8 @@ function Header() {
   };
 
   const handleLogout = () => {
+    dispatch(notificationApi.util.resetApiState());
+
     dispatch(setToken(""));
     dispatch(setFullname(""));
     dispatch(setPermissisons(""));
@@ -131,7 +134,6 @@ function Header() {
     dispatch(registrationApi.util.resetApiState());
     dispatch(listingFeeApi.util.resetApiState());
     dispatch(prospectApi.util.resetApiState());
-    dispatch(notificationApi.util.resetApiState());
 
     // localStorage.removeItem("token");
     // localStorage.removeItem("fullname");
@@ -198,7 +200,7 @@ function Header() {
 
         <Box className="navbar__endButtons">
           {/* <LogoutButton /> */}
-          <Autocomplete
+          {/* <Autocomplete
             options={navigationLabel}
             getOptionLabel={(option) => option.name}
             isOptionEqualToValue={(option, value) => true}
@@ -214,7 +216,10 @@ function Header() {
               />
             )}
             onChange={handleNavigate}
-          />
+          /> */}
+          <Typography>
+            {fullName} - {roleName}
+          </Typography>
 
           <IconButton
             sx={{ color: "secondary.main" }}
@@ -230,7 +235,7 @@ function Header() {
         onClose={onMenuClose}
         anchorEl={anchorRef.current}
       >
-        <MenuItem
+        {/* <MenuItem
           sx={{
             pointerEvents: "none",
             // maxWidth: "250px",
@@ -241,7 +246,8 @@ function Header() {
         >
           {fullName}
         </MenuItem>
-        <Divider variant="middle" />
+        <Divider variant="middle" /> */}
+
         <MenuItem
           className="actionsMenuItem"
           onClick={() => handleActions("changePassword")}

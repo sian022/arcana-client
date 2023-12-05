@@ -37,18 +37,36 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     // { label: "Regular Client", icon: <HowToReg /> },
   ];
 
-  const handleActiveStep = (recentLevel, recentStatus) => {
-    if (recentLevel === 0) {
+  const handleActiveStep = (recentData) => {
+    if (recentData?.length === 0 || !recentData) {
       return 1;
-    } else if (recentLevel === 1) {
+    } else if (recentData?.level === 1 && recentData?.status === "Rejected") {
+      return null;
+    } else if (recentData?.level === 1 && recentData?.status === "Approved") {
       return 2;
-    } else if (recentLevel === 2 && recentStatus === "Rejected") {
-      return 2;
-    } else if (recentLevel === 2 && recentStatus === "Approved") {
+    } else if (recentData?.level === 2 && recentData?.status === "Rejected") {
+      return null;
+    } else if (recentData?.level === 2 && recentData?.status === "Approved") {
       return 3;
+    } else if (!!recentData?.updatedAt) {
+      return 1;
     } else {
-      return 4;
+      return 3;
     }
+
+    // if (recentLevel === 0) {
+    //   return 1;
+    // } else if (recentLevel === 1 && recentStatus === "Rejected") {
+    //   return null;
+    // } else if (recentLevel === 1 && recentStatus === "Approved") {
+    //   return 0;
+    // } else if (recentLevel === 2 && recentStatus === "Rejected") {
+    //   return 2;
+    // } else if (recentLevel === 2 && recentStatus === "Approved") {
+    //   return 3;
+    // } else {
+    //   return 4;
+    // }
   };
 
   const combinedHistories = [
@@ -65,12 +83,18 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     (a, b) =>
       new Date(b.createdAt || b.updatedAt) -
       new Date(a.createdAt || a.updatedAt)
+    // (a, b) =>
+    //   new Date(a.createdAt || a.updatedAt) -
+    //   new Date(b.createdAt || b.updatedAt)
   );
 
   combinedListingFeeHistories.sort(
     (a, b) =>
       new Date(b.createdAt || b.updatedAt) -
       new Date(a.createdAt || a.updatedAt)
+    // (a, b) =>
+    //   new Date(a.createdAt || a.updatedAt) -
+    //   new Date(b.createdAt || b.updatedAt)
   );
 
   return (
@@ -94,18 +118,23 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
           <Box className="approvalHistoryModal__content__headStepper">
             <Stepper
               alternativeLabel
-              activeStep={
-                variant === "registration" &&
-                selectedRowData?.clientApprovalHistories?.length === 0
-                  ? 1
-                  : variant === "listingFee" &&
-                    selectedRowData?.listingFeeApprovalHistories?.length === 0
-                  ? 1
-                  : handleActiveStep(
-                      selectedRowData?.clientApprovalHistories?.[0]?.level,
-                      selectedRowData?.clientApprovalHistories?.[0]?.status
-                    )
-              }
+              activeStep={handleActiveStep(
+                // combinedHistories?.[0]?.level,
+                // combinedHistories?.[0]?.status,
+                combinedHistories?.[0]
+              )}
+              // activeStep={
+              //   variant === "registration" &&
+              //   selectedRowData?.clientApprovalHistories?.length === 0
+              //     ? 1
+              //     : variant === "listingFee" &&
+              //       selectedRowData?.listingFeeApprovalHistories?.length === 0
+              //     ? 1
+              //     : handleActiveStep(
+              //         selectedRowData?.clientApprovalHistories?.[0]?.level,
+              //         selectedRowData?.clientApprovalHistories?.[0]?.status
+              //       )
+              // }
             >
               {steps.map((item, index) => (
                 <Step key={item.label}>

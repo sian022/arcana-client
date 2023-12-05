@@ -272,6 +272,18 @@
         color: white;
         font-size: 35px;
       }
+
+      &__notifAndArrow {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        & &__arrow {
+          color: white;
+          font-size: 35px;
+        }
+      }
     }
 
     &__item:hover {

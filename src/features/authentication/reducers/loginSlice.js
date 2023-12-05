@@ -6,6 +6,7 @@ const storedFullname = sessionStorage.getItem("fullname");
 
 const initialState = {
   fullname: storedFullname || "",
+  roleName: "",
   token: "",
   isPasswordChanged: false,
   userDetails: {},
@@ -44,7 +45,11 @@ export const loginSlice = createSlice({
     setIsPasswordChanged: (state) => {
       state.isPasswordChanged = true;
     },
+    setRoleName: (state, action) => {
+      state.roleName = action.payload;
+    },
   },
 });
 
-export const { setFullname, setToken, setUserDetails } = loginSlice.actions;
+export const { setFullname, setToken, setUserDetails, setRoleName } =
+  loginSlice.actions;

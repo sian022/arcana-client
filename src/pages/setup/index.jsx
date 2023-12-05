@@ -30,7 +30,11 @@ function Setup() {
                 Manage and product items and their price change
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -45,7 +49,11 @@ function Setup() {
                 Manage and create product category
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -60,7 +68,11 @@ function Setup() {
                 Manage and create product sub category
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -75,7 +87,11 @@ function Setup() {
                 Manage and create meat types
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -90,7 +106,11 @@ function Setup() {
                 Manage and create unit of measurements
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
         </Box>
       </Box>

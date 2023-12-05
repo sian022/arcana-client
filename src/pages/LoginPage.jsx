@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   setFullname,
+  setRoleName,
   setToken,
   setUserDetails,
 } from "../features/authentication/reducers/loginSlice";
@@ -65,6 +66,7 @@ function LoginPage() {
       dispatch(setFullname(res?.value?.fullname));
       dispatch(setToken(res?.value?.token));
       dispatch(setPermissisons(res?.value?.permission));
+      dispatch(setRoleName(res?.value?.roleName));
       navigate("/");
       refetchNotifications();
 

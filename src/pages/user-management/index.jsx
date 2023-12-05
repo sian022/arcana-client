@@ -33,7 +33,11 @@ function UserManagement() {
                 Manage and create user accounts based on SEDAR
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -48,7 +52,11 @@ function UserManagement() {
                 Manage and tag user roles
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -63,7 +71,11 @@ function UserManagement() {
                 Manage list and ordering of approvers
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -78,7 +90,11 @@ function UserManagement() {
                 Manage and sync company to FISTO
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -93,7 +109,11 @@ function UserManagement() {
                 Manage and sync department to FISTO
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -108,7 +128,11 @@ function UserManagement() {
                 Manage and sync location to FISTO
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
         </Box>
       </Box>

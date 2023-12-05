@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import CommonPageIndex from "../../components/CommonPageIndex";
 import { ArrowCircleRight } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
+import { AppContext } from "../../context/AppContext";
 
 function Approval() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { notifications } = useContext(AppContext);
 
   if (location.pathname === "/approval") {
     return (
@@ -28,7 +31,18 @@ function Approval() {
                 Approval and rejection of client registration requests
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              {!!notifications?.pendingClient &&
+              !notifications?.pendingClient !== 0 ? (
+                <Box className="notificationsLarge">
+                  {notifications?.pendingClient}
+                </Box>
+              ) : (
+                <Box></Box>
+              )}
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -43,7 +57,18 @@ function Approval() {
                 Approval and rejection of sp. discount requests
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              {!!notifications?.pendingSpDiscount &&
+              !notifications?.pendingSpDiscount !== 0 ? (
+                <Box className="notificationsLarge">
+                  {notifications?.pendingSpDiscount}
+                </Box>
+              ) : (
+                <Box></Box>
+              )}
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
 
           <Box
@@ -58,7 +83,18 @@ function Approval() {
                 Approval and rejection of listing fee requests
               </Typography>
             </Box>
-            <ArrowCircleRight className="pageIndex__navigators__item__arrow" />
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              {!!notifications?.pendingListingFee &&
+              !notifications?.pendingListingFee !== 0 ? (
+                <Box className="notificationsLarge">
+                  {notifications?.pendingListingFee}
+                </Box>
+              ) : (
+                <Box></Box>
+              )}
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
           </Box>
         </Box>
       </Box>
