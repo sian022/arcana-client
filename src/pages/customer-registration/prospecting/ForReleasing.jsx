@@ -12,7 +12,7 @@ import CommonTable from "../../../components/CommonTable";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { prospectSchema } from "../../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import {
@@ -40,6 +40,7 @@ import SecondaryButton from "../../../components/SecondaryButton";
 import AccentButton from "../../../components/AccentButton";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
+import { PatternFormat } from "react-number-format";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -383,7 +384,52 @@ function ForReleasing() {
               <Typography className="register__title">
                 Contact Number
               </Typography>
-              <TextField
+
+              <Controller
+                control={control}
+                name={"phoneNumber"}
+                render={({ field: { onChange, onBlur, value, ref } }) => {
+                  const formattedValue = value.replace(/-/g, "");
+                  let format = "###-###-####";
+
+                  if (formattedValue.length <= 3) {
+                    format = "####";
+                  } else if (formattedValue.length <= 6) {
+                    format = "###-####";
+                  } else if (formattedValue.length <= 10) {
+                    format = "###-###-####";
+                  }
+
+                  return (
+                    <PatternFormat
+                      format={format}
+                      label="Phone Number"
+                      type="text"
+                      size="small"
+                      customInput={TextField}
+                      autoComplete="off"
+                      allowNegative={false}
+                      decimalScale={0}
+                      onValueChange={(e) => {
+                        onChange(e.value);
+                      }}
+                      onBlur={onBlur}
+                      value={value || ""}
+                      required
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">+63</InputAdornment>
+                        ),
+                      }}
+                      className="register__textField"
+                      helperText={errors?.phoneNumber?.message}
+                      error={!!errors?.phoneNumber}
+                      disabled={!editMode && drawerMode === "edit"}
+                    />
+                  );
+                }}
+              />
+              {/* <TextField
                 disabled={!editMode && drawerMode === "edit"}
                 label="Phone Number"
                 size="small"
@@ -399,7 +445,7 @@ function ForReleasing() {
                 {...register("phoneNumber")}
                 helperText={errors?.phoneNumber?.message}
                 error={errors?.phoneNumber}
-              />
+              /> */}
             </Box>
             <Box className="register__thirdRow__column">
               <Typography className="register__title">Email Address</Typography>

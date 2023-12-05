@@ -179,7 +179,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     );
   };
 
-  console.log(termsAndConditions);
   return (
     <Box className="terms">
       <Box className="terms__column">

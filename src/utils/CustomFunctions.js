@@ -135,3 +135,20 @@ export const dashFormat = (inputValue) => {
   const formattedValue = inputValue.replace(/\B(?=(\d{3})+(?!\d))/g, "-");
   return formattedValue;
 };
+
+export const formatPhoneNumber = (inputNumber) => {
+  let numberString = inputNumber.toString();
+
+  if (numberString.length >= 10) {
+    let formattedNumber =
+      numberString.slice(0, 3) +
+      "-" +
+      numberString.slice(3, 7) +
+      "-" +
+      numberString.slice(7);
+
+    return formattedNumber;
+  } else {
+    return "Invalid input";
+  }
+};

@@ -48,14 +48,15 @@ function ListingFeeTab() {
               )}
           </Box>
 
-          {selectedRowData?.listingFee &&
-          selectedRowData?.listingFee?.length > 0 ? (
+          {selectedRowData?.listingFees &&
+          selectedRowData?.listingFees?.length > 0 ? (
             <Box className="viewListingFeeModal__table">
               <TableContainer
                 sx={{
                   maxHeight: "280px",
                   overflow: "auto",
                   width: "620px",
+                  // width: "700px",
                   // maxWidth: "700px",
                   borderRadius: "10px",
                 }}
@@ -86,17 +87,19 @@ function ListingFeeTab() {
                   </TableHead>
 
                   <TableBody>
-                    {selectedRowData?.listingItems?.map((item) => (
-                      <TableRow>
-                        <TableCell>{item.itemCode}</TableCell>
-                        <TableCell>{item.itemDescription}</TableCell>
-                        <TableCell>{item.uom}</TableCell>
-                        <TableCell>{item.sku}</TableCell>
-                        <TableCell>
-                          ₱ {item.unitCost?.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {selectedRowData?.listingFees?.map((item) =>
+                      item?.listingItems?.map((listing) => (
+                        <TableRow key={listing.id}>
+                          <TableCell>{listing.itemCode}</TableCell>
+                          <TableCell>{listing.itemDescription}</TableCell>
+                          <TableCell>{listing.uom}</TableCell>
+                          <TableCell>{listing.sku}</TableCell>
+                          <TableCell>
+                            {listing.unitCost?.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>

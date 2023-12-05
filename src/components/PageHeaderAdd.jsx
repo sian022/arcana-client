@@ -4,7 +4,14 @@ import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
 import { debounce } from "../utils/CustomFunctions";
 
-function PageHeaderAdd({ onOpen, pageTitle, setStatus, setSearch, removeAdd }) {
+function PageHeaderAdd({
+  onOpen,
+  pageTitle,
+  setStatus,
+  setSearch,
+  removeAdd,
+  removeArchive,
+}) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
@@ -21,12 +28,16 @@ function PageHeaderAdd({ onOpen, pageTitle, setStatus, setSearch, removeAdd }) {
           )}
         </Box>
         <Box className="pageHeader__right">
-          <Checkbox
-            onChange={() => {
-              setStatus((prev) => !prev);
-            }}
-          />
-          <Typography variant="subtitle2">Archived</Typography>
+          {!removeArchive && (
+            <>
+              <Checkbox
+                onChange={() => {
+                  setStatus((prev) => !prev);
+                }}
+              />
+              <Typography variant="subtitle2">Archived</Typography>{" "}
+            </>
+          )}
           <TextField
             type="search"
             size="small"

@@ -182,6 +182,9 @@ function VariableDiscount() {
     setSelectedId("");
   };
 
+  //Constants
+  const disableActions = ["archive"];
+
   //UseEffect
   useEffect(() => {
     setCount(data?.totalCount);
@@ -193,17 +196,26 @@ function VariableDiscount() {
 
   useEffect(() => {
     if (isDrawerOpen && drawerMode === "add") {
-      setValue(
-        "minimumAmount",
-        Math.ceil(data?.discount[data?.discount?.length - 1]?.maximumAmount) + 1
-      );
+      if (!data?.discount || data?.discount?.length === 0) {
+        setValue("minimumAmount", 1);
+      } else {
+        setValue(
+          "minimumAmount",
+          Math.ceil(data?.discount[data?.discount?.length - 1]?.maximumAmount) +
+            1
+        );
+      }
 
-      setValue(
-        "minimumPercentage",
-        Math.ceil(
-          data?.discount[data?.discount?.length - 1]?.maximumPercentage * 100
-        ) + 1
-      );
+      if (!data?.discount || data?.discount?.length === 0) {
+        setValue("minimumPercentage", 1);
+      } else {
+        setValue(
+          "minimumPercentage",
+          Math.ceil(
+            data?.discount[data?.discount?.length - 1]?.maximumPercentage * 100
+          ) + 1
+        );
+      }
     }
   }, [isDrawerOpen]);
 
@@ -215,6 +227,7 @@ function VariableDiscount() {
         setSearch={setSearch}
         setStatus={setStatus}
         removeAdd={!status}
+        removeArchive
       />
       {isFetching ? (
         <CommonTableSkeleton />
@@ -224,9 +237,9 @@ function VariableDiscount() {
           excludeKeysDisplay={excludeKeysDisplay}
           pesoArray={pesoArray}
           percentageArray={percentageArray}
-          editable
+          // editable
           archivable
-          onEdit={handleEditOpen}
+          // onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}
           setPage={setPage}
@@ -234,6 +247,10 @@ function VariableDiscount() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          disableActions={
+            selectedRowData?.id !==
+              data?.discount?.[data?.discount?.length - 1]?.id && disableActions
+          }
         />
       )}
 
@@ -267,7 +284,8 @@ function VariableDiscount() {
               // ref={ref}
               required
               thousandSeparator=","
-              disabled={data?.discount?.length > 0 && drawerMode === "add"}
+              // disabled={data?.discount?.length > 0 && drawerMode === "add"}
+              disabled
             />
           )}
         />
@@ -345,7 +363,8 @@ function VariableDiscount() {
               thousandSeparator=","
               allowNegative={false}
               decimalScale={0}
-              disabled={data?.discount?.length > 0 && drawerMode === "add"}
+              // disabled={data?.discount?.length > 0 && drawerMode === "add"}
+              disabled
             />
           )}
         />

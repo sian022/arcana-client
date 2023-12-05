@@ -6,6 +6,7 @@ import {
   ArrowForward,
   Block,
   Cancel,
+  Delete,
   Edit,
   History,
   HowToReg,
@@ -35,6 +36,7 @@ function CommonActions({
   onPrintFreebies,
   onAddPriceChange,
   onVoid,
+  onDelete,
   onHistory,
   disableActions,
   item,
@@ -308,6 +310,21 @@ function CommonActions({
           >
             <Block />
             Void
+          </MenuItem>
+        )}
+
+        {onDelete && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("delete");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("delete") : false
+            }
+          >
+            <Delete />
+            Delete
           </MenuItem>
         )}
       </Menu>

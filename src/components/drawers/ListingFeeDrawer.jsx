@@ -46,7 +46,6 @@ function ListingFeeDrawer({
 
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
-  const [isClientChangeConfirmed, setIsClientChangeConfirmed] = useState(false);
   const [confirmationValue, setConfirmationValue] = useState(null);
 
   const [parent] = useAutoAnimate();
@@ -115,6 +114,8 @@ function ListingFeeDrawer({
     refetch: refetchClients,
   } = useGetAllClientsForListingFeeQuery({
     Status: true,
+    PageNumber: 1,
+    PageSize: 1000,
     IncludeRejected: editMode ? editMode : "",
   });
   const { data: productData, isLoading: isProductLoading } =
@@ -251,6 +252,7 @@ function ListingFeeDrawer({
 
     setValue("clientId", clientId);
     setValue(`customerName`, clientId.ownersName);
+    setTotalAmount(0);
     onClientConfirmationClose();
   };
 
@@ -285,7 +287,9 @@ function ListingFeeDrawer({
   useEffect(() => {
     if (redirect && clientData) {
       const foundItem = clientData?.regularClient?.find(
-        (item) => item.businessName === selectedRowData?.businessName
+        (item) =>
+          item.businessName === selectedRowData?.businessName &&
+          item.ownersName === selectedRowData?.ownersName
       );
       setValue("clientId", foundItem);
       setValue("customerName", foundItem?.ownersName);
@@ -544,7 +548,7 @@ function ListingFeeDrawer({
                       }}
                       onBlur={onBlur}
                       value={value || ""}
-                      ref={ref}
+                      // ref={ref}
                       required
                       thousandSeparator=","
                       disabled={!watch("clientId")}

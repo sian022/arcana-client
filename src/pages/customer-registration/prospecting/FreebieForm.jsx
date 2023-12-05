@@ -231,7 +231,6 @@ function FreebieForm({
     return false;
   }
 
-  console.log(freebiesDirect);
   //UseEffects
   useEffect(() => {
     if (!direct) {

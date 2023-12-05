@@ -54,6 +54,7 @@ import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
 import SuccessButton from "../../../components/SuccessButton";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
+import { PatternFormat } from "react-number-format";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -632,7 +633,55 @@ function RegisterRegularForm({ open, onClose }) {
                       shrink: true, // This will make the label always appear on top.
                     }}
                   /> */}
-                  <TextField
+
+                  <Controller
+                    control={control}
+                    name={"phoneNumber"}
+                    render={({ field: { onChange, onBlur, value, ref } }) => {
+                      const formattedValue =
+                        selectedRowData?.phoneNumber?.replace(/-/g, "");
+                      let format = "###-###-####";
+
+                      if (formattedValue.length <= 3) {
+                        format = "####";
+                      } else if (formattedValue.length <= 6) {
+                        format = "###-####";
+                      } else if (formattedValue.length <= 10) {
+                        format = "###-###-####";
+                      }
+
+                      return (
+                        <PatternFormat
+                          format={format}
+                          label="Phone Number"
+                          type="text"
+                          size="small"
+                          customInput={TextField}
+                          autoComplete="off"
+                          allowNegative={false}
+                          decimalScale={0}
+                          onValueChange={(e) => {
+                            onChange(e.value);
+                          }}
+                          onBlur={onBlur}
+                          value={selectedRowData?.phoneNumber ?? ""}
+                          required
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                +63
+                              </InputAdornment>
+                            ),
+                          }}
+                          className="register__textField"
+                          helperText={errors?.phoneNumber?.message}
+                          error={!!errors?.phoneNumber}
+                          disabled
+                        />
+                      );
+                    }}
+                  />
+                  {/* <TextField
                     label="Phone Number"
                     type="number"
                     size="small"
@@ -645,19 +694,57 @@ function RegisterRegularForm({ open, onClose }) {
                           <Typography sx={{ color: "#9E9E9E" }}>+63</Typography>
                         </InputAdornment>
                       ),
-                      onInput: handlePhoneNumberInput,
+                      // onInput: handlePhoneNumberInput,
                     }}
                     disabled
                     className="register__textField"
                     // {...register("phoneNumber")}
                     // helperText={errors?.phoneNumber?.message}
                     // error={errors?.phoneNumber}
-                  />
+                  /> */}
                 </Box>
               </Box>
               <Box className="register__firstRow__tinNumber">
                 <Typography className="register__title">TIN Number</Typography>
-                <TextField
+
+                <Controller
+                  control={control}
+                  name={"tinNumber"}
+                  render={({ field: { onChange, onBlur, value, ref } }) => {
+                    const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
+                    let format = "###-###-###-###";
+
+                    if (formattedValue.length <= 3) {
+                      format = "####";
+                    } else if (formattedValue.length <= 6) {
+                      format = "###-####";
+                    } else if (formattedValue.length <= 9) {
+                      format = "###-###-####";
+                    }
+
+                    return (
+                      <PatternFormat
+                        format={format}
+                        label="TIN Number"
+                        type="text"
+                        size="small"
+                        customInput={TextField}
+                        autoComplete="off"
+                        allowNegative={false}
+                        decimalScale={0}
+                        onValueChange={(e) => {
+                          onChange(e.value);
+                        }}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        required
+                        helperText={errors?.tinNumber?.message}
+                        error={!!errors?.tinNumber}
+                      />
+                    );
+                  }}
+                />
+                {/* <TextField
                   label="TIN Number"
                   size="small"
                   type="number"
@@ -667,7 +754,7 @@ function RegisterRegularForm({ open, onClose }) {
                   {...register("tinNumber")}
                   helperText={errors?.tinNumber?.message}
                   error={errors?.tinNumber}
-                />
+                /> */}
               </Box>
             </Box>
             <Box className="register__secondRow">

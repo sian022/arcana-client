@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
 import CommonTableSkeleton from "./CommonTableSkeleton";
 import { Visibility } from "@mui/icons-material";
+import { formatPhoneNumber } from "../utils/CustomFunctions";
 
 function CommonTable({
   mapData,
@@ -39,6 +40,7 @@ function CommonTable({
   onAddPriceChange,
   onVoid,
   onHistory,
+  onDelete,
   onPrintFreebies,
   page,
   setPage,
@@ -168,10 +170,18 @@ function CommonTable({
                       );
                     }
 
+                    if (keys === "phoneNumber") {
+                      return (
+                        <TableCell key={k}>
+                          {item[keys] && "+63 " + formatPhoneNumber(item[keys])}
+                        </TableCell>
+                      );
+                    }
+
                     return (
                       <TableCell key={k}>
                         {pesoArray && pesoArray.includes(keys) && "₱ "}
-                        {keys === "phoneNumber" && "+63"}
+                        {/* {keys === "phoneNumber" && "+63"} */}
 
                         {percentageArray && percentageArray.includes(keys)
                           ? item[keys] * 100
@@ -207,6 +217,7 @@ function CommonTable({
                         onVoid={onVoid && onVoid}
                         onHistory={onHistory && onHistory}
                         onPrintFreebies={onPrintFreebies && onPrintFreebies}
+                        onDelete={onDelete && onDelete}
                         item={item}
                         status={status}
                         disableActions={disableActions}
