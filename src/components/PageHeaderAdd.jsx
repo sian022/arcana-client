@@ -4,7 +4,7 @@ import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
 import { debounce } from "../utils/CustomFunctions";
 
-function PageHeaderAdd({ onOpen, pageTitle, setStatus, setSearch }) {
+function PageHeaderAdd({ onOpen, pageTitle, setStatus, setSearch, removeAdd }) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
@@ -14,9 +14,11 @@ function PageHeaderAdd({ onOpen, pageTitle, setStatus, setSearch }) {
       <Box component={Paper} className="pageHeader">
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
-          <SecondaryButton className="addRowButtons" onClick={onOpen}>
-            Add
-          </SecondaryButton>
+          {!removeAdd && (
+            <SecondaryButton className="addRowButtons" onClick={onOpen}>
+              Add
+            </SecondaryButton>
+          )}
         </Box>
         <Box className="pageHeader__right">
           <Checkbox

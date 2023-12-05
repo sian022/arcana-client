@@ -166,6 +166,7 @@ function VariableDiscount() {
     setValue("id", editData.id);
     setValue("minimumAmount", editData.minimumAmount);
     setValue("maximumAmount", editData.maximumAmount);
+    setValue("maximumAmountUpperBoundary", editData.maximumAmount + 0.999);
     setValue("minimumPercentage", editData.minimumPercentage * 100);
     setValue("maximumPercentage", editData.maximumPercentage * 100);
   };
@@ -194,12 +195,19 @@ function VariableDiscount() {
     if (isDrawerOpen && drawerMode === "add") {
       setValue(
         "minimumAmount",
-        // data?.discount[data?.discount?.length - 1]?.maximumAmount + 0.000001
         Math.ceil(data?.discount[data?.discount?.length - 1]?.maximumAmount) + 1
+      );
+
+      setValue(
+        "minimumPercentage",
+        Math.ceil(
+          data?.discount[data?.discount?.length - 1]?.maximumPercentage * 100
+        ) + 1
       );
     }
   }, [isDrawerOpen]);
 
+  console.log(data?.discount);
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -207,6 +215,7 @@ function VariableDiscount() {
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
+        removeAdd={!status}
       />
       {isFetching ? (
         <CommonTableSkeleton />
@@ -252,9 +261,11 @@ function VariableDiscount() {
               onValueChange={(e) => {
                 onChange(Number(e.value));
               }}
+              allowNegative={false}
+              decimalScale={0}
               onBlur={onBlur}
               value={value || ""}
-              ref={ref}
+              // ref={ref}
               required
               thousandSeparator=","
               disabled={data?.discount?.length > 0 && drawerMode === "add"}
@@ -284,34 +295,55 @@ function VariableDiscount() {
               size="small"
               customInput={TextField}
               autoComplete="off"
+              allowNegative={false}
+              decimalScale={0}
               onValueChange={(e) => {
                 onChange(Number(e.value));
+                setValue(
+                  "maximumAmountUpperBoundary",
+                  parseFloat(e.value) + 0.999
+                );
               }}
               onBlur={onBlur}
               value={value || ""}
-              ref={ref}
+              // ref={ref}
               required
               thousandSeparator=","
             />
           )}
         />
-        {/* <TextField
-          label="Maximum Amount (₱)"
-          size="small"
-          autoComplete="off"
-          {...register("maximumAmount")}
-          helperText={errors?.maximumAmount?.message}
-          error={errors?.maximumAmount}
-          type="number"
-          inputProps={{ min: 0 }}
-        /> */}
+
+        <Controller
+          control={control}
+          name={"maximumAmountUpperBoundary"}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <NumericFormat
+              label="Upper Boundary (₱)"
+              type="text"
+              size="small"
+              customInput={TextField}
+              autoComplete="off"
+              allowNegative={false}
+              decimalScale={3}
+              onValueChange={(e) => {
+                onChange(Number(e.value));
+              }}
+              onBlur={onBlur}
+              value={value || ""}
+              // ref={ref}
+              required
+              thousandSeparator=","
+              disabled
+            />
+          )}
+        />
 
         <Controller
           control={control}
           name={"minimumPercentage"}
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <NumericFormat
-              label="Minimum Percentage"
+              label="Minimum Percentage (%)"
               type="text"
               size="small"
               customInput={TextField}
@@ -321,10 +353,12 @@ function VariableDiscount() {
               }}
               onBlur={onBlur}
               value={value || ""}
-              ref={ref}
+              // ref={ref}
               required
               thousandSeparator=","
-              inputProps={{ min: 0 }}
+              allowNegative={false}
+              decimalScale={0}
+              disabled={data?.discount?.length > 0 && drawerMode === "add"}
             />
           )}
         />
@@ -344,7 +378,7 @@ function VariableDiscount() {
           name={"maximumPercentage"}
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <NumericFormat
-              label="Maximum Percentage"
+              label="Maximum Percentage (%)"
               type="text"
               size="small"
               customInput={TextField}
@@ -354,13 +388,15 @@ function VariableDiscount() {
               }}
               onBlur={onBlur}
               value={value || ""}
-              ref={ref}
+              // ref={ref}
               required
               thousandSeparator=","
-              inputProps={{ min: 0 }}
+              allowNegative={false}
+              decimalScale={0}
             />
           )}
         />
+
         {/* <TextField
           label="Maximum Percentage"
           size="small"

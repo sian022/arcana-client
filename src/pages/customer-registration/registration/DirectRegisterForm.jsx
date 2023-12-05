@@ -561,6 +561,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     if (activeTab === "Personal Info") {
       try {
         await postValidateClient({
+          clientId: editMode ? selectedRowData?.id : 0,
           businessName: watch("businessName"),
           fullName: watch("ownersName"),
           businessTypeId: watch("storeTypeId")?.id,

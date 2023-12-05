@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   IconButton,
   InputAdornment,
   TextField,
@@ -374,6 +375,7 @@ function RegisterRegularForm({ open, onClose }) {
 
       try {
         await postValidateClient({
+          clientId: selectedRowData?.id,
           businessName: watch("businessName"),
           fullName: watch("ownersName"),
           businessTypeId: watch("storeTypeId")?.id,
