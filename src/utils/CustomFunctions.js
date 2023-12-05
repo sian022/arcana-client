@@ -149,6 +149,6 @@ export const formatPhoneNumber = (inputNumber) => {
 
     return formattedNumber;
   } else {
-    return "Invalid input";
+    return inputNumber;
   }
 };
