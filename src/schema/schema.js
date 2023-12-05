@@ -249,6 +249,36 @@ export const prospectSchema = {
   },
 };
 
+export const prospectWithLocationsSchema = {
+  schema: yup.object({
+    ownersName: yup.string().required("Owner's name is required"),
+
+    emailAddress: yup.string().required("Email address is required"),
+    houseNumber: yup.string(),
+    // .required("House number is required")
+    streetName: yup.string(),
+    // .required("Street name is required")
+    barangayName: yup.object().required("Barangay name is required"),
+    city: yup.object().required("City/Municipality is required"),
+    province: yup.object().required("Province is required"),
+    phoneNumber: yup.string().required("Phone number is required"),
+    businessName: yup.string().required("Business name is required"),
+    storeTypeId: yup.object().required("Store type is required"),
+  }),
+  defaultValues: {
+    ownersName: "",
+    emailAddress: "",
+    houseNumber: "",
+    streetName: "",
+    barangayName: null,
+    city: null,
+    province: null,
+    phoneNumber: "",
+    businessName: "",
+    storeTypeId: null,
+  },
+};
+
 export const requestFreebiesSchema = {
   schema: yup.object({
     clientId: yup.number().required("Client ID is required").integer(),

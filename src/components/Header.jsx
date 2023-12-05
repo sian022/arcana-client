@@ -49,17 +49,24 @@ function Header() {
     permissions?.includes(item.name)
   );
 
-  const navigationLabel = permittedRoutes.reduce((accumulator, item) => {
-    if (item.sub) {
-      accumulator.push(...item.sub);
-    }
-    return accumulator;
-  }, []);
+  const navigationLabel = [
+    navigationData[0],
+    ...permittedRoutes.reduce((accumulator, item) => {
+      if (item.sub) {
+        accumulator.push(...item.sub);
+      }
+      return accumulator;
+    }, []),
+  ];
 
-  const initialPage =
-    location.pathname === "/"
-      ? navigationData[0]
-      : navigationLabel?.find((item) => location.pathname?.includes(item.path));
+  // const initialPage =
+  //   location.pathname === "/"
+  //     ? navigationData[0]
+  //     : navigationLabel?.find((item) => location.pathname?.includes(item.path));
+
+  const initialPage = navigationLabel?.find((item) =>
+    location.pathname?.includes(item.path)
+  );
 
   const [currentPage, setCurrentPage] = useState(initialPage);
 
@@ -142,14 +149,16 @@ function Header() {
     onMenuClose();
   };
 
-  // useEffect(() => {
-  //   if (location.pathname !== "/" || location.pathname !== "") {
-  //     const foundItem = navigationLabel?.find((item) =>
-  //       location.pathname?.includes(item.path)
-  //     );
-  //     setCurrentPage(foundItem);
-  //   }
-  // }, [location.pathname]);
+  useEffect(() => {
+    // if (location.pathname !== "/" || location.pathname !== "") {
+    const foundItem = navigationLabel?.find(
+      (item) =>
+        // location.pathname?.includes(item.path)
+        location.pathname === item.path
+    );
+    setCurrentPage(foundItem);
+    // }
+  }, [location.pathname]);
 
   // console.log(currentPage);
   return (
@@ -192,6 +201,7 @@ function Header() {
           <Autocomplete
             options={navigationLabel}
             getOptionLabel={(option) => option.name}
+            isOptionEqualToValue={(option, value) => true}
             disableClearable
             className="navbar__endButtons__quickNavigate"
             value={currentPage}

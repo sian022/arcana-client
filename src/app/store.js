@@ -28,6 +28,7 @@ import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
 import { disclosureSlice } from "../features/misc/reducers/disclosureSlice";
 import { approverApi } from "../features/user-management/api/approverApi";
 import { notificationApi } from "../features/notification/api/notificationApi";
+import { phLocationsApi } from "../features/location/api/phLocationsApi";
 
 export const store = configureStore({
   reducer: {
@@ -59,6 +60,7 @@ export const store = configureStore({
     [userConfigApi.reducerPath]: userConfigApi.reducer,
     [listingFeeApi.reducerPath]: listingFeeApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
+    [phLocationsApi.reducerPath]: phLocationsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -84,6 +86,7 @@ export const store = configureStore({
       userConfigApi.middleware,
       listingFeeApi.middleware,
       notificationApi.middleware,
+      phLocationsApi.middleware,
     ]),
 });
 

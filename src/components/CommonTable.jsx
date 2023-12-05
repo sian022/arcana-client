@@ -20,6 +20,7 @@ import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
 import CommonTableSkeleton from "./CommonTableSkeleton";
 import { Visibility } from "@mui/icons-material";
 import { formatPhoneNumber } from "../utils/CustomFunctions";
+import moment from "moment";
 
 function CommonTable({
   mapData,
@@ -172,8 +173,18 @@ function CommonTable({
 
                     if (keys === "phoneNumber") {
                       return (
-                        <TableCell key={k}>
+                        <TableCell>
                           {item[keys] && "+63 " + formatPhoneNumber(item[keys])}
+                        </TableCell>
+                      );
+                    }
+
+                    if (keys === "createdAt") {
+                      return (
+                        <TableCell>
+                          {item[keys] &&
+                            moment(item[keys]).format("MMMM D, YYYY")}
+                          {/* // H:mm a */}
                         </TableCell>
                       );
                     }

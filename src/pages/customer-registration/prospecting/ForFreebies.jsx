@@ -7,10 +7,14 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  createFilterOptions,
 } from "@mui/material";
 import CommonTable from "../../../components/CommonTable";
 import CommonDrawer from "../../../components/CommonDrawer";
-import { prospectSchema } from "../../../schema/schema";
+import {
+  prospectSchema,
+  prospectWithLocationsSchema,
+} from "../../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
@@ -37,6 +41,11 @@ import AccentButton from "../../../components/AccentButton";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
+import {
+  useGetAllBarangaysQuery,
+  useGetAllCitiesQuery,
+  useGetAllProvincesQuery,
+} from "../../../features/location/api/phLocationsApi";
 
 function ForFreebies() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -140,8 +149,10 @@ function ForFreebies() {
     getValues,
   } = useForm({
     resolver: yupResolver(prospectSchema.schema),
+    // resolver: yupResolver(prospectWithLocationsSchema.schema),
     mode: "onChange",
     defaultValues: prospectSchema.defaultValues,
+    // defaultValues: prospectWithLocationsSchema.defaultValues,
   });
 
   //RTK Query
@@ -158,6 +169,12 @@ function ForFreebies() {
     usePatchProspectStatusMutation();
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
+
+  // const { data: provinceData, isFetching: isProvinceFetching } =
+  //   useGetAllProvincesQuery();
+  // const { data: cityData, isFetching: isCityFetching } = useGetAllCitiesQuery();
+  // const { data: barangayData, isFetching: isBarangayFetching } =
+  //   useGetAllBarangaysQuery();
 
   //Drawer Handlers
   const onDrawerSubmit = async (data) => {
@@ -271,6 +288,11 @@ function ForFreebies() {
     onFreebieFormOpen();
     onFreebieConfirmClose();
   };
+
+  // const cityFilterOptions = createFilterOptions({
+  //   matchFrom: "any",
+  //   limit: 50,
+  // });
 
   //useEffects
   useEffect(() => {
@@ -464,6 +486,34 @@ function ForFreebies() {
                 helperText={errors?.streetName?.message}
                 error={errors?.streetName}
               />
+
+              {/* <ControlledAutocomplete
+                disabled={
+                  (!editMode && drawerMode === "edit") || !watch("city")
+                }
+                name={"barangayName"}
+                control={control}
+                options={
+                  barangayData?.filter(
+                    (barangay) =>
+                      barangay?.city_code === watch("barangayName")?.id
+                  ) || []
+                }
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                loading={isBarangayFetching}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Barangay"
+                    required
+                    helperText={errors?.city?.message}
+                    error={errors?.city}
+                  />
+                )}
+              /> */}
               <TextField
                 disabled={!editMode && drawerMode === "edit"}
                 label="Barangay"
@@ -476,6 +526,33 @@ function ForFreebies() {
               />
             </Box>
             <Box className="register__secondRow__content">
+              {/* <ControlledAutocomplete
+                disabled={
+                  (!editMode && drawerMode === "edit") || !watch("province")
+                }
+                name={"city"}
+                control={control}
+                options={
+                  cityData?.filter(
+                    (city) => city?.province_code === watch("province")?.id
+                  ) || []
+                }
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                loading={isCityFetching}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Municipality/City"
+                    required
+                    helperText={errors?.city?.message}
+                    error={errors?.city}
+                  />
+                )}
+              /> */}
+
               <TextField
                 disabled={!editMode && drawerMode === "edit"}
                 label="Municipality/City"
@@ -486,6 +563,31 @@ function ForFreebies() {
                 helperText={errors?.city?.message}
                 error={errors?.city}
               />
+
+              {/* <ControlledAutocomplete
+                disabled={!editMode && drawerMode === "edit"}
+                name={"province"}
+                control={control}
+                options={provinceData || []}
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                // value={storeTypeData?.storeTypes?.find(
+                //   (store) => store.storeTypeName === selectedStoreType
+                // )}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                loading={isProvinceFetching}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Province"
+                    required
+                    helperText={errors?.province?.message}
+                    error={errors?.province}
+                  />
+                )}
+              /> */}
+
               <TextField
                 disabled={!editMode && drawerMode === "edit"}
                 label="Province"

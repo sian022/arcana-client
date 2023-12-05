@@ -156,8 +156,6 @@ function ListingFee() {
     setCount(data?.totalCount);
   }, [data]);
 
-  console.log(data);
-
   return (
     <>
       <Box className="commonPageLayout">
