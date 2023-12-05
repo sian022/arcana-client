@@ -1028,7 +1028,7 @@ function RegisterRegularForm({ open, onClose }) {
             <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
               {isValidateClientLoading ? (
                 <>
-                  <CircularProgress size="20px" />
+                  <CircularProgress size="20px" color="white" />
                 </>
               ) : (
                 "Next"

@@ -129,3 +129,9 @@ export const handlePhoneNumberInput = (e) => {
   const inputValue = e.target.value.toString().slice(0, maxLength);
   e.target.value = inputValue;
 };
+
+export const dashFormat = (inputValue) => {
+  // Use regex to add a dash after every three digits from the left
+  const formattedValue = inputValue.replace(/\B(?=(\d{3})+(?!\d))/g, "-");
+  return formattedValue;
+};

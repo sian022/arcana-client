@@ -437,7 +437,27 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                   }}
                 />
 
-                {photoProof && (
+                {!direct && photoProof && (
+                  <IconButton
+                    className="attachments__column__content__item__viewOwner"
+                    onClick={() => {
+                      onViewPhotoOpen();
+                    }}
+                    sx={{
+                      color: "secondary.main",
+                      border: "none !important",
+                      bgcolor: "white !important",
+                      position: "absolute",
+                      right: "305px",
+                      // right: signature ? "330px" : "305px",
+                      bottom: "83px",
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                )}
+
+                {direct && photoProofDirect && (
                   <IconButton
                     className="attachments__column__content__item__viewOwner"
                     onClick={() => {
@@ -510,7 +530,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
       <ViewPhotoModal
         open={isViewPhotoOpen}
         onClose={onViewPhotoClose}
-        currentViewPhoto={photoProof}
+        currentViewPhoto={direct ? photoProofDirect : photoProof}
         currentViewPhotoLabel={"Freebie Photo"}
       />
 

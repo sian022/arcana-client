@@ -207,7 +207,6 @@ function VariableDiscount() {
     }
   }, [isDrawerOpen]);
 
-  console.log(data?.discount);
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -272,18 +271,6 @@ function VariableDiscount() {
             />
           )}
         />
-        {/* <TextField
-          label="Minimum Amount (₱)"
-          size="small"
-          autoComplete="off"
-          {...register("minimumAmount")}
-          helperText={errors?.minimumAmount?.message}
-          error={errors?.minimumAmount}
-          type="number"
-          inputProps={{ min: 0 }}
-          disabled={data?.discount?.length > 0}
-          // value={data?.discount[data?.discount?.length - 1]?.minimumAmount + 1}
-        /> */}
 
         <Controller
           control={control}

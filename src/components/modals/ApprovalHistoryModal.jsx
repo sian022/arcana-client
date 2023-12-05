@@ -406,6 +406,36 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     </StepLabel>
                   </Step>
                 ))} */}
+
+              <Step active expanded>
+                <StepLabel
+                  StepIconComponent={() => (
+                    <Circle sx={{ color: "primary.main" }} />
+                  )}
+                  sx={{ position: "relative" }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: "-170px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {moment(selectedRowData?.createdAt).format(
+                      "MMMM D HH:mm a"
+                    )}
+                  </span>
+
+                  <span
+                    style={{
+                      fontWeight: "700",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Requested
+                  </span>
+                </StepLabel>
+              </Step>
             </Stepper>
           </Box>
         </Box>

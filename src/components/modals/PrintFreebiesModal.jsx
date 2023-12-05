@@ -257,7 +257,7 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                               ?.eSignature
                           }
                           width="70px"
-                          onClick={onCanvasOpen}
+                          // onClick={onCanvasOpen}
                         />
                       </Box>
                       <Typography>{selectedRowData?.ownersName}</Typography>

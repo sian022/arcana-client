@@ -53,6 +53,7 @@ import {
 import {
   base64ToBlob,
   convertToTitleCase,
+  dashFormat,
   debounce,
   shallowEqual,
 } from "../../../utils/CustomFunctions";
@@ -70,6 +71,7 @@ import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi"
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
+import { NumericFormat, PatternFormat } from "react-number-format";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -110,7 +112,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     (state) => state.regularRegistration.value.termsAndConditions
   );
   const freebiesDirect = useSelector(
-    (state) => state.regularRegistration.value.freebies
+    (state) => state.regularRegistration.value.directFreebie.freebies
   );
 
   //Disclosures
@@ -332,28 +334,28 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             : {}),
         }).unwrap();
 
+        if (freebiesDirect && signatureDirect && photoProofDirect) {
+          const signatureFile = new File(
+            [base64ToBlob(signatureDirect)],
+            `signature_${Date.now()}.jpg`,
+            { type: "image/jpeg" }
+          );
+
+          const formData = new FormData();
+          formData.append("PhotoProof", photoProofDirect);
+          formData.append("ESignature", signatureFile);
+
+          await putReleaseFreebies({
+            id: response?.value?.id,
+            body: formData,
+          }).unwrap();
+
+          setPhotoProofDirect(null);
+          setSignatureDirect(null);
+          dispatch(resetFreebies());
+        }
+
         await addAttachmentsSubmit(response?.value?.id);
-      }
-
-      if (freebiesDirect && signatureDirect && photoProofDirect) {
-        const signatureFile = new File(
-          [base64ToBlob(signatureDirect)],
-          `signature_${Date.now()}.jpg`,
-          { type: "image/jpeg" }
-        );
-
-        const formData = new FormData();
-        formData.append("PhotoProof", photoProofDirect);
-        formData.append("ESignature", signatureFile);
-
-        await putReleaseFreebies({
-          id: response?.value?.id,
-          body: formData,
-        }).unwrap();
-
-        setPhotoProofDirect(null);
-        setSignatureDirect(null);
-        dispatch(resetFreebies());
       }
 
       setIsAllApiLoading(false);
@@ -375,6 +377,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
       setIsAllApiLoading(false);
+
+      //Reset Direct Freebies
+      setPhotoProofDirect(null);
+      setSignatureDirect(null);
+      dispatch(resetFreebies());
+
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
       } else {
@@ -559,20 +567,23 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   //Misc Functions
   const handleNext = async () => {
     if (activeTab === "Personal Info") {
-      try {
-        await postValidateClient({
-          clientId: editMode ? selectedRowData?.id : 0,
-          businessName: watch("businessName"),
-          fullName: watch("ownersName"),
-          businessTypeId: watch("storeTypeId")?.id,
-        }).unwrap();
-      } catch (error) {
-        if (error?.data?.error?.message) {
-          showSnackbar(error?.data?.error?.message, "error");
-        } else {
-          showSnackbar("Client already exists", "error");
+      //Temporary only to disable it on editMode
+      if (!editMode) {
+        try {
+          await postValidateClient({
+            clientId: editMode ? selectedRowData?.id : 0,
+            businessName: watch("businessName"),
+            fullName: watch("ownersName"),
+            businessTypeId: watch("storeTypeId")?.id,
+          }).unwrap();
+        } catch (error) {
+          if (error?.data?.error?.message) {
+            showSnackbar(error?.data?.error?.message, "error");
+          } else {
+            showSnackbar("Client already exists", "error");
+          }
+          return;
         }
-        return;
       }
 
       setActiveTab("Terms and Conditions");
@@ -944,6 +955,32 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               </Box>
               <Box className="register__firstRow__tinNumber">
                 <Typography className="register__title">TIN Number</Typography>
+
+                {/* <Controller
+                  control={control}
+                  name={"tinNumber"}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <PatternFormat
+                      format="###-###-###-###"
+                      allowEmptyFormatting
+                      mask="_"
+                      label="TIN Number"
+                      type="text"
+                      size="small"
+                      customInput={TextField}
+                      autoComplete="off"
+                      allowNegative={false}
+                      decimalScale={0}
+                      onValueChange={(e) => {
+                        onChange(e.value);
+                      }}
+                      onBlur={onBlur}
+                      value={value || ""}
+                      required
+                    />
+                  )}
+                /> */}
+
                 <TextField
                   label="TIN Number"
                   type="number"
@@ -1398,7 +1435,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
               {isValidateClientLoading ? (
                 <>
-                  <CircularProgress size="20px" />
+                  <CircularProgress size="20px" color="white" />
                 </>
               ) : (
                 "Next"

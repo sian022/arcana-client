@@ -171,6 +171,7 @@ function DirectRegistration() {
     "modeOfPayments",
     "updateHistories",
     "listingFees",
+    "createdAt",
   ];
 
   const tableHeads = [

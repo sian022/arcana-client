@@ -155,7 +155,7 @@ export const registrationApi = createApi({
     }),
 
     putReleaseFreebies: builder.mutation({
-      query: ({ id, ...body }) => ({
+      query: ({ id, body }) => ({
         url: `/Freebies/ReleaseFreebies/${id}`,
         method: "PUT",
         body: body,
