@@ -72,6 +72,7 @@ import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat, PatternFormat } from "react-number-format";
+import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -761,6 +762,15 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           variableDiscount: !selectedRowData?.variableDiscount
             ? false
             : selectedRowData?.variableDiscount,
+          // fixedDiscount:
+          //   selectedRowData?.fixedDiscount === null
+          //     ? {
+          //         discountPercentage: null,
+          //       }
+          //     : {
+          //         discountPercentage:
+          //           selectedRowData?.fixedDiscount?.discountPercentage * 100,
+          //       },
           fixedDiscount:
             selectedRowData?.fixedDiscount === null
               ? {
@@ -768,7 +778,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 }
               : {
                   discountPercentage:
-                    selectedRowData?.fixedDiscount?.discountPercentage * 100,
+                    selectedRowData?.fixedDiscount?.discountPercentage,
                 },
         })
       );
@@ -962,8 +972,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <PatternFormat
                       format="###-###-###-###"
-                      allowEmptyFormatting
-                      mask="_"
                       label="TIN Number"
                       type="text"
                       size="small"
@@ -1507,7 +1515,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         ?
       </CommonDialog>
 
-      <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} />
+      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
+      <ListingFeeDrawer
+        isListingFeeOpen={isListingFeeOpen}
+        onListingFeeClose={onListingFeeClose}
+        redirect
+      />
     </>
   );
 }

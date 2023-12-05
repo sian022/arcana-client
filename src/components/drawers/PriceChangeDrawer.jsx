@@ -173,7 +173,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
           label="Current Price (₱)"
           size="small"
           disabled
-          value={selectedRowData?.latestPriceChange?.price}
+          value={selectedRowData?.priceChangeHistories?.[0]?.price}
           thousandSeparator=","
         />
         <Controller
