@@ -1016,15 +1016,17 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   name={"tinNumber"}
                   render={({ field: { onChange, onBlur, value, ref } }) => {
                     const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
-                    let format = "###-###-###-###";
+                    // let format = "###-###-###-###";
+                    let format = "###-###-###";
 
                     if (formattedValue.length <= 3) {
                       format = "####";
                     } else if (formattedValue.length <= 6) {
                       format = "###-####";
-                    } else if (formattedValue.length <= 9) {
-                      format = "###-###-####";
                     }
+                    //  else if (formattedValue.length <= 9) {
+                    //   format = "###-###-####";
+                    // }
 
                     return (
                       <PatternFormat

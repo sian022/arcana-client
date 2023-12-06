@@ -274,6 +274,7 @@ function ForFreebiesWithLocations() {
   };
 
   const handleEditOpen = (editData) => {
+    console.log(editData);
     setDrawerMode("edit");
     onDrawerOpen();
 
@@ -283,8 +284,21 @@ function ForFreebiesWithLocations() {
     setValue("houseNumber", editData.ownersAddress.houseNumber);
     setValue("streetName", editData.ownersAddress.streetName);
     setValue("barangayName", editData.ownersAddress.barangayName);
-    setValue("city", editData.ownersAddress.city);
-    setValue("province", editData.ownersAddress.province);
+
+    setValue(
+      "province",
+      provinceData?.find(
+        (item) => item.name === editData.ownersAddress.province
+      )
+    ).then(setProvinceCode(watch("province")?.code));
+
+    setValue(
+      "city",
+      municipalityData?.find(
+        (item) => item.name === editData.ownersAddress.city
+      )
+    );
+
     setValue("phoneNumber", editData.phoneNumber);
     setValue("businessName", editData.businessName);
     setValue(
@@ -334,7 +348,7 @@ function ForFreebiesWithLocations() {
     }
   }, [isDrawerOpen]);
 
-  console.log(isProvinceFetching);
+  console.log(errors);
   return (
     <>
       <Box>
@@ -438,6 +452,7 @@ function ForFreebiesWithLocations() {
                         onChange(e.value);
                       }}
                       onBlur={onBlur}
+                      ref={ref}
                       value={value || ""}
                       required
                       InputProps={{

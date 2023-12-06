@@ -172,6 +172,7 @@ function DirectRegistration() {
     "updateHistories",
     "listingFees",
     "createdAt",
+    "origin",
   ];
 
   const tableHeads = [
@@ -179,6 +180,7 @@ function DirectRegistration() {
     "Contact Number",
     "Email Address",
     "Business Name",
+    // "Origin",
     "Business Type",
     "Requested By",
   ];

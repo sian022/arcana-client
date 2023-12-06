@@ -24,11 +24,29 @@ import {
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { formatOrdinalPrefix } from "../../utils/CustomFunctions";
+import { useGetApproversPerModuleQuery } from "../../features/user-management/api/approverApi";
 
 function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const { data: approverData, isFetching: isApproverFetching } =
+    useGetApproversPerModuleQuery();
+
+  // const steps = [
+  //   { label: "Requested", icon: <EventNote /> },
+  //   // { label: "1st Approval", icon: <Check /> },
+  //   // { label: "2nd Approval", icon: <CheckCircle /> },
+  //   // { label: "Regular Client", icon: <HowToReg /> },
+  // ];
+
+  // const approverSteps = approverData?.registration?.map((approver) => ({
+  //   label: approver,
+  //   icon: <Check />,
+  // }));
+
+  // steps?.push(approverSteps);
 
   const steps = [
     { label: "Requested", icon: <EventNote /> },

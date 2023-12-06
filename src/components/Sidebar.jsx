@@ -90,101 +90,103 @@ function Sidebar() {
             </IconButton>
           </Box>
           <Box className="sidebar__navigation">
-            {/* {permittedSidebar.map( */}
-            {navigationData.map((item) => (
-              <React.Fragment key={item.id}>
-                <NavLink to={item.path}>
-                  {({ isActive }) => (
-                    <ListItem disablePadding sx={{ px: 2 }}>
-                      <ListItemButton
-                        className={`sidebar__navigation__button  ${
-                          isActive ? "active" : ""
-                        }`}
-                        onClick={() => {
-                          // sessionStorage.setItem("activeModule", item.name);
-                          setActiveModule(
-                            // activeModule === item.path ? "" : item.path
-                            activeModule?.includes(item.path) ? "" : item.path
-                          );
-                        }}
-                      >
-                        <ListItemIcon
-                          className={`sidebar__navigation__button__icon  ${
+            {permittedSidebar.map(
+              // {navigationData.map(
+              (item) => (
+                <React.Fragment key={item.id}>
+                  <NavLink to={item.path}>
+                    {({ isActive }) => (
+                      <ListItem disablePadding sx={{ px: 2 }}>
+                        <ListItemButton
+                          className={`sidebar__navigation__button  ${
                             isActive ? "active" : ""
                           }`}
+                          onClick={() => {
+                            // sessionStorage.setItem("activeModule", item.name);
+                            setActiveModule(
+                              // activeModule === item.path ? "" : item.path
+                              activeModule?.includes(item.path) ? "" : item.path
+                            );
+                          }}
                         >
-                          {getIconElement(item.icon)}
-                        </ListItemIcon>
+                          <ListItemIcon
+                            className={`sidebar__navigation__button__icon  ${
+                              isActive ? "active" : ""
+                            }`}
+                          >
+                            {getIconElement(item.icon)}
+                          </ListItemIcon>
 
-                        <ListItemText>{item.name}</ListItemText>
+                          <ListItemText>{item.name}</ListItemText>
 
-                        {item?.notifications?.reduce(
-                          (sum, notification) =>
-                            sum + parseInt(notifications[notification]),
-                          0
-                        ) > 0 && (
-                          <Box sx={{ width: "20px", height: "20px" }}>
-                            {item.notifications && (
-                              <Box
-                                sx={{
-                                  bgcolor: "notification.main",
-                                  borderRadius: "50%",
-                                  // width: "12%",
-                                  width: "20px",
-                                  height: "20px",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  color: "white !important",
-                                }}
-                              >
-                                {item?.notifications?.reduce(
-                                  (sum, notification) =>
-                                    sum + parseInt(notifications[notification]),
-                                  0
-                                )}
-                              </Box>
-                            )}
-                          </Box>
-                        )}
+                          {item?.notifications?.reduce(
+                            (sum, notification) =>
+                              sum + parseInt(notifications[notification]),
+                            0
+                          ) > 0 && (
+                            <Box sx={{ width: "20px", height: "20px" }}>
+                              {item.notifications && (
+                                <Box
+                                  sx={{
+                                    bgcolor: "notification.main",
+                                    borderRadius: "50%",
+                                    // width: "12%",
+                                    width: "20px",
+                                    height: "20px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    color: "white !important",
+                                  }}
+                                >
+                                  {item?.notifications?.reduce(
+                                    (sum, notification) =>
+                                      sum +
+                                      parseInt(notifications[notification]),
+                                    0
+                                  )}
+                                </Box>
+                              )}
+                            </Box>
+                          )}
 
-                        {/* {sidebarToggled && (
+                          {/* {sidebarToggled && (
                         <ListItemText>{item.name}</ListItemText>
                       )} */}
-                      </ListItemButton>
-                    </ListItem>
-                  )}
-                </NavLink>
+                        </ListItemButton>
+                      </ListItem>
+                    )}
+                  </NavLink>
 
-                {item.sub && (
-                  <Collapse
-                    // in={activeModule === item.path}
-                    in={activeModule?.includes(item.path)}
-                    timeout="auto"
-                    unmountOnExit
-                  >
-                    {item.sub.map((subItem) => (
-                      <NavLink to={subItem.path} key={subItem.id}>
-                        {({ isActive }) => (
-                          <ListItem disablePadding sx={{ px: 2 }}>
-                            <ListItemButton
-                              className={`sidebar__navigation__subButton  ${
-                                isActive ? "active" : ""
-                              }`}
-                            >
-                              <ListItemIcon
-                                className={`sidebar__navigation__subButton__icon  ${
+                  {item.sub && (
+                    <Collapse
+                      // in={activeModule === item.path}
+                      in={activeModule?.includes(item.path)}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      {item.sub.map((subItem) => (
+                        <NavLink to={subItem.path} key={subItem.id}>
+                          {({ isActive }) => (
+                            <ListItem disablePadding sx={{ px: 2 }}>
+                              <ListItemButton
+                                className={`sidebar__navigation__subButton  ${
                                   isActive ? "active" : ""
                                 }`}
                               >
-                                {getIconElement(subItem.icon)}
-                              </ListItemIcon>
+                                <ListItemIcon
+                                  className={`sidebar__navigation__subButton__icon  ${
+                                    isActive ? "active" : ""
+                                  }`}
+                                >
+                                  {getIconElement(subItem.icon)}
+                                </ListItemIcon>
 
-                              {/* {sidebarToggled && (
+                                {/* {sidebarToggled && (
                               <ListItemText>{subItem.name}</ListItemText>
                             )} */}
-                              <ListItemText>{subItem.name}</ListItemText>
-                              {/* {subItem.notification && (
+                                <ListItemText>{subItem.name}</ListItemText>
+                                {/* {subItem.notification && (
                                   <Box
                                     sx={{
                                       bgcolor: "notification.main",
@@ -201,46 +203,49 @@ function Sidebar() {
                                       notifications[subItem.notification]}
                                   </Box>
                                 )} */}
-                              {subItem?.notifications?.reduce(
-                                (sum, notification) =>
-                                  sum + parseInt(notifications[notification]),
-                                0
-                              ) > 0 && (
-                                <Box sx={{ width: "20px", height: "20px" }}>
-                                  {subItem?.notifications && (
-                                    <Box
-                                      sx={{
-                                        bgcolor: "notification.main",
-                                        borderRadius: "50%",
-                                        // width: "12%",
-                                        width: "20px",
-                                        height: "20px",
-                                        // height: "20px",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        color: "white !important",
-                                      }}
-                                    >
-                                      {subItem?.notifications?.reduce(
-                                        (sum, notification) =>
-                                          sum +
-                                          parseInt(notifications[notification]),
-                                        0
-                                      )}
-                                    </Box>
-                                  )}
-                                </Box>
-                              )}
-                            </ListItemButton>
-                          </ListItem>
-                        )}
-                      </NavLink>
-                    ))}
-                  </Collapse>
-                )}
-              </React.Fragment>
-            ))}
+                                {subItem?.notifications?.reduce(
+                                  (sum, notification) =>
+                                    sum + parseInt(notifications[notification]),
+                                  0
+                                ) > 0 && (
+                                  <Box sx={{ width: "20px", height: "20px" }}>
+                                    {subItem?.notifications && (
+                                      <Box
+                                        sx={{
+                                          bgcolor: "notification.main",
+                                          borderRadius: "50%",
+                                          // width: "12%",
+                                          width: "20px",
+                                          height: "20px",
+                                          // height: "20px",
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                          color: "white !important",
+                                        }}
+                                      >
+                                        {subItem?.notifications?.reduce(
+                                          (sum, notification) =>
+                                            sum +
+                                            parseInt(
+                                              notifications[notification]
+                                            ),
+                                          0
+                                        )}
+                                      </Box>
+                                    )}
+                                  </Box>
+                                )}
+                              </ListItemButton>
+                            </ListItem>
+                          )}
+                        </NavLink>
+                      ))}
+                    </Collapse>
+                  )}
+                </React.Fragment>
+              )
+            )}
           </Box>
         </Box>
       </Box>

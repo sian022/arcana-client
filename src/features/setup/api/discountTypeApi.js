@@ -48,6 +48,14 @@ export const discountTypeApi = createApi({
       }),
       invalidatesTags: ["Discount Type"],
     }),
+
+    deleteVariableDiscount: builder.mutation({
+      query: (id) => ({
+        url: `/Discount/DeleteVariableDiscount/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Discount Type"],
+    }),
   }),
 });
 
@@ -56,4 +64,5 @@ export const {
   useGetAllDiscountTypesQuery,
   usePutDiscountTypeMutation,
   usePatchDiscountTypeStatusMutation,
+  useDeleteVariableDiscountMutation,
 } = discountTypeApi;

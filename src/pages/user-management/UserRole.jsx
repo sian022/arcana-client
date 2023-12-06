@@ -35,7 +35,8 @@ function UserRole() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [checkedModules, setCheckedModules] = useState([]);
+  const [checkedModules, setCheckedModules] = useState(["Dashboard"]);
+  // const [checkedModules, setCheckedModules] = useState([]);
 
   // Drawer Disclosures
   const {

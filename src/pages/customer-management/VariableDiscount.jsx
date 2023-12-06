@@ -12,6 +12,7 @@ import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
+  useDeleteVariableDiscountMutation,
   useGetAllDiscountTypesQuery,
   usePatchDiscountTypeStatusMutation,
   usePostDiscountTypeMutation,
@@ -98,8 +99,10 @@ function VariableDiscount() {
   });
   const [putDiscountType, { isLoading: isUpdateLoading }] =
     usePutDiscountTypeMutation();
-  const [patchDiscountTypeStatus, { isLoading: isArchiveLoading }] =
-    usePatchDiscountTypeStatusMutation();
+  // const [patchDiscountTypeStatus, { isLoading: isArchiveLoading }] =
+  //   usePatchDiscountTypeStatusMutation();
+  const [deleteVariableDiscount, { isLoading: isArchiveLoading }] =
+    useDeleteVariableDiscountMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -132,17 +135,22 @@ function VariableDiscount() {
 
   const onArchiveSubmit = async () => {
     try {
-      await patchDiscountTypeStatus(selectedId).unwrap();
+      await deleteVariableDiscount(selectedRowData?.id).unwrap();
       onArchiveClose();
-      setSnackbarMessage(
-        `Variable Discount ${status ? "archived" : "restored"} successfully`
-      );
+      setSnackbarMessage("Variable Discount deleted successfully");
+
+      // await patchDiscountTypeStatus(selectedId).unwrap();
+      // onArchiveClose();
+      // setSnackbarMessage(
+      //   `Variable Discount ${status ? "archived" : "restored"} successfully`
+      // );
+
       onSuccessOpen();
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
       } else {
-        setSnackbarMessage("Error archiving variable discount");
+        setSnackbarMessage("Error deleting variable discount");
       }
 
       onErrorOpen();
@@ -183,7 +191,7 @@ function VariableDiscount() {
   };
 
   //Constants
-  const disableActions = ["archive"];
+  const disableActions = ["delete"];
 
   //UseEffect
   useEffect(() => {
@@ -201,8 +209,9 @@ function VariableDiscount() {
       } else {
         setValue(
           "minimumAmount",
-          Math.ceil(data?.discount[data?.discount?.length - 1]?.maximumAmount) +
-            1
+          Math.floor(
+            data?.discount[data?.discount?.length - 1]?.maximumAmount
+          ) + 1
         );
       }
 
@@ -211,7 +220,7 @@ function VariableDiscount() {
       } else {
         setValue(
           "minimumPercentage",
-          Math.ceil(
+          Math.floor(
             data?.discount[data?.discount?.length - 1]?.maximumPercentage * 100
           ) + 1
         );
@@ -240,7 +249,8 @@ function VariableDiscount() {
           // editable
           archivable
           // onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          // onArchive={handleArchiveOpen}
+          onDelete={handleArchiveOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -318,7 +328,7 @@ function VariableDiscount() {
           )}
         />
 
-        <Controller
+        {/* <Controller
           control={control}
           name={"maximumAmountUpperBoundary"}
           render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -341,7 +351,7 @@ function VariableDiscount() {
               disabled
             />
           )}
-        />
+        /> */}
 
         <Controller
           control={control}
@@ -421,9 +431,10 @@ function VariableDiscount() {
         isLoading={isArchiveLoading}
         noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        Are you sure you want to delete amount range{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          variable discount range
+          <br />₱{selectedRowData?.minimumAmount} - ₱
+          {selectedRowData?.maximumAmount}
         </span>
         ?
       </CommonDialog>

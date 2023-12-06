@@ -78,8 +78,8 @@ function Prospect() {
   ];
 
   const tabComponents = {
-    // 1: <ForFreebies />,
-    1: <ForFreebiesWithLocations />,
+    1: <ForFreebies />,
+    // 1: <ForFreebiesWithLocations />,
     2: <ForReleasing />,
     3: <Released />,
   };
@@ -156,8 +156,9 @@ function Prospect() {
                   gap: "20px",
                   maxWidth: "900px",
                   flexWrap: "wrap",
-                  // marginLeft: "20px",
-                  justifyContent: "center",
+                  marginLeft: data?.storeTypes?.length > 3 ? "0px" : "20px",
+                  justifyContent:
+                    data?.storeTypes?.length > 3 ? "center" : "start",
                   // alignItems: "center",
                   overflow: "auto",
                 }}
@@ -171,6 +172,7 @@ function Prospect() {
                       alignItems: "center",
                       borderRadius: "30px",
                       backgroundColor: "secondary.main",
+                      // bgcolor: "gray",
                       color: "white !important",
                       " &:hover": {
                         bgcolor: "accent.main",

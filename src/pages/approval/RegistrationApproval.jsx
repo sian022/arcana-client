@@ -106,6 +106,7 @@ function RegistrationApproval() {
     "Contact Number",
     "Email Address",
     "Business Name",
+    // "Origin",
     "Business Type",
     "Requested By",
   ];
@@ -138,6 +139,7 @@ function RegistrationApproval() {
     "updateHistories",
     "listingFees",
     "createdAt",
+    "origin",
   ];
 
   //Misc Functions

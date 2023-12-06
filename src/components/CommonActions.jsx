@@ -74,6 +74,8 @@ function CommonActions({
       onPrintFreebies();
     } else if (action === "addPriceChange") {
       onAddPriceChange();
+    } else if (action === "delete") {
+      onDelete();
     }
 
     onClose();
