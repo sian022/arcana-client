@@ -641,8 +641,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     e.target.value = inputValue;
   };
 
-  console.log(selectedRowData);
-
   const handleSameAsOwnersAddress = () => {
     setSameAsOwnersAddress((prev) => !prev);
     if (!sameAsOwnersAddress) {
@@ -765,15 +763,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           variableDiscount: !selectedRowData?.variableDiscount
             ? false
             : selectedRowData?.variableDiscount,
-          // fixedDiscount:
-          //   selectedRowData?.fixedDiscount === null
-          //     ? {
-          //         discountPercentage: null,
-          //       }
-          //     : {
-          //         discountPercentage:
-          //           selectedRowData?.fixedDiscount?.discountPercentage * 100,
-          //       },
           fixedDiscount:
             selectedRowData?.fixedDiscount === null
               ? {
@@ -781,8 +770,17 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 }
               : {
                   discountPercentage:
-                    selectedRowData?.fixedDiscount?.discountPercentage,
+                    selectedRowData?.fixedDiscount?.discountPercentage * 100,
                 },
+          // fixedDiscount:
+          //   selectedRowData?.fixedDiscount === null
+          //     ? {
+          //         discountPercentage: null,
+          //       }
+          //     : {
+          //         discountPercentage:
+          //           selectedRowData?.fixedDiscount?.discountPercentage,
+          //       },
         })
       );
 
