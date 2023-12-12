@@ -93,7 +93,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
     let transformedDate = moment(effectivityDate).format("YYYY-MM-DD HH:mm:ss");
     const currentTime = moment().format("HH:mm:ss");
 
-    transformedDate = transformedDate.replace(/00:00:00/, currentTime);
+    transformedDate = transformedDate.replace(/ 00:00:00/, `T${currentTime}`);
 
     try {
       // await postAddPriceChange(data).unwrap();
