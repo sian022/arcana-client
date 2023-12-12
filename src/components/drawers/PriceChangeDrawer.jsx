@@ -90,9 +90,10 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
     const { effectivityDate, ...noDate } = data;
     // const transformedDate = effectivityDate;
     // const transformedDate = moment(effectivityDate).format("YYYY-MM-DD");
-    const transformedDate = moment(effectivityDate).format(
-      "YYYY-MM-DD HH:mm:ss"
-    );
+    let transformedDate = moment(effectivityDate).format("YYYY-MM-DD HH:mm:ss");
+    const currentTime = moment().format("HH:mm:ss");
+
+    transformedDate = transformedDate.replace(/00:00:00/, currentTime);
 
     try {
       // await postAddPriceChange(data).unwrap();
@@ -105,7 +106,6 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
       reset();
       onConfirmSubmitClose();
     } catch (error) {
-      console.log(error);
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
       } else {
