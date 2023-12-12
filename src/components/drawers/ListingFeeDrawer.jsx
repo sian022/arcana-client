@@ -352,11 +352,12 @@ function ListingFeeDrawer({
                 <TextField
                   {...params}
                   size="small"
-                  label="Business Name"
+                  label="Business Name - Owner's Name"
                   required
                   helperText={errors?.itemId?.message}
                   error={errors?.itemId}
-                  sx={{ width: "300px" }}
+                  // sx={{ width: "300px" }}
+                  sx={{ width: "400px" }}
                 />
               )}
               onChange={(_, value) => {
@@ -370,7 +371,7 @@ function ListingFeeDrawer({
               }}
             />
 
-            <Controller
+            {/* <Controller
               control={control}
               name={`customerName`}
               render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -386,7 +387,7 @@ function ListingFeeDrawer({
                   sx={{ width: "300px" }}
                 />
               )}
-            />
+            /> */}
           </Box>
 
           <Box

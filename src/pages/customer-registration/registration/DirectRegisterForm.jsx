@@ -591,6 +591,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       // dispatch(setSelectedRow(getValues()));
       dispatch(
         setSelectedRow({
+          id: selectedRowData?.id,
           ...getValues(),
           dateOfBirth: getValues().dateOfBirth.format("YYYY-MM-DD"),
         })
@@ -639,6 +640,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     const inputValue = e.target.value.toString().slice(0, maxLength);
     e.target.value = inputValue;
   };
+
+  console.log(selectedRowData);
 
   const handleSameAsOwnersAddress = () => {
     setSameAsOwnersAddress((prev) => !prev);
