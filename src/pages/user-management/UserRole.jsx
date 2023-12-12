@@ -1,7 +1,6 @@
 import { Box, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
-import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
@@ -21,8 +20,11 @@ import {
 import RoleTable from "../../components/RoleTable";
 import RoleTaggingModal from "../../components/modals/RoleTaggingModal";
 import { useSelector } from "react-redux";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function UserRole() {
+  const { showSnackbar, closeSnackbar } = useSnackbar();
+
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const [drawerMode, setDrawerMode] = useState("");
@@ -33,7 +35,8 @@ function UserRole() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [checkedModules, setCheckedModules] = useState([]);
+  const [checkedModules, setCheckedModules] = useState(["Dashboard"]);
+  // const [checkedModules, setCheckedModules] = useState([]);
 
   // Drawer Disclosures
   const {
@@ -94,16 +97,19 @@ function UserRole() {
   });
 
   //RTK Query
-  const [postUserRole] = usePostUserRoleMutation();
-  const { data, isLoading } = useGetAllUserRolesQuery({
+  const [postUserRole, { isLoading: isAddLoading }] = usePostUserRoleMutation();
+  const { data, isLoading, isFetching } = useGetAllUserRolesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putUserRole] = usePutUserRoleMutation();
-  const [patchUserRoleStatus] = usePatchUserRoleStatusMutation();
-  const [putTagUserRole] = usePutTagUserRoleMutation();
+  const [putUserRole, { isLoading: isUpdateLoading }] =
+    usePutUserRoleMutation();
+  const [patchUserRoleStatus, { isLoading: isArchiveLoading }] =
+    usePatchUserRoleStatusMutation();
+  const [putTagUserRole, { isLoading: isTagLoading }] =
+    usePutTagUserRoleMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -120,7 +126,14 @@ function UserRole() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} user role`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -132,9 +145,17 @@ function UserRole() {
       setSnackbarMessage(
         `User Role ${status ? "archived" : "restored"} successfully`
       );
-      onSuccessOpen();
+      // onSuccessOpen();
+      showSnackbar(
+        `User Role ${status ? "archived" : "restored"} successfully`,
+        "success"
+      );
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving user role");
+      }
       onErrorOpen();
     }
   };
@@ -149,7 +170,12 @@ function UserRole() {
       setSnackbarMessage("User Role tagged successfully");
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error tagging user role");
+      }
+
       onErrorOpen();
     }
   };
@@ -196,7 +222,7 @@ function UserRole() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <RoleTable
@@ -223,6 +249,7 @@ function UserRole() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " User Role"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="User Role Name"
@@ -237,8 +264,13 @@ function UserRole() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.roleName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}
@@ -256,6 +288,7 @@ function UserRole() {
         onSubmit={onTaggingSubmit}
         open={isTaggingOpen}
         onClose={onTaggingClose}
+        isLoading={isTagLoading}
       />
     </Box>
   );

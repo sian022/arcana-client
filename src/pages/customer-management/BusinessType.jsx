@@ -17,8 +17,9 @@ import {
   usePostStoreTypeMutation,
   usePutStoreTypeMutation,
 } from "../../features/setup/api/storeTypeApi";
+import { useSelector } from "react-redux";
 
-function StoreType() {
+function BusinessType() {
   const [drawerMode, setDrawerMode] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
@@ -27,6 +28,8 @@ function StoreType() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -54,13 +57,16 @@ function StoreType() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
     "modifiedBy",
     "isActive",
   ];
+
+  const tableHeads = ["Business Type"];
 
   //React Hook Form
   const {
@@ -77,32 +83,42 @@ function StoreType() {
   });
 
   //RTK Query
-  const [postStoreType] = usePostStoreTypeMutation();
-  const { data, isLoading } = useGetAllStoreTypesQuery({
+  const [postStoreType, { isLoading: isAddLoading }] =
+    usePostStoreTypeMutation();
+  const { data, isLoading, isFetching } = useGetAllStoreTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putStoreType] = usePutStoreTypeMutation();
-  const [patchStoreTypeStatus] = usePatchStoreTypeStatusMutation();
+  const [putStoreType, { isLoading: isUpdateLoading }] =
+    usePutStoreTypeMutation();
+  const [patchStoreTypeStatus, { isLoading: isArchiveLoading }] =
+    usePatchStoreTypeStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
         await postStoreType(data).unwrap();
-        setSnackbarMessage("Store Type added successfully");
+        setSnackbarMessage("Business Type added successfully");
       } else if (drawerMode === "edit") {
         await putStoreType(data).unwrap();
-        setSnackbarMessage("Store Type updated successfully");
+        setSnackbarMessage("Business Type updated successfully");
       }
 
       onDrawerClose();
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} business type`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -112,11 +128,16 @@ function StoreType() {
       await patchStoreTypeStatus(selectedId).unwrap();
       onArchiveClose();
       setSnackbarMessage(
-        `Store Type ${status ? "archived" : "restored"} successfully`
+        `Business Type ${status ? "archived" : "restored"} successfully`
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving business type");
+      }
+
       onErrorOpen();
     }
   };
@@ -160,17 +181,18 @@ function StoreType() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Store Type"
+        pageTitle="Business Type"
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.storeTypes}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
+          tableHeads={tableHeads}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -187,12 +209,15 @@ function StoreType() {
       <CommonDrawer
         open={isDrawerOpen}
         onClose={handleDrawerClose}
-        drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Store Type"}
+        drawerHeader={
+          (drawerMode === "add" ? "Add" : "Edit") + " Business Type"
+        }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
-          label="Store Type Name"
+          label="Business Type Name"
           size="small"
           autoComplete="off"
           {...register("storeTypeName")}
@@ -204,8 +229,14 @@ function StoreType() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.storeTypeName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}
@@ -221,4 +252,4 @@ function StoreType() {
   );
 }
 
-export default StoreType;
+export default BusinessType;

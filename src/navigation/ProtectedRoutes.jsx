@@ -2,16 +2,18 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
+import PermittedRoutes from "./PermittedRoutes";
 
 function ProtectedRoutes() {
-  const fullname = useSelector((state) => state.fullname?.value);
-  const permissions = useSelector((state) => state.permissions?.value);
+  const fullname = useSelector((state) => state.login.fullname);
+  const permissions = useSelector((state) => state.permissions.permissions);
 
   if (!fullname || permissions?.length === 0) {
-    <Navigate to="/login" />;
+    return <Navigate to="/login" />;
   }
 
-  return <MainLayout />;
+  // return <MainLayout />;
+  return <PermittedRoutes />;
 }
 
 export default ProtectedRoutes;

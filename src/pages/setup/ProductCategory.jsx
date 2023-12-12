@@ -17,6 +17,7 @@ import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import { useSelector } from "react-redux";
 
 function ProductCategory() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function ProductCategory() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -54,13 +57,16 @@ function ProductCategory() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "updatedAt",
     "isActive",
     "addedBy",
     "productSubCategory",
   ];
+
+  const tableHeads = ["Product Category"];
 
   //React Hook Form
   const {
@@ -76,15 +82,18 @@ function ProductCategory() {
   });
 
   //RTK Query
-  const [postProductCategory] = usePostProductCategoryMutation();
-  const { data, isLoading } = useGetAllProductCategoryQuery({
+  const [postProductCategory, { isLoading: isAddLoading }] =
+    usePostProductCategoryMutation();
+  const { data, isLoading, isFetching } = useGetAllProductCategoryQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putProductCategory] = usePutProductCategoryMutation();
-  const [patchProductCategoryStatus] = usePatchProductCategoryStatusMutation();
+  const [putProductCategory, { isLoading: isUpdateLoading }] =
+    usePutProductCategoryMutation();
+  const [patchProductCategoryStatus, { isLoading: isArchiveLoading }] =
+    usePatchProductCategoryStatusMutation();
 
   const onDrawerSubmit = async (data) => {
     try {
@@ -100,7 +109,16 @@ function ProductCategory() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${
+            drawerMode === "add" ? "adding" : "updating"
+          } product category`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -114,7 +132,12 @@ function ProductCategory() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving product category");
+      }
+
       onErrorOpen();
     }
   };
@@ -161,12 +184,12 @@ function ProductCategory() {
         setStatus={setStatus}
       />
 
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.result}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -177,6 +200,7 @@ function ProductCategory() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 
@@ -188,6 +212,7 @@ function ProductCategory() {
         }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Product Category Name"
@@ -203,8 +228,14 @@ function ProductCategory() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.productCategoryName}
+        </span>
+        ?
       </CommonDialog>
 
       <SuccessSnackbar

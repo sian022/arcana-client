@@ -1,11 +1,26 @@
-import { Box, Paper, Typography, Stack, Badge, Divider } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Typography,
+  Stack,
+  Badge,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import React from "react";
 import "../assets/styles/common.styles.scss";
 
-function PageHeaderTabs({ pageTitle, tabsList, tabViewing, setTabViewing }) {
+function PageHeaderTabs({
+  wide,
+  extraWide,
+  pageTitle,
+  tabsList,
+  tabViewing,
+  setTabViewing,
+}) {
   return (
-    <Paper elevation={1}>
-      <Box className="pageHeader">
+    <Box sx={{ padding: "1px" }}>
+      <Box component={Paper} className="pageHeader">
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
         </Box>
@@ -19,14 +34,19 @@ function PageHeaderTabs({ pageTitle, tabsList, tabViewing, setTabViewing }) {
           >
             {tabsList?.map((item, i) => (
               <Stack
-                sx={{ cursor: "pointer", alignItems: "center", width: "160px" }}
+                sx={{
+                  cursor: "pointer",
+                  alignItems: "center",
+                  width: extraWide ? "200px" : wide ? "180px" : "160px",
+                }}
                 key={i}
                 onClick={() => setTabViewing(item.case)}
               >
                 <Badge
-                  badgeContent={item.badge}
-                  color="primary"
+                  badgeContent={!item.isBadgeLoading ? item.badge : <></>}
+                  color="notification"
                   invisible={item.case === tabViewing}
+                  sx={{ color: "white !important" }}
                 >
                   <Typography
                     sx={{
@@ -34,6 +54,7 @@ function PageHeaderTabs({ pageTitle, tabsList, tabViewing, setTabViewing }) {
                       fontWeight: "bold",
                       color: "secondary.main",
                       textAlign: "center",
+                      marginTop: "3px",
                     }}
                   >
                     {item.name}
@@ -43,7 +64,7 @@ function PageHeaderTabs({ pageTitle, tabsList, tabViewing, setTabViewing }) {
                   <Divider
                     sx={{
                       bgcolor: "secondary.main",
-                      width: "160px",
+                      width: extraWide ? "200px" : wide ? "180px" : "160px",
                       // width: "auto",
                       height: "3px",
                       borderRadius: "10px",
@@ -56,7 +77,7 @@ function PageHeaderTabs({ pageTitle, tabsList, tabViewing, setTabViewing }) {
           </Box>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 }
 

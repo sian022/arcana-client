@@ -6,19 +6,20 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { discountTypeSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
-  useGetAllDiscountTypesQuery,
-  usePatchDiscountTypeStatusMutation,
-  usePostDiscountTypeMutation,
-  usePutDiscountTypeMutation,
-} from "../../features/setup/api/discountTypeApi";
+  useGetAllTermDaysQuery,
+  usePatchTermDaysStatusMutation,
+  usePostTermDaysMutation,
+  usePutTermDaysMutation,
+} from "../../features/setup/api/termDaysApi";
+import { termDaysSchema } from "../../schema/schema";
+import { useSelector } from "react-redux";
 
-function DiscountType() {
+function TermDays() {
   const [drawerMode, setDrawerMode] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
@@ -27,6 +28,8 @@ function DiscountType() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -54,10 +57,11 @@ function DiscountType() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
-    "createdAt",
+  const excludeKeysDisplay = [
+    "id",
+    "createAt",
     "addedBy",
-    "updateAt",
+    "updatedAt",
     "modifiedBy",
     "isActive",
   ];
@@ -71,52 +75,66 @@ function DiscountType() {
     reset,
     control,
   } = useForm({
-    resolver: yupResolver(discountTypeSchema.schema),
+    resolver: yupResolver(termDaysSchema.schema),
     mode: "onChange",
-    defaultValues: discountTypeSchema.defaultValues,
+    defaultValues: termDaysSchema.defaultValues,
   });
 
   //RTK Query
-  const [postDiscountType] = usePostDiscountTypeMutation();
-  const { data, isLoading } = useGetAllDiscountTypesQuery({
+  const [postTermDays, { isLoading: isAddLoading }] = usePostTermDaysMutation();
+  const { data, isLoading, isFetching } = useGetAllTermDaysQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putDiscountType] = usePutDiscountTypeMutation();
-  const [patchDiscountTypeStatus] = usePatchDiscountTypeStatusMutation();
+  const [putTermDays, { isLoading: isUpdateLoading }] =
+    usePutTermDaysMutation();
+  const [patchTermDaysStatus, { isLoading: isArchiveLoading }] =
+    usePatchTermDaysStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
-        await postDiscountType(data).unwrap();
-        setSnackbarMessage("Discount Type added successfully");
+        await postTermDays(data).unwrap();
+        setSnackbarMessage("Term Days added successfully");
       } else if (drawerMode === "edit") {
-        await putDiscountType(data).unwrap();
-        setSnackbarMessage("Discount Type updated successfully");
+        await putTermDays(data).unwrap();
+        setSnackbarMessage("Term Days updated successfully");
       }
 
       onDrawerClose();
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} term days`
+        );
+      }
+
       onErrorOpen();
     }
   };
 
   const onArchiveSubmit = async () => {
     try {
-      await patchDiscountTypeStatus(selectedId).unwrap();
+      await patchTermDaysStatus(selectedId).unwrap();
       onArchiveClose();
       setSnackbarMessage(
-        `Discount Type ${status ? "archived" : "restored"} successfully`
+        `Term Days ${status ? "archived" : "restored"} successfully`
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving term days");
+      }
+
       onErrorOpen();
     }
   };
@@ -158,17 +176,17 @@ function DiscountType() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Discount Type"
+        pageTitle="Term Days"
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
-          mapData={data?.discount}
-          excludeKeys={excludeKeys}
+          mapData={data?.termDays}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -185,62 +203,33 @@ function DiscountType() {
       <CommonDrawer
         open={isDrawerOpen}
         onClose={handleDrawerClose}
-        drawerHeader={
-          (drawerMode === "add" ? "Add" : "Edit") + " Discount Type"
-        }
+        drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Term Days"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
-          label="Lower Boundary"
+          label="Term Days"
           size="small"
           autoComplete="off"
-          {...register("lowerBound")}
-          helperText={errors?.lowerBound?.message}
-          error={errors?.lowerBound}
+          {...register("days")}
+          helperText={errors?.days?.message}
+          error={errors?.days}
           type="number"
-          inputProps={{ min: 0 }}
-        />
-
-        <TextField
-          label="Upper Boundary"
-          size="small"
-          autoComplete="off"
-          {...register("upperBound")}
-          helperText={errors?.upperBound?.message}
-          error={errors?.upperBound}
-          type="number"
-          inputProps={{ min: 0 }}
-        />
-
-        <TextField
-          label="Commission Rate Lower"
-          size="small"
-          autoComplete="off"
-          {...register("commissionRateLower")}
-          helperText={errors?.commissionRateLower?.message}
-          error={errors?.commissionRateLower}
-          type="number"
-          inputProps={{ min: 0 }}
-        />
-
-        <TextField
-          label="Commission Rate Upper"
-          size="small"
-          autoComplete="off"
-          {...register("commissionRateUpper")}
-          helperText={errors?.commissionRateUpper?.message}
-          error={errors?.commissionRateUpper}
-          type="number"
-          inputProps={{ min: 0 }}
         />
       </CommonDrawer>
       <CommonDialog
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.days}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}
@@ -256,4 +245,4 @@ function DiscountType() {
   );
 }
 
-export default DiscountType;
+export default TermDays;

@@ -1,9 +1,14 @@
 import { Button } from "@mui/material";
 import React from "react";
 
-function SecondaryButton({ children, ...otherProps }) {
+function SecondaryButton({ medium, children, ...otherProps }) {
   return (
-    <Button variant="contained" color="secondary" {...otherProps}>
+    <Button
+      size={medium ? "medium" : "small"}
+      variant="contained"
+      color="secondary"
+      {...otherProps}
+    >
       {children}
     </Button>
   );

@@ -25,24 +25,31 @@ function LogoutButton() {
     dispatch(setToken(""));
     dispatch(setFullname(""));
     dispatch(setPermissisons(""));
+    sessionStorage.removeItem("userDetails");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("fullname");
     sessionStorage.removeItem("permissions");
+
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("fullname");
+    // localStorage.removeItem("permissions");
     navigate("/login");
   };
 
   return (
     <>
-      <IconButton onClick={onDialogOpen} sx={{ color: "error.main" }}>
+      {/* <IconButton onClick={onDialogOpen} sx={{ color: "error.main" }}>
         <Logout />
-      </IconButton>
-
+      </IconButton> */}
+      <Logout />
+      Logout
       <CommonDialog
         onClose={onDialogClose}
         open={isDialogOpen}
         onYes={handleLogout}
       >
-        Are you sure you want to LOGOUT?
+        Are you sure you want to{" "}
+        <span style={{ fontWeight: "bold" }}>LOGOUT</span>?
       </CommonDialog>
     </>
   );

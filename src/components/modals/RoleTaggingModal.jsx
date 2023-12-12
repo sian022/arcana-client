@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
-import { Box, Checkbox, Typography } from "@mui/material";
+import { Box, Checkbox, CircularProgress, Typography } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
 import { navigationData } from "../../navigation/navigationData";
@@ -10,21 +10,12 @@ function RoleTaggingModal({
   checkedModules,
   setCheckedModules,
   onSubmit,
+  isLoading,
   ...props
 }) {
   const { onClose } = props;
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-
-  useEffect(() => {
-    if (selectedRowData?.permissions) {
-      setCheckedModules(selectedRowData?.permissions);
-    } else {
-      setCheckedModules([]);
-    }
-  }, [selectedRowData]);
-
-  console.log(checkedModules);
 
   const handleCheckboxChange = (itemName, subItemName) => {
     if (!subItemName) {
@@ -40,26 +31,62 @@ function RoleTaggingModal({
       // If it's an itemSub.name checkbox, toggle its state and check parent if needed
       const subItemValue = subItemName;
       if (checkedModules.includes(subItemValue)) {
-        // Uncheck the sub item and remove it from checkedModules
-        setCheckedModules(
-          checkedModules.filter((item) => item !== subItemValue)
-        );
-      } else {
-        // Check the sub item and add it to checkedModules
-        setCheckedModules([...checkedModules, subItemValue]);
-        // Check the main item and add it to checkedModules if all of its sub items are checked
-        const allSubItemsChecked = navigationData
-          .find((item) => item.name === itemName)
-          ?.sub?.every((subItem) =>
-            checkedModules.includes(`${itemName}:${subItem.name}`)
+        setCheckedModules((prevCheckedModules) => {
+          const newCheckedModules = prevCheckedModules.filter(
+            (item) => item !== subItemValue
           );
 
-        if (allSubItemsChecked) {
-          setCheckedModules([...checkedModules, itemName]);
-        }
+          const noItemChecked = !navigationData
+            .find((item) => item.name === itemName)
+            ?.sub?.some((subItem) => newCheckedModules.includes(subItem.name));
+
+          if (noItemChecked) {
+            return newCheckedModules.filter(
+              (mainItem) => mainItem !== itemName
+            );
+          }
+
+          return newCheckedModules;
+        });
+
+        // setCheckedModules(
+        //   checkedModules.filter((item) => item !== subItemValue)
+        // );
+      } else {
+        setCheckedModules((prevCheckedModules) => {
+          const newCheckedModules = [...prevCheckedModules, subItemValue];
+
+          const aSubItemChecked = navigationData
+            .find((item) => item.name === itemName)
+            ?.sub?.some((subItem) => newCheckedModules.includes(subItem.name));
+
+          if (aSubItemChecked) {
+            return [...newCheckedModules, itemName];
+          }
+
+          return newCheckedModules;
+        });
+
+        // setCheckedModules([...checkedModules, subItemValue]);
+
+        // const allSubItemsChecked = navigationData
+        //   .find((item) => item.name === itemName)
+        //   ?.sub?.every((subItem) => checkedModules.includes(subItem.name));
+
+        // if (allSubItemsChecked) {
+        //   setCheckedModules([...checkedModules, itemName]);
+        // }
       }
     }
   };
+
+  useEffect(() => {
+    if (selectedRowData?.permissions) {
+      setCheckedModules(selectedRowData?.permissions);
+    } else {
+      setCheckedModules(["Dashboard"]);
+    }
+  }, [selectedRowData]);
 
   return (
     <CommonModal {...props}>
@@ -101,8 +128,16 @@ function RoleTaggingModal({
                 <Checkbox
                   checked={checkedModules?.includes(item.name)}
                   onChange={() => handleCheckboxChange(item.name)}
+                  // disabled={item.name === "Dashboard"}
+                  disabled
                 />
-                <Typography sx={{ fontWeight: "500", fontSize: "1.1rem" }}>
+                <Typography
+                  sx={{
+                    fontWeight: "500",
+                    fontSize: "1.1rem",
+                    color: item.name === "Dashboard" && "gray",
+                  }}
+                >
                   {item.name}
                 </Typography>
               </Box>
@@ -133,8 +168,16 @@ function RoleTaggingModal({
           sx={{ display: "flex", justifyContent: "end", gap: "10px" }}
           className="roleTaggingModal__actions"
         >
-          <SecondaryButton onClick={onSubmit}>Save</SecondaryButton>
-          <DangerButton onClick={onClose}>Close</DangerButton>
+          <SecondaryButton onClick={onSubmit} disabled={isLoading}>
+            {isLoading ? (
+              <CircularProgress size="20px" color="white" />
+            ) : (
+              "Save"
+            )}
+          </SecondaryButton>
+          <DangerButton onClick={onClose} disabled={isLoading}>
+            Close
+          </DangerButton>
         </Box>
       </Box>
     </CommonModal>

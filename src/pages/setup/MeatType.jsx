@@ -17,6 +17,7 @@ import {
   usePostMeatTypeMutation,
   usePutMeatTypeMutation,
 } from "../../features/setup/api/meatTypeApi";
+import { useSelector } from "react-redux";
 
 function MeatType() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function MeatType() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -54,13 +57,16 @@ function MeatType() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
     "modifiedBy",
     "isActive",
   ];
+
+  const tableHeads = ["Meat Type"];
 
   //React Hook Form
   const {
@@ -77,15 +83,17 @@ function MeatType() {
   });
 
   //RTK Query
-  const [postMeatType] = usePostMeatTypeMutation();
-  const { data, isLoading } = useGetAllMeatTypesQuery({
+  const [postMeatType, { isLoading: isAddLoading }] = usePostMeatTypeMutation();
+  const { data, isLoading, isFetching } = useGetAllMeatTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putMeatType] = usePutMeatTypeMutation();
-  const [patchMeatTypeStatus] = usePatchMeatTypeStatusMutation();
+  const [putMeatType, { isLoading: isUpdateLoading }] =
+    usePutMeatTypeMutation();
+  const [patchMeatTypeStatus, { isLoading: isArchiveLoading }] =
+    usePatchMeatTypeStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -102,7 +110,14 @@ function MeatType() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} meat type`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -116,7 +131,12 @@ function MeatType() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving meat type");
+      }
+
       onErrorOpen();
     }
   };
@@ -163,12 +183,12 @@ function MeatType() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.meatTypes}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -179,6 +199,7 @@ function MeatType() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 
@@ -188,6 +209,7 @@ function MeatType() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Meat Type"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Meat Type Name"
@@ -202,8 +224,14 @@ function MeatType() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        noIcon={!status}
+        isLoading={isArchiveLoading}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.meatTypeName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

@@ -1,19 +1,59 @@
 @import "./index.styles.scss";
 
+.sidebarWrapper {
+  width: 300px;
+  transition: 0.3s all ease-in-out;
+  box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
+  background: white;
+  position: relative;
+  overflow: hidden;
+  // overflow-y: overlay;
+  // overflow-x: hidden;
+
+  @media (max-width: 1024px) {
+    position: fixed;
+    left: 0;
+    z-index: 2000;
+    height: 100vh;
+  }
+}
+
 .sidebar {
   width: 300px;
   text-align: center;
   display: flex;
   flex-direction: column;
-  transition: width 0.5 ease;
-  position: relative;
-  background: white;
-  box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
+  height: 100%;
+  // overflow: hidden;
+  // position: relative;
+  // background: white;
+  // box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
+  // transition: 0.3s all ease-in-out;
+  // overflow: auto;
 
-  @media (max-width: 1024px) {
-    // display: none;
-    width: 88px;
+  .toggled {
+    width: 0px;
   }
+
+  & &__toggleRemove {
+    color: $secondary;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+
+    @media (min-width: 1025px) {
+      display: none;
+    }
+  }
+
+  // @media (max-width: 1024px) {
+  //   // display: none;
+  //   position: fixed;
+  //   height: 100vh;
+  //   left: 0;
+  //   width: 88px;
+  //   z-index: 2000;
+  // }
 
   &__logo {
     display: flex;
@@ -22,9 +62,9 @@
     padding: 10px;
 
     & img {
-      @media (max-width: 1024px) {
-        width: 100px;
-      }
+      // @media (max-width: 1024px) {
+      //   width: 100px;
+      // }
 
       width: 150px;
     }
@@ -32,13 +72,15 @@
 
   &__navigation {
     position: relative;
-    overflow-x: hidden;
+    // overflow-x: hidden;
+    overflow: auto;
     height: 100%;
     margin-bottom: 30px;
+    // overflow: hidden;
 
-    @media (max-width: 1024px) {
-      white-space: nowrap;
-    }
+    // @media (max-width: 1024px) {
+    //   white-space: nowrap;
+    // }
 
     & &__button {
       color: $secondary;
@@ -58,9 +100,9 @@
       border-radius: 10px;
       margin-left: 20px;
 
-      @media (max-width: 1024px) {
-        margin-left: 0;
-      }
+      // @media (max-width: 1024px) {
+      //   margin-left: 0;
+      // }
 
       &__icon {
         color: $secondary;
@@ -75,4 +117,16 @@
       color: white;
     }
   }
+}
+
+.overlaySidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  // display: none; /* Initially hidden */
+  z-index: 1000; /* Make sure it's above the sidebar */
+  pointer-events: none;
 }

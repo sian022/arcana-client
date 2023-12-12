@@ -19,6 +19,16 @@ import { userAccountApi } from "../features/user-management/api/userAccountApi";
 import { selectedRowSlice } from "../features/misc/reducers/selectedRowSlice";
 import { selectedStoreTypeSlice } from "../features/prospect/reducers/selectedStoreTypeSlice";
 import { prospectApi } from "../features/prospect/api/prospectApi";
+import { badgeSlice } from "../features/prospect/reducers/badgeSlice";
+import { registrationApi } from "../features/registration/api/registrationApi";
+import { regularRegistrationSlice } from "../features/registration/reducers/regularRegistrationSlice";
+import { sedarApi } from "../features/user-management/api/sedarApi";
+import { userConfigApi } from "../features/authentication/api/userConfigApi";
+import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
+import { disclosureSlice } from "../features/misc/reducers/disclosureSlice";
+import { approverApi } from "../features/user-management/api/approverApi";
+import { notificationApi } from "../features/notification/api/notificationApi";
+import { phLocationsApi } from "../features/location/api/phLocationsApi";
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +36,9 @@ export const store = configureStore({
     permissions: permissionsSlice.reducer,
     selectedRow: selectedRowSlice.reducer,
     selectedStoreType: selectedStoreTypeSlice.reducer,
+    badge: badgeSlice.reducer,
+    regularRegistration: regularRegistrationSlice.reducer,
+    disclosure: disclosureSlice.reducer,
     [loginApi.reducerPath]: loginApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,
@@ -40,7 +53,14 @@ export const store = configureStore({
     [companyApi.reducerPath]: companyApi.reducer,
     [userRoleApi.reducerPath]: userRoleApi.reducer,
     [userAccountApi.reducerPath]: userAccountApi.reducer,
+    [approverApi.reducerPath]: approverApi.reducer,
     [prospectApi.reducerPath]: prospectApi.reducer,
+    [registrationApi.reducerPath]: registrationApi.reducer,
+    [sedarApi.reducerPath]: sedarApi.reducer,
+    [userConfigApi.reducerPath]: userConfigApi.reducer,
+    [listingFeeApi.reducerPath]: listingFeeApi.reducer,
+    [notificationApi.reducerPath]: notificationApi.reducer,
+    [phLocationsApi.reducerPath]: phLocationsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -59,7 +79,14 @@ export const store = configureStore({
       companyApi.middleware,
       userRoleApi.middleware,
       userAccountApi.middleware,
+      approverApi.middleware,
       prospectApi.middleware,
+      registrationApi.middleware,
+      sedarApi.middleware,
+      userConfigApi.middleware,
+      listingFeeApi.middleware,
+      notificationApi.middleware,
+      phLocationsApi.middleware,
     ]),
 });
 

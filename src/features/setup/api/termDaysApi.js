@@ -30,8 +30,8 @@ export const termDaysApi = createApi({
         method: "GET",
       }),
       providesTags: ["Term Days"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putTermDays: builder.mutation({
       query: ({ id, ...body }) => ({

@@ -30,8 +30,8 @@ export const departmentApi = createApi({
         method: "GET",
       }),
       providesTags: ["Department"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putDepartment: builder.mutation({
       query: ({ id, ...body }) => ({

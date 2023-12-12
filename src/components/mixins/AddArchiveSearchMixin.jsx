@@ -15,32 +15,32 @@ function AddArchiveSearchMixin({ addTitle, onAddOpen, setStatus, setSearch }) {
   }, 200);
 
   return (
-    <Paper elevation={1}>
-      <Box className="pageHeader">
-        <Box className="pageHeader__left">
-          <SecondaryButton className="addRowButtons" onClick={onAddOpen}>
-            Add {addTitle && addTitle}
-          </SecondaryButton>
-        </Box>
-        <Box className="pageHeader__right">
-          <Checkbox
-            onChange={() => {
-              setStatus((prev) => !prev);
-            }}
-          />
-          <Typography variant="subtitle2">Archived</Typography>
-          <TextField
-            type="search"
-            size="small"
-            label="Search"
-            onChange={(e) => {
-              debouncedSetSearch(e.target.value);
-            }}
-            autoComplete="off"
-          />
-        </Box>
+    // <Paper elevation={1}>
+    <Box className="pageHeader">
+      <Box className="pageHeader__left">
+        <SecondaryButton className="addRowButtons" onClick={onAddOpen}>
+          Add {addTitle && addTitle}
+        </SecondaryButton>
       </Box>
-    </Paper>
+      <Box className="pageHeader__right">
+        <Checkbox
+          onChange={() => {
+            setStatus((prev) => !prev);
+          }}
+        />
+        <Typography variant="subtitle2">Archived</Typography>
+        <TextField
+          type="search"
+          size="small"
+          label="Search"
+          onChange={(e) => {
+            debouncedSetSearch(e.target.value);
+          }}
+          autoComplete="off"
+        />
+      </Box>
+    </Box>
+    // </Paper>
   );
 }
 

@@ -4,8 +4,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../pages/Dashboard";
 import UserManagement from "../pages/user-management";
 import Setup from "../pages/setup";
-import Discount from "../pages/discount";
-import Terms from "../pages/terms";
+import CustomerManagement from "../pages/customer-management";
 import CustomerRegistration from "../pages/customer-registration";
 import Approval from "../pages/approval";
 import UserAccount from "../pages/user-management/UserAccount";
@@ -18,11 +17,18 @@ import ProductCategory from "../pages/setup/ProductCategory";
 import ProductSubCategory from "../pages/setup/ProductSubCategory";
 import MeatType from "../pages/setup/MeatType";
 import UnitOfMeasurements from "../pages/setup/UnitOfMeasurements";
-import StoreType from "../pages/setup/StoreType";
-import DiscountType from "../pages/discount/DiscountType";
-import TermDays from "../pages/terms/TermDays";
+import TermDays from "../pages/customer-management/TermDays";
 import Prospect from "../pages/customer-registration/prospecting";
+import Registration from "../pages/customer-registration/Registration";
+import ListingFee from "../pages/customer-registration/ListingFee";
+import RegistrationApproval from "../pages/approval/RegistrationApproval";
+import SpecialDiscountApproval from "../pages/approval/SpecialDiscountApproval";
+import ListingFeeApproval from "../pages/approval/ListingFeeApproval";
+import VariableDiscount from "../pages/customer-management/VariableDiscount";
+import BusinessType from "../pages/customer-management/BusinessType";
+import Approver from "../pages/user-management/Approver";
 import FreebieApproval from "../pages/approval/FreebieApproval";
+import Freebies from "../pages/customer-registration/freebies/Freebies";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +60,10 @@ export const router = createBrowserRouter([
             element: <UserRole />,
           },
           {
+            path: "approver",
+            element: <Approver />,
+          },
+          {
             path: "company",
             element: <Company />,
           },
@@ -68,7 +78,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: "setup",
+        path: "product-setup",
         element: <Setup />,
         children: [
           {
@@ -91,32 +101,40 @@ export const router = createBrowserRouter([
             path: "uom",
             element: <UnitOfMeasurements />,
           },
-          {
-            path: "store-type",
-            element: <StoreType />,
-          },
+          // {
+          //   path: "business-type",
+          //   element: <StoreType />,
+          // },
         ],
       },
       {
-        path: "discount",
-        element: <Discount />,
+        path: "customer-management",
+        element: <CustomerManagement />,
         children: [
           {
-            path: "discount-type",
-            element: <DiscountType />,
+            path: "business-type",
+            element: <BusinessType />,
           },
-        ],
-      },
-      {
-        path: "terms",
-        element: <Terms />,
-        children: [
+          {
+            path: "variable-discount",
+            element: <VariableDiscount />,
+          },
           {
             path: "term-days",
             element: <TermDays />,
           },
         ],
       },
+      // {
+      //   path: "terms",
+      //   element: <Terms />,
+      //   children: [
+      //     {
+      //       path: "term-days",
+      //       element: <TermDays />,
+      //     },
+      //   ],
+      // },
       {
         path: "customer-registration",
         element: <CustomerRegistration />,
@@ -125,6 +143,18 @@ export const router = createBrowserRouter([
             path: "prospect",
             element: <Prospect />,
           },
+          {
+            path: "registration",
+            element: <Registration />,
+          },
+          {
+            path: "listing-fee",
+            element: <ListingFee />,
+          },
+          // {
+          //   path: "freebies",
+          //   element: <Freebies />,
+          // },
         ],
       },
       {
@@ -132,9 +162,21 @@ export const router = createBrowserRouter([
         element: <Approval />,
         children: [
           {
-            path: "freebie-approval",
-            element: <FreebieApproval />,
+            path: "registration-approval",
+            element: <RegistrationApproval />,
           },
+          {
+            path: "sp-discount-approval",
+            element: <SpecialDiscountApproval />,
+          },
+          {
+            path: "listing-fee-approval",
+            element: <ListingFeeApproval />,
+          },
+          // {
+          //   path: "freebie-approval",
+          //   element: <FreebieApproval />,
+          // },
         ],
       },
     ],

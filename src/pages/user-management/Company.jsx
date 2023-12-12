@@ -17,6 +17,7 @@ import {
   usePostCompanyMutation,
   usePutCompanyMutation,
 } from "../../features/user-management/api/companyApi";
+import { useSelector } from "react-redux";
 
 function Company() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function Company() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -54,7 +57,8 @@ function Company() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
@@ -62,6 +66,8 @@ function Company() {
     "isActive",
     "users",
   ];
+
+  const tableHeads = ["Company"];
 
   //React Hook Form
   const {
@@ -77,15 +83,16 @@ function Company() {
   });
 
   //RTK Query
-  const [postCompany] = usePostCompanyMutation();
-  const { data, isLoading } = useGetAllCompaniesQuery({
+  const [postCompany, { isLoading: isAddLoading }] = usePostCompanyMutation();
+  const { data, isLoading, isFetching } = useGetAllCompaniesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putCompany] = usePutCompanyMutation();
-  const [patchCompanyStatus] = usePatchCompanyStatusMutation();
+  const [putCompany, { isLoading: isUpdateLoading }] = usePutCompanyMutation();
+  const [patchCompanyStatus, { isLoading: isArchiveLoading }] =
+    usePatchCompanyStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -102,7 +109,14 @@ function Company() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} company`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -116,7 +130,12 @@ function Company() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving company");
+      }
+
       onErrorOpen();
     }
   };
@@ -164,12 +183,12 @@ function Company() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.companies}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -180,6 +199,7 @@ function Company() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 
@@ -189,6 +209,7 @@ function Company() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Company"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Company Name"
@@ -203,8 +224,14 @@ function Company() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.companyName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

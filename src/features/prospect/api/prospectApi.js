@@ -17,7 +17,7 @@ export const prospectApi = createApi({
   endpoints: (builder) => ({
     postProspect: builder.mutation({
       query: (body) => ({
-        url: "/Prospecting/AddNewProspecting",
+        url: "/Prospecting/AddNewProspect",
         method: "POST",
         body: body,
       }),
@@ -30,8 +30,8 @@ export const prospectApi = createApi({
         method: "GET",
       }),
       providesTags: ["Prospecting"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     // getAllRejectedProspects: builder.query({
     //   query: (params) => ({
@@ -50,8 +50,8 @@ export const prospectApi = createApi({
         method: "GET",
       }),
       providesTags: ["Prospecting"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     getAllRequestedProspects: builder.query({
       query: (params) => ({
@@ -60,8 +60,8 @@ export const prospectApi = createApi({
         method: "GET",
       }),
       providesTags: ["Prospecting"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putProspect: builder.mutation({
       query: ({ id, ...body }) => ({
@@ -71,12 +71,17 @@ export const prospectApi = createApi({
       }),
       invalidatesTags: ["Prospecting"],
     }),
+
     putReleaseProspect: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `/ReleasedProspectingRequest/ReleasedProspectingRequest/${id}`,
-        method: "PUT",
-        body: body,
-      }),
+      query: ({ id, body }) => {
+        // const { ESignature, PhotoProof } = body;
+
+        return {
+          url: `/Prospecting/ReleasedProspectingRequest/${id}`,
+          method: "PUT",
+          body: body,
+        };
+      },
       invalidatesTags: ["Prospecting"],
     }),
     patchProspectStatus: builder.mutation({
@@ -86,6 +91,44 @@ export const prospectApi = createApi({
       }),
       invalidatesTags: ["Prospecting"],
     }),
+
+    postRequestFreebies: builder.mutation({
+      query: ({ clientId, ...body }) => ({
+        url: `/Freebies/RequestFreebies/${clientId}`,
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Prospecting"],
+    }),
+
+    putFreebiesInformation: builder.mutation({
+      query: ({ id, params, ...body }) => ({
+        url: `/Freebie/UpdateFreebieInformation/${id}`,
+        method: "PUT",
+        params: params,
+        body: body,
+      }),
+      invalidatesTags: ["Prospecting"],
+    }),
+
+    putRejectFreebies: builder.mutation({
+      query: ({ id, params, ...body }) => ({
+        url: `/Freebies/RejectFreebies/${id}`,
+        method: "PUT",
+        params: params,
+        body: body,
+      }),
+      invalidatesTags: ["Prospecting"],
+    }),
+
+    // putRegisterClient: builder.mutation({
+    //   query: ({ clientId, ...body }) => ({
+    //     url: `/Prospecting/RegisterClient/${id}`,
+    //     method: "PUT",
+    //     body: body,
+    //   }),
+    //   invalidatesTags: ["Prospecting"],
+    // }),
   }),
 });
 
@@ -96,4 +139,7 @@ export const {
   usePutProspectMutation,
   usePutReleaseProspectMutation,
   usePatchProspectStatusMutation,
+  usePostRequestFreebiesMutation,
+  usePutFreebiesInformationMutation,
+  usePutRejectFreebiesMutation,
 } = prospectApi;

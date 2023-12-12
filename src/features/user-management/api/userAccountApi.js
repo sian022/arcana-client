@@ -30,11 +30,11 @@ export const userAccountApi = createApi({
         method: "GET",
       }),
       providesTags: ["User"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putUser: builder.mutation({
-      query: ({ id, ...body }) => ({
+      query: ({ id, password, ...body }) => ({
         url: `/User/UpdateUser/${id}`,
         method: "PUT",
         body: body,
@@ -48,6 +48,15 @@ export const userAccountApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+
+    patchChangePassword: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/User/ChangeUserPassword/${id}`,
+        method: "PATCH",
+        body: body,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -56,4 +65,5 @@ export const {
   useGetAllUsersQuery,
   usePutUserMutation,
   usePatchUserStatusMutation,
+  usePatchChangePasswordMutation,
 } = userAccountApi;

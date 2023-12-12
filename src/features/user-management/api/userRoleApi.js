@@ -30,8 +30,8 @@ export const userRoleApi = createApi({
         method: "GET",
       }),
       providesTags: ["User Role"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putUserRole: builder.mutation({
       query: ({ id, ...body }) => ({

@@ -4,15 +4,19 @@ $primary: #544d91;
 $secondary: #243448;
 $secondary-hover: #1c2a38;
 $accent: #766bb9;
-$error: #f30737;
+$tertiary: #008080;
+// $error: #f30737;
+$error: #bb0000;
 $success: #009c7a;
 $warning: #f1c40f;
+$notification: #f30737;
 
 :root {
   font-family: Montserrat, sans-serif;
 
   ::-webkit-scrollbar {
     width: 6px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
@@ -44,4 +48,27 @@ body {
 
 a {
   text-decoration: none;
+}
+
+// #map {
+//   width: 600px;
+//   height: 400px;
+// }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+.notificationsLarge {
+  background-color: $notification;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
 }

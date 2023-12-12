@@ -17,6 +17,7 @@ import {
   usePutUomMutation,
 } from "../../features/setup/api/uomApi";
 import { uomSchema } from "../../schema/schema";
+import { useSelector } from "react-redux";
 
 function UnitOfMeasurements() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function UnitOfMeasurements() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -54,13 +57,16 @@ function UnitOfMeasurements() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
     "modifiedBy",
     "isActive",
   ];
+
+  const tableHeads = ["UOM Code", "UOM Description"];
 
   //React Hook Form
   const {
@@ -77,15 +83,16 @@ function UnitOfMeasurements() {
   });
 
   //RTK Query
-  const [postUom] = usePostUomMutation();
-  const { data, isLoading } = useGetAllUomsQuery({
+  const [postUom, { isLoading: isAddLoading }] = usePostUomMutation();
+  const { data, isLoading, isFetching } = useGetAllUomsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putUom] = usePutUomMutation();
-  const [patchUomStatus] = usePatchUomStatusMutation();
+  const [putUom, { isLoading: isUpdateLoading }] = usePutUomMutation();
+  const [patchUomStatus, { isLoading: isArchiveLoading }] =
+    usePatchUomStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -102,7 +109,14 @@ function UnitOfMeasurements() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} UOM`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -116,7 +130,12 @@ function UnitOfMeasurements() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving UOM");
+      }
+
       onErrorOpen();
     }
   };
@@ -146,7 +165,6 @@ function UnitOfMeasurements() {
     setSelectedId("");
   };
 
-  console.log(getValues());
   //UseEffect
   useEffect(() => {
     setCount(data?.totalCount);
@@ -164,12 +182,12 @@ function UnitOfMeasurements() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.uom}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -180,6 +198,7 @@ function UnitOfMeasurements() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 
@@ -189,6 +208,7 @@ function UnitOfMeasurements() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " UOM"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="UOM Code"
@@ -211,8 +231,14 @@ function UnitOfMeasurements() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.uomCode}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

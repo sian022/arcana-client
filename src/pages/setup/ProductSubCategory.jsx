@@ -19,6 +19,7 @@ import {
 import { useGetAllProductCategoryQuery } from "../../features/setup/api/productCategoryApi";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
+import { useSelector } from "react-redux";
 
 function ProductSubCategory() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -29,6 +30,8 @@ function ProductSubCategory() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -56,13 +59,16 @@ function ProductSubCategory() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
     "modifiedBy",
     "isActive",
   ];
+
+  const tableHeads = ["Product Category", "Product Sub Category"];
 
   //React Hook Form
   const {
@@ -79,15 +85,17 @@ function ProductSubCategory() {
   });
 
   //RTK Query
-  const [postProductSubCategory] = usePostProductSubCategoryMutation();
-  const { data, isLoading } = useGetAllProductSubCategoriesQuery({
+  const [postProductSubCategory, { isLoading: isAddLoading }] =
+    usePostProductSubCategoryMutation();
+  const { data, isLoading, isFetching } = useGetAllProductSubCategoriesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putProductSubCategory] = usePutProductSubCategoryMutation();
-  const [patchProductSubCategoryStatus] =
+  const [putProductSubCategory, { isLoading: isUpdateLoading }] =
+    usePutProductSubCategoryMutation();
+  const [patchProductSubCategoryStatus, { isLoading: isArchiveLoading }] =
     usePatchProductSubCategoryStatusMutation();
 
   const { data: productCategoriesData } = useGetAllProductCategoryQuery({
@@ -120,7 +128,16 @@ function ProductSubCategory() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${
+            drawerMode === "add" ? "adding" : "updating"
+          } product sub category`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -134,7 +151,12 @@ function ProductSubCategory() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving product sub category");
+      }
+
       onErrorOpen();
     }
   };
@@ -186,12 +208,12 @@ function ProductSubCategory() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.productSubCategories}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -202,6 +224,7 @@ function ProductSubCategory() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 
@@ -213,6 +236,7 @@ function ProductSubCategory() {
         }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Product Sub Category Name"
@@ -226,7 +250,7 @@ function ProductSubCategory() {
         <ControlledAutocomplete
           name={"productCategoryId"}
           control={control}
-          options={productCategoriesData?.result}
+          options={productCategoriesData?.result || []}
           getOptionLabel={(option) => option.productCategoryName}
           disableClearable
           isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -245,8 +269,14 @@ function ProductSubCategory() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.productSubCategoryName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

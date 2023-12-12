@@ -17,6 +17,7 @@ import {
   usePostLocationMutation,
   usePutLocationMutation,
 } from "../../features/user-management/api/locationApi";
+import { useSelector } from "react-redux";
 
 function Location() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,6 +28,8 @@ function Location() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
   const {
@@ -54,7 +57,8 @@ function Location() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "addedBy",
     "updatedAt",
@@ -62,6 +66,8 @@ function Location() {
     "isActive",
     "users",
   ];
+
+  const tableHeads = ["Location"];
 
   //React Hook Form
   const {
@@ -77,15 +83,17 @@ function Location() {
   });
 
   //RTK Query
-  const [postLocation] = usePostLocationMutation();
-  const { data, isLoading } = useGetAllLocationsQuery({
+  const [postLocation, { isLoading: isAddLoading }] = usePostLocationMutation();
+  const { data, isLoading, isFetching } = useGetAllLocationsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putLocation] = usePutLocationMutation();
-  const [patchLocationStatus] = usePatchLocationStatusMutation();
+  const [putLocation, { isLoading: isUpdateLoading }] =
+    usePutLocationMutation();
+  const [patchLocationStatus, { isLoading: isArchiveLoading }] =
+    usePatchLocationStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -102,7 +110,12 @@ function Location() {
       reset();
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving location");
+      }
+
       onErrorOpen();
     }
   };
@@ -116,7 +129,14 @@ function Location() {
       );
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(error.data.messages[0]);
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} user account`
+        );
+      }
+
       onErrorOpen();
     }
   };
@@ -163,12 +183,12 @@ function Location() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
-      {isLoading ? (
+      {isFetching ? (
         <CommonTableSkeleton />
       ) : (
         <CommonTable
           mapData={data?.result}
-          excludeKeys={excludeKeys}
+          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -179,6 +199,7 @@ function Location() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          tableHeads={tableHeads}
         />
       )}
 
@@ -188,6 +209,7 @@ function Location() {
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Location"}
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
+        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
           label="Location Name"
@@ -202,8 +224,14 @@ function Location() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+        noIcon={!status}
       >
-        Are you sure you want to {status ? "archive" : "restore"}?
+        Are you sure you want to {status ? "archive" : "restore"}{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.locationName}
+        </span>
+        ?
       </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}

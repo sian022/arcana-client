@@ -4,9 +4,12 @@ const colorSchemes = {
   light: {
     primary: "#544d91",
     secondary: "#243448",
+    tertiary: "#008080",
     accent: "#766bb9",
     error: "#BB0000",
+    warning: "#FFBB33",
     success: "#009c7a",
+    notification: "#F30737",
     // error: "#F30737",
   },
 };
@@ -19,6 +22,9 @@ export const theme = createTheme({
     secondary: {
       main: colorSchemes.light.secondary,
     },
+    tertiary: {
+      main: colorSchemes.light.tertiary,
+    },
     accent: {
       main: colorSchemes.light.accent,
     },
@@ -27,6 +33,9 @@ export const theme = createTheme({
     },
     success: {
       main: colorSchemes.light.success,
+    },
+    notification: {
+      main: colorSchemes.light.notification,
     },
     white: {
       main: "#FFFFFF",
@@ -60,7 +69,7 @@ export const theme = createTheme({
     MuiFormLabel: {
       styleOverrides: {
         root: {
-          color: `${colorSchemes.light.primary} !important`,
+          color: `${colorSchemes.light.primary}`,
         },
       },
     },

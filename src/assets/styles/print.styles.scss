@@ -1,0 +1,23 @@
+// .freebiePrint {
+//   @media print {
+//     margin: 10px;
+//   }
+// }
+
+.hideFromPrint {
+  @media print {
+    display: none;
+  }
+}
+
+// .printTable {
+//   @media print {
+//     max-height: none !important;
+//   }
+// }
+
+@media print {
+  .printTable {
+    height: auto !important;
+  }
+}

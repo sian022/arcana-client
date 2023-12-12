@@ -1,8 +1,16 @@
-import { Box, TextField, debounce } from "@mui/material";
-import React, { useState } from "react";
-import { useGetAllReleasedProspectsQuery } from "../../../features/prospect/api/prospectApi";
+import { Box, TextField, Typography, debounce } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  useGetAllApprovedProspectsQuery,
+  useGetAllReleasedProspectsQuery,
+} from "../../../features/prospect/api/prospectApi";
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
 import CommonTable from "../../../components/CommonTable";
+import { useDispatch, useSelector } from "react-redux";
+import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
+import useDisclosure from "../../../hooks/useDisclosure";
+import RegisterRegularForm from "./RegisterRegularForm";
+import PrintFreebiesModal from "../../../components/modals/PrintFreebiesModal";
 
 function Released() {
   const [search, setSearch] = useState("");
@@ -11,53 +19,114 @@ function Released() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
+  const dispatch = useDispatch();
+  const badges = useSelector((state) => state.badge.value);
+  const selectedStoreType = useSelector(
+    (state) => state.selectedStoreType.value
+  );
+
   //Constants
-  const excludeKeys = [
+  const excludeKeysDisplay = [
+    "id",
     "createdAt",
     "isActive",
     "origin",
     "addedBy",
+    "status",
     "freebies",
+    "ownersAddress",
+    "registrationStatus",
   ];
 
-  const debouncedSetSearch = debounce((value) => {
-    setSearch(value);
-  }, 200);
+  const tableHeads = [
+    "Owner's Name",
+    "Mobile Number",
+    "Email Address",
+    "Business Name",
+    "Business Type",
+  ];
 
-  const { data, isLoading } = useGetAllReleasedProspectsQuery({
+  //Disclosures
+  const {
+    isOpen: isRegisterOpen,
+    onOpen: onRegisterOpen,
+    onClose: onRegisterClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isPrintOpen,
+    onOpen: onPrintOpen,
+    onClose: onPrintClose,
+  } = useDisclosure();
+
+  //RTK Query
+  const { data, isLoading, isFetching } = useGetAllApprovedProspectsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
+    StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
+    // WithFreebies: true,
+    FreebieStatus: "Released",
   });
-  return (
-    <Box>
-      <TextField
-        type="search"
-        size="small"
-        label="Search"
-        onChange={(e) => {
-          debouncedSetSearch(e.target.value);
-        }}
-        autoComplete="off"
-        sx={{ mb: 2 }}
-      />
 
-      {isLoading ? (
-        <CommonTableSkeleton />
-      ) : (
-        <CommonTable
-          mapData={data?.releasedProspecting}
-          excludeKeys={excludeKeys}
-          page={page}
-          setPage={setPage}
-          rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
-          count={count}
-          status={status}
+  //Misc Functions
+  const debouncedSetSearch = debounce((value) => {
+    setSearch(value);
+  }, 200);
+
+  ///UseEffects
+  useEffect(() => {
+    setCount(data?.totalCount);
+    dispatch(setBadge({ ...badges, released: data?.totalCount }));
+  }, [data]);
+
+  return (
+    <>
+      <Box>
+        <TextField
+          type="search"
+          size="small"
+          label="Search"
+          onChange={(e) => {
+            debouncedSetSearch(e.target.value);
+          }}
+          autoComplete="off"
+          sx={{ margin: "15px" }}
         />
-      )}
-    </Box>
+
+        {isFetching ? (
+          <CommonTableSkeleton compact />
+        ) : (
+          <CommonTable
+            mapData={data?.requestedProspect}
+            // excludeKeys={excludeKeys}
+            tableHeads={tableHeads}
+            excludeKeysDisplay={excludeKeysDisplay}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            editable
+            onRegularRegister={onRegisterOpen}
+            setRowsPerPage={setRowsPerPage}
+            count={count}
+            status={status}
+            compact
+            onPrintFreebies={onPrintOpen}
+          />
+        )}
+      </Box>
+
+      {/* <AttachmentsProvider> */}
+      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+
+      <PrintFreebiesModal
+        open={isPrintOpen}
+        // open={true}
+        onClose={onPrintClose}
+      />
+      {/* </AttachmentsProvider> */}
+    </>
   );
 }
 

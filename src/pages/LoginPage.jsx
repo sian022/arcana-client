@@ -7,7 +7,7 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../assets/styles/login.styles.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { usePostLoginMutation } from "../features/authentication/api/loginApi";
@@ -18,17 +18,28 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   setFullname,
+  setRoleName,
   setToken,
+  setUserDetails,
 } from "../features/authentication/reducers/loginSlice";
 import { setPermissisons } from "../features/authentication/reducers/permissionsSlice";
 import MisLogo from "../assets/images/MIS-logo.png";
 import SystemLogoName from "../assets/images/SystemLogoName.png";
+import useSnackbar from "../hooks/useSnackbar";
+import SecondaryButton from "../components/SecondaryButton";
+import { AppContext } from "../context/AppContext";
 
 function LoginPage() {
+  const { showSnackbar } = useSnackbar();
+
   const [showPassword, setShowPassword] = useState(false);
 
+  const { refetchNotifications } = useContext(AppContext);
+
+  //RTK Query
   const [postLogin, { isLoading }] = usePostLoginMutation();
 
+  //React Hook Form
   const {
     handleSubmit,
     register,
@@ -46,18 +57,26 @@ function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(errors);
-
+  //Handlers
   const submitHandler = async (data) => {
     try {
       const res = await postLogin(data).unwrap();
-      console.log(res);
-      dispatch(setFullname(res.data.fullname));
-      dispatch(setToken(res.data.token));
-      dispatch(setPermissisons(res.data.permission));
+      dispatch(setUserDetails(res?.value));
+      dispatch(setFullname(res?.value?.fullname));
+      dispatch(setToken(res?.value?.token));
+      dispatch(setPermissisons(res?.value?.permission));
+      dispatch(setRoleName(res?.value?.roleName));
       navigate("/");
+      refetchNotifications();
+
+      reset();
     } catch (err) {
-      alert(err.data.messages);
+      console.log(err);
+      if (err?.data?.error?.message) {
+        showSnackbar(err?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error logging in", "error");
+      }
     }
   };
 
@@ -110,24 +129,25 @@ function LoginPage() {
               {...register("password")}
               helperText={errors && errors.password?.message}
             />
-            <Button
+            <SecondaryButton
               className="login__formWrapper__form__signIn"
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !isValid}
+              fullWidth
             >
               {isLoading ? (
                 <CircularProgress size="20px" color="white" />
               ) : (
                 "Sign In"
               )}
-            </Button>
+            </SecondaryButton>
+            <Box className="login__footer">
+              <img src={MisLogo} alt="mis-logo" />
+              <Typography>© 2023 Powered by</Typography>
+              <Typography>Management Information System</Typography>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box className="login__footer">
-        <img src={MisLogo} alt="mis-logo" />
-        <Typography>© 2023 Powered by</Typography>
-        <Typography>Management Information System</Typography>
       </Box>
     </Box>
   );

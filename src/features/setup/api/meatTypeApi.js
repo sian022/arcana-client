@@ -26,12 +26,12 @@ export const meatTypeApi = createApi({
     getAllMeatTypes: builder.query({
       query: (params) => ({
         params: params,
-        url: "/GetMeatTypesAsync/GetMeatType",
+        url: "/MeatType/GetMeatType",
         method: "GET",
       }),
       providesTags: ["Meat Type"],
-      transformResponse: (response) => response.data,
-      transformErrorResponse: (response) => response.data,
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
     }),
     putMeatType: builder.mutation({
       query: ({ id, ...body }) => ({

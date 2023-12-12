@@ -1,9 +1,9 @@
-import { Box } from '@mui/material'
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import Sidebar from '../components/Sidebar'
-import Header from '../components/Header'
-import '../assets/styles/mainLayout.styles.scss'
+import { Box } from "@mui/material";
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import "../assets/styles/mainLayout.styles.scss";
 
 function MainLayout() {
   return (
@@ -16,7 +16,7 @@ function MainLayout() {
         </Box>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default MainLayout
+export default MainLayout;
