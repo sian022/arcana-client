@@ -64,8 +64,9 @@ function ListingFeeTab() {
                 sx={{
                   maxHeight: "280px",
                   overflow: "auto",
-                  width: "620px",
+                  // width: "620px",
                   // width: "700px",
+                  width: "720px",
                   // maxWidth: "700px",
                   borderRadius: "10px",
                 }}
@@ -92,6 +93,12 @@ function ListingFeeTab() {
                       <TableCell sx={{ color: "black !important" }}>
                         Unit Cost
                       </TableCell>
+                      <TableCell sx={{ color: "black !important" }}>
+                        Tx No.
+                      </TableCell>
+                      <TableCell sx={{ color: "black !important" }}>
+                        Status
+                      </TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -106,6 +113,25 @@ function ListingFeeTab() {
                           <TableCell>
                             ₱ {listing.unitCost?.toLocaleString()}
                           </TableCell>
+                          <TableCell>{item.id}</TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                bgcolor:
+                                  item?.status === "Approved"
+                                    ? "success.main"
+                                    : item?.status === "Rejected"
+                                    ? "error.main"
+                                    : "warning.main",
+                                borderRadius: "5px",
+                                padding: "3px",
+                                color: "white !important",
+                                fontWeight: "500",
+                              }}
+                            >
+                              {item.status || "Pending"}
+                            </Box>
+                          </TableCell>
                         </TableRow>
                       ))
                     )}
@@ -119,7 +145,8 @@ function ListingFeeTab() {
                   position: "absolute",
                   // right: "150px",
                   // right: "125px",
-                  left: "453px",
+                  // left: "453px",
+                  right: "50px",
                   bottom: "90px",
                   gap: "20px",
                 }}
