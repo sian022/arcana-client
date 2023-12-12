@@ -197,13 +197,13 @@ export const navigationData = [
         icon: "HowToReg",
         notifications: ["pendingClient"],
       },
-      {
-        id: 2,
-        name: "Sp. Discount Approval",
-        path: "/approval/sp-discount-approval",
-        icon: "LocalOffer",
-        // notifications: "approvedgClient",
-      },
+      // {
+      //   id: 2,
+      //   name: "Sp. Discount Approval",
+      //   path: "/approval/sp-discount-approval",
+      //   icon: "LocalOffer",
+      //   // notifications: "approvedgClient",
+      // },
       {
         id: 3,
         name: "Listing Fee Approval",
