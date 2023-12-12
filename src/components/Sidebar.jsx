@@ -126,19 +126,7 @@ function Sidebar() {
                           ) > 0 && (
                             <Box sx={{ width: "20px", height: "20px" }}>
                               {item.notifications && (
-                                <Box
-                                  sx={{
-                                    bgcolor: "notification.main",
-                                    borderRadius: "50%",
-                                    // width: "12%",
-                                    width: "20px",
-                                    height: "20px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    color: "white !important",
-                                  }}
-                                >
+                                <Box className="notifications">
                                   {item?.notifications?.reduce(
                                     (sum, notification) =>
                                       sum +

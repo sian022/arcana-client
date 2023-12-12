@@ -177,7 +177,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                       moment(
                         selectedRowData?.priceChangeHistories?.[0]
                           ?.effectivityDate
-                      ).format("MMMM D") || ""
+                      ).format("MMMM D, hh:mm a") || ""
                     }
                     sx={{ pointerEvents: "none" }}
                   />
@@ -234,7 +234,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                                 Effectivity Date:{" "}
                                 <span style={{ fontWeight: "500" }}>
                                   {moment(item.effectivityDate).format(
-                                    "MMMM D"
+                                    "MMMM D, hh:mm a"
                                   )}
                                 </span>
                               </Typography>
@@ -274,7 +274,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                                 Effectivity Date:{" "}
                                 <span style={{ fontWeight: "500" }}>
                                   {moment(item.effectivityDate).format(
-                                    "MMMM D"
+                                    "MMMM D, hh:mm a"
                                   )}
                                 </span>
                               </Typography>

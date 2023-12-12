@@ -88,7 +88,11 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
 
   const onPriceChangeSubmit = async (data) => {
     const { effectivityDate, ...noDate } = data;
-    const transformedDate = moment(effectivityDate).format("YYYY-MM-DD");
+    // const transformedDate = effectivityDate;
+    // const transformedDate = moment(effectivityDate).format("YYYY-MM-DD");
+    const transformedDate = moment(effectivityDate).format(
+      "YYYY-MM-DD HH:mm:ss"
+    );
 
     try {
       // await postAddPriceChange(data).unwrap();

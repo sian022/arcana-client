@@ -25,6 +25,15 @@ import NoData from "../../../assets/images/no-data.jpg";
 
 function ListingFeeTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  // const [totalAmount, setTotalAmount] = useState(0);
+  const totalAmount = selectedRowData?.listingFees?.reduce((total, item) => {
+    return (
+      total +
+      item?.listingItems?.reduce((subtotal, listing) => {
+        return subtotal + (listing.unitCost || 0);
+      }, 0)
+    );
+  }, 0);
 
   //Disclosures
 
@@ -95,7 +104,7 @@ function ListingFeeTab() {
                           <TableCell>{listing.uom}</TableCell>
                           <TableCell>{listing.sku}</TableCell>
                           <TableCell>
-                            {listing.unitCost?.toLocaleString()}
+                            ₱ {listing.unitCost?.toLocaleString()}
                           </TableCell>
                         </TableRow>
                       ))
@@ -103,6 +112,31 @@ function ListingFeeTab() {
                   </TableBody>
                 </Table>
               </TableContainer>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  position: "absolute",
+                  // right: "150px",
+                  // right: "125px",
+                  left: "453px",
+                  bottom: "90px",
+                  gap: "20px",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Total Amount
+                </Typography>
+                <Typography sx={{ fontSize: "1rem" }}>
+                  ₱ {totalAmount?.toLocaleString()}
+                </Typography>
+              </Box>
             </Box>
           ) : (
             <Box

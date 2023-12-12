@@ -29,6 +29,7 @@ import BusinessType from "../pages/customer-management/BusinessType";
 import Approver from "../pages/user-management/Approver";
 import FreebieApproval from "../pages/approval/FreebieApproval";
 import Freebies from "../pages/customer-registration/freebies/Freebies";
+import Cluster from "../pages/customer-management/Cluster";
 
 export const router = createBrowserRouter([
   {
@@ -122,6 +123,10 @@ export const router = createBrowserRouter([
           {
             path: "term-days",
             element: <TermDays />,
+          },
+          {
+            path: "cluster",
+            element: <Cluster />,
           },
         ],
       },

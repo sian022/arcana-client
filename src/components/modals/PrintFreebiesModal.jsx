@@ -232,9 +232,16 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                 </Table>
               </TableContainer>
               <Box className="releaseFreebieModal__footer">
-                <Typography>
-                  <span>Prepared by:</span> {fullname ?? "user"}
-                </Typography>
+                <Box sx={{ position: "relative", flex: 1 }}>
+                  <Typography>
+                    <span>Prepared by:</span> {fullname ?? "user"}
+                  </Typography>
+
+                  <Typography className="disclaimer">
+                    This document does not serve as an official receipt
+                  </Typography>
+                </Box>
+
                 <Box className="releaseFreebieModal__footer__attachments">
                   <Box className="releaseFreebieModal__footer__attachments__signature">
                     <Typography>

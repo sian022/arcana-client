@@ -491,3 +491,16 @@ export const priceChangeSchema = {
     effectivityDate: null,
   },
 };
+
+export const clusterSchema = {
+  schema: yup.object({
+    clusterCode: yup.string().required("Cluster code is required"),
+    clusterDescription: yup
+      .string()
+      .required("Cluster description is required"),
+  }),
+  defaultValues: {
+    clusterCode: "",
+    clusterDescription: "",
+  },
+};
