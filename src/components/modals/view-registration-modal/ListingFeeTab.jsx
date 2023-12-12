@@ -129,7 +129,9 @@ function ListingFeeTab() {
                                 fontWeight: "500",
                               }}
                             >
-                              {item.status || "Pending"}
+                              {item.status === "Under review"
+                                ? "Pending"
+                                : item.status || "Pending"}
                             </Box>
                           </TableCell>
                         </TableRow>
