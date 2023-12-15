@@ -223,7 +223,8 @@ export const prospectSchema = {
   schema: yup.object({
     ownersName: yup.string().required("Owner's name is required"),
 
-    emailAddress: yup.string().required("Email address is required"),
+    emailAddress: yup.string(),
+    // emailAddress: yup.string().required("Email address is required"),
     houseNumber: yup.string(),
     // .required("House number is required")
     streetName: yup.string(),
@@ -334,7 +335,8 @@ export const regularRegisterSchema = {
     barangayName: yup.string().required("Barangay name is required"),
     city: yup.string().required("City/Municipality is required"),
     province: yup.string().required("Province is required"),
-    tinNumber: yup.string().required("TIN number is required"),
+    tinNumber: yup.string(),
+    // tinNumber: yup.string().required("TIN number is required"),
     authorizedRepresentative: yup.string(),
     // .required("Representative name is required")
     authorizedRepresentativePosition: yup.string(),
@@ -381,10 +383,12 @@ export const directRegisterPersonalSchema = {
       .required(),
     phoneNumber: yup.string().required("Phone number is required"),
     dateOfBirth: yup.date().required("Birthdate is required"),
-    tinNumber: yup.string().required("TIN number is required"),
+    tinNumber: yup.string(),
+    // tinNumber: yup.string().required("TIN number is required"),
     businessName: yup.string().required("Business name is required"),
     storeTypeId: yup.object().required("Business type is required"),
-    emailAddress: yup.string().required("Email address is required"),
+    emailAddress: yup.string(),
+    // emailAddress: yup.string().required("Email address is required"),
     cluster: yup.number().required("Cluster is required").integer(),
     businessAddress: yup
       .object({
