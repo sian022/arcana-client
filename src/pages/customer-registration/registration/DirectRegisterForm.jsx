@@ -888,10 +888,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     error={errors?.ownersName}
                   />
                   <TextField
-                    label="Email"
+                    label="Email Address"
                     size="small"
                     autoComplete="off"
-                    required
+                    // required
                     className="register__textField"
                     {...register("emailAddress")}
                     helperText={errors?.emailAddress?.message}
@@ -1044,7 +1044,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                         }}
                         onBlur={onBlur}
                         value={value || ""}
-                        required
+                        // required
                         helperText={errors?.tinNumber?.message}
                         error={!!errors?.tinNumber}
                       />

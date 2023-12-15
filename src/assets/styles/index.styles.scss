@@ -62,13 +62,36 @@ input::-webkit-inner-spin-button {
   margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-.notificationsLarge {
+.notifications {
   background-color: $notification;
   border-radius: 50%;
-  width: 22px;
-  height: 22px;
+  min-width: 20px;
+  max-width: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
+}
+
+.notificationsLarge {
+  background-color: $notification;
+  border-radius: 50%;
+  // width: 22px;
+  // height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.disclaimer {
+  position: absolute;
+  font-size: 0.9rem;
+  bottom: -47px;
+
+  @media print {
+    bottom: -40px;
+  }
 }

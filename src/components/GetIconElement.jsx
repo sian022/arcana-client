@@ -31,6 +31,7 @@ import {
   SupervisedUserCircle,
   HowToVote,
   CardGiftcard,
+  PinDrop,
 } from "@mui/icons-material";
 
 export const getIconElement = (iconName) => {
@@ -67,6 +68,7 @@ export const getIconElement = (iconName) => {
     SupervisedUserCircle: <SupervisedUserCircle />,
     HowToVote: <HowToVote />,
     CardGiftCard: <CardGiftcard />,
+    PinDrop: <PinDrop />,
   };
 
   return iconMap[iconName] || <IcecreamOutlined />;

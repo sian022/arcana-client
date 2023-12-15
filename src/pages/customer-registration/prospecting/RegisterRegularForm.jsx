@@ -583,10 +583,10 @@ function RegisterRegularForm({ open, onClose }) {
                     value={selectedRowData?.ownersName ?? ""}
                   />
                   <TextField
-                    label="Email"
+                    label="Email Address"
                     size="small"
                     autoComplete="off"
-                    required
+                    // required
                     disabled
                     className="register__textField"
                     value={selectedRowData?.emailAddress ?? ""}
@@ -739,7 +739,7 @@ function RegisterRegularForm({ open, onClose }) {
                         }}
                         onBlur={onBlur}
                         value={value || ""}
-                        required
+                        // required
                         helperText={errors?.tinNumber?.message}
                         error={!!errors?.tinNumber}
                       />

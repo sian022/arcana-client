@@ -211,7 +211,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         }}
                       >
                         {!history?.status
-                          ? "Rerequested"
+                          ? "Requested"
                           : `${history?.status} - ${formatOrdinalPrefix(
                               history?.level
                             )} Approval`}
@@ -313,7 +313,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           textTransform: "uppercase",
                         }}
                       >
-                        Rerequested
+                        Requested
                       </span>
                     </StepLabel>
                   </Step>
@@ -353,7 +353,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         }}
                       >
                         {!history?.status
-                          ? "Rerequested"
+                          ? "Requested"
                           : `${history?.status} - ${formatOrdinalPrefix(
                               history?.level
                             )} Approval`}
@@ -448,7 +448,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           textTransform: "uppercase",
                         }}
                       >
-                        Rerequested
+                        Requested
                       </span>
                     </StepLabel>
                   </Step>

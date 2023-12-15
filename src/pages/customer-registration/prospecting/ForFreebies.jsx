@@ -451,7 +451,7 @@ function ForFreebies() {
                 size="small"
                 type="email"
                 autoComplete="off"
-                required
+                // required
                 {...register("emailAddress")}
                 helperText={errors?.emailAddress?.message}
                 error={errors?.emailAddress}

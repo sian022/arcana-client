@@ -454,7 +454,7 @@ function ForReleasing() {
                 label="Email Address"
                 size="small"
                 autoComplete="off"
-                required
+                // required
                 {...register("emailAddress")}
                 helperText={errors?.emailAddress?.message}
                 error={errors?.emailAddress}

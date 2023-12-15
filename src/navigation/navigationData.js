@@ -126,6 +126,12 @@ export const navigationData = [
         path: "/customer-management/term-days",
         icon: "CalendarToday",
       },
+      {
+        id: 4,
+        name: "Cluster",
+        path: "/customer-management/cluster",
+        icon: "PinDrop",
+      },
     ],
   },
   // {

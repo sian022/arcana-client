@@ -566,6 +566,7 @@ function ListingFeeDrawer({
                         remove(index);
                     handleRecalculateTotalAmount();
                   }}
+                  tabIndex={-1}
                 >
                   <Cancel sx={{ fontSize: "30px" }} />
                 </IconButton>
