@@ -13,16 +13,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import SecondaryButton from "../SecondaryButton";
-import DangerButton from "../DangerButton";
 import rdfLogo from "../../assets/images/rdf-logo.png";
-import {
-  Attachment,
-  CameraAlt,
-  Close,
-  PhotoCamera,
-  Visibility,
-} from "@mui/icons-material";
+
 import useDisclosure from "../../hooks/useDisclosure";
 import SignatureCanvasModal from "./SignatureCanvasModal";
 import { useSelector } from "react-redux";
