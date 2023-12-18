@@ -41,6 +41,7 @@ import AccentButton from "../../../components/AccentButton";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
+import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -193,14 +194,16 @@ function ForReleasing() {
         ...restData
       } = data;
 
+      let response;
+
       if (drawerMode === "add") {
-        await postProspect({
+        response = await postProspect({
           ...restData,
           storeTypeId: id,
         }).unwrap();
         setSnackbarMessage("Prospect added successfully");
       } else if (drawerMode === "edit") {
-        await putProspect({
+        response = await putProspect({
           ...restData,
           storeTypeId: id,
         }).unwrap();
@@ -626,8 +629,11 @@ function ForReleasing() {
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
       >
-        Are you sure you want to set prospect {selectedRowData?.ownersName} as{" "}
-        {status ? "inactive" : "active"}?
+        Are you sure you want to set prospect{" "}
+        <span style={{ fontWeight: "bold" }}>
+          {selectedRowData?.businessName}
+        </span>{" "}
+        as {status ? "inactive" : "active"}?
       </CommonDialog>
 
       <CommonDialog
@@ -635,9 +641,11 @@ function ForReleasing() {
         onClose={onConfirmClose}
         onYes={handleSubmit(onDrawerSubmit)}
         isLoading={drawerMode === "add" ? isAddLoading : isEditLoading}
+        noIcon
       >
         Are you sure you want to {drawerMode == "add" ? "add" : "update"}{" "}
-        prospect {watch("businessName")}?
+        prospect{" "}
+        <span style={{ fontWeight: "bold" }}>{watch("businessName")}</span>?
       </CommonDialog>
 
       <CommonDialog

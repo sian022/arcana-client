@@ -692,7 +692,7 @@ function ForFreebies() {
       >
         Are you sure you want to set prospect{" "}
         <span style={{ fontWeight: "bold" }}>
-          {selectedRowData?.ownersName}
+          {selectedRowData?.businessName}
         </span>{" "}
         as {status ? "inactive" : "active"}?
       </CommonDialog>
