@@ -220,8 +220,8 @@ function ViewListingFeeModal({
                 </TableHead>
 
                 <TableBody>
-                  {selectedRowData?.listingItems?.map((item) => (
-                    <TableRow>
+                  {selectedRowData?.listingItems?.map((item, index) => (
+                    <TableRow key={index}>
                       <TableCell>{item.itemCode}</TableCell>
                       <TableCell>{item.itemDescription}</TableCell>
                       <TableCell>{item.uom}</TableCell>

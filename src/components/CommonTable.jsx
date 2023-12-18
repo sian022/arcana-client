@@ -160,7 +160,7 @@ function CommonTable({
 
                     if (viewMoreKey === keys) {
                       return (
-                        <TableCell>
+                        <TableCell key={k}>
                           <IconButton
                             sx={{ color: "secondary.main" }}
                             onClick={onViewMoreClick}
@@ -173,7 +173,7 @@ function CommonTable({
 
                     if (keys === "phoneNumber") {
                       return (
-                        <TableCell>
+                        <TableCell key={k}>
                           {item[keys] && "+63 " + formatPhoneNumber(item[keys])}
                         </TableCell>
                       );
@@ -181,7 +181,7 @@ function CommonTable({
 
                     if (keys === "createdAt") {
                       return (
-                        <TableCell>
+                        <TableCell key={k}>
                           {item[keys] &&
                             moment(item[keys]).format("MMMM D, YYYY")}
                           {/* // H:mm a */}
