@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
-import rdfLogo from "../../assets/images/rdf-logo.png";
+import rdfLogo from "../../assets/images/RDF-Logo.png";
 import {
   Attachment,
   CameraAlt,
