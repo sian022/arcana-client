@@ -32,6 +32,13 @@ import {
   HowToVote,
   CardGiftcard,
   PinDrop,
+  MonetizationOnOutlined,
+  PaymentOutlined,
+  LocalOfferOutlined,
+  FastForward,
+  Store,
+  TrendingUp,
+  MonetizationOn,
 } from "@mui/icons-material";
 
 export const getIconElement = (iconName) => {
@@ -69,6 +76,11 @@ export const getIconElement = (iconName) => {
     HowToVote: <HowToVote />,
     CardGiftCard: <CardGiftcard />,
     PinDrop: <PinDrop />,
+    MonetizationOn: <MonetizationOn />,
+    LocalOfferOutlined: <LocalOfferOutlined />,
+    FastForward: <FastForward />,
+    Store: <Store />,
+    TrendingUp: <TrendingUp />,
   };
 
   return iconMap[iconName] || <IcecreamOutlined />;

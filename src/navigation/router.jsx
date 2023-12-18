@@ -27,9 +27,12 @@ import ListingFeeApproval from "../pages/approval/ListingFeeApproval";
 import VariableDiscount from "../pages/customer-management/VariableDiscount";
 import BusinessType from "../pages/customer-management/BusinessType";
 import Approver from "../pages/user-management/Approver";
-import FreebieApproval from "../pages/approval/FreebieApproval";
-import Freebies from "../pages/customer-registration/freebies/Freebies";
 import Cluster from "../pages/customer-management/Cluster";
+import SalesManagement from "../pages/sales-management";
+import SalesTransaction from "../pages/sales-management/SalesTransaction";
+import PaymentTransaction from "../pages/sales-management/PaymentTransaction";
+import SpecialDiscount from "../pages/sales-management/SpecialDiscount";
+import AdvancePayment from "../pages/sales-management/AdvancePayment";
 
 export const router = createBrowserRouter([
   {
@@ -162,6 +165,30 @@ export const router = createBrowserRouter([
           // },
         ],
       },
+
+      {
+        path: "sales-management",
+        element: <SalesManagement />,
+        children: [
+          {
+            path: "sales-transaction",
+            element: <SalesTransaction />,
+          },
+          {
+            path: "payment-transaction",
+            element: <PaymentTransaction />,
+          },
+          {
+            path: "special-discount",
+            element: <SpecialDiscount />,
+          },
+          {
+            path: "advance-payment",
+            element: <AdvancePayment />,
+          },
+        ],
+      },
+
       {
         path: "approval",
         element: <Approval />,
