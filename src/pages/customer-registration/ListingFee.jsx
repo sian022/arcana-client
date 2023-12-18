@@ -126,6 +126,7 @@ function ListingFee() {
     "cancellationReason",
     "requestId",
     "listingFeeApprovalHistories",
+    "registrationStatus",
   ];
 
   const tableHeads = [

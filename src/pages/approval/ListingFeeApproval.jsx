@@ -87,21 +87,6 @@ function ListingFeeApproval() {
     },
   ];
 
-  const selectOptions = [
-    {
-      value: " ",
-      label: "All",
-    },
-    {
-      value: "prospecting",
-      label: "Prospect",
-    },
-    {
-      value: "direct",
-      label: "Direct",
-    },
-  ];
-
   const excludeKeysDisplay = [
     "listingItems",
     "clientId",
@@ -111,6 +96,7 @@ function ListingFeeApproval() {
     "cancellationReason",
     "requestId",
     "listingFeeApprovalHistories",
+    "registrationStatus",
   ];
 
   const tableHeads = [
