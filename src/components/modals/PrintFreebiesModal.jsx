@@ -13,7 +13,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import rdfLogo from "../../assets/images/rdf-logo.png";
+import rdfLogo from "../../assets/images/RDF-Logo.png";
 
 import useDisclosure from "../../hooks/useDisclosure";
 import SignatureCanvasModal from "./SignatureCanvasModal";
