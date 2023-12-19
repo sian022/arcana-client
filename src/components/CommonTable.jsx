@@ -43,6 +43,7 @@ function CommonTable({
   onHistory,
   onDelete,
   onPrintFreebies,
+  onTagUserInCluster,
   page,
   setPage,
   rowsPerPage,
@@ -229,6 +230,9 @@ function CommonTable({
                         onHistory={onHistory && onHistory}
                         onPrintFreebies={onPrintFreebies && onPrintFreebies}
                         onDelete={onDelete && onDelete}
+                        onTagUserInCluster={
+                          onTagUserInCluster && onTagUserInCluster
+                        }
                         item={item}
                         status={status}
                         disableActions={disableActions}

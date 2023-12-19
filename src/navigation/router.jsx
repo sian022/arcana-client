@@ -27,12 +27,13 @@ import ListingFeeApproval from "../pages/approval/ListingFeeApproval";
 import VariableDiscount from "../pages/customer-management/VariableDiscount";
 import BusinessType from "../pages/customer-management/BusinessType";
 import Approver from "../pages/user-management/Approver";
-import Cluster from "../pages/customer-management/Cluster";
 import SalesManagement from "../pages/sales-management";
 import SalesTransaction from "../pages/sales-management/SalesTransaction";
 import PaymentTransaction from "../pages/sales-management/PaymentTransaction";
 import SpecialDiscount from "../pages/sales-management/SpecialDiscount";
 import AdvancePayment from "../pages/sales-management/AdvancePayment";
+import Cluster from "../pages/user-management/Cluster";
+import MerchandisingAllowance from "../pages/customer-management/MerchandisingAllowance";
 
 export const router = createBrowserRouter([
   {
@@ -66,6 +67,10 @@ export const router = createBrowserRouter([
           {
             path: "approver",
             element: <Approver />,
+          },
+          {
+            path: "cluster",
+            element: <Cluster />,
           },
           {
             path: "company",
@@ -128,8 +133,8 @@ export const router = createBrowserRouter([
             element: <TermDays />,
           },
           {
-            path: "cluster",
-            element: <Cluster />,
+            path: "merchandising-allowance",
+            element: <MerchandisingAllowance />,
           },
         ],
       },

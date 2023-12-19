@@ -10,12 +10,6 @@ import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import {
-  useGetAllUomsQuery,
-  usePatchUomStatusMutation,
-  usePostUomMutation,
-  usePutUomMutation,
-} from "../../features/setup/api/uomApi";
 import { clusterSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
 import {
@@ -24,6 +18,8 @@ import {
   usePostClusterMutation,
   usePutClusterMutation,
 } from "../../features/setup/api/clusterApi";
+import TagCDODrawer from "../../components/drawers/TagCDODrawer";
+import ViewCDOModal from "../../components/modals/ViewCDOModal";
 
 function Cluster() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -62,6 +58,18 @@ function Cluster() {
     onClose: onErrorClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isTagOpen,
+    onOpen: onTagOpen,
+    onClose: onTagClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isViewOpen,
+    onOpen: onViewOpen,
+    onClose: onViewClose,
+  } = useDisclosure();
+
   // Constants
   const excludeKeysDisplay = [
     "id",
@@ -70,9 +78,10 @@ function Cluster() {
     "updatedAt",
     "modifiedBy",
     "isActive",
+    // "users",
   ];
 
-  const tableHeads = ["Cluster Code", "Cluster Description"];
+  const tableHeads = ["Cluster", "CDO Details"];
 
   //React Hook Form
   const {
@@ -192,83 +201,82 @@ function Cluster() {
   }, [search, status, rowsPerPage]);
 
   return (
-    <Box className="commonPageLayout">
-      <PageHeaderAdd
-        pageTitle="Cluster"
-        onOpen={handleAddOpen}
-        setSearch={setSearch}
-        setStatus={setStatus}
-      />
-      {isFetching ? (
-        <CommonTableSkeleton />
-      ) : (
-        <CommonTable
-          mapData={data?.cluster}
-          excludeKeysDisplay={excludeKeysDisplay}
-          editable
-          archivable
-          onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
-          page={page}
-          setPage={setPage}
-          rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
-          count={count}
-          status={status}
-          tableHeads={tableHeads}
+    <>
+      <Box className="commonPageLayout">
+        <PageHeaderAdd
+          pageTitle="Cluster"
+          onOpen={handleAddOpen}
+          setSearch={setSearch}
+          setStatus={setStatus}
         />
-      )}
+        {isFetching ? (
+          <CommonTableSkeleton />
+        ) : (
+          <CommonTable
+            mapData={data?.cluster}
+            excludeKeysDisplay={excludeKeysDisplay}
+            editable
+            archivable
+            onEdit={handleEditOpen}
+            // onArchive={handleArchiveOpen}
+            viewMoreKey={"users"}
+            onViewMoreClick={onViewOpen}
+            onTagUserInCluster={onTagOpen}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            count={count}
+            status={status}
+            tableHeads={tableHeads}
+          />
+        )}
 
-      <CommonDrawer
-        open={isDrawerOpen}
-        onClose={handleDrawerClose}
-        drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Cluster"}
-        onSubmit={handleSubmit(onDrawerSubmit)}
-        disableSubmit={!isValid}
-        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
-      >
-        <TextField
-          label="Cluster Code"
-          size="small"
-          autoComplete="off"
-          {...register("clusterCode")}
-          helperText={errors?.clusterCode?.message}
-          error={errors?.clusterCode}
-          type="number"
+        <CommonDrawer
+          open={isDrawerOpen}
+          onClose={handleDrawerClose}
+          drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Cluster"}
+          onSubmit={handleSubmit(onDrawerSubmit)}
+          disableSubmit={!isValid}
+          isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
+        >
+          <TextField
+            label="Cluster Name"
+            size="small"
+            autoComplete="off"
+            {...register("cluster")}
+            helperText={errors?.cluster?.message}
+            error={errors?.cluster}
+          />
+        </CommonDrawer>
+        <CommonDialog
+          open={isArchiveOpen}
+          onClose={onArchiveClose}
+          onYes={onArchiveSubmit}
+          isLoading={isArchiveLoading}
+          noIcon={!status}
+        >
+          Are you sure you want to {status ? "archive" : "restore"}{" "}
+          <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+            {selectedRowData?.cluster}
+          </span>
+          ?
+        </CommonDialog>
+        <SuccessSnackbar
+          open={isSuccessOpen}
+          onClose={onSuccessClose}
+          message={snackbarMessage}
         />
-        <TextField
-          label="Cluster Description"
-          size="small"
-          autoComplete="off"
-          {...register("clusterDescription")}
-          helperText={errors?.clusterDescription?.message}
-          error={errors?.clusterDescription}
+        <ErrorSnackbar
+          open={isErrorOpen}
+          onClose={onErrorClose}
+          message={snackbarMessage}
         />
-      </CommonDrawer>
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-        noIcon={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.clusterCode}
-        </span>
-        ?
-      </CommonDialog>
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
-    </Box>
+      </Box>
+
+      <TagCDODrawer open={isTagOpen} onClose={onTagClose} />
+      <ViewCDOModal open={isViewOpen} onClose={onViewClose} />
+    </>
   );
 }
 

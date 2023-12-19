@@ -754,3 +754,32 @@
     }
   }
 }
+
+.viewCDOModal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+
+  & &__title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  &__cluster {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex: 1;
+  }
+
+  &__content {
+    display: flex;
+    // grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    flex-direction: column;
+    max-height: 300px;
+    overflow: auto;
+  }
+}

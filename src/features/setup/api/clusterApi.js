@@ -26,7 +26,7 @@ export const clusterApi = createApi({
     getAllClusters: builder.query({
       query: (params) => ({
         params: params,
-        url: "/Cluster/GetCluster",
+        url: "/Cluster/GetAllCluster",
         method: "GET",
       }),
       providesTags: ["Cluster"],
@@ -48,6 +48,14 @@ export const clusterApi = createApi({
       }),
       invalidatesTags: ["Cluster"],
     }),
+    postTagUserInCluster: builder.mutation({
+      query: (body) => ({
+        url: "/Cluster/TagUserInCluster",
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Cluster"],
+    }),
   }),
 });
 
@@ -56,4 +64,5 @@ export const {
   useGetAllClustersQuery,
   usePutClusterMutation,
   usePatchClusterStatusMutation,
+  usePostTagUserInClusterMutation,
 } = clusterApi;

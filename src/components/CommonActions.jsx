@@ -13,6 +13,7 @@ import {
   MonetizationOn,
   More,
   PeopleAlt,
+  PersonAdd,
   Print,
   RemoveCircle,
   RequestPage,
@@ -38,6 +39,7 @@ function CommonActions({
   onVoid,
   onDelete,
   onHistory,
+  onTagUserInCluster,
   disableActions,
   item,
   status,
@@ -76,6 +78,8 @@ function CommonActions({
       onAddPriceChange();
     } else if (action === "delete") {
       onDelete();
+    } else if (action === "tagUserInCluster") {
+      onTagUserInCluster();
     }
 
     onClose();
@@ -117,6 +121,23 @@ function CommonActions({
           >
             <Tag />
             Tagging
+          </MenuItem>
+        )}
+
+        {onTagUserInCluster && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("tagUserInCluster");
+            }}
+            disabled={
+              disableActions
+                ? disableActions?.includes("tagUserInCluster")
+                : false
+            }
+          >
+            <PersonAdd />
+            Tag CDO
           </MenuItem>
         )}
 

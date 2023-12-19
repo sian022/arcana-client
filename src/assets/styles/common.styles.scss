@@ -242,6 +242,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 30px;
+    max-height: 380px;
+    overflow: auto;
 
     &__item {
       cursor: pointer;

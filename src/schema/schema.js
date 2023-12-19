@@ -360,8 +360,8 @@ export const regularRegisterSchema = {
     authorizedRepresentative: "",
     authorizedRepresentativePosition: "",
     cluster: null,
-    longitude: "155.1",
-    latitude: "122.2",
+    longitude: "",
+    latitude: "",
     birthDate: null,
     storeTypeId: null,
   },
@@ -390,6 +390,8 @@ export const directRegisterPersonalSchema = {
     emailAddress: yup.string(),
     // emailAddress: yup.string().required("Email address is required"),
     cluster: yup.number().required("Cluster is required").integer(),
+    latitude: yup.string(),
+    longitude: yup.string(),
     businessAddress: yup
       .object({
         houseNumber: yup.string(),
@@ -423,6 +425,8 @@ export const directRegisterPersonalSchema = {
     storeTypeId: null,
     emailAddress: "",
     cluster: null,
+    latitude: "",
+    longitude: "",
     businessAddress: {
       houseNumber: "",
       streetName: "",
@@ -498,13 +502,20 @@ export const priceChangeSchema = {
 
 export const clusterSchema = {
   schema: yup.object({
-    clusterCode: yup.string().required("Cluster code is required"),
-    clusterDescription: yup
-      .string()
-      .required("Cluster description is required"),
+    cluster: yup.string().required("Cluster is required"),
   }),
   defaultValues: {
-    clusterCode: "",
-    clusterDescription: "",
+    cluster: "",
+  },
+};
+
+export const clusterTagSchema = {
+  schema: yup.object({
+    clusterId: yup.number().required("Cluster is required"),
+    userId: yup.object().required("CDO is required"),
+  }),
+  defaultValues: {
+    clusterId: null,
+    userId: null,
   },
 };

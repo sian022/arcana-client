@@ -80,6 +80,25 @@ function UserManagement() {
 
           <Box
             className="pageIndex__navigators__item"
+            onClick={() => navigate("cluster")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Cluster
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage clusters and tag CDOs
+              </Typography>
+            </Box>
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
+          </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
             onClick={() => navigate("company")}
           >
             <Box className="pageIndex__navigators__item__text">

@@ -104,17 +104,17 @@ function RegisterRegularForm({ open, onClose }) {
     onClose: onCancelConfirmClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isRedirectListingFeeOpen,
-    onOpen: onRedirectListingFeeOpen,
-    onClose: onRedirectListingFeeClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isRedirectListingFeeOpen,
+  //   onOpen: onRedirectListingFeeOpen,
+  //   onClose: onRedirectListingFeeClose,
+  // } = useDisclosure();
 
-  const {
-    isOpen: isListingFeeOpen,
-    onOpen: onListingFeeOpen,
-    onClose: onListingFeeClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isListingFeeOpen,
+  //   onOpen: onListingFeeOpen,
+  //   onClose: onListingFeeClose,
+  // } = useDisclosure();
 
   // React Hook Form
   const {
@@ -231,7 +231,9 @@ function RegisterRegularForm({ open, onClose }) {
       onConfirmClose();
       onClose();
       handleResetForms();
-      debounce(onRedirectListingFeeOpen(), 2000);
+
+      // debounce(onRedirectListingFeeOpen(), 2000);
+
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       setIsAllApiLoading(false);
@@ -421,10 +423,10 @@ function RegisterRegularForm({ open, onClose }) {
     }
   };
 
-  const handleRedirectListingFeeYes = () => {
-    onRedirectListingFeeClose();
-    onListingFeeOpen();
-  };
+  // const handleRedirectListingFeeYes = () => {
+  //   onRedirectListingFeeClose();
+  //   onListingFeeOpen();
+  // };
 
   //Constant JSX
   const customRibbonContent = (
@@ -1178,7 +1180,7 @@ function RegisterRegularForm({ open, onClose }) {
         </span>
       </CommonDialog>
 
-      <CommonDialog
+      {/* <CommonDialog
         open={isRedirectListingFeeOpen}
         onClose={onRedirectListingFeeClose}
         onYes={handleRedirectListingFeeYes}
@@ -1191,14 +1193,13 @@ function RegisterRegularForm({ open, onClose }) {
             : "client"}
         </span>
         ?
-      </CommonDialog>
+      </CommonDialog> */}
 
-      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
-      <ListingFeeDrawer
+      {/* <ListingFeeDrawer
         isListingFeeOpen={isListingFeeOpen}
         onListingFeeClose={onListingFeeClose}
         redirect
-      />
+      /> */}
     </>
   );
 }

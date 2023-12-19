@@ -135,17 +135,17 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     onClose: onCancelConfirmClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isRedirectListingFeeOpen,
-    onOpen: onRedirectListingFeeOpen,
-    onClose: onRedirectListingFeeClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isRedirectListingFeeOpen,
+  //   onOpen: onRedirectListingFeeOpen,
+  //   onClose: onRedirectListingFeeClose,
+  // } = useDisclosure();
 
-  const {
-    isOpen: isListingFeeOpen,
-    onOpen: onListingFeeOpen,
-    onClose: onListingFeeClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isListingFeeOpen,
+  //   onOpen: onListingFeeOpen,
+  //   onClose: onListingFeeClose,
+  // } = useDisclosure();
 
   // React Hook Form
   const {
@@ -370,9 +370,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       onConfirmClose();
       onClose();
       handleResetForms();
-      if (!editMode) {
-        debounce(onRedirectListingFeeOpen(), 2000);
-      }
+
+      // if (!editMode) {
+      //   debounce(onRedirectListingFeeOpen(), 2000);
+      // }
 
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
@@ -630,10 +631,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     return false;
   };
 
-  const handleRedirectListingFeeYes = () => {
-    onRedirectListingFeeClose();
-    onListingFeeOpen();
-  };
+  // const handleRedirectListingFeeYes = () => {
+  //   onRedirectListingFeeClose();
+  //   onListingFeeOpen();
+  // };
 
   const handlePhoneNumberInput = (e) => {
     const maxLength = 10;
@@ -1563,7 +1564,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         </span>
       </CommonDialog>
 
-      <CommonDialog
+      {/* <CommonDialog
         open={isRedirectListingFeeOpen}
         onClose={onRedirectListingFeeClose}
         onYes={handleRedirectListingFeeYes}
@@ -1578,12 +1579,11 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         ?
       </CommonDialog>
 
-      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
       <ListingFeeDrawer
         isListingFeeOpen={isListingFeeOpen}
         onListingFeeClose={onListingFeeClose}
         redirect
-      />
+      /> */}
     </>
   );
 }

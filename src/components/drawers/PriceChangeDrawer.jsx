@@ -84,8 +84,6 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
   const [postAddPriceChange, { isLoading: isAddPriceChangeLoading }] =
     usePostAddPriceChangeMutation();
 
-  console.log(getValues());
-
   const onPriceChangeSubmit = async (data) => {
     const { effectivityDate, ...noDate } = data;
     // const transformedDate = effectivityDate;
