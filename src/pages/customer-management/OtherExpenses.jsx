@@ -12,12 +12,13 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { productCategorySchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
+import { otherExpensesSchema } from "../../schema/schema";
+import { usePostOtherExpensesMutation } from "../../features/setup/api/otherExpensesApi";
 
 function OtherExpenses() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -76,14 +77,14 @@ function OtherExpenses() {
     setValue,
     reset,
   } = useForm({
-    resolver: yupResolver(productCategorySchema.schema),
+    resolver: yupResolver(otherExpensesSchema.schema),
     mode: "onChange",
-    defaultValues: productCategorySchema.defaultValues,
+    defaultValues: otherExpensesSchema.defaultValues,
   });
 
   //RTK Query
-  const [postProductCategory, { isLoading: isAddLoading }] =
-    usePostProductCategoryMutation();
+  const [postOtherExpenses, { isLoading: isAddLoading }] =
+    usePostOtherExpensesMutation();
   const { data, isLoading, isFetching } = useGetAllProductCategoryQuery({
     Search: search,
     Status: status,
@@ -98,7 +99,7 @@ function OtherExpenses() {
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
-        await postProductCategory(data).unwrap();
+        await postOtherExpenses(data).unwrap();
         setSnackbarMessage("Other Expenses added successfully");
       } else if (drawerMode === "edit") {
         await putProductCategory(data).unwrap();
@@ -215,12 +216,12 @@ function OtherExpenses() {
         isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
-          label="Other Expenses Name"
+          label="Expense Type"
           size="small"
           autoComplete="off"
-          {...register("productCategoryName")}
-          error={errors?.productCategoryName}
-          helperText={errors?.productCategoryName?.message}
+          {...register("expenseType")}
+          error={errors?.expenseType}
+          helperText={errors?.expenseType?.message}
         />
       </CommonDrawer>
 

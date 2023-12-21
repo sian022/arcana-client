@@ -519,3 +519,12 @@ export const clusterTagSchema = {
     userId: null,
   },
 };
+
+export const otherExpensesSchema = {
+  schema: yup.object({
+    expenseType: yup.string().required("Expense type is required"),
+  }),
+  defaultValues: {
+    expenseType: "",
+  },
+};
