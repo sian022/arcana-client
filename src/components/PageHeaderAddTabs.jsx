@@ -4,6 +4,9 @@ import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
 
 function PageHeaderAddTabs({
+  small,
+  wide,
+  extraWide,
   onOpen,
   pageTitle,
   tabsList,
@@ -39,7 +42,17 @@ function PageHeaderAddTabs({
           >
             {tabsList?.map((item, i) => (
               <Stack
-                sx={{ cursor: "pointer", alignItems: "center", width: "160px" }}
+                sx={{
+                  cursor: "pointer",
+                  alignItems: "center",
+                  width: extraWide
+                    ? "200px"
+                    : wide
+                    ? "180px"
+                    : small
+                    ? "120px"
+                    : "160px",
+                }}
                 key={i}
                 onClick={() => setTabViewing(item.case)}
               >
@@ -64,7 +77,13 @@ function PageHeaderAddTabs({
                   <Divider
                     sx={{
                       bgcolor: "secondary.main",
-                      width: "160px",
+                      width: extraWide
+                        ? "200px"
+                        : wide
+                        ? "180px"
+                        : small
+                        ? "120px"
+                        : "160px",
                       // width: "auto",
                       height: "3px",
                       borderRadius: "10px",

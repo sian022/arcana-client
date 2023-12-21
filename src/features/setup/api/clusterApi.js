@@ -23,6 +23,7 @@ export const clusterApi = createApi({
       }),
       invalidatesTags: ["Cluster"],
     }),
+
     getAllClusters: builder.query({
       query: (params) => ({
         params: params,
@@ -33,6 +34,7 @@ export const clusterApi = createApi({
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
+
     putCluster: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `/Cluster/UpdateCluster/${id}`,
@@ -41,6 +43,7 @@ export const clusterApi = createApi({
       }),
       invalidatesTags: ["Cluster"],
     }),
+
     patchClusterStatus: builder.mutation({
       query: (id) => ({
         url: `/Cluster/UpdateClusterStatus/${id}`,
@@ -48,11 +51,21 @@ export const clusterApi = createApi({
       }),
       invalidatesTags: ["Cluster"],
     }),
+
     postTagUserInCluster: builder.mutation({
       query: (body) => ({
         url: "/Cluster/TagUserInCluster",
         method: "POST",
         body: body,
+      }),
+      invalidatesTags: ["Cluster"],
+    }),
+
+    deleteUntagUserInCluster: builder.mutation({
+      query: ({ id, ...params }) => ({
+        url: `/Cluster/UntagUserInCluster/${id}`,
+        method: "DELETE",
+        params: params,
       }),
       invalidatesTags: ["Cluster"],
     }),
@@ -65,4 +78,5 @@ export const {
   usePutClusterMutation,
   usePatchClusterStatusMutation,
   usePostTagUserInClusterMutation,
+  useDeleteUntagUserInClusterMutation,
 } = clusterApi;

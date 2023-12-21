@@ -277,7 +277,13 @@ function Cluster() {
       </Box>
 
       <TagCDODrawer open={isTagOpen} onClose={onTagClose} />
-      <ViewCDOModal open={isViewOpen} onClose={onViewClose} />
+
+      <ViewCDOModal
+        open={isViewOpen}
+        onClose={onViewClose}
+        isFetching={isFetching}
+        data={data?.cluster}
+      />
     </>
   );
 }

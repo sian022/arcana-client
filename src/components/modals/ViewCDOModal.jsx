@@ -33,6 +33,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useDeletePriceChangeMutation } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
+import { useDeleteUntagUserInClusterMutation } from "../../features/setup/api/clusterApi";
 
 function ViewCDOModal({ isFetching, data, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -46,8 +47,8 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const [deletePriceChange, { isLoading: isDeleteLoading }] =
-    useDeletePriceChangeMutation();
+  const [deleteUntagUserInCluster, { isLoading: isDeleteLoading }] =
+    useDeleteUntagUserInClusterMutation();
 
   //Disclosures
   const {
@@ -62,16 +63,16 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
     onClose();
   };
 
-  // console.log(selectedRowData);
   // console.log(data?.find((item) => item.id === selectedRowData?.id));
   const onArchiveSubmit = async () => {
     try {
-      await deletePriceChange(
-        selectedRowData?.futurePriceChanges?.[CDOIndex]?.id
-      ).unwrap();
+      await deleteUntagUserInCluster({
+        id: selectedRowData?.users?.[CDOIndex]?.userId,
+        clusterId: selectedRowData?.id,
+      }).unwrap();
 
       // dispatch(setSelectedRow());
-      showSnackbar("Price change successfully deleted!", "success");
+      showSnackbar("CDO successfully tagged!", "success");
 
       // if (!isFetching) {
       //   dispatch(
@@ -84,20 +85,19 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
       } else {
-        showSnackbar("Error deleting price change", "error");
+        showSnackbar("Error untagging CDO", "error");
       }
     }
   };
 
-  // useEffect(() => {
-  //   if (!isFetching) {
-  //     dispatch(
-  //       setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
-  //     );
-  //   }
-  // }, [isFetching]);
+  useEffect(() => {
+    if (!isFetching) {
+      dispatch(
+        setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
+      );
+    }
+  }, [isFetching]);
 
-  console.log(selectedRowData);
   return (
     <>
       <CommonModal
@@ -134,42 +134,46 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
             </Box>
 
             <Box className="viewCDOModal__content">
-              {selectedRowData?.users?.map((user, index) => (
-                <>
-                  <Box
-                    key={user.id}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", gap: "10px" }}>
-                      <Typography sx={{ color: "gray", minWidth: "20px" }}>
-                        {index + 1}.
-                      </Typography>
-                      <Typography sx={{ fontWeight: "500" }}>
-                        {user.fullname}
-                      </Typography>
-                    </Box>
-
-                    <IconButton
-                      // sx={{
-                      //   position: "absolute",
-                      //   right: 0,
-                      //   top: 0,
-                      // }}
-                      color="error"
-                      onClick={() => {
-                        onArchiveOpen();
-                        setCDOIndex(index);
+              {selectedRowData?.users?.length === 0 ? (
+                <div style={{ textAlign: "center" }}>No CDO found</div>
+              ) : (
+                selectedRowData?.users?.map((user, index) => (
+                  <>
+                    <Box
+                      key={user.id}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <RemoveCircle />
-                    </IconButton>
-                  </Box>
-                </>
-              ))}
+                      <Box sx={{ display: "flex", gap: "10px" }}>
+                        <Typography sx={{ color: "gray", minWidth: "20px" }}>
+                          {index + 1}.
+                        </Typography>
+                        <Typography sx={{ fontWeight: "500" }}>
+                          {user.fullname}
+                        </Typography>
+                      </Box>
+
+                      <IconButton
+                        // sx={{
+                        //   position: "absolute",
+                        //   right: 0,
+                        //   top: 0,
+                        // }}
+                        color="error"
+                        onClick={() => {
+                          onArchiveOpen();
+                          setCDOIndex(index);
+                        }}
+                      >
+                        <RemoveCircle />
+                      </IconButton>
+                    </Box>
+                  </>
+                ))
+              )}
             </Box>
           </Box>
         </Box>
