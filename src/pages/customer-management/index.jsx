@@ -74,6 +74,25 @@ function CustomerManagement() {
               <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
             </Box>
           </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("other-expenses")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Other Expenses
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and create other expenses
+              </Typography>
+            </Box>
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
+          </Box>
         </Box>
       </Box>
     );
