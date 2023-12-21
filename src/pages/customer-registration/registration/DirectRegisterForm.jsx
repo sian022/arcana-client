@@ -73,6 +73,7 @@ import { notificationApi } from "../../../features/notification/api/notification
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat, PatternFormat } from "react-number-format";
 import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
+import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -280,6 +281,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     useGetAllStoreTypesQuery({ Status: true });
   const { data: termDaysData, isLoading: isTermDaysLoading } =
     useGetAllTermDaysQuery({ Status: true });
+  const { data: clusterData } = useGetAllClustersQuery({ Status: true });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
@@ -295,6 +297,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         ...data,
         dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
         storeTypeId: data?.storeTypeId?.id,
+        clusterId: data?.clusterId?.id,
         clientId: selectedRowData?.id,
       };
 
@@ -718,7 +721,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setValue("phoneNumber", selectedRowData?.phoneNumber);
       setValue("ownersAddress", selectedRowData?.ownersAddress);
       setValue("businessName", selectedRowData?.businessName);
-      setValue("cluster", selectedRowData?.cluster);
+      // setValue("cluster", selectedRowData?.cluster);
+      setValue(
+        "clusterId",
+        clusterData?.cluster?.find(
+          (item) => item.cluster === selectedRowData?.cluster
+        )
+      );
       setValue(
         "storeTypeId",
         storeTypeData?.storeTypes?.find(
@@ -1243,7 +1252,27 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               </Box>
               <Box className="register__thirdRow__column">
                 <Typography className="register__title">Cluster</Typography>
-                <TextField
+                <ControlledAutocomplete
+                  name={"clusterId"}
+                  control={control}
+                  options={clusterData?.cluster || []}
+                  getOptionLabel={(option) => option.cluster}
+                  disableClearable
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Cluster"
+                      required
+                      helperText={errors?.clusterId?.message}
+                      error={errors?.clusterId}
+                    />
+                  )}
+                />
+                {/* <TextField
                   label="Cluster Type"
                   size="small"
                   autoComplete="off"
@@ -1253,7 +1282,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   {...register("cluster")}
                   helperText={errors?.cluster?.message}
                   error={errors?.cluster}
-                />
+                /> */}
               </Box>
 
               <Box className="register__thirdRow__column">

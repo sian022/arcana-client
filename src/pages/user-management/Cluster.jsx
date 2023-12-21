@@ -218,7 +218,7 @@ function Cluster() {
             editable
             archivable
             onEdit={handleEditOpen}
-            // onArchive={handleArchiveOpen}
+            onArchive={handleArchiveOpen}
             viewMoreKey={"users"}
             onViewMoreClick={onViewOpen}
             onTagUserInCluster={onTagOpen}
@@ -249,6 +249,7 @@ function Cluster() {
             error={errors?.cluster}
           />
         </CommonDrawer>
+
         <CommonDialog
           open={isArchiveOpen}
           onClose={onArchiveClose}
@@ -262,6 +263,7 @@ function Cluster() {
           </span>
           ?
         </CommonDialog>
+
         <SuccessSnackbar
           open={isSuccessOpen}
           onClose={onSuccessClose}

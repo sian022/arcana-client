@@ -341,7 +341,8 @@ export const regularRegisterSchema = {
     // .required("Representative name is required")
     authorizedRepresentativePosition: yup.string(),
     // .required("Representative position is required")
-    cluster: yup.number().required("Cluster is required").integer(),
+    // cluster: yup.number().required("Cluster is required").integer(),
+    clusterId: yup.object().required("Cluster is required"),
     longitude: yup.string(),
     // .required("Longitude is required")
     latitude: yup.string(),
@@ -359,7 +360,8 @@ export const regularRegisterSchema = {
     tinNumber: "",
     authorizedRepresentative: "",
     authorizedRepresentativePosition: "",
-    cluster: null,
+    // cluster: null,
+    clusterId: null,
     longitude: "",
     latitude: "",
     birthDate: null,
@@ -389,7 +391,8 @@ export const directRegisterPersonalSchema = {
     storeTypeId: yup.object().required("Business type is required"),
     emailAddress: yup.string(),
     // emailAddress: yup.string().required("Email address is required"),
-    cluster: yup.number().required("Cluster is required").integer(),
+    clusterId: yup.object().required("Cluster is required"),
+    // cluster: yup.number().required("Cluster is required").integer(),
     latitude: yup.string(),
     longitude: yup.string(),
     businessAddress: yup
@@ -424,7 +427,8 @@ export const directRegisterPersonalSchema = {
     businessName: "",
     storeTypeId: null,
     emailAddress: "",
-    cluster: null,
+    clusterId: null,
+    // cluster: null,
     latitude: "",
     longitude: "",
     businessAddress: {

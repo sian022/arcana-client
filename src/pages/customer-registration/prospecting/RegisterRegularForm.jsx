@@ -55,6 +55,7 @@ import SuccessButton from "../../../components/SuccessButton";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
+import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -205,6 +206,7 @@ function RegisterRegularForm({ open, onClose }) {
     usePutAddTermsAndCondtionsMutation();
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
+  const { data: clusterData } = useGetAllClustersQuery({ Status: true });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
@@ -215,6 +217,7 @@ function RegisterRegularForm({ open, onClose }) {
       ...data,
       // dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
       storeTypeId: data?.storeTypeId?.id,
+      clusterId: data?.clusterId.id,
     };
 
     try {
@@ -845,7 +848,28 @@ function RegisterRegularForm({ open, onClose }) {
 
               <Box className="register__thirdRow__column">
                 <Typography className="register__title">Cluster</Typography>
-                <TextField
+
+                <ControlledAutocomplete
+                  name={"clusterId"}
+                  control={control}
+                  options={clusterData?.cluster || []}
+                  getOptionLabel={(option) => option.cluster}
+                  disableClearable
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Cluster"
+                      required
+                      helperText={errors?.clusterId?.message}
+                      error={errors?.clusterId}
+                    />
+                  )}
+                />
+                {/* <TextField
                   label="Cluster Type"
                   size="small"
                   autoComplete="off"
@@ -855,7 +879,7 @@ function RegisterRegularForm({ open, onClose }) {
                   {...register("cluster")}
                   helperText={errors?.cluster?.message}
                   error={errors?.cluster}
-                />
+                /> */}
               </Box>
 
               <Box className="register__thirdRow__column">
