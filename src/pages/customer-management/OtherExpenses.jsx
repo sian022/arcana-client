@@ -19,7 +19,7 @@ import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
 
-function MerchandisingAllowance() {
+function OtherExpenses() {
   const [drawerMode, setDrawerMode] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
@@ -66,7 +66,7 @@ function MerchandisingAllowance() {
     "productSubCategory",
   ];
 
-  const tableHeads = ["Merchandising Allowance"];
+  const tableHeads = ["Other Expenses"];
 
   //React Hook Form
   const {
@@ -99,10 +99,10 @@ function MerchandisingAllowance() {
     try {
       if (drawerMode === "add") {
         await postProductCategory(data).unwrap();
-        setSnackbarMessage("Merchandising Allowance added successfully");
+        setSnackbarMessage("Other Expenses added successfully");
       } else if (drawerMode === "edit") {
         await putProductCategory(data).unwrap();
-        setSnackbarMessage("Merchandising Allowance updated successfully");
+        setSnackbarMessage("Other Expenses updated successfully");
       }
 
       onDrawerClose();
@@ -128,9 +128,7 @@ function MerchandisingAllowance() {
       await patchProductCategoryStatus(selectedId).unwrap();
       onArchiveClose();
       setSnackbarMessage(
-        `Merchandising Allowance ${
-          status ? "archived" : "restored"
-        } successfully`
+        `Other Expenses ${status ? "archived" : "restored"} successfully`
       );
       onSuccessOpen();
     } catch (error) {
@@ -180,7 +178,7 @@ function MerchandisingAllowance() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Merchandising Allowance"
+        pageTitle="Other Expenses"
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
@@ -210,14 +208,14 @@ function MerchandisingAllowance() {
         open={isDrawerOpen}
         onClose={handleDrawerClose}
         drawerHeader={
-          (drawerMode === "add" ? "Add" : "Edit") + " Merchandising Allowance"
+          (drawerMode === "add" ? "Add" : "Edit") + " Other Expenses"
         }
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
         isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
-          label="Merchandising Allowance Name"
+          label="Other Expenses Name"
           size="small"
           autoComplete="off"
           {...register("productCategoryName")}
@@ -255,4 +253,4 @@ function MerchandisingAllowance() {
   );
 }
 
-export default MerchandisingAllowance;
+export default OtherExpenses;

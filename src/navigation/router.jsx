@@ -33,7 +33,7 @@ import PaymentTransaction from "../pages/sales-management/PaymentTransaction";
 import SpecialDiscount from "../pages/sales-management/SpecialDiscount";
 import AdvancePayment from "../pages/sales-management/AdvancePayment";
 import Cluster from "../pages/user-management/Cluster";
-import MerchandisingAllowance from "../pages/customer-management/MerchandisingAllowance";
+import OtherExpenses from "../pages/customer-management/OtherExpenses";
 
 export const router = createBrowserRouter([
   {
@@ -133,8 +133,8 @@ export const router = createBrowserRouter([
             element: <TermDays />,
           },
           {
-            path: "merchandising-allowance",
-            element: <MerchandisingAllowance />,
+            path: "other-expenses",
+            element: <OtherExpenses />,
           },
         ],
       },

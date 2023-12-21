@@ -134,8 +134,8 @@ export const navigationData = [
       },
       {
         id: 4,
-        name: "Merchandising Allowance",
-        path: "/customer-management/merchandising-allowance",
+        name: "Other Expenses",
+        path: "/customer-management/other-expenses",
         icon: "AttachMoney",
       },
     ],
