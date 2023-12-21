@@ -2,12 +2,6 @@ import { Box, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
-import {
-  useGetAllProductCategoryQuery,
-  usePatchProductCategoryStatusMutation,
-  usePostProductCategoryMutation,
-  usePutProductCategoryMutation,
-} from "../../features/setup/api/productCategoryApi";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
@@ -18,7 +12,12 @@ import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
 import { otherExpensesSchema } from "../../schema/schema";
-import { usePostOtherExpensesMutation } from "../../features/setup/api/otherExpensesApi";
+import {
+  useGetAllOtherExpensesQuery,
+  usePatchOtherExpensesStatusMutation,
+  usePostOtherExpensesMutation,
+  usePutOtherExpensesMutation,
+} from "../../features/setup/api/otherExpensesApi";
 
 function OtherExpenses() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -64,7 +63,6 @@ function OtherExpenses() {
     "updatedAt",
     "isActive",
     "addedBy",
-    "productSubCategory",
   ];
 
   const tableHeads = ["Other Expenses"];
@@ -85,16 +83,16 @@ function OtherExpenses() {
   //RTK Query
   const [postOtherExpenses, { isLoading: isAddLoading }] =
     usePostOtherExpensesMutation();
-  const { data, isLoading, isFetching } = useGetAllProductCategoryQuery({
+  const { data, isLoading, isFetching } = useGetAllOtherExpensesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putProductCategory, { isLoading: isUpdateLoading }] =
-    usePutProductCategoryMutation();
-  const [patchProductCategoryStatus, { isLoading: isArchiveLoading }] =
-    usePatchProductCategoryStatusMutation();
+  const [putOtherExpenses, { isLoading: isUpdateLoading }] =
+    usePutOtherExpensesMutation();
+  const [patchOtherExpensesStatus, { isLoading: isArchiveLoading }] =
+    usePatchOtherExpensesStatusMutation();
 
   const onDrawerSubmit = async (data) => {
     try {
@@ -102,7 +100,7 @@ function OtherExpenses() {
         await postOtherExpenses(data).unwrap();
         setSnackbarMessage("Other Expenses added successfully");
       } else if (drawerMode === "edit") {
-        await putProductCategory(data).unwrap();
+        await putOtherExpenses(data).unwrap();
         setSnackbarMessage("Other Expenses updated successfully");
       }
 
@@ -114,9 +112,7 @@ function OtherExpenses() {
         setSnackbarMessage(error?.data?.error?.message);
       } else {
         setSnackbarMessage(
-          `Error ${
-            drawerMode === "add" ? "adding" : "updating"
-          } product category`
+          `Error ${drawerMode === "add" ? "adding" : "updating"} expense`
         );
       }
 
@@ -126,7 +122,7 @@ function OtherExpenses() {
 
   const onArchiveSubmit = async () => {
     try {
-      await patchProductCategoryStatus(selectedId).unwrap();
+      await patchOtherExpensesStatus(selectedId).unwrap();
       onArchiveClose();
       setSnackbarMessage(
         `Other Expenses ${status ? "archived" : "restored"} successfully`
@@ -136,7 +132,7 @@ function OtherExpenses() {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
       } else {
-        setSnackbarMessage("Error archiving product category");
+        setSnackbarMessage("Error archiving expense");
       }
 
       onErrorOpen();
@@ -152,9 +148,11 @@ function OtherExpenses() {
     setDrawerMode("edit");
     onDrawerOpen();
 
-    Object.keys(editData).forEach((key) => {
-      setValue(key, editData[key]);
-    });
+    // Object.keys(editData).forEach((key) => {
+    //   setValue(key, editData[key]);
+    // });
+    setValue("id", editData.id);
+    setValue("expenseType", editData.expenseType);
   };
 
   const handleArchiveOpen = (id) => {
@@ -189,7 +187,7 @@ function OtherExpenses() {
         <CommonTableSkeleton />
       ) : (
         <CommonTable
-          mapData={data?.result}
+          mapData={data?.otherExpenses}
           excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
@@ -234,7 +232,7 @@ function OtherExpenses() {
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.productCategoryName}
+          {selectedRowData?.expenseType}
         </span>
         ?
       </CommonDialog>

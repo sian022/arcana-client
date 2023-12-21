@@ -34,6 +34,7 @@ import { useDeletePriceChangeMutation } from "../../features/setup/api/productsA
 import useSnackbar from "../../hooks/useSnackbar";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import { useDeleteUntagUserInClusterMutation } from "../../features/setup/api/clusterApi";
+import NoData from "../../assets/images/no-data.jpg";
 
 function ViewCDOModal({ isFetching, data, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -135,7 +136,18 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
 
             <Box className="viewCDOModal__content">
               {selectedRowData?.users?.length === 0 ? (
-                <div style={{ textAlign: "center" }}>No CDO found</div>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <img src={NoData} alt="no-data" style={{ width: "230px" }} />
+                  <div style={{ textAlign: "center", fontSize: "1.1rem" }}>
+                    No CDO found
+                  </div>
+                </Box>
               ) : (
                 selectedRowData?.users?.map((user, index) => (
                   <>

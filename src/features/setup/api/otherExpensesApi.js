@@ -23,16 +23,18 @@ export const otherExpensesApi = createApi({
       }),
       invalidatesTags: ["Other Expenses"],
     }),
+
     getAllOtherExpenses: builder.query({
       query: (params) => ({
         params: params,
-        url: "/OtherExpenses/GetAllExpenses",
+        url: "/OtherExpenses/GetAllOtherExpenses",
         method: "GET",
       }),
       providesTags: ["Other Expenses"],
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
+
     putOtherExpenses: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `/OtherExpenses/UpdateExpense/${id}`,
@@ -41,6 +43,7 @@ export const otherExpensesApi = createApi({
       }),
       invalidatesTags: ["Other Expenses"],
     }),
+
     patchOtherExpensesStatus: builder.mutation({
       query: (id) => ({
         url: `/OtherExpenses/UpdateExpenseStatus/${id}`,
