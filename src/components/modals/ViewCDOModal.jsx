@@ -73,7 +73,7 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
       }).unwrap();
 
       // dispatch(setSelectedRow());
-      showSnackbar("CDO successfully tagged!", "success");
+      showSnackbar("CDO successfully untagged!", "success");
 
       // if (!isFetching) {
       //   dispatch(

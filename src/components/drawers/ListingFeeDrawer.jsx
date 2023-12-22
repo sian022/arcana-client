@@ -108,6 +108,18 @@ function ListingFeeDrawer({
   });
 
   //RTK Query
+  // const {
+  //   data: clientData,
+  //   isLoading: isClientLoading,
+  //   refetch: refetchClients,
+  // } = useGetAllClientsQuery({
+  //   RegistrationStatus: "Approved",
+  //   Status: true,
+  //   PageNumber: 1,
+  //   PageSize: 1000,
+  //   // IncludeRejected: editMode ? editMode : "",
+  // });
+
   const {
     data: clientData,
     isLoading: isClientLoading,
@@ -118,6 +130,7 @@ function ListingFeeDrawer({
     PageSize: 1000,
     IncludeRejected: editMode ? editMode : "",
   });
+
   const { data: productData, isLoading: isProductLoading } =
     useGetAllProductsQuery({ Status: true });
 
@@ -392,6 +405,7 @@ function ListingFeeDrawer({
                   //     </InputAdornment>
                   //   ),
                   // }}
+                  autoComplete="off"
                   thousandSeparator=","
                   size="small"
                   sx={{ width: "280px" }}
