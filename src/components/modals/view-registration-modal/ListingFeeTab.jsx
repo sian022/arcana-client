@@ -127,6 +127,9 @@ function ListingFeeTab() {
                                 padding: "3px",
                                 color: "white !important",
                                 fontWeight: "500",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
                               }}
                             >
                               {item.status === "Under review"

@@ -332,7 +332,7 @@ function ListingFeeDrawer({
         // zIndex={editMode && 1300}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-          <Box sx={{ display: "flex", gap: "10px" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <ControlledAutocomplete
               name={`clientId`}
               control={control}
@@ -371,23 +371,33 @@ function ListingFeeDrawer({
               }}
             />
 
-            {/* <Controller
+            <Controller
               control={control}
-              name={`customerName`}
+              name={`merchandisingAllowance`}
               render={({ field: { onChange, onBlur, value, ref } }) => (
-                <TextField
-                  label="Customer Name"
+                <NumericFormat
+                  customInput={TextField}
+                  type="text"
+                  // onChange={(e) => {
+                  //   handleCreditLimitChange(e);
+                  // }}
+                  label="Merchandising Allowance (₱)"
+                  // InputProps={{
+                  //   startAdornment: (
+                  //     <InputAdornment
+                  //       position="start"
+                  //       style={{ marginLeft: -3 }}
+                  //     >
+                  //       ₱
+                  //     </InputAdornment>
+                  //   ),
+                  // }}
+                  thousandSeparator=","
                   size="small"
-                  autoComplete="off"
-                  disabled
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  value={value || ""}
-                  ref={ref}
-                  sx={{ width: "300px" }}
+                  sx={{ width: "280px" }}
                 />
               )}
-            /> */}
+            />
           </Box>
 
           <Box

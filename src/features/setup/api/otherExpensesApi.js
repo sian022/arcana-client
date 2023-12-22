@@ -37,7 +37,7 @@ export const otherExpensesApi = createApi({
 
     putOtherExpenses: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/OtherExpenses/UpdateExpense/${id}`,
+        url: `/OtherExpenses/UpdateOtherExpenses/${id}`,
         method: "PUT",
         body: body,
       }),
@@ -46,7 +46,7 @@ export const otherExpensesApi = createApi({
 
     patchOtherExpensesStatus: builder.mutation({
       query: (id) => ({
-        url: `/OtherExpenses/UpdateExpenseStatus/${id}`,
+        url: `/OtherExpenses/UpdateOtherExpensesStatus/${id}`,
         method: "PATCH",
       }),
       invalidatesTags: ["Other Expenses"],
