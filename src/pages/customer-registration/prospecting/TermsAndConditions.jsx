@@ -641,6 +641,50 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           </RadioGroup>
         </Box>
 
+        <Box className="terms__column__item">
+          <Box className="terms__column__item__title">
+            <Typography>Special Discount</Typography>
+          </Box>
+          <Box
+            // className="termsAndConditionsFixedDiscount"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              mt: "10px",
+              justifyContent: "center",
+              // position: "absolute",
+              // right: "-35px",
+            }}
+          >
+            <TextField
+              sx={{
+                width: "200px",
+                // position: "absolute",
+                // right: "-25px",
+                "& .MuiInputBase-root": {
+                  height: "30px",
+                },
+              }}
+              type="number"
+              value={
+                termsAndConditions["fixedDiscount"].discountPercentage != null
+                  ? termsAndConditions[
+                      "fixedDiscount"
+                    ].discountPercentage.toString()
+                  : ""
+              }
+              onChange={(e) => {
+                handleFixedDiscountChange(e);
+              }}
+              InputProps={{
+                inputProps: { min: 0, max: 10 },
+              }}
+            />
+            {"%"}
+          </Box>
+        </Box>
+
         {direct && !editMode && (
           <>
             <SecondaryButton medium onClick={onFreebieFormOpen}>
