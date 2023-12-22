@@ -300,7 +300,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         isLoading={isDeleteLoading}
         // noIcon={!status}
       >
-        Are you sure you want to archive price change of <br />
+        Are you sure you want to delete price change of <br />
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
           ₱{" "}
           {selectedRowData?.futurePriceChanges?.[

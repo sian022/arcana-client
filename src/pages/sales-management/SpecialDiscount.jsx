@@ -9,6 +9,10 @@ import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { dummyTableData } from "../../utils/DummyData";
 import CommonDrawer from "../../components/CommonDrawer";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
+import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
+import { specialDiscountSchema } from "../../schema/schema";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 function SpecialDiscount() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -21,6 +25,22 @@ function SpecialDiscount() {
   const [editMode, setEditMode] = useState(false);
 
   const { notifications } = useContext(AppContext);
+
+  //React Hook Form
+  const {
+    handleSubmit,
+    formState: { errors, isValid, isDirty },
+    register,
+    setValue,
+    reset,
+    control,
+    watch,
+    getValues,
+  } = useForm({
+    resolver: yupResolver(specialDiscountSchema.schema),
+    mode: "onChange",
+    defaultValues: specialDiscountSchema.defaultValues,
+  });
 
   //Disclosures
   const {
@@ -56,6 +76,12 @@ function SpecialDiscount() {
       badge: notifications["rejectedSpDiscount"],
     },
   ];
+
+  //RTK Query
+  const { data: clientData, isLoading: isClientLoading } =
+    useGetAllClientsQuery({
+      RegistrationStatus: "Approved",
+    });
 
   const isFetching = false;
 
@@ -113,6 +139,7 @@ function SpecialDiscount() {
       <CommonDrawer
         open={isDrawerOpen}
         onClose={handleDrawerClose}
+        width={"400px"}
         drawerHeader={
           (drawerMode === "add" ? "Add" : "Edit") + " Special Discount"
         }
@@ -120,45 +147,41 @@ function SpecialDiscount() {
         // disableSubmit={!isValid}
         // isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
-        {/* <ControlledAutocomplete
-          name={`clientId`}
-          control={control}
-          options={clientData?.regularClient || []}
-          getOptionLabel={(option) =>
-            option.businessName + " - " + option.ownersName || ""
-          }
-          disableClearable
-          loading={isClientLoading}
-          disabled={redirect || editMode}
-          // value={clientData?.regularClient?.find(
-          //   (item) => item.businessName === selectedRowData?.businessName
-          // )}
-          // isOptionEqualToValue={(option, value) => option.id === value.id}
-          isOptionEqualToValue={(option, value) => true}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              size="small"
-              label="Business Name - Owner's Name"
-              required
-              helperText={errors?.itemId?.message}
-              error={errors?.itemId}
-              // sx={{ width: "300px" }}
-              sx={{ width: "400px" }}
-            />
-          )}
-          onChange={(_, value) => {
-            if (watch("clientId") && watch("listingItems")[0]?.itemId) {
-              onClientConfirmationOpen();
-              setConfirmationValue(value);
-              return watch("clientId");
-            } else {
-              return value;
-            }
-          }}
-        /> */}
-
         <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
+            Customer Name
+          </Typography>
+
+          <ControlledAutocomplete
+            name={`clientId`}
+            control={control}
+            options={clientData?.regularClient || []}
+            getOptionLabel={(option) =>
+              option.businessName + " - " + option.ownersName || ""
+            }
+            disableClearable
+            loading={isClientLoading}
+            disabled={editMode}
+            // value={clientData?.regularClient?.find(
+            //   (item) => item.businessName === selectedRowData?.businessName
+            // )}
+            // isOptionEqualToValue={(option, value) => option.id === value.id}
+            isOptionEqualToValue={(option, value) => true}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                size="small"
+                label="Business Name - Owner's Name"
+                required
+                helperText={errors?.itemId?.message}
+                error={errors?.itemId}
+                // sx={{ width: "400px" }}
+              />
+            )}
+          />
+        </Box>
+
+        {/* <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
           <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
             Customer Name
           </Typography>
@@ -170,7 +193,7 @@ function SpecialDiscount() {
             // helperText={errors?.storeTypeName?.message}
             // error={errors?.storeTypeName}
           />
-        </Box>
+        </Box> */}
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
           <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>

@@ -532,3 +532,15 @@ export const otherExpensesSchema = {
     expenseType: "",
   },
 };
+
+//Sales Module
+export const specialDiscountSchema = {
+  schema: yup.object({
+    clientId: yup.object().required("Client is required"),
+    specialDiscount: yup.number().required("Special Discount is required"),
+  }),
+  defaultValues: {
+    clientId: null,
+    specialDiscount: null,
+  },
+};
