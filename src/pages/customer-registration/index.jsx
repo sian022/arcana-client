@@ -97,6 +97,32 @@ function CustomerRegistration() {
               <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
             </Box>
           </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("other-expenses")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Other Expenses
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Requesting and tracking of other expenses
+              </Typography>
+            </Box>
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              {!!notifications?.rejectedOtherExpenses &&
+              !notifications?.rejectedOtherExpenses !== 0 ? (
+                <Box className="notificationsLarge">
+                  {notifications?.rejectedOtherExpenses}
+                </Box>
+              ) : (
+                <Box></Box>
+              )}
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
+          </Box>
         </Box>
       </Box>
     );

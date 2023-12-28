@@ -112,6 +112,7 @@ function Products() {
     reset,
     getValues,
     control,
+    watch,
   } = useForm({
     resolver: yupResolver(
       drawerMode === "add" ? productSchema.schema : productEditSchema.schema
@@ -332,7 +333,7 @@ function Products() {
         onClose={handleDrawerClose}
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Product"}
         onSubmit={handleSubmit(onDrawerSubmit)}
-        disableSubmit={!isValid}
+        disableSubmit={!isValid || watch("price") <= 0}
         isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField

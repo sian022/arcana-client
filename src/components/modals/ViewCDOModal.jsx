@@ -19,6 +19,7 @@ import {
   Check,
   CheckCircle,
   Circle,
+  Clear,
   Close,
   Delete,
   EventNote,
@@ -168,7 +169,7 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
                         </Typography>
                       </Box>
 
-                      <IconButton
+                      {/* <IconButton
                         // sx={{
                         //   position: "absolute",
                         //   right: 0,
@@ -181,7 +182,12 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
                         }}
                       >
                         <RemoveCircle />
-                      </IconButton>
+                      </IconButton> */}
+                      {/* {!user?.status ? (
+                        <CheckCircle sx={{ color: "success.main" }} />
+                      ) : (
+                        <RemoveCircle sx={{ color: "error.main" }} />
+                      )} */}
                     </Box>
                   </>
                 ))

@@ -32,8 +32,9 @@ import {
 } from "../../features/listing-fee/api/listingFeeApi";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NumericFormat } from "react-number-format";
+import { useGetAllOtherExpensesQuery } from "../../features/setup/api/otherExpensesApi";
 
-function ListingFeeDrawer({
+function OtherExpensesDrawer({
   editMode,
   setEditMode,
   isListingFeeOpen,
@@ -133,6 +134,8 @@ function ListingFeeDrawer({
 
   const { data: productData, isLoading: isProductLoading } =
     useGetAllProductsQuery({ Status: true });
+  const { data: expensesData, isLoading: isExpensesLoading } =
+    useGetAllOtherExpensesQuery();
 
   const [postListingFee, { isLoading: isAddLoading }] =
     usePostListingFeeMutation();
@@ -336,10 +339,10 @@ function ListingFeeDrawer({
   return (
     <>
       <CommonDrawer
-        drawerHeader={editMode ? "Update Listing Fee" : "Add Listing Fee"}
+        drawerHeader={editMode ? "Update Other Expenses" : "Add Other Expenses"}
         open={isListingFeeOpen}
         onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
-        width="1000px"
+        width="600px"
         disableSubmit={!isValid || totalAmount < 0}
         onSubmit={onConfirmSubmitOpen}
         // zIndex={editMode && 1300}
@@ -433,7 +436,7 @@ function ListingFeeDrawer({
               }}
             >
               <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
-                Product Information
+                Expenses Information
               </Typography>
             </Box>
             {fields.map((item, index) => (
@@ -448,33 +451,33 @@ function ListingFeeDrawer({
                 <ControlledAutocomplete
                   name={`listingItems[${index}].itemId`}
                   control={control}
-                  options={productData?.items || []}
-                  getOptionLabel={(option) => option.itemCode || ""}
-                  getOptionDisabled={(option) => {
-                    const listingFees = watch("listingItems");
-                    // const isListingFeeRepeating = listingFees.some(
-                    //   (item) => item?.itemId?.itemCode === option.itemCode
-                    // );
+                  options={expensesData?.otherExpenses || []}
+                  getOptionLabel={(option) => option.expenseType || ""}
+                  // getOptionDisabled={(option) => {
+                  //   const listingFees = watch("listingItems");
+                  //   // const isListingFeeRepeating = listingFees.some(
+                  //   //   (item) => item?.itemId?.itemCode === option.itemCode
+                  //   // );
 
-                    const isListingFeeRepeating = Array.isArray(listingFees)
-                      ? listingFees.some(
-                          (item) => item?.itemId?.itemCode === option.itemCode
-                        )
-                      : false;
+                  //   const isListingFeeRepeating = Array.isArray(listingFees)
+                  //     ? listingFees.some(
+                  //         (item) => item?.itemId?.itemCode === option.itemCode
+                  //       )
+                  //     : false;
 
-                    const selectedClientData = watch("clientId");
+                  //   const selectedClientData = watch("clientId");
 
-                    const isListingFeeRepeatingBackend =
-                      selectedClientData?.listingFees?.some((item) =>
-                        item?.listingItems?.some(
-                          (item) => item?.itemCode === option.itemCode
-                        )
-                      );
+                  //   const isListingFeeRepeatingBackend =
+                  //     selectedClientData?.listingFees?.some((item) =>
+                  //       item?.listingItems?.some(
+                  //         (item) => item?.itemCode === option.itemCode
+                  //       )
+                  //     );
 
-                    return (
-                      isListingFeeRepeating || isListingFeeRepeatingBackend
-                    );
-                  }}
+                  //   return (
+                  //     isListingFeeRepeating || isListingFeeRepeatingBackend
+                  //   );
+                  // }}
                   disableClearable
                   loading={isProductLoading}
                   disabled={!watch("clientId")}
@@ -484,11 +487,11 @@ function ListingFeeDrawer({
                     <TextField
                       {...params}
                       size="small"
-                      label="Product Code"
+                      label="Expense Type"
                       required
                       helperText={errors?.itemId?.message}
                       error={errors?.itemId}
-                      sx={{ width: "180px" }}
+                      sx={{ width: "300px" }}
                     />
                   )}
                   onChange={(_, value) => {
@@ -499,62 +502,6 @@ function ListingFeeDrawer({
                     setValue(`listingItems[${index}].uom`, value?.uom);
                     return value;
                   }}
-                />
-
-                <Controller
-                  control={control}
-                  name={`listingItems[${index}].itemDescription`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="Item Description"
-                      size="small"
-                      autoComplete="off"
-                      disabled
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      ref={ref}
-                      sx={{ width: "400px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name={`listingItems[${index}].uom`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="UOM"
-                      size="small"
-                      autoComplete="off"
-                      disabled
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      ref={ref}
-                      sx={{ width: "200px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  key={index}
-                  control={control}
-                  name={`listingItems[${index}].sku`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="SKU"
-                      size="small"
-                      autoComplete="off"
-                      disabled
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      // value={value || ""}
-                      value={1}
-                      ref={ref}
-                      sx={{ width: "200px" }}
-                    />
-                  )}
                 />
 
                 <Controller
@@ -620,15 +567,16 @@ function ListingFeeDrawer({
               });
             }}
           >
-            Add Product
+            Add Expense
           </SecondaryButton>
+
           <Box
             sx={{
               display: "flex",
               gap: "10px",
               mr: "50px",
               position: "absolute",
-              left: "600px",
+              left: "180px",
               gap: "23px",
             }}
           >
@@ -706,4 +654,4 @@ function ListingFeeDrawer({
   );
 }
 
-export default ListingFeeDrawer;
+export default OtherExpensesDrawer;

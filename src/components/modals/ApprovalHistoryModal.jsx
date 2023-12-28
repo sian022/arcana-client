@@ -51,7 +51,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   const steps = [
     { label: "Requested", icon: <EventNote /> },
     { label: "1st Approval", icon: <Check /> },
-    { label: "2nd Approval", icon: <CheckCircle /> },
+    // { label: "2nd Approval", icon: <CheckCircle /> },
     // { label: "Regular Client", icon: <HowToReg /> },
   ];
 

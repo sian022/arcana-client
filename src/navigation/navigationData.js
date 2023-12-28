@@ -134,8 +134,8 @@ export const navigationData = [
       },
       {
         id: 4,
-        name: "Other Expenses",
-        path: "/customer-management/other-expenses",
+        name: "Expenses Setup",
+        path: "/customer-management/expenses-setup",
         icon: "AttachMoney",
       },
     ],
@@ -180,6 +180,13 @@ export const navigationData = [
         name: "Listing Fee",
         icon: "Payment",
         notifications: ["rejectedListingFee"],
+      },
+      {
+        id: 4,
+        path: "/customer-registration/other-expenses",
+        name: "Other Expenses",
+        icon: "AttachMoney",
+        notifications: ["otherExpenses"],
       },
       // {
       //   id: 4,

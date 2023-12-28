@@ -159,13 +159,14 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
     }
   }, [open]);
 
+  console.log(getValues());
   return (
     <>
       <CommonDrawer
         drawerHeader={"Add Price Change"}
         open={open}
         onClose={handleDrawerClose}
-        disableSubmit={!isValid}
+        disableSubmit={!isValid || watch("price") <= 0}
         onSubmit={onConfirmSubmitOpen}
         // zIndex={editMode && 1300}
       >

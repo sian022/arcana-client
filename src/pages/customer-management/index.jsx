@@ -77,11 +77,11 @@ function CustomerManagement() {
 
           <Box
             className="pageIndex__navigators__item"
-            onClick={() => navigate("other-expenses")}
+            onClick={() => navigate("expenses-setup")}
           >
             <Box className="pageIndex__navigators__item__text">
               <Typography className="pageIndex__navigators__item__text__title">
-                Other Expenses
+                Expenses Setup
               </Typography>
               <Typography className="pageIndex__navigators__item__text__subTitle">
                 Manage and create other expenses

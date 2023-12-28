@@ -641,7 +641,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           </RadioGroup>
         </Box>
 
-        <Box className="terms__column__item">
+        {/* <Box className="terms__column__item">
           <Box className="terms__column__item__title">
             <Typography>Special Discount</Typography>
           </Box>
@@ -683,7 +683,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             />
             {"%"}
           </Box>
-        </Box>
+        </Box> */}
 
         {direct && !editMode && (
           <>

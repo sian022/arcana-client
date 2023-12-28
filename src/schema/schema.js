@@ -171,6 +171,8 @@ export const userAccountSchema = {
     username: yup.string().required("Username is required"),
     password: yup.string(),
     userRoleId: yup.object().required("Role is required"),
+    // clusterId: yup.object().nullable(),
+    clusters: yup.array().of(yup.object()),
   }),
   // .required(),
   defaultValues: {
@@ -179,8 +181,30 @@ export const userAccountSchema = {
     username: "",
     password: "",
     userRoleId: null,
+    // clusterId: null,
+    clusters: [],
   },
 };
+
+// export const userAccountCdoSchema = {
+//   schema: yup.object({
+//     fullIdNo: yup.string().required("Full ID number is required"),
+//     fullname: yup.string().required("Fullname is required"),
+//     username: yup.string().required("Username is required"),
+//     password: yup.string(),
+//     userRoleId: yup.object().required("Role is required"),
+//     clusterId: yup.object().required("Cluster is required"),
+//   }),
+//   // .required(),
+//   defaultValues: {
+//     fullIdNo: "",
+//     fullname: "",
+//     username: "",
+//     password: "",
+//     userRoleId: null,
+//     clusterId: null,
+//   },
+// };
 
 export const userRoleSchema = {
   schema: yup.object({

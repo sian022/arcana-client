@@ -33,7 +33,8 @@ import PaymentTransaction from "../pages/sales-management/PaymentTransaction";
 import SpecialDiscount from "../pages/sales-management/SpecialDiscount";
 import AdvancePayment from "../pages/sales-management/AdvancePayment";
 import Cluster from "../pages/user-management/Cluster";
-import OtherExpenses from "../pages/customer-management/OtherExpenses";
+import ExpensesSetup from "../pages/customer-management/ExpensesSetup";
+import OtherExpenses from "../pages/customer-registration/OtherExpenses";
 
 export const router = createBrowserRouter([
   {
@@ -133,8 +134,8 @@ export const router = createBrowserRouter([
             element: <TermDays />,
           },
           {
-            path: "other-expenses",
-            element: <OtherExpenses />,
+            path: "expenses-setup",
+            element: <ExpensesSetup />,
           },
         ],
       },
@@ -168,6 +169,10 @@ export const router = createBrowserRouter([
           //   path: "freebies",
           //   element: <Freebies />,
           // },
+          {
+            path: "other-expenses",
+            element: <OtherExpenses />,
+          },
         ],
       },
 

@@ -40,6 +40,7 @@ function CommonActions({
   onDelete,
   onHistory,
   onTagUserInCluster,
+  onViewCluster,
   disableActions,
   item,
   status,
@@ -80,6 +81,8 @@ function CommonActions({
       onDelete();
     } else if (action === "tagUserInCluster") {
       onTagUserInCluster();
+    } else if (action === "viewCluster") {
+      onViewCluster();
     }
 
     onClose();
@@ -121,6 +124,21 @@ function CommonActions({
           >
             <Tag />
             Tagging
+          </MenuItem>
+        )}
+
+        {onViewCluster && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("tag");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("viewCluster") : false
+            }
+          >
+            <Visibility />
+            View Cluster
           </MenuItem>
         )}
 

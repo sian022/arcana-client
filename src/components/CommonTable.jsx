@@ -44,6 +44,7 @@ function CommonTable({
   onDelete,
   onPrintFreebies,
   onTagUserInCluster,
+  onViewCluster,
   page,
   setPage,
   rowsPerPage,
@@ -233,6 +234,7 @@ function CommonTable({
                         onTagUserInCluster={
                           onTagUserInCluster && onTagUserInCluster
                         }
+                        onViewCluster={onViewCluster && onViewCluster}
                         item={item}
                         status={status}
                         disableActions={disableActions}

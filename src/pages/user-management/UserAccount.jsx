@@ -23,10 +23,12 @@ import {
   usePutUserMutation,
 } from "../../features/user-management/api/userAccountApi";
 import { useGetAllEmployeesQuery } from "../../features/user-management/api/sedarApi";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Person, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useGetAllUserRolesQuery } from "../../features/user-management/api/userRoleApi";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useSelector } from "react-redux";
+import { useGetAllClustersQuery } from "../../features/setup/api/clusterApi";
+import ControlledAutocompleteMultiple from "../../components/ControlledAutocompleteMultiple";
 
 function UserAccount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -79,6 +81,7 @@ function UserAccount() {
     "companyName",
     "departmentName",
     "locationName",
+    "clusters",
   ];
 
   const tableHeads = ["Full ID Number", "Full Name", "Username", "Role Name"];
@@ -110,14 +113,18 @@ function UserAccount() {
   const [patchUserStatus, { isLoading: isArchiveUserLoading }] =
     usePatchUserStatusMutation();
 
-  const { data: userRoleData } = useGetAllUserRolesQuery();
+  const { data: userRoleData } = useGetAllUserRolesQuery({ Status: true });
   const { data: sedarData = [], isLoading: isSedarLoading } =
     useGetAllEmployeesQuery();
+  const { data: clusterData, isLoading: isClusterLoading } =
+    useGetAllClustersQuery({ Status: true });
 
+  console.log(getValues());
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     const {
       userRoleId: { id },
+      clusters,
       ...restData
     } = data;
 
@@ -126,12 +133,18 @@ function UserAccount() {
         await postUser({
           ...restData,
           userRoleId: id,
+          clusters: clusters?.map((item) => ({
+            clusterId: item.id,
+          })),
         }).unwrap();
         setSnackbarMessage("User Account added successfully");
       } else if (drawerMode === "edit") {
         await putUser({
           ...restData,
           userRoleId: id,
+          clusters: clusters?.map((item) => ({
+            clusterId: item.clusterId || item.id,
+          })),
         }).unwrap();
         setSnackbarMessage("User Account updated successfully");
       }
@@ -194,6 +207,10 @@ function UserAccount() {
         (item) => item.roleName === editData.roleName
       )
     );
+    setValue(
+      "clusters",
+      editData.clusters?.map((item) => item)
+    );
   };
 
   const handleArchiveOpen = (id) => {
@@ -222,10 +239,20 @@ function UserAccount() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
+  useEffect(() => {
+    if (watch("userRoleId")?.roleName !== "CDO") {
+      setValue("clusters", []);
+    }
+  }, [watch("userRoleId")]);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="User Account"
+        pageTitle={
+          <>
+            User Account <Person />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
@@ -241,6 +268,10 @@ function UserAccount() {
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
+          // onViewCluster={true}
+          // disableActions={
+          //   selectedRowData?.roleName !== "CDO" && ["viewCluster"]
+          // }
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -255,55 +286,13 @@ function UserAccount() {
         onClose={handleDrawerClose}
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " User Account"}
         onSubmit={handleSubmit(onDrawerSubmit)}
-        disableSubmit={!isValid}
+        disableSubmit={
+          watch("userRoleId")?.roleName === "CDO"
+            ? !isValid || watch("clusters")?.length === 0
+            : !isValid
+        }
         isLoading={drawerMode === "add" ? isAddUserLoading : isEditUserLoading}
       >
-        {/* <ControlledAutocomplete
-          name={"fullIdNo"}
-          selectOnFocus
-          clearOnBlur
-          handleHomeEndKeys
-          control={control}
-          options={sedarData}
-          loading={isSedarLoading}
-          disableClearable
-          filterOptions={filterOptions}
-          getOptionLabel={(option) => option.general_info.full_id_number}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          renderInput={(params) => (
-            <TextField {...params} size="small" label="Employee ID" />
-          )}
-          onChange={(_, value) => {
-            const generateUsername = (firstName, lastName) => {
-              var part1 = firstName
-                .split(" ")
-                .map((i) => i.charAt(0))
-                .join("")
-                .toLowerCase();
-              var part2 = lastName.replace(/\s/g, "").toLowerCase();
-              return part1 + part2;
-            };
-            setValue()
-            setValue("fullname", value.general_info.full_name);
-            setValue("location", value.unit_info.location_name);
-            setValue("department", value.unit_info.department_name);
-            setValue("company", value.unit_info.company_name);
-            setValue(
-              "username",
-              generateUsername(
-                value.general_info.first_name,
-                value.general_info.last_name
-              )
-            );
-            setValue(
-              "password",
-              `${generateUsername(
-                value.general_info.first_name,
-                value.general_info.last_name
-              )}1234`
-            );
-          }}
-        /> */}
         {drawerMode === "add" ? (
           <Autocomplete
             selectOnFocus
@@ -499,7 +488,31 @@ function UserAccount() {
             />
           )}
         />
+
+        {watch("userRoleId")?.roleName === "CDO" && (
+          <ControlledAutocompleteMultiple
+            name={"clusters"}
+            multiple
+            filterSelectedOptions
+            control={control}
+            options={clusterData?.cluster || []}
+            getOptionLabel={(option) => option.cluster}
+            // disableClearable
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                size="small"
+                label="Cluster"
+                required
+                helperText={errors?.clusters?.message}
+                error={errors?.clusters}
+              />
+            )}
+          />
+        )}
       </CommonDrawer>
+
       <CommonDialog
         open={isArchiveOpen}
         onClose={onArchiveClose}

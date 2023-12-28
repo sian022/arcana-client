@@ -19,7 +19,7 @@ import {
   usePutOtherExpensesMutation,
 } from "../../features/setup/api/otherExpensesApi";
 
-function OtherExpenses() {
+function ExpensesSetup() {
   const [drawerMode, setDrawerMode] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
@@ -177,7 +177,7 @@ function OtherExpenses() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Other Expenses"
+        pageTitle="Expenses Setup"
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
@@ -252,4 +252,4 @@ function OtherExpenses() {
   );
 }
 
-export default OtherExpenses;
+export default ExpensesSetup;
