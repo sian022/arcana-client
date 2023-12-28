@@ -18,16 +18,9 @@ import ErrorSnackbar from "../ErrorSnackbar";
 import useDisclosure from "../../hooks/useDisclosure";
 import SuccessSnackbar from "../SuccessSnackbar";
 import CommonDialog from "../CommonDialog";
-import {
-  requestExpensesSchema,
-  requestListingFeeSchema,
-} from "../../schema/schema";
+import { requestExpensesSchema } from "../../schema/schema";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
-import {
-  registrationApi,
-  useGetAllClientsForListingFeeQuery,
-  useGetAllClientsQuery,
-} from "../../features/registration/api/registrationApi";
+import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import {
   usePostListingFeeMutation,
@@ -40,9 +33,8 @@ import { useGetAllOtherExpensesQuery } from "../../features/setup/api/otherExpen
 function OtherExpensesDrawer({
   editMode,
   setEditMode,
-  isListingFeeOpen,
-  onListingFeeClose,
-  onListingFeeViewClose,
+  isExpensesOpen,
+  onExpensesClose,
   updateListingFee,
   redirect,
 }) {
@@ -146,7 +138,7 @@ function OtherExpensesDrawer({
     usePutUpdateListingFeeMutation();
 
   //Drawer Functions
-  const onListingFeeSubmit = async (data) => {
+  const onExpensesSubmit = async (data) => {
     if (hasDuplicateItemCodes(watch("expenses"))) {
       setSnackbarMessage("No duplicate items allowed");
       onErrorOpen();
@@ -169,8 +161,7 @@ function OtherExpensesDrawer({
             unitCost: expense.unitCost,
           })),
         });
-        onListingFeeViewClose();
-        setSnackbarMessage("Listing Fee updated successfully");
+        setSnackbarMessage("Expense updated successfully");
       } else {
         response = await postListingFee({
           clientId: data.clientId.id,
@@ -197,7 +188,7 @@ function OtherExpensesDrawer({
         setSnackbarMessage(error?.data?.error?.message);
       } else {
         setSnackbarMessage(
-          `Error ${editMode ? "updating" : "adding"} listing fee`
+          `Error ${editMode ? "updating" : "adding"} other expenses`
         );
       }
 
@@ -215,12 +206,12 @@ function OtherExpensesDrawer({
       setEditMode(false);
     }
     setTotalAmount(0);
-    onListingFeeClose();
+    onExpensesClose();
     onConfirmCancelClose();
   };
 
   //Misc Functions
-  const handleListingFeeError = () => {
+  const handleExpensesError = () => {
     if (fields.length === 1) {
       setSnackbarMessage("Must have at least 1 expense");
     }
@@ -260,7 +251,7 @@ function OtherExpensesDrawer({
     // onClientConfirmationOpen();
   };
 
-  const resetListingFee = (clientId) => {
+  const resetExpenses = (clientId) => {
     remove();
     append({
       expenseTypeId: null,
@@ -274,32 +265,6 @@ function OtherExpensesDrawer({
   };
 
   //UseEffects
-  // useEffect(() => {
-  //   setValue("clientId", clientId);
-  //   const freebiesLength = selectedRowData?.freebies?.length;
-
-  //   if (updateListingFee && isListingFeeOpen) {
-  //     const originalFreebies =
-  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
-
-  //     const transformedFreebies = originalFreebies.map((item) => ({
-  //       itemId: item,
-  //       itemDescription: item.itemDescription,
-  //       uom: item.uom,
-  //     }));
-
-  //     setValue("freebies", transformedFreebies);
-  //     setValue(
-  //       "freebieRequestId",
-  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
-  //         null
-  //     );
-  //   }
-
-  //   return () => {
-  //     setValue("clientId", null);
-  //   };
-  // }, [isListingFeeOpen]);
 
   useEffect(() => {
     if (redirect && clientData) {
@@ -311,10 +276,10 @@ function OtherExpensesDrawer({
       setValue("clientId", foundItem);
       setValue("customerName", foundItem?.ownersName);
     }
-  }, [isListingFeeOpen, clientData]);
+  }, [isExpensesOpen, clientData]);
 
   useEffect(() => {
-    if (editMode && isListingFeeOpen && clientData) {
+    if (editMode && isExpensesOpen && clientData) {
       const foundItem = clientData?.regularClient?.find(
         (item) => item.id === selectedRowData?.clientId
       );
@@ -335,13 +300,13 @@ function OtherExpensesDrawer({
       );
       handleRecalculateTotalAmount();
     }
-  }, [isListingFeeOpen, clientData]);
+  }, [isExpensesOpen, clientData]);
 
   return (
     <>
       <CommonDrawer
         drawerHeader={editMode ? "Update Other Expenses" : "Add Other Expenses"}
-        open={isListingFeeOpen}
+        open={isExpensesOpen}
         onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
         width="600px"
         disableSubmit={!isValid || totalAmount < 0}
@@ -532,7 +497,7 @@ function OtherExpensesDrawer({
                   sx={{ color: "error.main" }}
                   onClick={() => {
                     fields.length <= 1
-                      ? handleListingFeeError()
+                      ? handleExpensesError()
                       : // : remove(fields[index]);
                         remove(index);
                     handleRecalculateTotalAmount();
@@ -559,7 +524,7 @@ function OtherExpensesDrawer({
             onClick={() => {
               // fields.length < 5
               //   ? append({ itemId: null, unitCost: null })
-              //   : handleListingFeeError();
+              //   : handleExpensesError();
               append({
                 itemId: null,
                 sku: 1,
@@ -599,12 +564,12 @@ function OtherExpensesDrawer({
       <CommonDialog
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
-        onYes={handleSubmit(onListingFeeSubmit)}
+        onYes={handleSubmit(onExpensesSubmit)}
         // isLoading={updateListingFee ? isUpdateLoading : isAddLoading}
         isLoading={editMode ? isUpdateLoading : isAddLoading}
         noIcon
       >
-        Confirm {editMode ? "update" : "adding"} of listing fee for{" "}
+        Confirm {editMode ? "update" : "adding"} of other expenses for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {watch("clientId.businessName")
             ? watch("clientId.businessName")
@@ -619,7 +584,7 @@ function OtherExpensesDrawer({
         onYes={handleDrawerClose}
       >
         Are you sure you want to cancel {editMode ? "update" : "adding"} of
-        listing fee for{" "}
+        other expenses for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           {watch("clientId.businessName")
             ? watch("clientId.businessName")
@@ -631,7 +596,7 @@ function OtherExpensesDrawer({
       <CommonDialog
         open={isClientConfirmationOpen}
         onClose={onClientConfirmationClose}
-        onYes={() => resetListingFee(confirmationValue)}
+        onYes={() => resetExpenses(confirmationValue)}
       >
         Are you sure you want to change client?
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

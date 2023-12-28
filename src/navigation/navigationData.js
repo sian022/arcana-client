@@ -270,6 +270,13 @@ export const navigationData = [
       //   path: "/approval/freebie-approval",
       //   icon: "Redeem",
       // },
+      {
+        id: 4,
+        name: "Other Expenses Approval",
+        path: "/approval/other-expenses-approval",
+        icon: "AttachMoney",
+        notifications: ["pendingOtherExpenses"],
+      },
     ],
   },
   // {

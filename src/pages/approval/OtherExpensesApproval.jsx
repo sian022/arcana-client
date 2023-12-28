@@ -1,51 +1,35 @@
 import React, { useContext, useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box } from "@mui/material";
+import { Box, Button, TextField, debounce } from "@mui/material";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
+import { dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
-import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
+import ListingFeeModal from "../../components/modals/ListingFeeModal";
 import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
+import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
+import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import CommonDialog from "../../components/CommonDialog";
-import useSnackbar from "../../hooks/useSnackbar";
-import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
-import OtherExpensesDrawer from "../../components/drawers/OtherExpensesDrawer";
 
-function OtherExpenses() {
+function OtherExpensesApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
+  const [origin, setOrigin] = useState("");
   const [listingFeeStatus, setListingFeeStatus] = useState("Under review");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
-  const [editMode, setEditMode] = useState(false);
-
-  const { showSnackbar } = useSnackbar();
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
-    isOpen: isListingFeeOpen,
-    onOpen: onListingFeeOpen,
-    onClose: onListingFeeClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isViewOpen,
     onOpen: onViewOpen,
     onClose: onViewClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
   } = useDisclosure();
 
   const {
@@ -87,34 +71,19 @@ function OtherExpenses() {
       case: 1,
       name: "Pending Expenses",
       listingFeeStatus: "Under review",
-      badge: notifications["pendingOtherExpenses"],
+      badge: notifications["pendingListingFee"],
     },
     {
       case: 2,
       name: "Approved Expenses",
       listingFeeStatus: "Approved",
-      badge: notifications["approvedOtherExpenses"],
+      badge: notifications["approvedListingFee"],
     },
     {
       case: 3,
       name: "Rejected Expenses",
       listingFeeStatus: "Rejected",
-      badge: notifications["rejectedOtherExpenses"],
-    },
-  ];
-
-  const selectOptions = [
-    {
-      value: "all",
-      label: "All",
-    },
-    {
-      value: "prospecting",
-      label: "Prospect",
-    },
-    {
-      value: "direct",
-      label: "Direct",
+      badge: notifications["rejectedListingFee"],
     },
   ];
 
@@ -140,11 +109,9 @@ function OtherExpenses() {
 
   const pesoArray = ["total"];
 
-  //Misc Functions
-  const handleOpenEdit = () => {
-    setEditMode(true);
-    onListingFeeOpen();
-  };
+  const debouncedSetSearch = debounce((value) => {
+    setSearch(value);
+  }, 200);
 
   useEffect(() => {
     const foundItem = listingFeeNavigation.find(
@@ -163,17 +130,23 @@ function OtherExpenses() {
       <Box className="commonPageLayout">
         <PageHeaderTabs
           wide
-          pageTitle="Other Expenses"
+          pageTitle="Other Expenses Approval"
           tabsList={listingFeeNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
         />
 
-        <AddSearchMixin
-          addTitle="Other Expenses"
-          onAddOpen={onListingFeeOpen}
-          setSearch={setSearch}
-        />
+        <Box sx={{ padding: "15px" }}>
+          <TextField
+            type="search"
+            size="small"
+            label="Search"
+            onChange={(e) => {
+              debouncedSetSearch(e.target.value);
+            }}
+            autoComplete="off"
+          />
+        </Box>
 
         {isFetching ? (
           <CommonTableSkeleton moreCompact />
@@ -191,39 +164,19 @@ function OtherExpenses() {
             onView={onViewOpen}
             tableHeads={tableHeads}
             pesoArray={pesoArray}
-            onEdit={handleOpenEdit}
             onHistory={onHistoryOpen}
           />
         )}
       </Box>
 
-      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
-      <OtherExpensesDrawer
-        isExpensesOpen={isListingFeeOpen}
-        onExpensesClose={onListingFeeClose}
-        editMode={editMode}
-        setEditMode={setEditMode}
-      />
-
       <ViewListingFeeModal
-        onListingFeeDrawerOpen={onListingFeeOpen}
-        setEditMode={setEditMode}
         open={isViewOpen}
+        // open={true}
         onClose={onViewClose}
+        underReview={listingFeeStatus === "Under review"}
+        approval
+        listingFeeStatus={listingFeeStatus}
       />
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        // isLoading={isUpdateStatusLoading}
-        // onYes={onArchiveSubmit}
-      >
-        Are you sure you want to {status ? "archive" : "restore"} client{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.businessName}
-        </span>
-        ?
-      </CommonDialog>
 
       <ApprovalHistoryModal
         open={isHistoryOpen}
@@ -234,4 +187,4 @@ function OtherExpenses() {
   );
 }
 
-export default OtherExpenses;
+export default OtherExpensesApproval;

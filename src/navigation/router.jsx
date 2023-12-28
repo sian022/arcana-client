@@ -35,6 +35,7 @@ import AdvancePayment from "../pages/sales-management/AdvancePayment";
 import Cluster from "../pages/user-management/Cluster";
 import ExpensesSetup from "../pages/customer-management/ExpensesSetup";
 import OtherExpenses from "../pages/customer-registration/OtherExpenses";
+import OtherExpensesApproval from "../pages/approval/OtherExpensesApproval";
 
 export const router = createBrowserRouter([
   {
@@ -219,6 +220,10 @@ export const router = createBrowserRouter([
           //   path: "freebie-approval",
           //   element: <FreebieApproval />,
           // },
+          {
+            path: "other-expenses-approval",
+            element: <OtherExpensesApproval />,
+          },
         ],
       },
     ],
