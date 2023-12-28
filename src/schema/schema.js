@@ -568,3 +568,24 @@ export const specialDiscountSchema = {
     specialDiscount: null,
   },
 };
+
+export const requestExpensesSchema = {
+  schema: yup.object({
+    clientId: yup.object().required("Business Name is required"),
+    expenses: yup.array().of(
+      yup.object({
+        expenseTypeId: yup.object().required("Expense Type is required"),
+        unitCost: yup.string().required("Unit Cost is required"),
+      })
+    ),
+  }),
+  defaultValues: {
+    clientId: null,
+    expenses: [
+      {
+        expenseTypeId: null,
+        unitCost: null,
+      },
+    ],
+  },
+};
