@@ -20,6 +20,7 @@ import { useGetAllProductCategoryQuery } from "../../features/setup/api/productC
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
+import { SubdirectoryArrowRight } from "@mui/icons-material";
 
 function ProductSubCategory() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -203,7 +204,11 @@ function ProductSubCategory() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Product Sub Category"
+        pageTitle={
+          <>
+            Product Sub Category <SubdirectoryArrowRight />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

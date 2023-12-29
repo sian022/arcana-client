@@ -41,24 +41,24 @@ export const navigationData = [
         path: "/user-management/cluster",
         icon: "PinDrop",
       },
-      {
-        id: 5,
-        name: "Company",
-        path: "/user-management/company",
-        icon: "Business",
-      },
-      {
-        id: 6,
-        name: "Department",
-        path: "/user-management/department",
-        icon: "BusinessCenter",
-      },
-      {
-        id: 7,
-        name: "Location",
-        path: "/user-management/location",
-        icon: "LocationOn",
-      },
+      // {
+      //   id: 5,
+      //   name: "Company",
+      //   path: "/user-management/company",
+      //   icon: "Business",
+      // },
+      // {
+      //   id: 6,
+      //   name: "Department",
+      //   path: "/user-management/department",
+      //   icon: "BusinessCenter",
+      // },
+      // {
+      //   id: 7,
+      //   name: "Location",
+      //   path: "/user-management/location",
+      //   icon: "LocationOn",
+      // },
     ],
   },
   {

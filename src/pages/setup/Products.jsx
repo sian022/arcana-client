@@ -29,6 +29,7 @@ import { NumericFormat } from "react-number-format";
 import ProductsTable from "../../components/customTables/ProductsTable";
 import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
 import PriceChangeDrawer from "../../components/drawers/PriceChangeDrawer";
+import { LocalMall } from "@mui/icons-material";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -299,7 +300,11 @@ function Products() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Products"
+        pageTitle={
+          <>
+            Products <LocalMall />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

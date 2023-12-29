@@ -18,6 +18,7 @@ import {
   usePutMeatTypeMutation,
 } from "../../features/setup/api/meatTypeApi";
 import { useSelector } from "react-redux";
+import { RestaurantMenu } from "@mui/icons-material";
 
 function MeatType() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -178,7 +179,11 @@ function MeatType() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Meat Type"
+        pageTitle={
+          <>
+            Meat Type <RestaurantMenu />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

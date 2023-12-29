@@ -20,6 +20,7 @@ import {
 } from "../../features/setup/api/clusterApi";
 import TagCDODrawer from "../../components/drawers/TagCDODrawer";
 import ViewCDOModal from "../../components/modals/ViewCDOModal";
+import { PinDrop } from "@mui/icons-material";
 
 function Cluster() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -204,7 +205,11 @@ function Cluster() {
     <>
       <Box className="commonPageLayout">
         <PageHeaderAdd
-          pageTitle="Cluster"
+          pageTitle={
+            <>
+              Cluster <PinDrop />
+            </>
+          }
           onOpen={handleAddOpen}
           setSearch={setSearch}
           setStatus={setStatus}

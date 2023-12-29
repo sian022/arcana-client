@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
-import { Storefront } from "@mui/icons-material";
+import { AccountBox, Storefront } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedStoreType } from "../../../features/prospect/reducers/selectedStoreTypeSlice";
 import PageHeaderTabs from "../../../components/PageHeaderTabs";
@@ -93,6 +93,11 @@ function Prospect() {
         // <PageHeaderAdd pageTitle={`Prospect - ${selectedStoreType}`} />
         <PageHeaderTabs
           pageTitle={`Prospect - ${selectedStoreType}`}
+          // pageTitle={
+          //   <>
+          //     Prospect - {selectedStoreType} <AccountBox />
+          //   </>
+          // }
           tabsList={prospectNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}

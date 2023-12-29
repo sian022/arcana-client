@@ -74,18 +74,18 @@ export const router = createBrowserRouter([
             path: "cluster",
             element: <Cluster />,
           },
-          {
-            path: "company",
-            element: <Company />,
-          },
-          {
-            path: "department",
-            element: <Department />,
-          },
-          {
-            path: "location",
-            element: <Location />,
-          },
+          // {
+          //   path: "company",
+          //   element: <Company />,
+          // },
+          // {
+          //   path: "department",
+          //   element: <Department />,
+          // },
+          // {
+          //   path: "location",
+          //   element: <Location />,
+          // },
         ],
       },
       {

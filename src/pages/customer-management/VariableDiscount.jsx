@@ -20,6 +20,7 @@ import {
 } from "../../features/setup/api/discountTypeApi";
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
+import { Label } from "@mui/icons-material";
 
 function VariableDiscount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -231,7 +232,11 @@ function VariableDiscount() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Variable Discount"
+        pageTitle={
+          <>
+            Variable Discount <Label />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

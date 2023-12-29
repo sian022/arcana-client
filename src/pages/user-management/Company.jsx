@@ -18,6 +18,7 @@ import {
   usePutCompanyMutation,
 } from "../../features/user-management/api/companyApi";
 import { useSelector } from "react-redux";
+import { Business } from "@mui/icons-material";
 
 function Company() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -178,7 +179,11 @@ function Company() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Company"
+        pageTitle={
+          <>
+            Company <Business />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

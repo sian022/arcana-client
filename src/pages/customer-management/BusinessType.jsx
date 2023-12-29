@@ -18,6 +18,7 @@ import {
   usePutStoreTypeMutation,
 } from "../../features/setup/api/storeTypeApi";
 import { useSelector } from "react-redux";
+import { StoreMallDirectory } from "@mui/icons-material";
 
 function BusinessType() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -181,7 +182,11 @@ function BusinessType() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Business Type"
+        pageTitle={
+          <>
+            Business Type <StoreMallDirectory />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

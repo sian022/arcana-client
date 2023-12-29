@@ -18,6 +18,7 @@ import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
+import { Category } from "@mui/icons-material";
 
 function ProductCategory() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -178,7 +179,11 @@ function ProductCategory() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Product Category"
+        pageTitle={
+          <>
+            Product Category <Category />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

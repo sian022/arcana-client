@@ -50,7 +50,7 @@ function PersonalInfoTab() {
               Email Address:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              {selectedRowData?.emailAddress ?? "N/A"}
+              {selectedRowData?.emailAddress || "N/A"}
             </Typography>
           </Box>
 

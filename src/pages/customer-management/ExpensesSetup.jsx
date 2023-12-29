@@ -18,6 +18,7 @@ import {
   usePostOtherExpensesMutation,
   usePutOtherExpensesMutation,
 } from "../../features/setup/api/otherExpensesApi";
+import { AttachMoney } from "@mui/icons-material";
 
 function ExpensesSetup() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -177,7 +178,11 @@ function ExpensesSetup() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Expenses Setup"
+        pageTitle={
+          <>
+            Expenses Setup <AttachMoney />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

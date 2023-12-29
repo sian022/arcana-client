@@ -18,6 +18,7 @@ import {
 } from "../../features/setup/api/termDaysApi";
 import { termDaysSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
+import { CalendarToday } from "@mui/icons-material";
 
 function TermDays() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -176,7 +177,11 @@ function TermDays() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Term Days"
+        pageTitle={
+          <>
+            Term Days <CalendarToday />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

@@ -22,6 +22,7 @@ import PageHeaderSearch from "../../components/PageHeaderSearch";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import {
   Cancel,
+  HowToVote,
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
@@ -284,7 +285,11 @@ function Approver() {
         setStatus={setStatus}
       /> */}
       <PageHeaderAdd
-        pageTitle="Approver"
+        pageTitle={
+          <>
+            Approver <HowToVote />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

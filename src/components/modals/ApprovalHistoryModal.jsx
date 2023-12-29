@@ -37,6 +37,13 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   const { data: approverData, isFetching: isApproverFetching } =
     useGetApproversPerModuleQuery();
 
+  // const steps = [
+  //   { label: "Requested", icon: <EventNote /> },
+  //   // { label: "1st Approval", icon: <Check /> },
+  //   // { label: "2nd Approval", icon: <CheckCircle /> },
+  //   // { label: "Regular Client", icon: <HowToReg /> },
+  // ];
+
   const steps = [
     { label: "Requested", icon: <EventNote /> },
     { label: "1st Approval", icon: <Check /> },
@@ -60,6 +67,20 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     } else {
       return 3;
     }
+
+    // if (recentLevel === 0) {
+    //   return 1;
+    // } else if (recentLevel === 1 && recentStatus === "Rejected") {
+    //   return null;
+    // } else if (recentLevel === 1 && recentStatus === "Approved") {
+    //   return 0;
+    // } else if (recentLevel === 2 && recentStatus === "Rejected") {
+    //   return 2;
+    // } else if (recentLevel === 2 && recentStatus === "Approved") {
+    //   return 3;
+    // } else {
+    //   return 4;
+    // }
   };
 
   const combinedHistories = [

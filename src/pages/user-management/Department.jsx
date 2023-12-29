@@ -18,6 +18,7 @@ import {
   usePutDepartmentMutation,
 } from "../../features/user-management/api/departmentApi";
 import { useSelector } from "react-redux";
+import { BusinessCenter } from "@mui/icons-material";
 
 function Department() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -178,7 +179,11 @@ function Department() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Department"
+        pageTitle={
+          <>
+            Department <BusinessCenter />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
