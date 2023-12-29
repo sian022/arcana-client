@@ -5,9 +5,6 @@ import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
 import { dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
-import ListingFeeModal from "../../components/modals/ListingFeeModal";
-import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
-import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
@@ -18,7 +15,8 @@ function OtherExpensesApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [origin, setOrigin] = useState("");
-  const [listingFeeStatus, setListingFeeStatus] = useState("Under review");
+  const [otherExpensesStatus, setOtherExpensesStatus] =
+    useState("Under review");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
@@ -39,51 +37,34 @@ function OtherExpensesApproval() {
   } = useDisclosure();
 
   //RTK Query
-  // const { data: pendingData, isLoading: isPendingLoading } =
-  //   useGetAllListingFeeQuery({
-  //     Status: true,
-  //     ListingFeeStatus: "Under review",
-  //   });
-
-  // const { data: approvedData, isLoading: isApprovedLoading } =
-  //   useGetAllListingFeeQuery({
-  //     Status: true,
-  //     ListingFeeStatus: "Approved",
-  //   });
-
-  // const { data: rejectedData, isLoading: isRejectedLoading } =
-  //   useGetAllListingFeeQuery({
-  //     Status: true,
-  //     ListingFeeStatus: "Rejected",
-  //   });
 
   const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
     Search: search,
     Status: true,
-    ListingFeeStatus: listingFeeStatus,
+    OtherExpensesStatus: otherExpensesStatus,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
 
   //Constants
-  const listingFeeNavigation = [
+  const otherExpensesNavigation = [
     {
       case: 1,
       name: "Pending Expenses",
-      listingFeeStatus: "Under review",
-      badge: notifications["pendingListingFee"],
+      otherExpensesStatus: "Under review",
+      badge: notifications["pendingOtherExpenses"],
     },
     {
       case: 2,
       name: "Approved Expenses",
-      listingFeeStatus: "Approved",
-      badge: notifications["approvedListingFee"],
+      otherExpensesStatus: "Approved",
+      badge: notifications["approvedOtherExpenses"],
     },
     {
       case: 3,
       name: "Rejected Expenses",
-      listingFeeStatus: "Rejected",
-      badge: notifications["rejectedListingFee"],
+      otherExpensesStatus: "Rejected",
+      badge: notifications["rejectedOtherExpenses"],
     },
   ];
 
@@ -114,11 +95,11 @@ function OtherExpensesApproval() {
   }, 200);
 
   useEffect(() => {
-    const foundItem = listingFeeNavigation.find(
+    const foundItem = otherExpensesNavigation.find(
       (item) => item.case === tabViewing
     );
 
-    setListingFeeStatus(foundItem?.listingFeeStatus);
+    setOtherExpensesStatus(foundItem?.otherExpensesStatus);
   }, [tabViewing]);
 
   useEffect(() => {
@@ -131,7 +112,7 @@ function OtherExpensesApproval() {
         <PageHeaderTabs
           wide
           pageTitle="Other Expenses Approval"
-          tabsList={listingFeeNavigation}
+          tabsList={otherExpensesNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
         />
@@ -173,9 +154,9 @@ function OtherExpensesApproval() {
         open={isViewOpen}
         // open={true}
         onClose={onViewClose}
-        underReview={listingFeeStatus === "Under review"}
+        underReview={otherExpensesStatus === "Under review"}
         approval
-        listingFeeStatus={listingFeeStatus}
+        otherExpensesStatus={otherExpensesStatus}
       />
 
       <ApprovalHistoryModal
