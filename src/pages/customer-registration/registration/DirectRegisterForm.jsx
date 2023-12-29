@@ -852,9 +852,14 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   }, [open, termDaysData]);
 
   useEffect(() => {
+    if (!!includeAuthorizedRepresentative) {
+      setRequirementsMode("representative");
+    }
+
     if (!includeAuthorizedRepresentative) {
       setValue("authorizedRepresentative", "");
       setValue("authorizedRepresentativePosition", "");
+      setRequirementsMode("owner");
     }
   }, [includeAuthorizedRepresentative]);
 

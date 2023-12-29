@@ -79,6 +79,8 @@ function ViewRegistrationDetailsModal({
 
   navigators[1].disabled = approval && !viewedTabs["Personal Info"];
   navigators[2].disabled = approval && !viewedTabs["Terms and Conditions"];
+  navigators[3].disabled = approval && !viewedTabs["Attachments"];
+  navigators[4].disabled = approval && !viewedTabs["Listing Fee"];
 
   //RTK Query
   const [putApproveClient, { isLoading: isApproveLoading }] =
@@ -100,7 +102,7 @@ function ViewRegistrationDetailsModal({
   };
 
   const customRibbonContent = (
-    <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
+    <Box sx={{ display: "flex", flex: 1, gap: "10px", alignItems: "center" }}>
       <Box className="viewRegistrationModal__headers">
         {navigators.map((item, i) => (
           <Button
@@ -118,7 +120,10 @@ function ViewRegistrationDetailsModal({
           </Button>
         ))}
       </Box>
-      <IconButton sx={{ color: "white !important" }} onClick={handleClose}>
+      <IconButton
+        sx={{ color: "white !important", height: "40px", width: "40px" }}
+        onClick={handleClose}
+      >
         <Close />
       </IconButton>
     </Box>

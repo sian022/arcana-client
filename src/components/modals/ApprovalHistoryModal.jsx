@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -28,25 +28,14 @@ import { useGetApproversPerModuleQuery } from "../../features/user-management/ap
 
 function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
+  // const [steps, setSteps] = useState([
+  //   { label: "Requested", icon: <EventNote /> },
+  // ]);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const { data: approverData, isFetching: isApproverFetching } =
     useGetApproversPerModuleQuery();
-
-  // const steps = [
-  //   { label: "Requested", icon: <EventNote /> },
-  //   // { label: "1st Approval", icon: <Check /> },
-  //   // { label: "2nd Approval", icon: <CheckCircle /> },
-  //   // { label: "Regular Client", icon: <HowToReg /> },
-  // ];
-
-  // const approverSteps = approverData?.registration?.map((approver) => ({
-  //   label: approver,
-  //   icon: <Check />,
-  // }));
-
-  // steps?.push(approverSteps);
 
   const steps = [
     { label: "Requested", icon: <EventNote /> },
@@ -71,20 +60,6 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     } else {
       return 3;
     }
-
-    // if (recentLevel === 0) {
-    //   return 1;
-    // } else if (recentLevel === 1 && recentStatus === "Rejected") {
-    //   return null;
-    // } else if (recentLevel === 1 && recentStatus === "Approved") {
-    //   return 0;
-    // } else if (recentLevel === 2 && recentStatus === "Rejected") {
-    //   return 2;
-    // } else if (recentLevel === 2 && recentStatus === "Approved") {
-    //   return 3;
-    // } else {
-    //   return 4;
-    // }
   };
 
   const combinedHistories = [
@@ -114,6 +89,18 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     //   new Date(a.createdAt || a.updatedAt) -
     //   new Date(b.createdAt || b.updatedAt)
   );
+
+  useEffect(() => {
+    const approverSteps = approverData?.registration?.map((approver) => ({
+      label: approver,
+      icon: <Check />,
+    }));
+
+    if (approverSteps?.length > 0) {
+      // Use the spread operator to create a new array and update the state
+      // setSteps((prevSteps) => [...prevSteps, ...approverSteps]);
+    }
+  }, [approverData]);
 
   return (
     <CommonModal width="650px" {...otherProps}>

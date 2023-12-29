@@ -255,6 +255,7 @@ function Attachments() {
                 onChange={(e) => {
                   setRequirementsMode(e.target.value);
                 }}
+                disabled
               />
             </Box>
           </Box>
@@ -470,6 +471,7 @@ function Attachments() {
                 onChange={(e) => {
                   setRequirementsMode(e.target.value);
                 }}
+                disabled
               />
             </Box>
           </Box>
