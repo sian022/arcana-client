@@ -1,22 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box, Button, TextField, debounce } from "@mui/material";
-import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
-import { dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
-import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
+import { useGetAllExpensesQuery } from "../../features/otherExpenses/api/otherExpensesRegApi";
+import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
 
 function OtherExpensesApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [origin, setOrigin] = useState("");
-  const [otherExpensesStatus, setOtherExpensesStatus] =
-    useState("Under review");
+  const [expenseStatus, setExpenseStatus] = useState("Under review");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
@@ -38,10 +36,10 @@ function OtherExpensesApproval() {
 
   //RTK Query
 
-  const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
+  const { data, isLoading, isFetching } = useGetAllExpensesQuery({
     Search: search,
     Status: true,
-    OtherExpensesStatus: otherExpensesStatus,
+    ExpenseStatus: expenseStatus,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
@@ -51,32 +49,29 @@ function OtherExpensesApproval() {
     {
       case: 1,
       name: "Pending Expenses",
-      otherExpensesStatus: "Under review",
+      expenseStatus: "Under review",
       badge: notifications["pendingOtherExpenses"],
     },
     {
       case: 2,
       name: "Approved Expenses",
-      otherExpensesStatus: "Approved",
+      expenseStatus: "Approved",
       badge: notifications["approvedOtherExpenses"],
     },
     {
       case: 3,
       name: "Rejected Expenses",
-      otherExpensesStatus: "Rejected",
+      expenseStatus: "Rejected",
       badge: notifications["rejectedOtherExpenses"],
     },
   ];
 
   const excludeKeysDisplay = [
-    "listingItems",
     "clientId",
-    "listingFeeId",
     "approvalId",
     "status",
     "cancellationReason",
     "requestId",
-    "listingFeeApprovalHistories",
     "registrationStatus",
   ];
 
@@ -99,7 +94,7 @@ function OtherExpensesApproval() {
       (item) => item.case === tabViewing
     );
 
-    setOtherExpensesStatus(foundItem?.otherExpensesStatus);
+    setExpenseStatus(foundItem?.expenseStatus);
   }, [tabViewing]);
 
   useEffect(() => {
@@ -133,7 +128,7 @@ function OtherExpensesApproval() {
           <CommonTableSkeleton moreCompact />
         ) : (
           <CommonTable
-            mapData={data?.listingFees}
+            mapData={data?.expenses}
             moreCompact
             excludeKeysDisplay={excludeKeysDisplay}
             count={count}
@@ -150,19 +145,19 @@ function OtherExpensesApproval() {
         )}
       </Box>
 
-      <ViewListingFeeModal
-        open={isViewOpen}
-        // open={true}
+      <ViewExpensesModal
+        // open={isViewOpen}
+        open={true}
         onClose={onViewClose}
-        underReview={otherExpensesStatus === "Under review"}
+        underReview={expenseStatus === "Under review"}
         approval
-        otherExpensesStatus={otherExpensesStatus}
+        expenseStatus={expenseStatus}
       />
 
       <ApprovalHistoryModal
         open={isHistoryOpen}
         onClose={onHistoryClose}
-        variant="listingFee"
+        // variant="listingFee"
       />
     </>
   );

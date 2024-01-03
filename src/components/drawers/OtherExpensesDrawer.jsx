@@ -29,13 +29,16 @@ import {
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NumericFormat } from "react-number-format";
 import { useGetAllOtherExpensesQuery } from "../../features/setup/api/otherExpensesApi";
+import {
+  usePostExpensesMutation,
+  usePutUpdateExpensesMutation,
+} from "../../features/otherExpenses/api/otherExpensesRegApi";
 
 function OtherExpensesDrawer({
   editMode,
   setEditMode,
   isExpensesOpen,
   onExpensesClose,
-  updateListingFee,
   redirect,
 }) {
   const { showSnackbar } = useSnackbar();
@@ -128,19 +131,20 @@ function OtherExpensesDrawer({
   });
 
   const { data: productData, isLoading: isProductLoading } =
-    useGetAllProductsQuery({ Status: true });
+    useGetAllOtherExpensesQuery({ Status: true });
   const { data: expensesData, isLoading: isExpensesLoading } =
     useGetAllOtherExpensesQuery();
 
-  const [postListingFee, { isLoading: isAddLoading }] =
-    usePostListingFeeMutation();
-  const [putListingFee, { isLoading: isUpdateLoading }] =
-    usePutUpdateListingFeeMutation();
+  const [postExpenses, { isLoading: isAddLoading }] = usePostExpensesMutation();
+  const [putUpdateExpenses, { isLoading: isUpdateLoading }] =
+    usePutUpdateExpensesMutation();
+
+  console.log(getValues());
 
   //Drawer Functions
   const onExpensesSubmit = async (data) => {
     if (hasDuplicateItemCodes(watch("expenses"))) {
-      setSnackbarMessage("No duplicate items allowed");
+      setSnackbarMessage("No duplicate expenses allowed");
       onErrorOpen();
       onConfirmSubmitClose();
       return;
@@ -150,7 +154,7 @@ function OtherExpensesDrawer({
       let response;
 
       if (editMode) {
-        response = await putListingFee({
+        response = await putUpdateExpenses({
           // id: data.clientId.id,
           id: selectedRowData?.clientId,
           // freebieRequestId: data.freebieRequestId,
@@ -158,18 +162,18 @@ function OtherExpensesDrawer({
           total: totalAmount,
           expenses: data.expenses.map((expense) => ({
             expenseTypeId: expense.expenseTypeId.id,
-            unitCost: expense.unitCost,
+            amount: expense.amount,
           })),
         });
         setSnackbarMessage("Expense updated successfully");
       } else {
-        response = await postListingFee({
+        response = await postExpenses({
           clientId: data.clientId.id,
           total: totalAmount,
           expenses: data.expenses.map((expense) => ({
             expenseTypeId: expense.expenseTypeId.id,
             sku: expense.sku,
-            unitCost: expense.unitCost,
+            amount: expense.amount,
           })),
         }).unwrap();
 
@@ -238,9 +242,9 @@ function OtherExpensesDrawer({
   const handleRecalculateTotalAmount = () => {
     let total = 0;
     watch("expenses").forEach((item) => {
-      const unitCost = parseInt(item.unitCost);
-      if (!isNaN(unitCost)) {
-        total += unitCost;
+      const amount = parseInt(item.amount);
+      if (!isNaN(amount)) {
+        total += amount;
       }
     });
 
@@ -255,7 +259,7 @@ function OtherExpensesDrawer({
     remove();
     append({
       expenseTypeId: null,
-      unitCost: null,
+      amount: null,
     });
 
     setValue("clientId", clientId);
@@ -285,17 +289,13 @@ function OtherExpensesDrawer({
       );
 
       setValue("clientId", foundItem);
-      setValue("customerName", foundItem?.ownersName);
       setValue(
         "expenses",
         selectedRowData?.expenses.map((item) => ({
-          itemId: productData?.items?.find(
-            (product) => product.id === item.itemId
+          otherExpenseId: expensesData?.expenses?.find(
+            (expense) => expense.id === item.otherExpenseId
           ),
-          itemDescription: item.itemDescription,
-          uom: item.uom,
-          sku: item.sku,
-          unitCost: item.unitCost,
+          amount: item.amount,
         }))
       );
       handleRecalculateTotalAmount();
@@ -336,14 +336,14 @@ function OtherExpensesDrawer({
                   size="small"
                   label="Business Name - Owner's Name"
                   required
-                  helperText={errors?.itemId?.message}
-                  error={errors?.itemId}
+                  helperText={errors?.clientId?.message}
+                  error={errors?.clientId}
                   // sx={{ width: "300px" }}
                   sx={{ width: "400px" }}
                 />
               )}
               onChange={(_, value) => {
-                if (watch("clientId") && watch("expenses")[0]?.itemId) {
+                if (watch("clientId") && watch("expenses")[0]?.otherExpenseId) {
                   onClientConfirmationOpen();
                   setConfirmationValue(value);
                   return watch("clientId");
@@ -415,7 +415,7 @@ function OtherExpensesDrawer({
                 }}
               >
                 <ControlledAutocomplete
-                  name={`expenses[${index}].itemId`}
+                  name={`expenses[${index}].otherExpenseId`}
                   control={control}
                   options={expensesData?.otherExpenses || []}
                   getOptionLabel={(option) => option.expenseType || ""}
@@ -424,8 +424,9 @@ function OtherExpensesDrawer({
 
                     const isExpenseRepeating = Array.isArray(otherExpenses)
                       ? otherExpenses.some(
-                          (item) =>
-                            item?.itemId?.expenseType === option.expenseType
+                          (expense) =>
+                            expense?.otherExpenseId?.expenseType ===
+                            option.expenseType
                         )
                       : false;
 
@@ -444,7 +445,7 @@ function OtherExpensesDrawer({
                     return isExpenseRepeating;
                   }}
                   disableClearable
-                  loading={isProductLoading}
+                  loading={isExpensesLoading}
                   disabled={!watch("clientId")}
                   // isOptionEqualToValue={(option, value) => option.id === value.id}
                   isOptionEqualToValue={(option, value) => true}
@@ -454,24 +455,16 @@ function OtherExpensesDrawer({
                       size="small"
                       label="Expense Type"
                       required
-                      helperText={errors?.itemId?.message}
-                      error={errors?.itemId}
+                      helperText={errors?.otherExpenseId?.message}
+                      error={errors?.otherExpenseId}
                       sx={{ width: "300px" }}
                     />
                   )}
-                  onChange={(_, value) => {
-                    setValue(
-                      `expenses[${index}].itemDescription`,
-                      value?.itemDescription
-                    );
-                    setValue(`expenses[${index}].uom`, value?.uom);
-                    return value;
-                  }}
                 />
 
                 <Controller
                   control={control}
-                  name={`expenses[${index}].unitCost`}
+                  name={`expenses[${index}].amount`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <NumericFormat
                       label="Unit Cost"
@@ -522,13 +515,9 @@ function OtherExpensesDrawer({
           <SecondaryButton
             sx={{ width: "150px" }}
             onClick={() => {
-              // fields.length < 5
-              //   ? append({ itemId: null, unitCost: null })
-              //   : handleExpensesError();
               append({
-                itemId: null,
-                sku: 1,
-                unitCost: null,
+                otherExpenseId: null,
+                amount: null,
               });
             }}
           >

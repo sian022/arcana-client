@@ -59,11 +59,11 @@ function Cluster() {
     onClose: onErrorClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isTagOpen,
-    onOpen: onTagOpen,
-    onClose: onTagClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isTagOpen,
+  //   onOpen: onTagOpen,
+  //   onClose: onTagClose,
+  // } = useDisclosure();
 
   const {
     isOpen: isViewOpen,
@@ -226,7 +226,7 @@ function Cluster() {
             onArchive={handleArchiveOpen}
             viewMoreKey={"users"}
             onViewMoreClick={onViewOpen}
-            onTagUserInCluster={onTagOpen}
+            // onTagUserInCluster={onTagOpen}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
@@ -281,7 +281,7 @@ function Cluster() {
         />
       </Box>
 
-      <TagCDODrawer open={isTagOpen} onClose={onTagClose} />
+      {/* <TagCDODrawer open={isTagOpen} onClose={onTagClose} /> */}
 
       <ViewCDOModal
         open={isViewOpen}

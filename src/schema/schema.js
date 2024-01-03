@@ -574,8 +574,8 @@ export const requestExpensesSchema = {
     clientId: yup.object().required("Business Name is required"),
     expenses: yup.array().of(
       yup.object({
-        expenseTypeId: yup.object().required("Expense Type is required"),
-        unitCost: yup.string().required("Unit Cost is required"),
+        otherExpenseId: yup.object().required("Expense Type is required"),
+        amount: yup.string().required("Amount is required"),
       })
     ),
   }),
@@ -583,8 +583,8 @@ export const requestExpensesSchema = {
     clientId: null,
     expenses: [
       {
-        expenseTypeId: null,
-        unitCost: null,
+        otherExpenseId: null,
+        amount: null,
       },
     ],
   },
