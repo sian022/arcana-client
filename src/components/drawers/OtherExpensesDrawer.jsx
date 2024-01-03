@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
-import { Add, Cancel, Search } from "@mui/icons-material";
-import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
+import { Cancel } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
 import ErrorSnackbar from "../ErrorSnackbar";
@@ -22,10 +15,6 @@ import { requestExpensesSchema } from "../../schema/schema";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
 import useSnackbar from "../../hooks/useSnackbar";
-import {
-  usePostListingFeeMutation,
-  usePutUpdateListingFeeMutation,
-} from "../../features/listing-fee/api/listingFeeApi";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NumericFormat } from "react-number-format";
 import { useGetAllOtherExpensesQuery } from "../../features/setup/api/otherExpensesApi";
@@ -107,18 +96,6 @@ function OtherExpensesDrawer({
   });
 
   //RTK Query
-  // const {
-  //   data: clientData,
-  //   isLoading: isClientLoading,
-  //   refetch: refetchClients,
-  // } = useGetAllClientsQuery({
-  //   RegistrationStatus: "Approved",
-  //   Status: true,
-  //   PageNumber: 1,
-  //   PageSize: 1000,
-  //   // IncludeRejected: editMode ? editMode : "",
-  // });
-
   const {
     data: clientData,
     isLoading: isClientLoading,
@@ -130,16 +107,12 @@ function OtherExpensesDrawer({
     IncludeRejected: editMode ? editMode : "",
   });
 
-  const { data: productData, isLoading: isProductLoading } =
-    useGetAllOtherExpensesQuery({ Status: true });
   const { data: expensesData, isLoading: isExpensesLoading } =
     useGetAllOtherExpensesQuery();
 
   const [postExpenses, { isLoading: isAddLoading }] = usePostExpensesMutation();
   const [putUpdateExpenses, { isLoading: isUpdateLoading }] =
     usePutUpdateExpensesMutation();
-
-  console.log(getValues());
 
   //Drawer Functions
   const onExpensesSubmit = async (data) => {
@@ -158,8 +131,7 @@ function OtherExpensesDrawer({
           // id: data.clientId.id,
           id: selectedRowData?.clientId,
           // freebieRequestId: data.freebieRequestId,
-          params: { listingFeeId: selectedRowData?.listingFeeId },
-          total: totalAmount,
+          params: { otherExpenseId: selectedRowData?.otherExpenseId },
           expenses: data.expenses.map((expense) => ({
             expenseTypeId: expense.expenseTypeId.id,
             amount: expense.amount,
@@ -169,10 +141,8 @@ function OtherExpensesDrawer({
       } else {
         response = await postExpenses({
           clientId: data.clientId.id,
-          total: totalAmount,
           expenses: data.expenses.map((expense) => ({
-            expenseTypeId: expense.expenseTypeId.id,
-            sku: expense.sku,
+            otherExpenseId: expense.otherExpenseId.id,
             amount: expense.amount,
           })),
         }).unwrap();
@@ -229,7 +199,7 @@ function OtherExpensesDrawer({
     const expenseTypes = new Set();
 
     for (const item of data) {
-      const expenseType = item.expenseTypeId.expenseType;
+      const expenseType = item.otherExpenseId?.expenseType;
       if (expenseTypes.has(expenseType)) {
         return true;
       }
@@ -309,7 +279,7 @@ function OtherExpensesDrawer({
         open={isExpensesOpen}
         onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
         width="600px"
-        disableSubmit={!isValid || totalAmount < 0}
+        disableSubmit={!isValid || totalAmount <= 0}
         onSubmit={onConfirmSubmitOpen}
         // zIndex={editMode && 1300}
       >
@@ -467,7 +437,7 @@ function OtherExpensesDrawer({
                   name={`expenses[${index}].amount`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <NumericFormat
-                      label="Unit Cost"
+                      label="Amount"
                       type="text"
                       size="small"
                       customInput={TextField}
@@ -554,7 +524,6 @@ function OtherExpensesDrawer({
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onExpensesSubmit)}
-        // isLoading={updateListingFee ? isUpdateLoading : isAddLoading}
         isLoading={editMode ? isUpdateLoading : isAddLoading}
         noIcon
       >

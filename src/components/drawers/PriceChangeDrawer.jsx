@@ -159,7 +159,6 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
     }
   }, [open]);
 
-  console.log(getValues());
   return (
     <>
       <CommonDrawer

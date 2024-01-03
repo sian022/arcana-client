@@ -146,8 +146,8 @@ function OtherExpensesApproval() {
       </Box>
 
       <ViewExpensesModal
-        // open={isViewOpen}
-        open={true}
+        open={isViewOpen}
+        // open={true}
         onClose={onViewClose}
         underReview={expenseStatus === "Under review"}
         approval

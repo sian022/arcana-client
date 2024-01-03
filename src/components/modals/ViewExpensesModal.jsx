@@ -65,8 +65,8 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
   const customRibbonContent = (
     // <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
     <>
-      <Box className="viewListingFeeModal__headers">
-        <Typography className="viewListingFeeModal__headers__title">
+      <Box className="viewExpensesModal__headers">
+        <Typography className="viewExpensesModal__headers__title">
           Other Expenses Form
         </Typography>
         <IconButton
@@ -147,9 +147,9 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
         customRibbonContent={customRibbonContent}
         {...props}
       >
-        <Box className="viewListingFeeModal">
-          <Box className="viewListingFeeModal__customerDetails">
-            <Box className="viewListingFeeModal__customerDetails__left">
+        <Box className="viewExpensesModal">
+          <Box className="viewExpensesModal__customerDetails">
+            <Box className="viewExpensesModal__customerDetails__left">
               <Box
                 sx={{
                   bgcolor: "secondary.main",
@@ -170,7 +170,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               </Box>
             </Box>
 
-            <Box className="viewListingFeeModal__customerDetails__right">
+            <Box className="viewExpensesModal__customerDetails__right">
               <Box
                 sx={{
                   bgcolor: "secondary.main",
@@ -191,7 +191,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               </Box>
             </Box>
           </Box>
-          <Box className="viewListingFeeModal__table">
+          <Box className="viewExpensesModal__table">
             <TableContainer
               sx={{
                 maxHeight: "330px",
@@ -263,29 +263,6 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
             <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
           </Box>
         )}
-        {/* {!approval && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "end",
-              gap: "10px",
-              position: "absolute",
-              bottom: "30px ",
-              right: "40px",
-            }}
-          >
-            <AccentButton
-              sx={{ color: "white !important" }}
-              onClick={() => {
-                // onClose();
-                setEditMode(true);
-                onListingFeeDrawerOpen();
-              }}
-            >
-              Edit
-            </AccentButton>
-          </Box>
-        )} */}
       </CommonModal>
       {approval && (
         <>

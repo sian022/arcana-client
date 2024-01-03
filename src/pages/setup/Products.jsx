@@ -162,16 +162,17 @@ function Products() {
         }).unwrap();
         setSnackbarMessage("Product added successfully");
       } else if (drawerMode === "edit") {
-        if (changePrice) {
-          await putProduct({
-            ...restData,
-            uomId,
-            productSubCategoryId,
-            meatTypeId,
-            price: priceChange,
-          }).unwrap();
-          setSnackbarMessage("Product updated successfully");
-        } else if (!changePrice) {
+        // if (changePrice) {
+        //   await putProduct({
+        //     ...restData,
+        //     uomId,
+        //     productSubCategoryId,
+        //     meatTypeId,
+        //     price: priceChange,
+        //   }).unwrap();
+        //   setSnackbarMessage("Product updated successfully");
+        // } else
+        if (!changePrice) {
           await putProduct({
             ...restData,
             uomId,
@@ -290,12 +291,12 @@ function Products() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
-  useEffect(() => {
-    if (!changePrice) {
-      setValue("priceChange", null);
-      setValue("effectivityDate", null);
-    }
-  }, [changePrice]);
+  // useEffect(() => {
+  //   if (!changePrice) {
+  //     setValue("priceChange", null);
+  //     setValue("effectivityDate", null);
+  //   }
+  // }, [changePrice]);
 
   return (
     <Box className="commonPageLayout">
