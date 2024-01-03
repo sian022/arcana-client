@@ -47,25 +47,28 @@ export const theme = createTheme({
   components: {
     MuiInputBase: {
       styleOverrides: {
-        root: {
+        root: ({ ownerState }) => ({
           color: colorSchemes.light.secondary,
+          backgroundColor: !!ownerState?.formControl?.required && "lightyellow",
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: colorSchemes.light.primary,
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: `${colorSchemes.light.secondary} !important`,
           },
-          "& .Mui-active .MuiOutlinedInput-notchedOutline": {
-            color: `${colorSchemes.light.secondary} !important`,
-            borderColor: `${colorSchemes.light.secondary} !important`,
-          },
-          "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-            color: `${colorSchemes.light.secondary} !important`,
-            borderColor: `${colorSchemes.light.secondary} !important`,
-          },
-        },
+          "& .Mui-active .MuiOutlinedInput-notchedOutline, & .Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              color: `${colorSchemes.light.secondary} !important`,
+              borderColor: `${colorSchemes.light.secondary} !important`,
+            },
+
+          // "& input": {
+          //   textTransform: "uppercase",
+          // },
+        }),
       },
     },
+
     MuiFormLabel: {
       styleOverrides: {
         root: {
@@ -73,6 +76,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiTableContainer: {
       styleOverrides: {
         root: {
@@ -85,6 +89,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiTable: {
       styleOverrides: {
         root: {
@@ -93,6 +98,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiTableHead: {
       styleOverrides: {
         root: {
@@ -103,9 +109,11 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiTableBody: {
       maxHeight: "370px",
     },
+
     MuiTableCell: {
       styleOverrides: {
         head: {
@@ -116,6 +124,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiTablePagination: {
       styleOverrides: {
         root: {
@@ -134,22 +143,7 @@ export const theme = createTheme({
         },
       },
     },
-    // MuiIconButton: {
-    //   styleOverrides: {
-    //     root: {
-    //       color: colorSchemes.light.secondary,
-    //       padding: 0,
-    //       "&:hover": {
-    //         color: colorSchemes.light.primary,
-    //       },
-    //       "&:disabled": {
-    //         color: colorSchemes.light.secondary,
-    //         cursor: "not-allowed",
-    //         pointerEvents: "auto",
-    //       },
-    //     },
-    //   },
-    // },
+
     MuiCheckbox: {
       styleOverrides: {
         root: {
@@ -158,6 +152,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiRadio: {
       styleOverrides: {
         root: {
@@ -165,12 +160,5 @@ export const theme = createTheme({
         },
       },
     },
-    // MuiFormHelperText: {
-    //   styleOverrides: {
-    //     root: {
-    //       color: "black !important",
-    //     },
-    //   },
-    // },
   },
 });

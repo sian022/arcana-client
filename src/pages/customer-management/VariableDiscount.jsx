@@ -297,7 +297,6 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
               thousandSeparator=","
               // disabled={data?.discount?.length > 0 && drawerMode === "add"}
               disabled
@@ -327,7 +326,6 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
               thousandSeparator=","
             />
           )}
@@ -351,7 +349,7 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
+            
               thousandSeparator=","
               disabled
             />
@@ -374,7 +372,6 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
               thousandSeparator=","
               allowNegative={false}
               decimalScale={0}
@@ -410,7 +407,6 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
               thousandSeparator=","
               allowNegative={false}
               decimalScale={0}

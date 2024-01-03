@@ -447,7 +447,6 @@ function Products() {
                 onBlur={onBlur}
                 value={value || ""}
                 ref={ref}
-                required
                 thousandSeparator=","
                 helperText={errors?.price?.message}
                 error={errors?.price}

@@ -569,6 +569,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     </Box>
   );
 
+  console.log(getValues());
+
   //Misc Functions
   const handleNext = async () => {
     if (activeTab === "Personal Info") {
@@ -1491,7 +1493,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     label="Full Name"
                     size="small"
                     autoComplete="off"
-                    // required
+                    required={includeAuthorizedRepresentative}
                     disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentative")}
@@ -1502,7 +1504,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     label="Position"
                     size="small"
                     autoComplete="off"
-                    // required
+                    required={includeAuthorizedRepresentative}
                     disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentativePosition")}

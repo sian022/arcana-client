@@ -140,11 +140,16 @@ function OtherExpensesDrawer({
         setSnackbarMessage("Expense updated successfully");
       } else {
         response = await postExpenses({
-          clientId: data.clientId.id,
+          // clientId: data.clientId.id,
           expenses: data.expenses.map((expense) => ({
             otherExpenseId: expense.otherExpenseId.id,
             amount: expense.amount,
+            clientId: data.clientId.id,
           })),
+          // expenses: data.expenses.map((expense) => ({
+          //   otherExpenseId: expense.otherExpenseId.id,
+          //   amount: expense.amount,
+          // })),
         }).unwrap();
 
         setSnackbarMessage(

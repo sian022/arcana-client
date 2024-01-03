@@ -349,7 +349,6 @@ function Approver() {
               {...params}
               size="small"
               label="Module Name"
-              required
               helperText={errors?.userId?.message}
               error={errors?.userId}
             />
@@ -393,7 +392,6 @@ function Approver() {
                     {...params}
                     size="small"
                     label="Approver Name"
-                    required
                     helperText={errors?.userId?.message}
                     error={errors?.userId}
                   />

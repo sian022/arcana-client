@@ -1097,7 +1097,7 @@ function RegisterRegularForm({ open, onClose }) {
                     label="Full Name"
                     size="small"
                     autoComplete="off"
-                    // required
+                    required={includeAuthorizedRepresentative}
                     disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentative")}
@@ -1108,7 +1108,7 @@ function RegisterRegularForm({ open, onClose }) {
                     label="Position"
                     size="small"
                     autoComplete="off"
-                    // required
+                    required={includeAuthorizedRepresentative}
                     disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentativePosition")}

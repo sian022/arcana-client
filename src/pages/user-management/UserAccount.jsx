@@ -482,7 +482,6 @@ function UserAccount() {
               {...params}
               size="small"
               label="User Role"
-              required
               helperText={errors?.userRoleId?.message}
               error={errors?.userRoleId}
             />
