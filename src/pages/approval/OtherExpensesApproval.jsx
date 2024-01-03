@@ -67,20 +67,11 @@ function OtherExpensesApproval() {
   ];
 
   const excludeKeysDisplay = [
-    "clientId",
-    "approvalId",
     "status",
-    "cancellationReason",
     "requestId",
-    "registrationStatus",
-  ];
-
-  const tableHeads = [
-    "Owner's Name",
-    "Business Name",
-    "Requested By",
-    "Total Amount",
-    "Created At",
+    "approvalHistories",
+    "updateHistories",
+    "id",
   ];
 
   const pesoArray = ["total"];
@@ -138,7 +129,7 @@ function OtherExpensesApproval() {
             setPage={setPage}
             editable
             onView={onViewOpen}
-            tableHeads={tableHeads}
+            // tableHeads={tableHeads}
             pesoArray={pesoArray}
             onHistory={onHistoryOpen}
           />

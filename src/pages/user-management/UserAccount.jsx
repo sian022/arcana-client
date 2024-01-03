@@ -245,6 +245,10 @@ function UserAccount() {
     }
   }, [watch("userRoleId")]);
 
+  console.log("Clusters", watch("clusters"));
+  console.log("Selected Row Data", selectedRowData);
+  console.log("Cluster Data", clusterData);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -492,11 +496,19 @@ function UserAccount() {
           <ControlledAutocompleteMultiple
             name={"clusters"}
             multiple
-            filterSelectedOptions
+            // filterSelectedOptions
             control={control}
             options={clusterData?.cluster || []}
             getOptionLabel={(option) => option.cluster}
             // disableClearable
+            getOptionDisabled={(option) => {
+              const clusters = watch("clusters");
+              const isClusterRepeating = Array.isArray(clusters)
+                ? clusters.some((item) => item.cluster === option.cluster)
+                : false;
+
+              return isClusterRepeating;
+            }}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <TextField

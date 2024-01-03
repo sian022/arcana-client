@@ -64,11 +64,11 @@ function TermsAndConditions({ direct, editMode, storeType }) {
       e.target.value !== "" ? parseFloat(e.target.value) : e.target.value;
 
     if (
-      (parsedValue < 0 || parsedValue > 10) &&
+      (parsedValue < 1 || parsedValue > 10) &&
       parsedValue !== "" &&
       parsedValue !== null
     ) {
-      showSnackbar("Value must be between 0% and 10%", "error");
+      showSnackbar("Value must be between 1% and 10%", "error");
       return;
     }
 

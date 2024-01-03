@@ -190,7 +190,7 @@ function ListingFee() {
             onView={onViewOpen}
             tableHeads={tableHeads}
             pesoArray={pesoArray}
-            onEdit={handleOpenEdit}
+            onEdit={listingFeeStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
           />
         )}

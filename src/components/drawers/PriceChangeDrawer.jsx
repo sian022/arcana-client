@@ -108,7 +108,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
       showSnackbar("Price Change added successfully", "success");
       onClose();
       reset();
-      onConfirmSubmitClose();
+      // onConfirmSubmitClose();
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -116,6 +116,8 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
         showSnackbar("Error adding Price Change", "error");
       }
     }
+
+    onConfirmSubmitClose();
   };
 
   const handleDrawerClose = () => {
@@ -165,7 +167,11 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
         drawerHeader={"Add Price Change"}
         open={open}
         onClose={handleDrawerClose}
-        disableSubmit={!isValid || watch("price") <= 0}
+        disableSubmit={
+          !isValid || watch("price") <= 0
+          // ||
+          // watch("price") === selectedRowData?.priceChangeHistories?.[0]?.price
+        }
         onSubmit={onConfirmSubmitOpen}
         // zIndex={editMode && 1300}
       >
@@ -194,7 +200,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
                 {...field}
                 label="Price Effectivity Date"
                 slotProps={{
-                  textField: { size: "small", required: true },
+                  textField: { size: "small" },
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -240,7 +246,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
               onBlur={onBlur}
               value={value || ""}
               ref={ref}
-              required
+              // required
               thousandSeparator=","
               helperText={errors?.price?.message}
               error={errors?.price}

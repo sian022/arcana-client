@@ -132,7 +132,7 @@ function ListingFeeDrawer({
   });
 
   const { data: productData, isLoading: isProductLoading } =
-    useGetAllProductsQuery({ Status: true });
+    useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
 
   const [postListingFee, { isLoading: isAddLoading }] =
     usePostListingFeeMutation();
@@ -329,6 +329,7 @@ function ListingFeeDrawer({
           unitCost: item.unitCost,
         }))
       );
+
       handleRecalculateTotalAmount();
     }
   }, [isListingFeeOpen, clientData]);
@@ -619,6 +620,11 @@ function ListingFeeDrawer({
                 unitCost: null,
               });
             }}
+            disabled={
+              !watch("listingItems")[watch("listingItems").length - 1]
+                ?.itemId ||
+              !watch("listingItems")[watch("listingItems").length - 1]?.unitCost
+            }
           >
             Add Product
           </SecondaryButton>

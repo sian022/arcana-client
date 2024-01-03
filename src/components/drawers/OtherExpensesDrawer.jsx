@@ -108,7 +108,7 @@ function OtherExpensesDrawer({
   });
 
   const { data: expensesData, isLoading: isExpensesLoading } =
-    useGetAllOtherExpensesQuery();
+    useGetAllOtherExpensesQuery({ Status: true, page: 1, pageSize: 1000 });
 
   const [postExpenses, { isLoading: isAddLoading }] = usePostExpensesMutation();
   const [putUpdateExpenses, { isLoading: isUpdateLoading }] =
@@ -146,10 +146,6 @@ function OtherExpensesDrawer({
             amount: expense.amount,
             clientId: data.clientId.id,
           })),
-          // expenses: data.expenses.map((expense) => ({
-          //   otherExpenseId: expense.otherExpenseId.id,
-          //   amount: expense.amount,
-          // })),
         }).unwrap();
 
         setSnackbarMessage(
@@ -495,6 +491,11 @@ function OtherExpensesDrawer({
                 amount: null,
               });
             }}
+            disabled={
+              !watch("expenses")[watch("expenses").length - 1]
+                ?.otherExpenseId ||
+              !watch("expenses")[watch("expenses").length - 1]?.amount
+            }
           >
             Add Expense
           </SecondaryButton>

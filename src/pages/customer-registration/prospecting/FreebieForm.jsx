@@ -122,7 +122,7 @@ function FreebieForm({
     usePutFreebiesInformationMutation();
 
   const { data: productData, isLoading: isProductDataLoading } =
-    useGetAllProductsQuery({ Status: true });
+    useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
 
   //Drawer Functions
   const onFreebieSubmit = async (data) => {
@@ -424,16 +424,21 @@ function FreebieForm({
             alignItems: "center",
           }}
         >
-          <SecondaryButton
-            sx={{ width: "150px" }}
-            onClick={() => {
-              fields.length < 5
-                ? append({ itemId: null, quantity: 1 })
-                : handleFreebieError();
-            }}
-          >
-            Add Freebie
-          </SecondaryButton>
+          {watch("freebies").length < 5 && (
+            <SecondaryButton
+              sx={{ width: "150px" }}
+              onClick={() => {
+                fields.length < 5
+                  ? append({ itemId: null, quantity: 1 })
+                  : handleFreebieError();
+              }}
+              disabled={
+                !watch("freebies")[watch("freebies").length - 1]?.itemId
+              }
+            >
+              Add Freebie
+            </SecondaryButton>
+          )}
           {direct && (
             <SecondaryButton
               sx={{ width: "160px" }}

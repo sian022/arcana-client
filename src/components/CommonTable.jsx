@@ -181,7 +181,7 @@ function CommonTable({
                       );
                     }
 
-                    if (keys === "createdAt") {
+                    if (keys === "createdAt" || keys === "updatedAt") {
                       return (
                         <TableCell key={k}>
                           {item[keys] &&

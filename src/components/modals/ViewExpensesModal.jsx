@@ -132,9 +132,11 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
 
   useEffect(() => {
     const totalCosts =
-      selectedRowData?.otherExpenses?.map((item) => item.unitCost) || [];
+      selectedRowData?.expenses?.map((item) => item.unitCost) || [];
     const total = totalCosts.reduce((acc, cost) => acc + cost, 0);
-    setTotalAmount(total);
+
+    // setTotalAmount(total);
+    setTotalAmount(selectedRowData?.amount);
   }, [selectedRowData]);
 
   return (
@@ -210,7 +212,14 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
                 </TableHead>
 
                 <TableBody>
-                  {selectedRowData?.otherExpenses?.map((item, index) => (
+                  {/* <TableRow>
+                    <TableCell>{selectedRowData?.id}</TableCell>
+                    <TableCell>{selectedRowData?.expenseType}</TableCell>
+                    <TableCell>
+                      ₱ {selectedRowData?.amount?.toLocaleString()}
+                    </TableCell>
+                  </TableRow> */}
+                  {selectedRowData?.expenses?.map((item, index) => (
                     <TableRow key={index}>
                       <TableCell>{item.id}</TableCell>
                       <TableCell>{item.expenseType}</TableCell>

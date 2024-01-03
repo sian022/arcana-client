@@ -13,6 +13,7 @@ import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
 import OtherExpensesDrawer from "../../components/drawers/OtherExpensesDrawer";
 import { useGetAllExpensesQuery } from "../../features/otherExpenses/api/otherExpensesRegApi";
+import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
 
 function OtherExpenses() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -101,23 +102,15 @@ function OtherExpenses() {
   ];
 
   const excludeKeysDisplay = [
-    "clientId",
-    "approvalId",
+    "id",
     "status",
-    "cancellationReason",
     "requestId",
     "registrationStatus",
+    "approvalHistories",
+    "updateHistories",
   ];
 
-  const tableHeads = [
-    "Owner's Name",
-    "Business Name",
-    "Requested By",
-    "Total Amount",
-    "Created At",
-  ];
-
-  const pesoArray = ["total"];
+  const pesoArray = ["amount"];
 
   //Misc Functions
   const handleOpenEdit = () => {
@@ -168,7 +161,7 @@ function OtherExpenses() {
             setPage={setPage}
             editable
             onView={onViewOpen}
-            tableHeads={tableHeads}
+            // tableHeads={tableHeads}
             pesoArray={pesoArray}
             onEdit={handleOpenEdit}
             onHistory={onHistoryOpen}
@@ -183,9 +176,8 @@ function OtherExpenses() {
         setEditMode={setEditMode}
       />
 
-      <ViewListingFeeModal
-        onListingFeeDrawerOpen={onListingFeeOpen}
-        setEditMode={setEditMode}
+      <ViewExpensesModal
+        expenseStatus={expenseStatus}
         open={isViewOpen}
         onClose={onViewClose}
       />
