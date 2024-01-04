@@ -165,7 +165,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               <Box>
                 <TextField
                   size="small"
-                  value={selectedRowData?.businessName}
+                  value={selectedRowData?.businessName?.toUpperCase()}
                   readOnly
                   sx={{ pointerEvents: "none" }}
                 />
@@ -187,7 +187,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
                 <TextField
                   size="small"
                   readOnly
-                  value={selectedRowData?.ownersName}
+                  value={selectedRowData?.ownersName?.toUpperCase()}
                   sx={{ pointerEvents: "none" }}
                 />
               </Box>
@@ -222,7 +222,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
                   {selectedRowData?.expenses?.map((item, index) => (
                     <TableRow key={index}>
                       {/* <TableCell>{item.id}</TableCell> */}
-                      <TableCell>{item.expenseType}</TableCell>
+                      <TableCell>{item.expenseType?.toUpperCase()}</TableCell>
                       <TableCell>₱ {item.amount?.toLocaleString()}</TableCell>
                     </TableRow>
                   ))}

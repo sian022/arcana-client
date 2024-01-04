@@ -858,7 +858,7 @@ function RegisterRegularForm({ open, onClose }) {
                   name={"clusterId"}
                   control={control}
                   options={clusterData?.cluster || []}
-                  getOptionLabel={(option) => option.cluster}
+                  getOptionLabel={(option) => option.cluster.toUpperCase()}
                   disableClearable
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
@@ -896,7 +896,9 @@ function RegisterRegularForm({ open, onClose }) {
                   name={"storeTypeId"}
                   control={control}
                   options={storeTypeData?.storeTypes || []}
-                  getOptionLabel={(option) => option.storeTypeName}
+                  getOptionLabel={(option) =>
+                    option.storeTypeName.toUpperCase()
+                  }
                   disableClearable
                   // value={storeTypeData?.storeTypes?.find(
                   //   (store) => store.storeTypeName === selectedStoreType
@@ -974,9 +976,8 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Unit No."
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -995,11 +996,10 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Street Name"
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
                       helperText={errors?.streetName?.message}
                       error={errors?.streetName}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1020,7 +1020,7 @@ function RegisterRegularForm({ open, onClose }) {
                       className="register__textField"
                       helperText={errors?.barangayName?.message}
                       error={errors?.barangayName}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1043,7 +1043,7 @@ function RegisterRegularForm({ open, onClose }) {
                       className="register__textField"
                       helperText={errors?.city?.message}
                       error={errors?.city}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1064,7 +1064,7 @@ function RegisterRegularForm({ open, onClose }) {
                       className="register__textField"
                       helperText={errors?.province?.message}
                       error={errors?.province}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1098,7 +1098,7 @@ function RegisterRegularForm({ open, onClose }) {
               </Box>
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
-                  <TextField
+                  {/* <TextField
                     label="Full Name"
                     size="small"
                     autoComplete="off"
@@ -1108,19 +1108,50 @@ function RegisterRegularForm({ open, onClose }) {
                     {...register("authorizedRepresentative")}
                     helperText={errors?.authorizedRepresentative?.message}
                     error={errors?.authorizedRepresentative}
+                  /> */}
+
+                  <Controller
+                    control={control}
+                    name="authorizedRepresentative"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Full Name"
+                        size="small"
+                        autoComplete="off"
+                        required={includeAuthorizedRepresentative}
+                        disabled={!includeAuthorizedRepresentative}
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={errors?.authorizedRepresentative?.message}
+                        error={errors?.authorizedRepresentative}
+                      />
+                    )}
                   />
-                  <TextField
-                    label="Position"
-                    size="small"
-                    autoComplete="off"
-                    required={includeAuthorizedRepresentative}
-                    disabled={!includeAuthorizedRepresentative}
-                    className="register__textField"
-                    {...register("authorizedRepresentativePosition")}
-                    helperText={
-                      errors?.authorizedRepresentativePosition?.message
-                    }
-                    error={errors?.authorizedRepresentativePosition}
+
+                  <Controller
+                    control={control}
+                    name="authorizedRepresentativePosition"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Position"
+                        size="small"
+                        autoComplete="off"
+                        required={includeAuthorizedRepresentative}
+                        disabled={!includeAuthorizedRepresentative}
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={
+                          errors?.authorizedRepresentativePosition?.message
+                        }
+                        error={errors?.authorizedRepresentativePosition}
+                      />
+                    )}
                   />
                 </Box>
               </Box>

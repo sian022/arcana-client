@@ -892,16 +892,26 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   Customer's Information
                 </Typography>
                 <Box className="register__firstRow__customerInformation__row">
-                  <TextField
-                    label="Owner's Name"
-                    size="small"
-                    autoComplete="off"
-                    required
-                    className="register__textField"
-                    {...register("ownersName")}
-                    helperText={errors?.ownersName?.message}
-                    error={errors?.ownersName}
+                  <Controller
+                    control={control}
+                    name="ownersName"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Owner's Name"
+                        size="small"
+                        autoComplete="off"
+                        required
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={errors?.ownersName?.message}
+                        error={errors?.ownersName}
+                      />
+                    )}
                   />
+
                   <TextField
                     label="Email Address"
                     size="small"
@@ -1091,7 +1101,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     <Controller
                       name="ownersAddress.houseNumber"
                       control={control}
-                      defaultValue="" // Set your default value here if needed
+                      defaultValue=""
                       render={({ field }) => (
                         <TextField
                           label="Unit No."
@@ -1099,6 +1109,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           autoComplete="off"
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={
                             errors?.ownersAddress?.houseNumber?.message
                           }
@@ -1128,6 +1141,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           autoComplete="off"
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={
                             errors?.ownersAddress?.streetName?.message
                           }
@@ -1159,6 +1175,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           required
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={
                             errors?.ownersAddress?.barangayName?.message
                           }
@@ -1191,6 +1210,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           required
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={errors?.ownersAddress?.city?.message}
                           error={errors?.ownersAddress?.city}
                         />
@@ -1220,6 +1242,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           required
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={errors?.ownersAddress?.province?.message}
                           error={errors?.ownersAddress?.province}
                         />
@@ -1244,24 +1269,35 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 <Typography className="register__title">
                   Business Name
                 </Typography>
-                <TextField
-                  label="Business Name"
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  {...register("businessName")}
-                  helperText={errors?.businessName?.message}
-                  error={errors?.businessName}
+
+                <Controller
+                  control={control}
+                  name="businessName"
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Business Name"
+                      size="small"
+                      autoComplete="off"
+                      required
+                      className="register__textField"
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
+                      onBlur={onBlur}
+                      value={value}
+                      inputRef={ref}
+                      helperText={errors?.businessName?.message}
+                      error={errors?.businessName}
+                    />
+                  )}
                 />
               </Box>
+
               <Box className="register__thirdRow__column">
                 <Typography className="register__title">Cluster</Typography>
                 <ControlledAutocomplete
                   name={"clusterId"}
                   control={control}
                   options={clusterData?.cluster || []}
-                  getOptionLabel={(option) => option.cluster}
+                  getOptionLabel={(option) => option.cluster.toUpperCase()}
                   disableClearable
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
@@ -1298,7 +1334,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   name={"storeTypeId"}
                   control={control}
                   options={storeTypeData?.storeTypes || []}
-                  getOptionLabel={(option) => option.storeTypeName}
+                  getOptionLabel={(option) =>
+                    option.storeTypeName.toUpperCase()
+                  }
                   disableClearable
                   // value={storeTypeData?.storeTypes?.find(
                   //   (store) => store.storeTypeName === selectedStoreType
@@ -1363,7 +1401,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       autoComplete="off"
                       // required
                       className="register__textField"
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1386,7 +1424,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       className="register__textField"
                       helperText={errors?.businessAddress?.streetName?.message}
                       error={errors?.businessAddress?.streetName}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1409,7 +1447,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                         errors?.businessAddress?.barangayName?.message
                       }
                       error={errors?.businessAddress?.barangayName}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1432,7 +1470,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       className="register__textField"
                       helperText={errors?.businessAddress?.city?.message}
                       error={errors?.businessAddress?.city}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1453,7 +1491,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       className="register__textField"
                       helperText={errors?.businessAddress?.province?.message}
                       error={errors?.businessAddress?.province}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1487,7 +1525,51 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               </Box>
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
-                  <TextField
+                  <Controller
+                    control={control}
+                    name="authorizedRepresentative"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Full Name"
+                        size="small"
+                        autoComplete="off"
+                        required={includeAuthorizedRepresentative}
+                        disabled={!includeAuthorizedRepresentative}
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={errors?.authorizedRepresentative?.message}
+                        error={errors?.authorizedRepresentative}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name="authorizedRepresentativePosition"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Position"
+                        size="small"
+                        autoComplete="off"
+                        required={includeAuthorizedRepresentative}
+                        disabled={!includeAuthorizedRepresentative}
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={
+                          errors?.authorizedRepresentativePosition?.message
+                        }
+                        error={errors?.authorizedRepresentativePosition}
+                      />
+                    )}
+                  />
+
+                  {/* <TextField
                     label="Full Name"
                     size="small"
                     autoComplete="off"
@@ -1510,7 +1592,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       errors?.authorizedRepresentativePosition?.message
                     }
                     error={errors?.authorizedRepresentativePosition}
-                  />
+                  /> */}
                 </Box>
               </Box>
             </Box>

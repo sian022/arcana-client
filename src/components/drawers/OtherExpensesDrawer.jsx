@@ -292,7 +292,9 @@ function OtherExpensesDrawer({
               control={control}
               options={clientData?.regularClient || []}
               getOptionLabel={(option) =>
-                option.businessName + " - " + option.ownersName || ""
+                option.businessName?.toUpperCase() +
+                  " - " +
+                  option.ownersName?.toUpperCase() || ""
               }
               disableClearable
               loading={isClientLoading}
@@ -390,7 +392,9 @@ function OtherExpensesDrawer({
                   name={`expenses[${index}].otherExpenseId`}
                   control={control}
                   options={expensesData?.otherExpenses || []}
-                  getOptionLabel={(option) => option.expenseType || ""}
+                  getOptionLabel={(option) =>
+                    option.expenseType?.toUpperCase() || ""
+                  }
                   // getOptionDisabled={(option) => {
                   //   const otherExpenses = watch("expenses");
 

@@ -164,8 +164,9 @@ function CancelFreebiesModal({ ...otherProps }) {
             <TextField
               label="Reason"
               size="small"
+              value={reason}
               onChange={(e) => {
-                setReason(e.target.value);
+                setReason(e.target.value.toUpperCase());
               }}
             />
           </Box>

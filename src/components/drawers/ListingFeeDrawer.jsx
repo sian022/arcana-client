@@ -354,7 +354,9 @@ function ListingFeeDrawer({
               control={control}
               options={clientData?.regularClient || []}
               getOptionLabel={(option) =>
-                option.businessName + " - " + option.ownersName || ""
+                option.businessName?.toUpperCase() +
+                  " - " +
+                  option.ownersName?.toUpperCase() || ""
               }
               disableClearable
               loading={isClientLoading}
@@ -534,7 +536,7 @@ function ListingFeeDrawer({
                       disabled
                       onChange={onChange}
                       onBlur={onBlur}
-                      value={value || ""}
+                      value={value?.toUpperCase() || ""}
                       ref={ref}
                       sx={{ width: "400px" }}
                     />
