@@ -56,6 +56,12 @@ function UserAccount() {
   } = useDisclosure();
 
   const {
+    isOpen: isResetOpen,
+    onOpen: onResetOpen,
+    onClose: onResetClose,
+  } = useDisclosure();
+
+  const {
     isOpen: isSuccessOpen,
     onOpen: onSuccessOpen,
     onClose: onSuccessClose,
@@ -268,6 +274,7 @@ function UserAccount() {
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
+          // onResetPassword={onResetOpen}
           // onViewCluster={true}
           // disableActions={
           //   selectedRowData?.roleName !== "CDO" && ["viewCluster"]
@@ -533,6 +540,21 @@ function UserAccount() {
         </span>
         ?
       </CommonDialog>
+
+      <CommonDialog
+        open={isResetOpen}
+        onClose={onResetClose}
+        // onYes={onResetSubmit}
+        // isLoading={isResetUserLoading}
+        noIcon
+      >
+        Are you sure you want to reset password for{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.username}
+        </span>
+        ?
+      </CommonDialog>
+
       <SuccessSnackbar
         open={isSuccessOpen}
         onClose={onSuccessClose}

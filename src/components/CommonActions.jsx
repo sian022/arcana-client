@@ -12,6 +12,7 @@ import {
   HowToReg,
   MonetizationOn,
   More,
+  Password,
   PeopleAlt,
   PersonAdd,
   Print,
@@ -40,6 +41,7 @@ function CommonActions({
   onDelete,
   onCancel,
   onHistory,
+  onResetPassword,
   onTagUserInCluster,
   onViewCluster,
   disableActions,
@@ -86,6 +88,8 @@ function CommonActions({
       onViewCluster();
     } else if (action === "cancel") {
       onCancel();
+    } else if (action === "resetPassword") {
+      onResetPassword();
     }
 
     onClose();
@@ -384,6 +388,21 @@ function CommonActions({
           >
             <Cancel />
             Cancel
+          </MenuItem>
+        )}
+
+        {onResetPassword && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("resetPassword");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("resetPassword") : false
+            }
+          >
+            <Password />
+            Reset Password
           </MenuItem>
         )}
       </Menu>

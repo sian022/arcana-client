@@ -223,7 +223,9 @@ function ViewListingFeeModal({
                   {selectedRowData?.listingItems?.map((item, index) => (
                     <TableRow key={index}>
                       <TableCell>{item.itemCode}</TableCell>
-                      <TableCell>{item.itemDescription}</TableCell>
+                      <TableCell>
+                        {item.itemDescription?.toUpperCase()}
+                      </TableCell>
                       <TableCell>{item.uom}</TableCell>
                       <TableCell>{item.sku}</TableCell>
                       <TableCell>₱ {item.unitCost?.toLocaleString()}</TableCell>
@@ -337,6 +339,7 @@ function ViewListingFeeModal({
                 size="small"
                 label="Reason"
                 autoComplete="off"
+                value={reason}
                 onChange={(e) => {
                   setReason(e.target.value.toUpperCase());
                 }}

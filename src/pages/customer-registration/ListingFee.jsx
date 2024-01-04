@@ -13,10 +13,11 @@ import {
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
 import { notificationApi } from "../../features/notification/api/notificationApi";
+import { registrationApi } from "../../features/registration/api/registrationApi";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -31,6 +32,7 @@ function ListingFee() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const { notifications } = useContext(AppContext);
+  const dispatch = useDispatch();
 
   //Disclosures
   const {
@@ -143,8 +145,10 @@ function ListingFee() {
 
       showSnackbar("Listing Fee cancelled successfully", "success");
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
+      dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       onDeleteClose();
     } catch (error) {
+      console.log(error);
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
       } else {

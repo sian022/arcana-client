@@ -46,6 +46,7 @@ function CommonTable({
   onPrintFreebies,
   onTagUserInCluster,
   onViewCluster,
+  onResetPassword,
   page,
   setPage,
   rowsPerPage,
@@ -247,6 +248,7 @@ function CommonTable({
                         }
                         onViewCluster={onViewCluster && onViewCluster}
                         onCancel={onCancel && onCancel}
+                        onResetPassword={onResetPassword && onResetPassword}
                         item={item}
                         status={status}
                         disableActions={disableActions}

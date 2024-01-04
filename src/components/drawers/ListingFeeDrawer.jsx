@@ -167,6 +167,7 @@ function ListingFeeDrawer({
         });
         onListingFeeViewClose();
         setSnackbarMessage("Listing Fee updated successfully");
+        dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       } else {
         response = await postListingFee({
           clientId: data.clientId.id,
@@ -181,6 +182,7 @@ function ListingFeeDrawer({
         setSnackbarMessage(
           `Listing Fee ${editMode ? "updated" : "added"} successfully`
         );
+        dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       }
 
       dispatch(setSelectedRow(response?.data));

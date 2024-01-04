@@ -32,7 +32,7 @@ export const registrationApi = createApi({
         url: "/ListingFee/GetAllClientsInListingFee",
         method: "GET",
       }),
-      providesTags: ["Registration"],
+      providesTags: ["Clients For Listing"],
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
