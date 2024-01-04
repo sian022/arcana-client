@@ -147,7 +147,6 @@ function Company() {
   };
 
   const handleEditOpen = (editData) => {
-    console.log(editData);
     setDrawerMode("edit");
     onDrawerOpen();
 

@@ -342,7 +342,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                     />
                   )}
                   onChange={(_, value) => {
-                    console.log(value);
                     dispatch(
                       setTermsAndConditions({
                         property: "termDaysId",
@@ -495,7 +494,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                       />
                     )}
                     onChange={(_, value) => {
-                      console.log(value);
                       dispatch(
                         setTermsAndConditions({
                           property: "termDaysId",

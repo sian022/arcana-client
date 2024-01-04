@@ -61,8 +61,6 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
     onClose();
   };
 
-  // console.log(selectedRowData);
-  // console.log(data?.find((item) => item.id === selectedRowData?.id));
   const onArchiveSubmit = async () => {
     try {
       await deletePriceChange(

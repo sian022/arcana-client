@@ -169,7 +169,6 @@ function VariableDiscount() {
 
     // Object.keys(editData).forEach((key) => {
     //   setValue(key, editData[key]);
-    //   console.log(typeof editData[key]);
     // });
 
     setValue("id", editData.id);

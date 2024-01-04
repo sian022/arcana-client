@@ -102,7 +102,7 @@ function ViewListingFeeModal({
       showSnackbar("Listing Fee approved successfully", "success");
       onApproveConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags());
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");

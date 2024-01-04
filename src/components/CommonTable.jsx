@@ -39,6 +39,7 @@ function CommonTable({
   onCancelFreebies,
   onManageApprovers,
   onAddPriceChange,
+  onCancel,
   onVoid,
   onHistory,
   onDelete,
@@ -110,6 +111,8 @@ function CommonTable({
       )
       .map((key) => transformKey(key));
   }
+
+  const uppercaseKeys = ["storeType"];
 
   if ((editable || archivable) && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
@@ -191,6 +194,14 @@ function CommonTable({
                       );
                     }
 
+                    if (uppercaseKeys.includes(keys)) {
+                      return (
+                        <TableCell key={k}>
+                          {item[keys]?.toUpperCase()}
+                        </TableCell>
+                      );
+                    }
+
                     return (
                       <TableCell key={k}>
                         {pesoArray && pesoArray.includes(keys) && "₱ "}
@@ -235,6 +246,7 @@ function CommonTable({
                           onTagUserInCluster && onTagUserInCluster
                         }
                         onViewCluster={onViewCluster && onViewCluster}
+                        onCancel={onCancel && onCancel}
                         item={item}
                         status={status}
                         disableActions={disableActions}

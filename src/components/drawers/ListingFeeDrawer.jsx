@@ -32,6 +32,7 @@ import {
 } from "../../features/listing-fee/api/listingFeeApi";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NumericFormat } from "react-number-format";
+import { notificationApi } from "../../features/notification/api/notificationApi";
 
 function ListingFeeDrawer({
   editMode,
@@ -183,9 +184,10 @@ function ListingFeeDrawer({
       }
 
       dispatch(setSelectedRow(response?.data));
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
       handleDrawerClose();
       onSuccessOpen();
-      refetchClients();
+      // refetchClients();
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
@@ -472,8 +474,27 @@ function ListingFeeDrawer({
                         )
                       );
 
+                    const isInitialValue = selectedRowData?.listingItems?.some(
+                      (item) => item?.itemCode === option.itemCode
+                    );
+
+                    // const isInitialValueStillSelected =
+                    //   selectedClientData?.listingFees?.some((request) =>
+                    //     request?.listingItems?.some((item) =>
+                    //       selectedRowData?.listingItems.some(
+                    //         (initialItem) =>
+                    //           initialItem?.itemCode === item.itemCode
+                    //       )
+                    //     )
+                    //   );
+
                     return (
-                      isListingFeeRepeating || isListingFeeRepeatingBackend
+                      isListingFeeRepeating ||
+                      (editMode
+                        ? !isInitialValue &&
+                          // !isInitialValueStillSelected &&
+                          isListingFeeRepeatingBackend
+                        : isListingFeeRepeatingBackend)
                     );
                   }}
                   disableClearable

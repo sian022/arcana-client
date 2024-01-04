@@ -72,6 +72,8 @@ function OtherExpensesApproval() {
     "approvalHistories",
     "updateHistories",
     "id",
+    "expenses",
+    "clientId",
   ];
 
   const pesoArray = ["total"];

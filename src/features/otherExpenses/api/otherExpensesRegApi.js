@@ -38,7 +38,7 @@ export const otherExpensesRegApi = createApi({
     }),
 
     putApproveExpenses: builder.mutation({
-      query: (id) => ({
+      query: ({ id }) => ({
         url: `/Expenses/ApproveExpense/${id}`,
         method: "PUT",
       }),
@@ -56,20 +56,19 @@ export const otherExpensesRegApi = createApi({
 
     putRejectExpenses: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/Expenses/RejectExpenseRequest`,
+        url: `/Expenses/RejectExpenseRequest/${id}`,
         method: "PUT",
         body: body,
-        params: { id },
+        // params: { id },
       }),
       invalidatesTags: ["Expenses"],
     }),
 
     putUpdateExpenses: builder.mutation({
-      query: ({ id, params, ...body }) => ({
-        url: `/Expenses/UpdateExpenses/${id}`,
+      query: ({ id, ...body }) => ({
+        url: `/Expenses/UpdateExpensesInformation/${id}`,
         method: "PUT",
         body: body,
-        params: params,
       }),
       invalidatesTags: ["Expenses"],
     }),

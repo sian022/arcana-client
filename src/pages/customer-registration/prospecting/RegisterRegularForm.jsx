@@ -544,9 +544,14 @@ function RegisterRegularForm({ open, onClose }) {
   // }, [sameAsOwnersAddress]);
 
   useEffect(() => {
+    if (!!includeAuthorizedRepresentative) {
+      setRequirementsMode("representative");
+    }
+
     if (!includeAuthorizedRepresentative) {
       setValue("authorizedRepresentative", "");
       setValue("authorizedRepresentativePosition", "");
+      setRequirementsMode("owner");
     }
   }, [includeAuthorizedRepresentative]);
 
@@ -582,7 +587,7 @@ function RegisterRegularForm({ open, onClose }) {
                     label="Owner's Name"
                     size="small"
                     autoComplete="off"
-                    required
+                    // required
                     className="register__textField"
                     disabled
                     value={selectedRowData?.ownersName ?? ""}
@@ -670,7 +675,7 @@ function RegisterRegularForm({ open, onClose }) {
                           }}
                           onBlur={onBlur}
                           value={selectedRowData?.phoneNumber ?? ""}
-                          required
+                          // required
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
@@ -793,7 +798,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Barangay"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.barangayName ?? ""}
@@ -804,7 +809,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Municipality/City"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.city ?? ""}
@@ -813,7 +818,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Province"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.province ?? ""}
@@ -839,7 +844,7 @@ function RegisterRegularForm({ open, onClose }) {
                   label="Business Name"
                   size="small"
                   autoComplete="off"
-                  required
+                  // required
                   className="register__textField"
                   disabled
                   value={selectedRowData?.businessName ?? ""}

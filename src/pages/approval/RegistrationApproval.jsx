@@ -156,7 +156,6 @@ function RegistrationApproval() {
     setCount(data?.totalCount);
   }, [data]);
 
-  console.log(isHistoryOpen);
   return (
     <>
       <Box className="commonPageLayout">

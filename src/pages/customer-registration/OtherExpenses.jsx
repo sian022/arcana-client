@@ -108,6 +108,8 @@ function OtherExpenses() {
     "registrationStatus",
     "approvalHistories",
     "updateHistories",
+    "expenses",
+    "clientId",
   ];
 
   const pesoArray = ["amount"];
@@ -198,7 +200,7 @@ function OtherExpenses() {
       <ApprovalHistoryModal
         open={isHistoryOpen}
         onClose={onHistoryClose}
-        // variant="listingFee"
+        variant="otherExpenses"
       />
     </>
   );

@@ -6,13 +6,17 @@ import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
-import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
+import {
+  useDeleteCancelListingFeeMutation,
+  useGetAllListingFeeQuery,
+} from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
+import { notificationApi } from "../../features/notification/api/notificationApi";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -42,9 +46,9 @@ function ListingFee() {
   } = useDisclosure();
 
   const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
   } = useDisclosure();
 
   const {
@@ -54,23 +58,6 @@ function ListingFee() {
   } = useDisclosure();
 
   //RTK Query
-  // const { data: pendingData, isLoading: isPendingLoading } =
-  //   useGetAllListingFeeQuery({
-  //     Status: true,
-  //     ListingFeeStatus: "Under review",
-  //   });
-
-  // const { data: approvedData, isLoading: isApprovedLoading } =
-  //   useGetAllListingFeeQuery({
-  //     Status: true,
-  //     ListingFeeStatus: "Approved",
-  //   });
-
-  // const { data: rejectedData, isLoading: isRejectedLoading } =
-  //   useGetAllListingFeeQuery({
-  //     Status: true,
-  //     ListingFeeStatus: "Rejected",
-  //   });
 
   const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
     Search: search,
@@ -79,6 +66,9 @@ function ListingFee() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
+
+  const [deleteCancelListingFee, { isLoading: isDeleteLoading }] =
+    useDeleteCancelListingFeeMutation();
 
   //Constants
   const listingFeeNavigation = [
@@ -145,6 +135,24 @@ function ListingFee() {
     onListingFeeOpen();
   };
 
+  const onDeleteSubmit = async () => {
+    try {
+      const res = await deleteCancelListingFee(
+        selectedRowData?.listingFeeId
+      ).unwrap();
+
+      showSnackbar("Listing Fee cancelled successfully", "success");
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
+      onDeleteClose();
+    } catch (error) {
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error cancelling listing fee", "error");
+      }
+    }
+  };
+
   useEffect(() => {
     const foundItem = listingFeeNavigation.find(
       (item) => item.case === tabViewing
@@ -192,6 +200,7 @@ function ListingFee() {
             pesoArray={pesoArray}
             onEdit={listingFeeStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
+            onCancel={listingFeeStatus === "Rejected" && onDeleteOpen}
           />
         )}
       </Box>
@@ -213,12 +222,12 @@ function ListingFee() {
       />
 
       <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        // isLoading={isUpdateStatusLoading}
-        // onYes={onArchiveSubmit}
+        open={isDeleteOpen}
+        onClose={onDeleteClose}
+        isLoading={isDeleteLoading}
+        onYes={onDeleteSubmit}
       >
-        Are you sure you want to {status ? "archive" : "restore"} client{" "}
+        Are you sure you want to cancel listing fee request for{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
           {selectedRowData?.businessName}
         </span>

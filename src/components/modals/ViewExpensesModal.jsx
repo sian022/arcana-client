@@ -94,7 +94,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
       showSnackbar("Other Expenses approved successfully", "success");
       onApproveConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags());
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -132,11 +132,11 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
 
   useEffect(() => {
     const totalCosts =
-      selectedRowData?.expenses?.map((item) => item.unitCost) || [];
+      selectedRowData?.expenses?.map((item) => item.amount) || [];
     const total = totalCosts.reduce((acc, cost) => acc + cost, 0);
 
-    // setTotalAmount(total);
-    setTotalAmount(selectedRowData?.amount);
+    setTotalAmount(total);
+    // setTotalAmount(selectedRowData?.amount);
   }, [selectedRowData]);
 
   return (
@@ -187,7 +187,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
                 <TextField
                   size="small"
                   readOnly
-                  value={selectedRowData?.clientName}
+                  value={selectedRowData?.ownersName}
                   sx={{ pointerEvents: "none" }}
                 />
               </Box>
@@ -205,7 +205,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>ID</TableCell>
+                    {/* <TableCell>ID</TableCell> */}
                     <TableCell>Expense Type</TableCell>
                     <TableCell>Amount</TableCell>
                   </TableRow>
@@ -221,7 +221,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
                   </TableRow> */}
                   {selectedRowData?.expenses?.map((item, index) => (
                     <TableRow key={index}>
-                      <TableCell>{item.id}</TableCell>
+                      {/* <TableCell>{item.id}</TableCell> */}
                       <TableCell>{item.expenseType}</TableCell>
                       <TableCell>₱ {item.amount?.toLocaleString()}</TableCell>
                     </TableRow>

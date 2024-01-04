@@ -569,8 +569,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     </Box>
   );
 
-  console.log(getValues());
-
   //Misc Functions
   const handleNext = async () => {
     if (activeTab === "Personal Info") {

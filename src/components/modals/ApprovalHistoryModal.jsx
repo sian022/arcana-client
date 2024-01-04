@@ -93,6 +93,11 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     ...(selectedRowData?.updateHistories || []),
   ];
 
+  const combinedOtherExpensesHistories = [
+    ...(selectedRowData?.approvalHistories || []),
+    ...(selectedRowData?.updateHistories || []),
+  ];
+
   combinedHistories.sort(
     (a, b) =>
       new Date(b.createdAt || b.updatedAt) -
@@ -103,6 +108,15 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   );
 
   combinedListingFeeHistories.sort(
+    (a, b) =>
+      new Date(b.createdAt || b.updatedAt) -
+      new Date(a.createdAt || a.updatedAt)
+    // (a, b) =>
+    //   new Date(a.createdAt || a.updatedAt) -
+    //   new Date(b.createdAt || b.updatedAt)
+  );
+
+  combinedOtherExpensesHistories.sort(
     (a, b) =>
       new Date(b.createdAt || b.updatedAt) -
       new Date(a.createdAt || a.updatedAt)
@@ -210,7 +224,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                       >
                         {moment(
                           history?.createdAt || history?.updatedAt
-                        ).format("MMMM D HH:mm a")}
+                        ).format("MMMM D H:mm a")}
                       </span>
                       <span
                         style={{
@@ -225,6 +239,36 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                             )} Approval`}
                       </span>
                     </StepLabel>
+
+                    {!history?.status && (
+                      <StepContent>
+                        <Typography fontSize="14px">
+                          Name:{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {selectedRowData?.requestedBy}
+                          </span>
+                        </Typography>
+                        {history?.reason && (
+                          <Typography fontSize="14px">
+                            Remarks:{" "}
+                            <span style={{ fontWeight: "500" }}>
+                              {history?.reason}
+                            </span>
+                          </Typography>
+                        )}
+                      </StepContent>
+                    )}
+
+                    {!history?.status && (
+                      <StepContent>
+                        <Typography fontSize="14px">
+                          Name:{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {selectedRowData?.requestedBy}
+                          </span>
+                        </Typography>
+                      </StepContent>
+                    )}
 
                     {!!history?.createdAt && (
                       <StepContent>
@@ -246,86 +290,6 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     )}
                   </Step>
                 ))}
-              {/* {variant === "registration" &&
-                selectedRowData?.clientApprovalHistories?.map(
-                  (approval, index) => (
-                    <Step key={index} active expanded>
-                      <StepLabel
-                        StepIconComponent={() =>
-                          approval?.status === "Rejected" ? (
-                            <Cancel sx={{ color: "error.main" }} />
-                          ) : approval?.status === "Approved" ? (
-                            <CheckCircle sx={{ color: "success.main" }} />
-                          ) : (
-                            <Circle sx={{ color: "gray" }} />
-                          )
-                        }
-                        sx={{ position: "relative" }}
-                      >
-                        <span
-                          style={{
-                            position: "absolute",
-                            left: "-170px",
-                            fontWeight: "600",
-                          }}
-                        >
-                          {moment(approval?.createdAt).format("MMMM D HH:mm a")}
-                        </span>
-
-                        <span
-                          style={{
-                            fontWeight: "700",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          {approval?.status} -{" "}
-                          {formatOrdinalPrefix(approval?.level)} Approval
-                        </span>
-                      </StepLabel>
-                      <StepContent>
-                        <Typography fontSize="14px">
-                          Name:{" "}
-                          <span style={{ fontWeight: "500" }}>
-                            {approval?.approver}
-                          </span>
-                        </Typography>
-                        {approval?.reason && (
-                          <Typography fontSize="14px">
-                            Remarks:{" "}
-                            <span style={{ fontWeight: "500" }}>
-                              {approval?.reason}
-                            </span>
-                          </Typography>
-                        )}
-                      </StepContent>
-                    </Step>
-                  )
-                )}
-
-              {variant === "registration" &&
-                selectedRowData?.updateHistories?.map((update, index) => (
-                  <Step key={index} active expanded>
-                    <StepLabel sx={{ position: "relative" }}>
-                      <span
-                        style={{
-                          position: "absolute",
-                          left: "-170px",
-                          fontWeight: "600",
-                        }}
-                      >
-                        {moment(update?.updatedAt).format("MMMM D HH:mm a")}
-                      </span>
-                      <span
-                        style={{
-                          fontWeight: "700",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        Requested
-                      </span>
-                    </StepLabel>
-                  </Step>
-                ))} */}
 
               {variant === "listingFee" &&
                 combinedListingFeeHistories.map((history, index) => (
@@ -352,7 +316,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                       >
                         {moment(
                           history?.createdAt || history?.updatedAt
-                        ).format("MMMM D HH:mm a")}
+                        ).format("MMMM D H:mm a")}
                       </span>
                       <span
                         style={{
@@ -367,6 +331,17 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                             )} Approval`}
                       </span>
                     </StepLabel>
+
+                    {!history?.status && (
+                      <StepContent>
+                        <Typography fontSize="14px">
+                          Name:{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {selectedRowData?.requestedBy}
+                          </span>
+                        </Typography>
+                      </StepContent>
+                    )}
 
                     {!!history?.createdAt && (
                       <StepContent>
@@ -388,59 +363,23 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     )}
                   </Step>
                 ))}
-              {/* {variant === "listingFee" &&
-                selectedRowData?.listingFeeApprovalHistories?.map(
-                  (approval, index) => (
-                    <Step key={index} active expanded>
-                      <StepLabel
-                        StepIconComponent={() =>
-                          approval?.status === "Rejected" ? (
-                            <Cancel sx={{ color: "error.main" }} />
-                          ) : approval?.status === "Approved" ? (
-                            <CheckCircle sx={{ color: "success.main" }} />
-                          ) : (
-                            <Circle sx={{ color: "gray" }} />
-                          )
-                        }
-                        sx={{ position: "relative" }}
-                      >
-                        <span
-                          style={{
-                            position: "absolute",
-                            left: "-170px",
-                            fontWeight: "600",
-                          }}
-                        >
-                          {moment(approval?.createdAt).format("MMMM D HH:mm a")}
-                        </span>
-                        <span style={{ fontWeight: "600" }}>
-                          {approval?.status} -{" "}
-                          {formatOrdinalPrefix(approval?.level)} Approval
-                        </span>
-                      </StepLabel>
-                      <StepContent>
-                        <Typography fontSize="14px">
-                          Name:{" "}
-                          <span style={{ fontWeight: "500" }}>
-                            {approval?.approver}
-                          </span>
-                        </Typography>
-                        {approval?.reason && (
-                          <Typography fontSize="14px">
-                            Remarks:{" "}
-                            <span style={{ fontWeight: "500" }}>
-                              {approval?.reason}
-                            </span>
-                          </Typography>
-                        )}
-                      </StepContent>
-                    </Step>
-                  )
-                )}
-              {variant === "listingFee" &&
-                selectedRowData?.updateHistories?.map((update, index) => (
+
+              {variant === "otherExpenses" &&
+                combinedOtherExpensesHistories.map((history, index) => (
                   <Step key={index} active expanded>
-                    <StepLabel sx={{ position: "relative" }}>
+                    <StepLabel
+                      StepIconComponent={() =>
+                        history?.status === "Rejected" ? (
+                          <Cancel sx={{ color: "error.main" }} />
+                        ) : history?.status === "Approved" ? (
+                          <CheckCircle sx={{ color: "success.main" }} />
+                        ) : (
+                          // <Circle sx={{ color: "gray" }} />
+                          <Circle sx={{ color: "primary.main" }} />
+                        )
+                      }
+                      sx={{ position: "relative" }}
+                    >
                       <span
                         style={{
                           position: "absolute",
@@ -448,7 +387,9 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           fontWeight: "600",
                         }}
                       >
-                        {moment(update?.updatedAt).format("MMMM D HH:mm a")}
+                        {moment(
+                          history?.createdAt || history?.updatedAt
+                        ).format("MMMM D H:mm a")}
                       </span>
                       <span
                         style={{
@@ -456,11 +397,45 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           textTransform: "uppercase",
                         }}
                       >
-                        Requested
+                        {!history?.status
+                          ? "Requested"
+                          : `${history?.status} - ${formatOrdinalPrefix(
+                              history?.level
+                            )} Approval`}
                       </span>
                     </StepLabel>
+
+                    {!history?.status && (
+                      <StepContent>
+                        <Typography fontSize="14px">
+                          Name:{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {selectedRowData?.requestedBy}
+                          </span>
+                        </Typography>
+                      </StepContent>
+                    )}
+
+                    {!!history?.createdAt && (
+                      <StepContent>
+                        <Typography fontSize="14px">
+                          Name:{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {history?.approver}
+                          </span>
+                        </Typography>
+                        {history?.reason && (
+                          <Typography fontSize="14px">
+                            Remarks:{" "}
+                            <span style={{ fontWeight: "500" }}>
+                              {history?.reason}
+                            </span>
+                          </Typography>
+                        )}
+                      </StepContent>
+                    )}
                   </Step>
-                ))} */}
+                ))}
 
               <Step active expanded>
                 <StepLabel
@@ -476,9 +451,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                       fontWeight: "600",
                     }}
                   >
-                    {moment(selectedRowData?.createdAt).format(
-                      "MMMM D HH:mm a"
-                    )}
+                    {moment(selectedRowData?.createdAt).format("MMMM D H:mm a")}
                   </span>
 
                   <span
@@ -490,6 +463,15 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     Requested
                   </span>
                 </StepLabel>
+
+                <StepContent>
+                  <Typography fontSize="14px">
+                    Name:{" "}
+                    <span style={{ fontWeight: "500" }}>
+                      {selectedRowData?.requestedBy}
+                    </span>
+                  </Typography>
+                </StepContent>
               </Step>
             </Stepper>
           </Box>

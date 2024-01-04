@@ -65,7 +65,6 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
     onClose();
   };
 
-  // console.log(data?.find((item) => item.id === selectedRowData?.id));
   const onArchiveSubmit = async () => {
     try {
       await deleteUntagUserInCluster({

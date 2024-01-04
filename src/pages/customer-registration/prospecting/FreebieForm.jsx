@@ -351,7 +351,7 @@ function FreebieForm({
                   disabled
                   onChange={onChange}
                   onBlur={onBlur}
-                  value={value || ""}
+                  value={value?.toUpperCase() || ""}
                   ref={ref}
                   sx={{ width: "500px" }}
                 />

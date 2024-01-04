@@ -119,7 +119,6 @@ function UserAccount() {
   const { data: clusterData, isLoading: isClusterLoading } =
     useGetAllClustersQuery({ Status: true });
 
-  console.log(getValues());
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     const {
@@ -244,10 +243,6 @@ function UserAccount() {
       setValue("clusters", []);
     }
   }, [watch("userRoleId")]);
-
-  console.log("Clusters", watch("clusters"));
-  console.log("Selected Row Data", selectedRowData);
-  console.log("Cluster Data", clusterData);
 
   return (
     <Box className="commonPageLayout">

@@ -114,37 +114,36 @@ function OtherExpensesDrawer({
   const [putUpdateExpenses, { isLoading: isUpdateLoading }] =
     usePutUpdateExpensesMutation();
 
+  console.log(getValues());
   //Drawer Functions
   const onExpensesSubmit = async (data) => {
-    if (hasDuplicateItemCodes(watch("expenses"))) {
-      setSnackbarMessage("No duplicate expenses allowed");
-      onErrorOpen();
-      onConfirmSubmitClose();
-      return;
-    }
+    // if (hasDuplicateItemCodes(watch("expenses"))) {
+    //   setSnackbarMessage("No duplicate expenses allowed");
+    //   onErrorOpen();
+    //   onConfirmSubmitClose();
+    //   return;
+    // }
 
     try {
       let response;
 
       if (editMode) {
         response = await putUpdateExpenses({
-          // id: data.clientId.id,
-          id: selectedRowData?.clientId,
-          // freebieRequestId: data.freebieRequestId,
-          params: { otherExpenseId: selectedRowData?.otherExpenseId },
+          id: selectedRowData?.id,
           expenses: data.expenses.map((expense) => ({
-            expenseTypeId: expense.expenseTypeId.id,
+            otherExpenseId: expense.otherExpenseId.id,
             amount: expense.amount,
+            id: expense.id || 0,
           })),
         });
         setSnackbarMessage("Expense updated successfully");
       } else {
         response = await postExpenses({
-          // clientId: data.clientId.id,
+          clientId: data.clientId.id,
           expenses: data.expenses.map((expense) => ({
             otherExpenseId: expense.otherExpenseId.id,
             amount: expense.amount,
-            clientId: data.clientId.id,
+            // clientId: data.clientId.id,
           })),
         }).unwrap();
 
@@ -153,10 +152,10 @@ function OtherExpensesDrawer({
         );
       }
 
-      dispatch(setSelectedRow(response?.data));
+      // dispatch(setSelectedRow(response?.data));
       handleDrawerClose();
       onSuccessOpen();
-      refetchClients();
+      // refetchClients();
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
@@ -187,7 +186,7 @@ function OtherExpensesDrawer({
 
   //Misc Functions
   const handleExpensesError = () => {
-    if (fields.length === 1) {
+    if (fields?.length === 1) {
       setSnackbarMessage("Must have at least 1 expense");
     }
     //  else if (fields.length === 5) {
@@ -212,7 +211,7 @@ function OtherExpensesDrawer({
 
   const handleRecalculateTotalAmount = () => {
     let total = 0;
-    watch("expenses").forEach((item) => {
+    watch("expenses")?.forEach((item) => {
       const amount = parseInt(item.amount);
       if (!isNaN(amount)) {
         total += amount;
@@ -262,11 +261,13 @@ function OtherExpensesDrawer({
       setValue("clientId", foundItem);
       setValue(
         "expenses",
-        selectedRowData?.expenses.map((item) => ({
-          otherExpenseId: expensesData?.expenses?.find(
-            (expense) => expense.id === item.otherExpenseId
+        selectedRowData?.expenses?.map((item) => ({
+          otherExpenseId: expensesData?.otherExpenses?.find(
+            // (expense) => expense.id === item.otherExpenseId
+            (expense) => expense.expenseType === item.expenseType
           ),
           amount: item.amount,
+          id: item.id || 0,
         }))
       );
       handleRecalculateTotalAmount();
@@ -390,31 +391,29 @@ function OtherExpensesDrawer({
                   control={control}
                   options={expensesData?.otherExpenses || []}
                   getOptionLabel={(option) => option.expenseType || ""}
-                  getOptionDisabled={(option) => {
-                    const otherExpenses = watch("expenses");
+                  // getOptionDisabled={(option) => {
+                  //   const otherExpenses = watch("expenses");
 
-                    const isExpenseRepeating = Array.isArray(otherExpenses)
-                      ? otherExpenses.some(
-                          (expense) =>
-                            expense?.otherExpenseId?.expenseType ===
-                            option.expenseType
-                        )
-                      : false;
+                  //   const isExpenseRepeating = Array.isArray(otherExpenses)
+                  //     ? otherExpenses.some(
+                  //         (expense) =>
+                  //           expense?.otherExpenseId?.expenseType ===
+                  //           option.expenseType
+                  //       )
+                  //     : false;
 
-                    // const selectedClientData = watch("clientId");
+                  //   // const selectedClientData = watch("clientId");
 
-                    // const isExpenseRepeatingBackend =
-                    //   selectedClientData?.listingFees?.some((item) =>
-                    //     item?.expenses?.some(
-                    //       (item) => item?.itemCode === option.itemCode
-                    //     )
-                    //   );
+                  //   // const isExpenseRepeatingBackend =
+                  //   //   selectedClientData?.listingFees?.some((item) =>
+                  //   //     item?.expenses?.some(
+                  //   //       (item) => item?.itemCode === option.itemCode
+                  //   //     )
+                  //   //   );
 
-                    // return (
-                    //   isExpenseRepeating || isExpenseRepeatingBackend
-                    // );
-                    return isExpenseRepeating;
-                  }}
+                  //   // return isExpenseRepeating || isExpenseRepeatingBackend;
+                  //   return isExpenseRepeating;
+                  // }}
                   disableClearable
                   loading={isExpensesLoading}
                   disabled={!watch("clientId")}
@@ -460,7 +459,7 @@ function OtherExpensesDrawer({
                 <IconButton
                   sx={{ color: "error.main" }}
                   onClick={() => {
-                    fields.length <= 1
+                    fields?.length <= 1
                       ? handleExpensesError()
                       : // : remove(fields[index]);
                         remove(index);
@@ -492,9 +491,9 @@ function OtherExpensesDrawer({
               });
             }}
             disabled={
-              !watch("expenses")[watch("expenses").length - 1]
+              !watch("expenses")[watch("expenses")?.length - 1]
                 ?.otherExpenseId ||
-              !watch("expenses")[watch("expenses").length - 1]?.amount
+              !watch("expenses")[watch("expenses")?.length - 1]?.amount
             }
           >
             Add Expense

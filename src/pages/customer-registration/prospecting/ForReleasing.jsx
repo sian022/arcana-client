@@ -211,7 +211,7 @@ function ForReleasing() {
       }
 
       dispatch(setSelectedRow(response?.value));
-      onConfirmClose();
+
       handleDrawerClose();
 
       if (drawerMode === "add") {
@@ -231,6 +231,7 @@ function ForReleasing() {
         );
       }
 
+      onConfirmClose();
       onErrorOpen();
     }
   };
@@ -367,16 +368,26 @@ function ForReleasing() {
               <Typography className="register__title">Name</Typography>
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
-                  <TextField
-                    disabled={!editMode && drawerMode === "edit"}
-                    sx={{ gridColumn: "span 3" }}
-                    label="Owners Name"
-                    size="small"
-                    autoComplete="off"
-                    required
-                    {...register("ownersName")}
-                    helperText={errors?.ownersName?.message}
-                    error={errors?.ownersName}
+                  <Controller
+                    name="ownersName"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(e.target.value.toUpperCase())
+                        }
+                        disabled={!editMode && drawerMode === "edit"}
+                        sx={{ gridColumn: "span 3" }}
+                        label="Owner's Name"
+                        size="small"
+                        autoComplete="off"
+                        required
+                        helperText={errors?.ownersName?.message}
+                        error={errors?.ownersName}
+                      />
+                    )}
                   />
                 </Box>
               </Box>
@@ -467,57 +478,105 @@ function ForReleasing() {
           <Box className="register__secondRow">
             <Typography className="register__title">Address</Typography>
             <Box className="register__secondRow__content">
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Unit No."
-                size="small"
-                autoComplete="off"
-                // required
-                {...register("houseNumber")}
-                helperText={errors?.houseNumber?.message}
-                error={errors?.houseNumber}
+              <Controller
+                name="houseNumber"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    disabled={!editMode && drawerMode === "edit"}
+                    label="Unit No."
+                    size="small"
+                    autoComplete="off"
+                    // required
+                    helperText={errors?.houseNumber?.message}
+                    error={errors?.houseNumber}
+                  />
+                )}
               />
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Street"
-                size="small"
-                autoComplete="off"
-                // required
-                {...register("streetName")}
-                helperText={errors?.streetName?.message}
-                error={errors?.streetName}
+
+              <Controller
+                name="streetName"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    disabled={!editMode && drawerMode === "edit"}
+                    label="Street"
+                    size="small"
+                    autoComplete="off"
+                    // required
+                    helperText={errors?.streetName?.message}
+                    error={errors?.streetName}
+                  />
+                )}
               />
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Barangay"
-                size="small"
-                autoComplete="off"
-                required
-                {...register("barangayName")}
-                helperText={errors?.barangayName?.message}
-                error={errors?.barangayName}
+
+              <Controller
+                name="barangayName"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    disabled={!editMode && drawerMode === "edit"}
+                    label="Barangay"
+                    size="small"
+                    autoComplete="off"
+                    required
+                    helperText={errors?.barangayName?.message}
+                    error={errors?.barangayName}
+                  />
+                )}
               />
             </Box>
             <Box className="register__secondRow__content">
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Municipality/City"
-                size="small"
-                autoComplete="off"
-                required
-                {...register("city")}
-                helperText={errors?.city?.message}
-                error={errors?.city}
+              <Controller
+                name="city"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    disabled={!editMode && drawerMode === "edit"}
+                    label="Municipality/City"
+                    size="small"
+                    autoComplete="off"
+                    required
+                    helperText={errors?.city?.message}
+                    error={errors?.city}
+                  />
+                )}
               />
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Province"
-                size="small"
-                autoComplete="off"
-                required
-                {...register("province")}
-                helperText={errors?.province?.message}
-                error={errors?.province}
+
+              <Controller
+                name="province"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    disabled={!editMode && drawerMode === "edit"}
+                    label="Province"
+                    size="small"
+                    autoComplete="off"
+                    required
+                    helperText={errors?.province?.message}
+                    error={errors?.province}
+                  />
+                )}
               />
             </Box>
           </Box>
@@ -527,23 +586,35 @@ function ForReleasing() {
               Business Details
             </Typography>
             <Box className="register__secondRow__content">
-              <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Business Name"
-                size="small"
-                autoComplete="off"
-                required
-                {...register("businessName")}
-                helperText={errors?.businessName?.message}
-                error={errors?.businessName}
+              <Controller
+                name="businessName"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    disabled={!editMode && drawerMode === "edit"}
+                    label="Business Name"
+                    size="small"
+                    autoComplete="off"
+                    required
+                    helperText={errors?.businessName?.message}
+                    error={errors?.businessName}
+                  />
+                )}
               />
+
               {selectedStoreType === "Main" ? (
                 <ControlledAutocomplete
                   disabled={!editMode && drawerMode === "edit"}
                   name={"storeTypeId"}
                   control={control}
                   options={storeTypeData?.storeTypes || []}
-                  getOptionLabel={(option) => option.storeTypeName}
+                  getOptionLabel={(option) =>
+                    option.storeTypeName.toUpperCase()
+                  }
                   disableClearable
                   // value={storeTypeData?.storeTypes?.find(
                   //   (store) => store.storeTypeName === selectedStoreType

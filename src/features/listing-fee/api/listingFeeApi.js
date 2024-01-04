@@ -72,6 +72,14 @@ export const listingFeeApi = createApi({
       }),
       invalidatesTags: ["Listing Fee"],
     }),
+
+    deleteCancelListingFee: builder.mutation({
+      query: (id) => ({
+        url: `/ListingFee/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Listing Fee"],
+    }),
   }),
 });
 
@@ -81,4 +89,5 @@ export const {
   usePutApproveListingFeeMutation,
   usePutRejectListingFeeMutation,
   usePutUpdateListingFeeMutation,
+  useDeleteCancelListingFeeMutation,
 } = listingFeeApi;

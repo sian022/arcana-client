@@ -173,7 +173,6 @@ function Approver() {
           })),
           // ...restData,
         }).unwrap();
-        // console.log(data);
         setSnackbarMessage("Approver updated successfully");
       }
 
@@ -271,10 +270,6 @@ function Approver() {
       setValue("approvers", editFields);
     }
   }, [isDrawerOpen]);
-
-  // console.log("Approvers: ", data);
-  // console.log("Selected Row: ", selectedRowData);
-  // console.log("Hook Form: ", getValues());
 
   return (
     <Box className="commonPageLayout">

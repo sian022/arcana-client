@@ -38,6 +38,7 @@ function CommonActions({
   onAddPriceChange,
   onVoid,
   onDelete,
+  onCancel,
   onHistory,
   onTagUserInCluster,
   onViewCluster,
@@ -83,6 +84,8 @@ function CommonActions({
       onTagUserInCluster();
     } else if (action === "viewCluster") {
       onViewCluster();
+    } else if (action === "cancel") {
+      onCancel();
     }
 
     onClose();
@@ -366,6 +369,21 @@ function CommonActions({
           >
             <Delete />
             Delete
+          </MenuItem>
+        )}
+
+        {onCancel && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("cancel");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("cancel") : false
+            }
+          >
+            <Cancel />
+            Cancel
           </MenuItem>
         )}
       </Menu>
