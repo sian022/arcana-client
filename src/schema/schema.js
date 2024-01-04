@@ -23,6 +23,21 @@ export const changePasswordSchema = {
   },
 };
 
+export const initialChangePasswordSchema = {
+  schema: yup.object({
+    oldPassword: yup.string(),
+    newPassword: yup.string().required("New password is required"),
+    confirmNewPassword: yup
+      .string()
+      .required("Confirm new password is required"),
+  }),
+  defaultValues: {
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  },
+};
+
 //Setup Schema
 export const productSchema = {
   schema: yup.object({

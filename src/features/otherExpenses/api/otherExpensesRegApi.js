@@ -72,6 +72,14 @@ export const otherExpensesRegApi = createApi({
       }),
       invalidatesTags: ["Expenses"],
     }),
+
+    patchVoidExpenseRequest: builder.mutation({
+      query: (id) => ({
+        url: `/Expenses/VoidExpenseRequest/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Expenses"],
+    }),
   }),
 });
 
@@ -81,4 +89,5 @@ export const {
   usePutApproveExpensesMutation,
   usePutRejectExpensesMutation,
   usePutUpdateExpensesMutation,
+  usePatchVoidExpenseRequestMutation,
 } = otherExpensesRegApi;

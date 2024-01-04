@@ -10,6 +10,7 @@ const initialState = {
   token: "",
   isPasswordChanged: false,
   userDetails: {},
+  username: "",
 };
 
 export const loginSlice = createSlice({
@@ -48,8 +49,24 @@ export const loginSlice = createSlice({
     setRoleName: (state, action) => {
       state.roleName = action.payload;
     },
+    setTokenTemp: (state, action) => {
+      state.token = action.payload;
+    },
+    setUsername: (state, action) => {
+      state.username = action.payload;
+    },
+    setUserDetailsTemp: (state, action) => {
+      state.userDetails = action.payload;
+    },
   },
 });
 
-export const { setFullname, setToken, setUserDetails, setRoleName } =
-  loginSlice.actions;
+export const {
+  setFullname,
+  setToken,
+  setUserDetails,
+  setRoleName,
+  setTokenTemp,
+  setUsername,
+  setUserDetailsTemp,
+} = loginSlice.actions;

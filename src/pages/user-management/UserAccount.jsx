@@ -21,6 +21,7 @@ import {
   useGetAllUsersQuery,
   usePostUserMutation,
   usePutUserMutation,
+  usePatchResetPasswordMutation,
 } from "../../features/user-management/api/userAccountApi";
 import { useGetAllEmployeesQuery } from "../../features/user-management/api/sedarApi";
 import { Person, Visibility, VisibilityOff } from "@mui/icons-material";
@@ -118,6 +119,8 @@ function UserAccount() {
   const [putUser, { isLoading: isEditUserLoading }] = usePutUserMutation();
   const [patchUserStatus, { isLoading: isArchiveUserLoading }] =
     usePatchUserStatusMutation();
+  const [patchResetPassword, { isLoading: isResetLoading }] =
+    usePatchResetPasswordMutation();
 
   const { data: userRoleData } = useGetAllUserRolesQuery({ Status: true });
   const { data: sedarData = [], isLoading: isSedarLoading } =
@@ -236,6 +239,24 @@ function UserAccount() {
     limit: 50,
   });
 
+  const onResetSubmit = async () => {
+    try {
+      await patchResetPassword(selectedRowData?.id).unwrap();
+      setSnackbarMessage("Password reset successfully");
+      onSuccessOpen();
+    } catch (error) {
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error resetting password");
+      }
+
+      onErrorOpen();
+    }
+
+    onResetClose();
+  };
+
   //UseEffect
   useEffect(() => {
     setCount(data?.totalCount);
@@ -274,7 +295,7 @@ function UserAccount() {
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
-          // onResetPassword={onResetOpen}
+          onResetPassword={onResetOpen}
           // onViewCluster={true}
           // disableActions={
           //   selectedRowData?.roleName !== "CDO" && ["viewCluster"]
@@ -544,8 +565,8 @@ function UserAccount() {
       <CommonDialog
         open={isResetOpen}
         onClose={onResetClose}
-        // onYes={onResetSubmit}
-        // isLoading={isResetUserLoading}
+        onYes={onResetSubmit}
+        isLoading={isResetLoading}
         noIcon
       >
         Are you sure you want to reset password for{" "}

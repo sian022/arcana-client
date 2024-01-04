@@ -24,7 +24,7 @@ import {
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { formatOrdinalPrefix } from "../../utils/CustomFunctions";
-import { useGetApproversPerModuleQuery } from "../../features/user-management/api/approverApi";
+import { useGetApproversByModuleQuery } from "../../features/user-management/api/approverApi";
 
 function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -35,14 +35,16 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const { data: approverData, isFetching: isApproverFetching } =
-    useGetApproversPerModuleQuery();
-
-  // const steps = [
-  //   { label: "Requested", icon: <EventNote /> },
-  //   // { label: "1st Approval", icon: <Check /> },
-  //   // { label: "2nd Approval", icon: <CheckCircle /> },
-  //   // { label: "Regular Client", icon: <HowToReg /> },
-  // ];
+    useGetApproversByModuleQuery({
+      ModuleName:
+        variant === "registration"
+          ? "Registration Approval"
+          : variant === "listingFee"
+          ? "Listing Fee Approval"
+          : variant === "otherExpenses"
+          ? "Other Expenses Approval"
+          : "",
+    });
 
   const steps = [
     { label: "Requested", icon: <EventNote /> },
@@ -52,35 +54,13 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   ];
 
   const handleActiveStep = (recentData) => {
-    if (recentData?.length === 0 || !recentData) {
-      return 1;
-    } else if (recentData?.level === 1 && recentData?.status === "Rejected") {
-      return null;
-    } else if (recentData?.level === 1 && recentData?.status === "Approved") {
-      return 2;
-    } else if (recentData?.level === 2 && recentData?.status === "Rejected") {
-      return null;
-    } else if (recentData?.level === 2 && recentData?.status === "Approved") {
-      return 3;
-    } else if (!!recentData?.updatedAt) {
-      return 1;
+    if (!recentData || recentData?.level === 1) {
+      return recentData?.status === "Rejected" ? null : 2;
+    } else if (recentData?.level === 2) {
+      return recentData?.status === "Rejected" ? null : 3;
     } else {
-      return 3;
+      return !!recentData?.updatedAt ? 1 : 3;
     }
-
-    // if (recentLevel === 0) {
-    //   return 1;
-    // } else if (recentLevel === 1 && recentStatus === "Rejected") {
-    //   return null;
-    // } else if (recentLevel === 1 && recentStatus === "Approved") {
-    //   return 0;
-    // } else if (recentLevel === 2 && recentStatus === "Rejected") {
-    //   return 2;
-    // } else if (recentLevel === 2 && recentStatus === "Approved") {
-    //   return 3;
-    // } else {
-    //   return 4;
-    // }
   };
 
   const combinedHistories = [
@@ -125,18 +105,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     //   new Date(b.createdAt || b.updatedAt)
   );
 
-  useEffect(() => {
-    const approverSteps = approverData?.registration?.map((approver) => ({
-      label: approver,
-      icon: <Check />,
-    }));
-
-    if (approverSteps?.length > 0) {
-      // Use the spread operator to create a new array and update the state
-      // setSteps((prevSteps) => [...prevSteps, ...approverSteps]);
-    }
-  }, [approverData]);
-
+  console.log(approverData);
   return (
     <CommonModal width="650px" {...otherProps}>
       <Box className="approvalHistoryModal">

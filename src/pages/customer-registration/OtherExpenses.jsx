@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -12,7 +12,10 @@ import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
 import OtherExpensesDrawer from "../../components/drawers/OtherExpensesDrawer";
-import { useGetAllExpensesQuery } from "../../features/otherExpenses/api/otherExpensesRegApi";
+import {
+  useGetAllExpensesQuery,
+  usePatchVoidExpenseRequestMutation,
+} from "../../features/otherExpenses/api/otherExpensesRegApi";
 import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
 
 function OtherExpenses() {
@@ -23,6 +26,8 @@ function OtherExpenses() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
+
+  const [voidConfirmBox, setVoidConfirmBox] = useState("");
 
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -43,9 +48,9 @@ function OtherExpenses() {
   } = useDisclosure();
 
   const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
+    isOpen: isVoidOpen,
+    onOpen: onVoidOpen,
+    onClose: onVoidClose,
   } = useDisclosure();
 
   const {
@@ -63,6 +68,9 @@ function OtherExpenses() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
+
+  const [patchVoidExpenseRequest, { isLoading: isVoidLoading }] =
+    usePatchVoidExpenseRequestMutation();
 
   //Constants
   const expenseNavigation = [
@@ -120,6 +128,21 @@ function OtherExpenses() {
     onListingFeeOpen();
   };
 
+  const onVoidSubmit = async () => {
+    try {
+      await patchVoidExpenseRequest(selectedRowData?.requestId).unwrap();
+      onVoidClose();
+      showSnackbar("Expense request voided successfully", "success");
+    } catch (error) {
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error voiding expense request", "error");
+      }
+    }
+  };
+
+  //UseEffects
   useEffect(() => {
     const foundItem = expenseNavigation.find(
       (item) => item.case === tabViewing
@@ -167,6 +190,7 @@ function OtherExpenses() {
             pesoArray={pesoArray}
             onEdit={expenseStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
+            onVoid={expenseStatus === "Rejected" && onVoidOpen}
           />
         )}
       </Box>
@@ -185,16 +209,43 @@ function OtherExpenses() {
       />
 
       <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        // isLoading={isUpdateStatusLoading}
-        // onYes={onArchiveSubmit}
+        open={isVoidOpen}
+        onClose={onVoidClose}
+        isLoading={isVoidLoading}
+        onYes={onVoidSubmit}
+        disableYes={voidConfirmBox !== selectedRowData?.businessName}
       >
-        Are you sure you want to {status ? "archive" : "restore"} client{" "}
+        Are you sure you want to void expense request for{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
           {selectedRowData?.businessName}
         </span>
-        ?
+        ? <br />
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          (This action cannot be reversed)
+        </span>
+        <br />
+        <Box
+          sx={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
+        >
+          <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
+            To confirm, type "{selectedRowData?.businessName}" in the box below
+          </Typography>
+          <TextField
+            size="small"
+            // fullWidth
+            autoComplete="off"
+            onChange={(e) => {
+              setVoidConfirmBox(e.target.value);
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "error.main", // Set your desired border color here
+                },
+              },
+            }}
+          />
+        </Box>
       </CommonDialog>
 
       <ApprovalHistoryModal
