@@ -165,7 +165,7 @@ function OtherExpenses() {
             onView={onViewOpen}
             // tableHeads={tableHeads}
             pesoArray={pesoArray}
-            onEdit={handleOpenEdit}
+            onEdit={expenseStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
           />
         )}

@@ -189,6 +189,7 @@ function UserAccount() {
   };
 
   const handleEditOpen = (editData) => {
+    console.log(editData);
     setDrawerMode("edit");
     onDrawerOpen();
 

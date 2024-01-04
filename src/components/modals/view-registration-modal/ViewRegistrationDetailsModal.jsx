@@ -335,7 +335,7 @@ function ViewRegistrationDetailsModal({
                 label="Reason"
                 autoComplete="off"
                 onChange={(e) => {
-                  setReason(e.target.value);
+                  setReason(e.target.value.toUpperCase());
                 }}
                 multiline
                 rows={3}
