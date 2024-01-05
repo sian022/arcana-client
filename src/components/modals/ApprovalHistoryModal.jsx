@@ -24,7 +24,6 @@ import {
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { formatOrdinalPrefix } from "../../utils/CustomFunctions";
-import { useGetApproversByModuleQuery } from "../../features/user-management/api/approverApi";
 
 function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -33,18 +32,6 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   // ]);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-
-  const { data: approverData, isFetching: isApproverFetching } =
-    useGetApproversByModuleQuery({
-      ModuleName:
-        variant === "registration"
-          ? "Registration Approval"
-          : variant === "listingFee"
-          ? "Listing Fee Approval"
-          : variant === "otherExpenses"
-          ? "Other Expenses Approval"
-          : "",
-    });
 
   const steps = [
     { label: "Requested", icon: <EventNote /> },
@@ -105,7 +92,6 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     //   new Date(b.createdAt || b.updatedAt)
   );
 
-  console.log(approverData);
   return (
     <CommonModal width="650px" {...otherProps}>
       <Box className="approvalHistoryModal">

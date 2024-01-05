@@ -183,6 +183,7 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                   </Box>
                 </Box>
               </Box>
+
               <TableContainer className="releaseFreebieModal__tableContainer">
                 <Table>
                   <TableHead
@@ -205,7 +206,9 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                       <TableRow key={i}>
                         <TableCell>{item.quantity}</TableCell>
                         <TableCell>{item.itemCode}</TableCell>
-                        <TableCell>{item.itemDescription}</TableCell>
+                        <TableCell>
+                          {item.itemDescription?.toUpperCase()}
+                        </TableCell>
                         <TableCell>{item.uom}</TableCell>
                       </TableRow>
                     ))}
@@ -216,7 +219,9 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                       <TableRow key={i}>
                         <TableCell>{item.quantity}</TableCell>
                         <TableCell>{item.itemCode}</TableCell>
-                        <TableCell>{item.itemDescription}</TableCell>
+                        <TableCell>
+                          {item.itemDescription?.toUpperCase()}
+                        </TableCell>
                         <TableCell>{item.uom}</TableCell>
                       </TableRow>
                     ))}

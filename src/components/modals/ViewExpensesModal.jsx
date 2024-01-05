@@ -311,8 +311,9 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
                 size="small"
                 label="Reason"
                 autoComplete="off"
+                value={reason}
                 onChange={(e) => {
-                  setReason(e.target.value);
+                  setReason(e.target.value.toUpperCase());
                 }}
                 multiline
                 rows={3}

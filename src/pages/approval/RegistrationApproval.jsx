@@ -140,6 +140,7 @@ function RegistrationApproval() {
     "listingFees",
     "createdAt",
     "origin",
+    "approvers",
   ];
 
   //Misc Functions

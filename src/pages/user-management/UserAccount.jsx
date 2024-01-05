@@ -27,8 +27,11 @@ import { useGetAllEmployeesQuery } from "../../features/user-management/api/seda
 import { Person, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useGetAllUserRolesQuery } from "../../features/user-management/api/userRoleApi";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
-import { useSelector } from "react-redux";
-import { useGetAllClustersQuery } from "../../features/setup/api/clusterApi";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clusterApi,
+  useGetAllClustersQuery,
+} from "../../features/setup/api/clusterApi";
 import ControlledAutocompleteMultiple from "../../components/ControlledAutocompleteMultiple";
 
 function UserAccount() {
@@ -42,6 +45,7 @@ function UserAccount() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   // Drawer Disclosures
   const {
@@ -155,6 +159,7 @@ function UserAccount() {
           })),
         }).unwrap();
         setSnackbarMessage("User Account updated successfully");
+        dispatch(clusterApi.util.invalidateTags(["Cluster"]));
       }
 
       onDrawerClose();

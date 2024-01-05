@@ -173,6 +173,7 @@ function DirectRegistration() {
     "listingFees",
     "createdAt",
     "origin",
+    "approvers",
   ];
 
   const tableHeads = [

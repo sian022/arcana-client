@@ -231,9 +231,10 @@ function ForReleasing() {
         );
       }
 
-      onConfirmClose();
       onErrorOpen();
     }
+
+    onConfirmClose();
   };
 
   const onArchiveSubmit = async () => {

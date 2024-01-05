@@ -87,6 +87,10 @@
       text-transform: uppercase;
       font-weight: bold;
     }
+
+    @media print {
+      height: auto;
+    }
   }
 
   &__footer {

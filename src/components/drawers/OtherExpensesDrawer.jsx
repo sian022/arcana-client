@@ -395,29 +395,29 @@ function OtherExpensesDrawer({
                   getOptionLabel={(option) =>
                     option.expenseType?.toUpperCase() || ""
                   }
-                  // getOptionDisabled={(option) => {
-                  //   const otherExpenses = watch("expenses");
+                  getOptionDisabled={(option) => {
+                    const otherExpenses = watch("expenses");
 
-                  //   const isExpenseRepeating = Array.isArray(otherExpenses)
-                  //     ? otherExpenses.some(
-                  //         (expense) =>
-                  //           expense?.otherExpenseId?.expenseType ===
-                  //           option.expenseType
-                  //       )
-                  //     : false;
+                    const isExpenseRepeating = Array.isArray(otherExpenses)
+                      ? otherExpenses.some(
+                          (expense) =>
+                            expense?.otherExpenseId?.expenseType ===
+                            option.expenseType
+                        )
+                      : false;
 
-                  //   // const selectedClientData = watch("clientId");
+                    // const selectedClientData = watch("clientId");
 
-                  //   // const isExpenseRepeatingBackend =
-                  //   //   selectedClientData?.listingFees?.some((item) =>
-                  //   //     item?.expenses?.some(
-                  //   //       (item) => item?.itemCode === option.itemCode
-                  //   //     )
-                  //   //   );
+                    // const isExpenseRepeatingBackend =
+                    //   selectedClientData?.listingFees?.some((item) =>
+                    //     item?.expenses?.some(
+                    //       (item) => item?.itemCode === option.itemCode
+                    //     )
+                    //   );
 
-                  //   // return isExpenseRepeating || isExpenseRepeatingBackend;
-                  //   return isExpenseRepeating;
-                  // }}
+                    // return isExpenseRepeating || isExpenseRepeatingBackend;
+                    return isExpenseRepeating;
+                  }}
                   disableClearable
                   loading={isExpensesLoading}
                   disabled={!watch("clientId")}

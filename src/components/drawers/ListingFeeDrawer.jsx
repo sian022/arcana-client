@@ -338,6 +338,8 @@ function ListingFeeDrawer({
     }
   }, [isListingFeeOpen, clientData]);
 
+  console.log(watch("clientId"));
+
   return (
     <>
       <CommonDrawer

@@ -48,9 +48,9 @@ function OtherExpenses() {
   } = useDisclosure();
 
   const {
-    isOpen: isVoidOpen,
-    onOpen: onVoidOpen,
-    onClose: onVoidClose,
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
   } = useDisclosure();
 
   const {
@@ -118,6 +118,7 @@ function OtherExpenses() {
     "updateHistories",
     "expenses",
     "clientId",
+    "approvers",
   ];
 
   const pesoArray = ["amount"];
@@ -128,11 +129,11 @@ function OtherExpenses() {
     onListingFeeOpen();
   };
 
-  const onVoidSubmit = async () => {
+  const onDeleteSubmit = async () => {
     try {
       await patchVoidExpenseRequest(selectedRowData?.requestId).unwrap();
-      onVoidClose();
-      showSnackbar("Expense request voided successfully", "success");
+      onDeleteClose();
+      showSnackbar("Expense request cancelled successfully", "success");
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -190,7 +191,7 @@ function OtherExpenses() {
             pesoArray={pesoArray}
             onEdit={expenseStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
-            onVoid={expenseStatus === "Rejected" && onVoidOpen}
+            onCancel={expenseStatus === "Rejected" && onDeleteOpen}
           />
         )}
       </Box>
@@ -209,17 +210,18 @@ function OtherExpenses() {
       />
 
       <CommonDialog
-        open={isVoidOpen}
-        onClose={onVoidClose}
+        open={isDeleteOpen}
+        onClose={onDeleteClose}
         isLoading={isVoidLoading}
-        onYes={onVoidSubmit}
-        disableYes={voidConfirmBox !== selectedRowData?.businessName}
+        onYes={onDeleteSubmit}
+        // disableYes={voidConfirmBox !== selectedRowData?.businessName}
       >
-        Are you sure you want to void expense request for{" "}
+        Are you sure you want to cancel expenses request for{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
           {selectedRowData?.businessName}
         </span>
-        ? <br />
+        ?
+        {/* <br />
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           (This action cannot be reversed)
         </span>
@@ -245,7 +247,7 @@ function OtherExpenses() {
               },
             }}
           />
-        </Box>
+        </Box> */}
       </CommonDialog>
 
       <ApprovalHistoryModal

@@ -97,6 +97,7 @@ function ListingFeeApproval() {
     "requestId",
     "listingFeeApprovalHistories",
     "registrationStatus",
+    "approvers",
   ];
 
   const tableHeads = [
