@@ -87,7 +87,9 @@ function FreebiesTab() {
                       item?.freebies?.map((freebie) => (
                         <TableRow key={freebie.id}>
                           <TableCell>{freebie.itemCode}</TableCell>
-                          <TableCell>{freebie.itemDescription}</TableCell>
+                          <TableCell>
+                            {freebie.itemDescription?.toUpperCase()}
+                          </TableCell>
                           <TableCell>{freebie.uom}</TableCell>
                           <TableCell>{freebie.quantity}</TableCell>
                         </TableRow>

@@ -276,7 +276,7 @@ function DirectRegistration() {
             status={status}
             onEdit={handleEditOpen}
             // onArchive={onArchiveOpen}
-            onVoid={onVoidOpen}
+            onVoid={clientStatus === "Rejected" && onVoidOpen}
             onPrintFreebies={onPrintOpen}
             disableActions={
               (!selectedRowData?.freebies ||

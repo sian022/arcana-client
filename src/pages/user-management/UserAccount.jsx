@@ -159,12 +159,12 @@ function UserAccount() {
           })),
         }).unwrap();
         setSnackbarMessage("User Account updated successfully");
-        dispatch(clusterApi.util.invalidateTags(["Cluster"]));
       }
 
       onDrawerClose();
       reset();
       onSuccessOpen();
+      dispatch(clusterApi.util.invalidateTags(["Cluster"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
@@ -544,7 +544,6 @@ function UserAccount() {
                 {...params}
                 size="small"
                 label="Cluster"
-                required
                 helperText={errors?.clusters?.message}
                 error={errors?.clusters}
               />

@@ -211,6 +211,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
                 )}
                 // minDate={moment()}
                 minDateTime={moment()}
+                timeSteps={{ minutes: 1 }}
               />
               {/* <DatePicker
                 {...field}

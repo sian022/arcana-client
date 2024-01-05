@@ -107,7 +107,9 @@ function ListingFeeTab() {
                       item?.listingItems?.map((listing) => (
                         <TableRow key={listing.id}>
                           <TableCell>{listing.itemCode}</TableCell>
-                          <TableCell>{listing.itemDescription}</TableCell>
+                          <TableCell>
+                            {listing.itemDescription?.toUpperCase()}
+                          </TableCell>
                           <TableCell>{listing.uom}</TableCell>
                           <TableCell>{listing.sku}</TableCell>
                           <TableCell>
