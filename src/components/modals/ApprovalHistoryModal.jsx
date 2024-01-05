@@ -76,7 +76,6 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   );
 
   const handleActiveStep = (recentData) => {
-    console.log(recentData);
     const level = recentData?.level || 1;
     const status = recentData?.status;
     const updatedAtExists = !!recentData?.updatedAt;
@@ -86,7 +85,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
 
     if (updatedAtExists) {
       return 1;
-    } else if (level) {
+    } else if (level && status === "Approved") {
       return level + 1;
     } else {
       return approverCount;
