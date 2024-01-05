@@ -209,7 +209,8 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
                     error={errors?.effectivityDate}
                   />
                 )}
-                minDate={moment()}
+                // minDate={moment()}
+                minDateTime={moment()}
               />
               {/* <DatePicker
                 {...field}
