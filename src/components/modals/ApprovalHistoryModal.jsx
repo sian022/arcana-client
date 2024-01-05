@@ -28,27 +28,10 @@ import { formatOrdinalPrefix } from "../../utils/CustomFunctions";
 function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
   // const [steps, setSteps] = useState([
-  //   { label: "Requested", icon: <EventNote /> },
+  //   { label: "REQUESTED", icon: <EventNote /> },
   // ]);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-
-  const steps = [
-    { label: "Requested", icon: <EventNote /> },
-    { label: "1st Approval", icon: <Check /> },
-    // { label: "2nd Approval", icon: <CheckCircle /> },
-    // { label: "Regular Client", icon: <HowToReg /> },
-  ];
-
-  const handleActiveStep = (recentData) => {
-    if (!recentData || recentData?.level === 1) {
-      return recentData?.status === "Rejected" ? null : 2;
-    } else if (recentData?.level === 2) {
-      return recentData?.status === "Rejected" ? null : 3;
-    } else {
-      return !!recentData?.updatedAt ? 1 : 3;
-    }
-  };
 
   const combinedHistories = [
     ...(selectedRowData?.clientApprovalHistories || []),
@@ -92,6 +75,24 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     //   new Date(b.createdAt || b.updatedAt)
   );
 
+  const handleActiveStep = (recentData) => {
+    console.log(recentData);
+    const level = recentData?.level || 1;
+    const status = recentData?.status;
+    const updatedAtExists = !!recentData?.updatedAt;
+    const approverCount = (selectedRowData?.approvers?.length || 0) + 1;
+
+    if (status === "Rejected") return null;
+
+    if (updatedAtExists) {
+      return 1;
+    } else if (level) {
+      return level + 1;
+    } else {
+      return approverCount;
+    }
+  };
+
   return (
     <CommonModal width="650px" {...otherProps}>
       <Box className="approvalHistoryModal">
@@ -113,11 +114,15 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
           <Box className="approvalHistoryModal__content__headStepper">
             <Stepper
               alternativeLabel
-              activeStep={handleActiveStep(
-                // combinedHistories?.[0]?.level,
-                // combinedHistories?.[0]?.status,
-                combinedHistories?.[0]
-              )}
+              activeStep={
+                variant === "registration"
+                  ? handleActiveStep(combinedHistories?.[0])
+                  : variant === "listingFee"
+                  ? handleActiveStep(combinedListingFeeHistories?.[0])
+                  : variant === "otherExpenses"
+                  ? handleActiveStep(combinedOtherExpensesHistories?.[0])
+                  : null
+              }
               // activeStep={
               //   variant === "registration" &&
               //   selectedRowData?.clientApprovalHistories?.length === 0
@@ -131,8 +136,12 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
               //       )
               // }
             >
-              {steps.map((item, index) => (
-                <Step key={item.label}>
+              <Step>
+                <StepLabel>REQUESTED</StepLabel>
+              </Step>
+
+              {selectedRowData?.approvers?.map((item, index) => (
+                <Step key={index}>
                   <StepLabel
                   // StepIconComponent={() => (
                   //   <Cancel
@@ -145,7 +154,8 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                   // )}
                   // StepIconComponent={() => item.icon}
                   >
-                    {item.label}
+                    {item.name}
+                    {/* {formatOrdinalPrefix(item.level)} Approval */}
                   </StepLabel>
                 </Step>
               ))}
@@ -188,7 +198,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         }}
                       >
                         {!history?.status
-                          ? "Requested"
+                          ? "REQUESTED"
                           : `${history?.status} - ${formatOrdinalPrefix(
                               history?.level
                             )} Approval`}
@@ -280,7 +290,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         }}
                       >
                         {!history?.status
-                          ? "Requested"
+                          ? "REQUESTED"
                           : `${history?.status} - ${formatOrdinalPrefix(
                               history?.level
                             )} Approval`}
@@ -353,7 +363,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         }}
                       >
                         {!history?.status
-                          ? "Requested"
+                          ? "REQUESTED"
                           : `${history?.status} - ${formatOrdinalPrefix(
                               history?.level
                             )} Approval`}
@@ -415,7 +425,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                       textTransform: "uppercase",
                     }}
                   >
-                    Requested
+                    REQUESTED
                   </span>
                 </StepLabel>
 

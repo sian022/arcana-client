@@ -489,6 +489,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const handleResetForms = () => {
     reset();
+    setValue("phoneNumber", "");
+
     setSameAsOwnersAddress(false);
     setIncludeAuthorizedRepresentative(false);
 
@@ -725,7 +727,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setValue(
         "clusterId",
         clusterData?.cluster?.find(
-          (item) => item.cluster === selectedRowData?.cluster
+          (item) => item.id === selectedRowData?.cluster
         )
       );
       setValue(

@@ -427,6 +427,7 @@ function ForFreebies() {
                           <InputAdornment position="start">+63</InputAdornment>
                         ),
                       }}
+                      inputRef={ref}
                       className="register__textField"
                       helperText={errors?.phoneNumber?.message}
                       error={!!errors?.phoneNumber}
