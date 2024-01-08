@@ -17,6 +17,7 @@ import {
   usePatchVoidExpenseRequestMutation,
 } from "../../features/otherExpenses/api/otherExpensesRegApi";
 import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
+import AddVoidSearchMixin from "../../components/mixins/AddVoidSearchMixin";
 
 function OtherExpenses() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -166,6 +167,14 @@ function OtherExpenses() {
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
         />
+
+        {/* <AddVoidSearchMixin
+          addTitle="Other Expenses"
+          onAddOpen={onListingFeeOpen}
+          setSearch={setSearch}
+          status={expenseStatus}
+          setStatus={setExpenseStatus}
+        /> */}
 
         <AddSearchMixin
           addTitle="Other Expenses"

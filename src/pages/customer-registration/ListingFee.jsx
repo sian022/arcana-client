@@ -18,6 +18,8 @@ import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
 import { notificationApi } from "../../features/notification/api/notificationApi";
 import { registrationApi } from "../../features/registration/api/registrationApi";
+import SearchVoidFilterMixin from "../../components/mixins/SearchVoidFilterMixin";
+import AddVoidSearchMixin from "../../components/mixins/AddVoidSearchMixin";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -181,6 +183,13 @@ function ListingFee() {
           setTabViewing={setTabViewing}
         />
 
+        {/* <AddVoidSearchMixin
+          addTitle="Listing Fee"
+          onAddOpen={onListingFeeOpen}
+          setSearch={setSearch}
+          status={listingFeeStatus}
+          setStatus={setListingFeeStatus}
+        /> */}
         <AddSearchMixin
           addTitle="Listing Fee"
           onAddOpen={onListingFeeOpen}

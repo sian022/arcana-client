@@ -241,7 +241,8 @@
 
   &__navigators {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    // grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
     max-height: 380px;
     // height: 380px;
@@ -257,11 +258,13 @@
       gap: 20px;
       justify-content: space-between;
       // align-items: center;
-      // height: 80px;
+      height: 80px;
 
       &__text {
         display: flex;
         flex-direction: column;
+        text-overflow: ellipsis;
+        overflow: hidden;
 
         & &__title {
           font-size: 20px;

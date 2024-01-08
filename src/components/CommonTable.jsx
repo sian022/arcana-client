@@ -83,7 +83,7 @@ function CommonTable({
             : moreCompact
             ? // ? "calc(100vh - 400px)"
               "calc(100vh - 330px)"
-            : null,
+            : "calc(100vh - 270px)",
         }}
       >
         {imageLoaded && (

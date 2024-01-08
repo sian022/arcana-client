@@ -549,6 +549,12 @@ function RegisterRegularForm({ open, onClose }) {
     }
   }, [includeAuthorizedRepresentative]);
 
+  useEffect(() => {
+    if (clusterData && open) {
+      setValue("clusterId", clusterData?.cluster?.[0]);
+    }
+  }, [open]);
+
   return (
     <>
       <CommonDrawer
@@ -586,14 +592,15 @@ function RegisterRegularForm({ open, onClose }) {
                     disabled
                     value={selectedRowData?.ownersName ?? ""}
                   />
+
                   <TextField
                     label="Email Address"
                     size="small"
                     autoComplete="off"
                     // required
-                    disabled
                     className="register__textField"
-                    value={selectedRowData?.emailAddress ?? ""}
+                    // value={selectedRowData?.emailAddress ?? ""}
+                    {...register("emailAddress")}
                   />
                 </Box>
                 <Box className="register__firstRow__customerInformation__row">

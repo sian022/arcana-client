@@ -387,6 +387,7 @@ export const regularRegisterSchema = {
     latitude: yup.string(),
     // .required("Latitude is required")
     birthDate: yup.date().required("Birthdate is required"),
+    emailAddress: yup.string(),
     storeTypeId: yup.object().required("Business type is required"),
   }),
   defaultValues: {
@@ -404,6 +405,7 @@ export const regularRegisterSchema = {
     longitude: "",
     latitude: "",
     birthDate: null,
+    emailAddress: "",
     storeTypeId: null,
   },
 };

@@ -439,6 +439,8 @@ function OtherExpensesDrawer({
                       // ref={ref}
                       required
                       thousandSeparator=","
+                      allowNegative={false}
+                      allowLeadingZeros={false}
                       disabled={!watch("clientId")}
                     />
                   )}

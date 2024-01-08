@@ -97,7 +97,7 @@ function UserManagement() {
             </Box>
           </Box>
 
-          <Box
+          {/* <Box
             className="pageIndex__navigators__item"
             onClick={() => navigate("company")}
           >
@@ -152,7 +152,7 @@ function UserManagement() {
               <Box></Box>
               <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
             </Box>
-          </Box>
+          </Box> */}
         </Box>
       </Box>
     );

@@ -141,6 +141,7 @@ function RegistrationApproval() {
     "createdAt",
     "origin",
     "approvers",
+    "registrationStatus",
   ];
 
   //Misc Functions

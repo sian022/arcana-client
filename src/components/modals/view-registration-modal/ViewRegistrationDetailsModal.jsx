@@ -29,6 +29,7 @@ import ListingFeeTab from "./ListingFeeTab";
 import FreebiesTab from "./FreebiesTab";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { listingFeeApi } from "../../../features/listing-fee/api/listingFeeApi";
+import OtherExpensesTab from "./OtherExpensesTab";
 
 function ViewRegistrationDetailsModal({
   approval,
@@ -75,12 +76,14 @@ function ViewRegistrationDetailsModal({
     { label: "Attachments", disabled: false },
     { label: "Listing Fee", disabled: false },
     { label: "Freebies", disabled: false },
+    { label: "Other Expenses", disabled: false },
   ];
 
   navigators[1].disabled = approval && !viewedTabs["Personal Info"];
   navigators[2].disabled = approval && !viewedTabs["Terms and Conditions"];
   navigators[3].disabled = approval && !viewedTabs["Attachments"];
   navigators[4].disabled = approval && !viewedTabs["Listing Fee"];
+  navigators[5].disabled = approval && !viewedTabs["Freebies"];
 
   //RTK Query
   const [putApproveClient, { isLoading: isApproveLoading }] =
@@ -138,6 +141,8 @@ function ViewRegistrationDetailsModal({
       setActiveTab("Listing Fee");
     } else if (activeTab === "Listing Fee") {
       setActiveTab("Freebies");
+    } else if (activeTab === "Freebies") {
+      setActiveTab("Other Expenses");
     }
   };
 
@@ -150,6 +155,8 @@ function ViewRegistrationDetailsModal({
       setActiveTab("Attachments");
     } else if (activeTab === "Freebies") {
       setActiveTab("Listing Fee");
+    } else if (activeTab === "Other Expenses") {
+      setActiveTab("Freebies");
     }
   };
 
@@ -209,8 +216,8 @@ function ViewRegistrationDetailsModal({
   return (
     <>
       <CommonModal
-        width="800px"
-        // width="900px"
+        // width="800px"
+        width="900px"
         height="670px"
         disablePadding
         ribbon
@@ -224,6 +231,8 @@ function ViewRegistrationDetailsModal({
           {activeTab === "Attachments" && <AttachmentsTab />}
           {activeTab === "Listing Fee" && <ListingFeeTab />}
           {activeTab === "Freebies" && <FreebiesTab />}
+          {activeTab === "Other Expenses" && <OtherExpensesTab />}
+
           <Box
             sx={{
               display: "flex",
@@ -334,6 +343,7 @@ function ViewRegistrationDetailsModal({
                 size="small"
                 label="Reason"
                 autoComplete="off"
+                value={reason}
                 onChange={(e) => {
                   setReason(e.target.value.toUpperCase());
                 }}

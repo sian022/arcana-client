@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import PrintFreebiesModal from "../../components/modals/PrintFreebiesModal";
 import { AppContext } from "../../context/AppContext";
+import SearchVoidFilterMixin from "../../components/mixins/SearchVoidFilterMixin";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -174,6 +175,7 @@ function DirectRegistration() {
     "createdAt",
     "origin",
     "approvers",
+    "registrationStatus",
   ];
 
   const tableHeads = [
@@ -247,13 +249,18 @@ function DirectRegistration() {
           onOpen={onRegisterOpen}
           addTitle="Register Direct"
         />
-        {/* <Box>
-          <TextField type="search" placeholder="Search" size="small" />
-        </Box> */}
-        <SearchFilterMixin
+
+        {/* <SearchFilterMixin
           setSearch={setSearch}
           selectOptions={selectOptions}
           setSelectValue={setOrigin}
+        /> */}
+        <SearchVoidFilterMixin
+          setSearch={setSearch}
+          selectOptions={selectOptions}
+          setSelectValue={setOrigin}
+          status={clientStatus}
+          setStatus={setClientStatus}
         />
 
         {isFetching ? (
@@ -274,7 +281,11 @@ function DirectRegistration() {
             onHistory={onHistoryOpen}
             // onArchive={true}
             status={status}
-            onEdit={handleEditOpen}
+            onEdit={
+              clientStatus !== "Voided" &&
+              clientStatus !== "Approved" &&
+              handleEditOpen
+            }
             // onArchive={onArchiveOpen}
             onVoid={clientStatus === "Rejected" && onVoidOpen}
             onPrintFreebies={onPrintOpen}

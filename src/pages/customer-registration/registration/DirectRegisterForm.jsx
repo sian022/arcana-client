@@ -736,7 +736,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           photoIdRepresentative: true,
           authorizationLetter: true,
         });
-      } else {
+      } else if (selectedRowData?.attachments?.length <= 4) {
         setRequirementsMode("owner");
         setOwnersRequirements({
           signature: selectedRowData?.attachments?.find(
@@ -762,15 +762,21 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     }
   }, [open, termDaysData]);
 
-  // useEffect(() => {
-  //   if (!!includeAuthorizedRepresentative) {
-  //     setRequirementsMode("representative");
-  //   } else if (!includeAuthorizedRepresentative) {
-  //     setValue("authorizedRepresentative", "");
-  //     setValue("authorizedRepresentativePosition", "");
-  //     setRequirementsMode("owner");
-  //   }
-  // }, [includeAuthorizedRepresentative]);
+  useEffect(() => {
+    if (!!includeAuthorizedRepresentative) {
+      setRequirementsMode("representative");
+    } else if (!includeAuthorizedRepresentative) {
+      setValue("authorizedRepresentative", "");
+      setValue("authorizedRepresentativePosition", "");
+      setRequirementsMode("owner");
+    }
+  }, [includeAuthorizedRepresentative]);
+
+  useEffect(() => {
+    if (clusterData && open) {
+      setValue("clusterId", clusterData?.cluster?.[0]);
+    }
+  }, [open]);
 
   return (
     <>

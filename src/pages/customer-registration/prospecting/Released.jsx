@@ -15,6 +15,7 @@ import PrintFreebiesModal from "../../../components/modals/PrintFreebiesModal";
 import CommonDialog from "../../../components/CommonDialog";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
+import SearchVoidMixin from "../../../components/mixins/SearchVoidMixin";
 
 function Released() {
   const [search, setSearch] = useState("");
@@ -22,6 +23,7 @@ function Released() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+  const [registrationStatus, setRegistrationStatus] = useState("");
 
   const [voidConfirmBox, setVoidConfirmBox] = useState("");
 
@@ -83,7 +85,11 @@ function Released() {
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
     // WithFreebies: true,
-    FreebieStatus: "Released",
+    FreebieStatus: registrationStatus !== "Voided" ? "Released" : "",
+    RegistrationStatus:
+      registrationStatus === "Voided"
+        ? registrationStatus
+        : "Pending registration",
   });
 
   const [patchVoidProspect, { isLoading: isVoidLoading }] =
@@ -119,7 +125,12 @@ function Released() {
   return (
     <>
       <Box>
-        <TextField
+        <SearchVoidMixin
+          setSearch={setSearch}
+          setStatus={setRegistrationStatus}
+          status={registrationStatus}
+        />
+        {/* <TextField
           type="search"
           size="small"
           label="Search"
@@ -129,7 +140,7 @@ function Released() {
           autoComplete="off"
           // sx={{ margin: "15px" }}
           sx={{ mb: "15px", mt: "-5px" }}
-        />
+        /> */}
 
         {isFetching ? (
           <CommonTableSkeleton compact />
@@ -143,8 +154,10 @@ function Released() {
             setPage={setPage}
             rowsPerPage={rowsPerPage}
             editable
-            onRegularRegister={onRegisterOpen}
-            onVoid={onVoidOpen}
+            onRegularRegister={
+              registrationStatus !== "Voided" && onRegisterOpen
+            }
+            onVoid={registrationStatus !== "Voided" && onVoidOpen}
             setRowsPerPage={setRowsPerPage}
             count={count}
             status={status}
