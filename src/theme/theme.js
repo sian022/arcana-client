@@ -80,9 +80,8 @@ export const theme = createTheme({
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          // maxHeight: "400px",
-          // flex: 1,
-          height: "calc(100vh - 330px)",
+          height: "calc(100vh - 270px)",
+          // height: "calc(100vh - 330px)",
           background: "white",
           padding: 0,
           margin: 0,

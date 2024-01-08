@@ -127,7 +127,8 @@ function Released() {
             debouncedSetSearch(e.target.value);
           }}
           autoComplete="off"
-          sx={{ margin: "15px" }}
+          // sx={{ margin: "15px" }}
+          sx={{ mb: "15px", mt: "-5px" }}
         />
 
         {isFetching ? (

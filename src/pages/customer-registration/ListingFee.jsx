@@ -188,7 +188,7 @@ function ListingFee() {
         />
 
         {isFetching ? (
-          <CommonTableSkeleton moreCompact />
+          <CommonTableSkeleton moreCompact mt={"-20px"} />
         ) : (
           <CommonTable
             mapData={data?.listingFees}
@@ -206,6 +206,7 @@ function ListingFee() {
             onEdit={listingFeeStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
             onCancel={listingFeeStatus === "Rejected" && onDeleteOpen}
+            mt={"-20px"}
           />
         )}
       </Box>

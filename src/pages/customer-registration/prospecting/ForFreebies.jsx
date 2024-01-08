@@ -306,7 +306,6 @@ function ForFreebies() {
     }
   }, [isDrawerOpen]);
 
-  console.log(getValues());
   return (
     <>
       <Box>

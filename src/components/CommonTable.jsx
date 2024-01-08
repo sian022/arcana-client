@@ -17,12 +17,12 @@ import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
 import { useDispatch } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
-import CommonTableSkeleton from "./CommonTableSkeleton";
 import { Visibility } from "@mui/icons-material";
 import { formatPhoneNumber } from "../utils/CustomFunctions";
 import moment from "moment";
 
 function CommonTable({
+  mt,
   mapData,
   excludeKeys,
   excludeKeysDisplay,
@@ -74,7 +74,18 @@ function CommonTable({
 
   if (!mapData || mapData.length === 0) {
     return (
-      <Box className="noData">
+      <Box
+        className="noData"
+        sx={{
+          height: compact
+            ? // ? "calc(100vh - 370px)"
+              "calc(100vh - 330px)"
+            : moreCompact
+            ? // ? "calc(100vh - 400px)"
+              "calc(100vh - 330px)"
+            : null,
+        }}
+      >
         {imageLoaded && (
           <>
             <img src={NoData} alt="no-data-img" className="noData__image" />
@@ -120,15 +131,17 @@ function CommonTable({
   }
 
   return (
-    <Box className="tableSuperContainer">
+    <Box className="tableSuperContainer" sx={{ mt: mt && mt }}>
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
         sx={{
           height: compact
-            ? "calc(100vh - 370px)"
+            ? // ? "calc(100vh - 370px)"
+              "calc(100vh - 330px)"
             : moreCompact
-            ? "calc(100vh - 400px)"
+            ? // ? "calc(100vh - 400px)"
+              "calc(100vh - 330px)"
             : null,
         }}
       >

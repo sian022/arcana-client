@@ -174,7 +174,7 @@ function OtherExpenses() {
         />
 
         {isFetching ? (
-          <CommonTableSkeleton moreCompact />
+          <CommonTableSkeleton moreCompact mt={"-20px"} />
         ) : (
           <CommonTable
             mapData={data?.expenses}
@@ -192,6 +192,7 @@ function OtherExpenses() {
             onEdit={expenseStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
             onCancel={expenseStatus === "Rejected" && onDeleteOpen}
+            mt={"-20px"}
           />
         )}
       </Box>
