@@ -776,7 +776,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     if (clusterData && open) {
       setValue("clusterId", clusterData?.cluster?.[0]);
     }
-  }, [open]);
+  }, [open, clusterData]);
 
   return (
     <>

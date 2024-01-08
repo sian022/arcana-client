@@ -52,43 +52,36 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     (a, b) =>
       new Date(b.createdAt || b.updatedAt) -
       new Date(a.createdAt || a.updatedAt)
-    // (a, b) =>
-    //   new Date(a.createdAt || a.updatedAt) -
-    //   new Date(b.createdAt || b.updatedAt)
   );
 
   combinedListingFeeHistories.sort(
     (a, b) =>
       new Date(b.createdAt || b.updatedAt) -
       new Date(a.createdAt || a.updatedAt)
-    // (a, b) =>
-    //   new Date(a.createdAt || a.updatedAt) -
-    //   new Date(b.createdAt || b.updatedAt)
   );
 
   combinedOtherExpensesHistories.sort(
     (a, b) =>
       new Date(b.createdAt || b.updatedAt) -
       new Date(a.createdAt || a.updatedAt)
-    // (a, b) =>
-    //   new Date(a.createdAt || a.updatedAt) -
-    //   new Date(b.createdAt || b.updatedAt)
   );
 
   const handleActiveStep = (recentData) => {
     const level = recentData?.level || 1;
     const status = recentData?.status;
     const updatedAtExists = !!recentData?.updatedAt;
-    const approverCount = (selectedRowData?.approvers?.length || 0) + 1;
+    const approverCount = selectedRowData?.approvers?.length || 0;
 
-    if (status === "Rejected") return null;
-
-    if (updatedAtExists) {
+    if (!recentData) {
+      return 1;
+    } else if (status === "Rejected") {
+      return null;
+    } else if (updatedAtExists) {
       return 1;
     } else if (level && status === "Approved") {
       return level + 1;
     } else {
-      return approverCount;
+      return approverCount + 1;
     }
   };
 

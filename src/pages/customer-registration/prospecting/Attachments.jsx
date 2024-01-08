@@ -46,8 +46,6 @@ function Attachments() {
   const [currentViewPhotoLabelCamel, setCurrentViewPhotoLabelCamel] =
     useState("");
 
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
-
   const ownerRequirementRefs = {
     signature: useRef(),
     storePhoto: useRef(),

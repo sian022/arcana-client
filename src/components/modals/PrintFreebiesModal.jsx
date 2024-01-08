@@ -47,15 +47,6 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
   const address = selectedRowData?.ownersAddress;
   const { fullname } = useSelector((state) => state.login);
 
-  const fileUploadRef = useRef();
-
-  const {
-    signatureDirect,
-    photoProofDirect,
-    setSignatureDirect,
-    setPhotoProofDirect,
-  } = useContext(DirectReleaseContext);
-
   const printRef = useRef(null);
 
   const {
@@ -68,18 +59,6 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
     isOpen: isConfirmOpen,
     onOpen: onConfirmOpen,
     onClose: onConfirmClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isCancelConfirmOpen,
-    onOpen: onCancelConfirmOpen,
-    onClose: onCancelConfirmClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isRegisterOpen,
-    onOpen: onRegisterOpen,
-    onClose: onRegisterClose,
   } = useDisclosure();
 
   const {
@@ -354,8 +333,6 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
         currentViewPhoto={photoProof}
         currentViewPhotoLabel={"Freebie Photo"}
       />
-
-      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
 
       <CommonDialog
         open={isConfirmOpen}
