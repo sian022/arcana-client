@@ -83,7 +83,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     setRepresentativeRequirements,
     setRepresentativeRequirementsIsLink,
     setRequirementsMode,
-    convertSignatureToBase64,
   } = useContext(AttachmentsContext);
 
   const { showSnackbar } = useSnackbar();
@@ -135,18 +134,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     onOpen: onCancelConfirmOpen,
     onClose: onCancelConfirmClose,
   } = useDisclosure();
-
-  // const {
-  //   isOpen: isRedirectListingFeeOpen,
-  //   onOpen: onRedirectListingFeeOpen,
-  //   onClose: onRedirectListingFeeClose,
-  // } = useDisclosure();
-
-  // const {
-  //   isOpen: isListingFeeOpen,
-  //   onOpen: onListingFeeOpen,
-  //   onClose: onListingFeeClose,
-  // } = useDisclosure();
 
   // React Hook Form
   const {
@@ -210,34 +197,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         const value = termsAndConditions[key];
         return value !== null && value !== "";
       }),
-      // isValid: Object.keys(termsAndConditions).every((key) => {
-      //   if (
-      //     key === "" &&
-      //     (termsAndConditions[key].discountPercentage === null ||
-      //       termsAndConditions[key].discountPercentage === "" ||
-      //       termsAndConditions[key].discountPercentage === NaN ||
-      //       termsAndConditions[key].discountPercentage === undefined) &&
-      //     termsAndConditions["variableDiscount"] === false
-      //   ) {
-      //     return false;
-      //   }
-
-      //   if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
-      //     return true;
-      //   } else if (termsAndConditions["terms"] !== 3 && key === "creditLimit") {
-      //     return true;
-      //   }
-
-      //   if (key === "modeOfPayments") {
-      //     if (termsAndConditions[key]?.length === 0) {
-      //       return false;
-      //     }
-      //     return true;
-      //   }
-
-      //   const value = termsAndConditions[key];
-      //   return value !== null && value !== "";
-      // }),
       icon: <Gavel />,
       disabled: false,
     },
@@ -373,10 +332,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       onConfirmClose();
       onClose();
       handleResetForms();
-
-      // if (!editMode) {
-      //   debounce(onRedirectListingFeeOpen(), 2000);
-      // }
 
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
@@ -636,17 +591,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     return false;
   };
 
-  // const handleRedirectListingFeeYes = () => {
-  //   onRedirectListingFeeClose();
-  //   onListingFeeOpen();
-  // };
-
-  const handlePhoneNumberInput = (e) => {
-    const maxLength = 10;
-    const inputValue = e.target.value.toString().slice(0, maxLength);
-    e.target.value = inputValue;
-  };
-
   const handleSameAsOwnersAddress = () => {
     setSameAsOwnersAddress((prev) => !prev);
     if (!sameAsOwnersAddress) {
@@ -681,37 +625,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   };
 
   //UseEffects
-  // useEffect(() => {
-  //   if (sameAsOwnersAddress) {
-  //     setValue(
-  //       "businessAddress.houseNumber",
-  //       watch("ownersAddress.houseNumber"),
-  //       { shouldValidate: true }
-  //     );
-  //     setValue(
-  //       "businessAddress.streetName",
-  //       watch("ownersAddress.streetName"),
-  //       { shouldValidate: true }
-  //     ),
-  //       setValue(
-  //         "businessAddress.barangayName",
-  //         watch("ownersAddress.barangayName"),
-  //         { shouldValidate: true }
-  //       );
-  //     setValue("businessAddress.city", watch("ownersAddress.city"), {
-  //       shouldValidate: true,
-  //     }),
-  //       setValue("businessAddress.province", watch("ownersAddress.province"), {
-  //         shouldValidate: true,
-  //       });
-  //   } else {
-  //     setValue("businessAddress.houseNumber", "", { shouldValidate: true });
-  //     setValue("businessAddress.streetName", "", { shouldValidate: true });
-  //     setValue("businessAddress.barangayName", "", { shouldValidate: true });
-  //     setValue("businessAddress.city", "", { shouldValidate: true });
-  //     setValue("businessAddress.province", "", { shouldValidate: true });
-  //   }
-  // }, [sameAsOwnersAddress]);
 
   useEffect(() => {
     if (editMode) {
@@ -723,7 +636,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setValue("phoneNumber", selectedRowData?.phoneNumber);
       setValue("ownersAddress", selectedRowData?.ownersAddress);
       setValue("businessName", selectedRowData?.businessName);
-      // setValue("cluster", selectedRowData?.cluster);
       setValue(
         "clusterId",
         clusterData?.cluster?.find(
@@ -752,6 +664,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         )
       ) {
         setSameAsOwnersAddress(true);
+      }
+      if (
+        selectedRowData?.authorizedRepresentative &&
+        selectedRowData?.authorizedRepresentativePosition
+      ) {
+        setIncludeAuthorizedRepresentative(true);
       }
 
       // Terms and Conditions
@@ -784,15 +702,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   discountPercentage:
                     selectedRowData?.fixedDiscount?.discountPercentage * 100,
                 },
-          // fixedDiscount:
-          //   selectedRowData?.fixedDiscount === null
-          //     ? {
-          //         discountPercentage: null,
-          //       }
-          //     : {
-          //         discountPercentage:
-          //           selectedRowData?.fixedDiscount?.discountPercentage,
-          //       },
         })
       );
 
@@ -853,17 +762,15 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     }
   }, [open, termDaysData]);
 
-  useEffect(() => {
-    if (!!includeAuthorizedRepresentative) {
-      setRequirementsMode("representative");
-    }
-
-    if (!includeAuthorizedRepresentative) {
-      setValue("authorizedRepresentative", "");
-      setValue("authorizedRepresentativePosition", "");
-      setRequirementsMode("owner");
-    }
-  }, [includeAuthorizedRepresentative]);
+  // useEffect(() => {
+  //   if (!!includeAuthorizedRepresentative) {
+  //     setRequirementsMode("representative");
+  //   } else if (!includeAuthorizedRepresentative) {
+  //     setValue("authorizedRepresentative", "");
+  //     setValue("authorizedRepresentativePosition", "");
+  //     setRequirementsMode("owner");
+  //   }
+  // }, [includeAuthorizedRepresentative]);
 
   return (
     <>
@@ -1681,27 +1588,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           (Fields will be reset)
         </span>
       </CommonDialog>
-
-      {/* <CommonDialog
-        open={isRedirectListingFeeOpen}
-        onClose={onRedirectListingFeeClose}
-        onYes={handleRedirectListingFeeYes}
-        noIcon
-      >
-        Continue to listing fee for{" "}
-        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData?.businessName
-            ? selectedRowData?.businessName
-            : "client"}
-        </span>
-        ?
-      </CommonDialog>
-
-      <ListingFeeDrawer
-        isListingFeeOpen={isListingFeeOpen}
-        onListingFeeClose={onListingFeeClose}
-        redirect
-      /> */}
     </>
   );
 }

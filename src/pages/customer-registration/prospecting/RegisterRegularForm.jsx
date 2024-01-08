@@ -474,12 +474,6 @@ function RegisterRegularForm({ open, onClose }) {
     </Box>
   );
 
-  const handlePhoneNumberInput = (e) => {
-    const maxLength = 10;
-    const inputValue = e.target.value.toString().slice(0, maxLength);
-    e.target.value = inputValue;
-  };
-
   //UseEffects
   useEffect(() => {
     setValue("clientId", selectedRowData?.id);

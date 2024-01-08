@@ -273,34 +273,6 @@ function ListingFeeDrawer({
     onClientConfirmationClose();
   };
 
-  //UseEffects
-  // useEffect(() => {
-  //   setValue("clientId", clientId);
-  //   const freebiesLength = selectedRowData?.freebies?.length;
-
-  //   if (updateListingFee && isListingFeeOpen) {
-  //     const originalFreebies =
-  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
-
-  //     const transformedFreebies = originalFreebies.map((item) => ({
-  //       itemId: item,
-  //       itemDescription: item.itemDescription,
-  //       uom: item.uom,
-  //     }));
-
-  //     setValue("freebies", transformedFreebies);
-  //     setValue(
-  //       "freebieRequestId",
-  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
-  //         null
-  //     );
-  //   }
-
-  //   return () => {
-  //     setValue("clientId", null);
-  //   };
-  // }, [isListingFeeOpen]);
-
   useEffect(() => {
     if (redirect && clientData) {
       const foundItem = clientData?.regularClient?.find(
@@ -338,8 +310,6 @@ function ListingFeeDrawer({
     }
   }, [isListingFeeOpen, clientData]);
 
-  console.log(watch("clientId"));
-
   return (
     <>
       <CommonDrawer
@@ -352,7 +322,25 @@ function ListingFeeDrawer({
         // zIndex={editMode && 1300}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                Client Information
+              </Typography>
+            </Box>
+
             <ControlledAutocomplete
               name={`clientId`}
               control={control}
@@ -392,35 +380,6 @@ function ListingFeeDrawer({
                 }
               }}
             />
-
-            {/* <Controller
-              control={control}
-              name={`merchandisingAllowance`}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <NumericFormat
-                  customInput={TextField}
-                  type="text"
-                  // onChange={(e) => {
-                  //   handleCreditLimitChange(e);
-                  // }}
-                  label="Merchandising Allowance (₱)"
-                  // InputProps={{
-                  //   startAdornment: (
-                  //     <InputAdornment
-                  //       position="start"
-                  //       style={{ marginLeft: -3 }}
-                  //     >
-                  //       ₱
-                  //     </InputAdornment>
-                  //   ),
-                  // }}
-                  autoComplete="off"
-                  thousandSeparator=","
-                  size="small"
-                  sx={{ width: "280px" }}
-                />
-              )}
-            /> */}
           </Box>
 
           <Box

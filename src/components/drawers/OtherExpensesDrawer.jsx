@@ -286,7 +286,25 @@ function OtherExpensesDrawer({
         // zIndex={editMode && 1300}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                Client Information
+              </Typography>
+            </Box>
+
             <ControlledAutocomplete
               name={`clientId`}
               control={control}
@@ -299,10 +317,6 @@ function OtherExpensesDrawer({
               disableClearable
               loading={isClientLoading}
               disabled={redirect || editMode}
-              // value={clientData?.regularClient?.find(
-              //   (item) => item.businessName === selectedRowData?.businessName
-              // )}
-              // isOptionEqualToValue={(option, value) => option.id === value.id}
               isOptionEqualToValue={(option, value) => true}
               renderInput={(params) => (
                 <TextField
@@ -326,35 +340,6 @@ function OtherExpensesDrawer({
                 }
               }}
             />
-
-            {/* <Controller
-              control={control}
-              name={`merchandisingAllowance`}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <NumericFormat
-                  customInput={TextField}
-                  type="text"
-                  // onChange={(e) => {
-                  //   handleCreditLimitChange(e);
-                  // }}
-                  label="Merchandising Allowance (₱)"
-                  // InputProps={{
-                  //   startAdornment: (
-                  //     <InputAdornment
-                  //       position="start"
-                  //       style={{ marginLeft: -3 }}
-                  //     >
-                  //       ₱
-                  //     </InputAdornment>
-                  //   ),
-                  // }}
-                  autoComplete="off"
-                  thousandSeparator=","
-                  size="small"
-                  sx={{ width: "280px" }}
-                />
-              )}
-            /> */}
           </Box>
 
           <Box
@@ -366,7 +351,6 @@ function OtherExpensesDrawer({
               overflowX: "hidden",
               overflowY: "auto",
             }}
-            // ref={parent}
           >
             <Box
               sx={{
