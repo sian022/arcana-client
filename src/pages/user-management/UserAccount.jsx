@@ -44,7 +44,7 @@ function UserAccount() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [roleFilter, setRoleFilter] = useState("");
 
   const dispatch = useDispatch();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -120,6 +120,7 @@ function UserAccount() {
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
+    ...(roleFilter ? { UserRoleId: roleFilter } : {}),
   });
   const [putUser, { isLoading: isEditUserLoading }] = usePutUserMutation();
   const [patchUserStatus, { isLoading: isArchiveUserLoading }] =
@@ -278,6 +279,8 @@ function UserAccount() {
     }
   }, [watch("userRoleId")]);
 
+  console.log(roleFilter);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderFilterAdd
@@ -292,6 +295,7 @@ function UserAccount() {
         filterChoices={userRoleData?.userRoles || []}
         choiceLabel="roleName"
         choiceValue="id"
+        setFilter={setRoleFilter}
       />
       {isFetching ? (
         <CommonTableSkeleton />

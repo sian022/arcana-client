@@ -45,7 +45,11 @@ function PageHeaderFilterAdd({
             size="small"
             // select
             // label="Role"
-            onChange={(e) => setFilter && setFilter(e.target.value)}
+            onChange={(e) =>
+              setFilter && e.target.value === " "
+                ? setFilter("")
+                : setFilter(e.target.value)
+            }
             defaultValue={" "}
           >
             <MenuItem value=" ">All</MenuItem>
