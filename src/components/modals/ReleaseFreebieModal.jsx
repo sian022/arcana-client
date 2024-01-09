@@ -539,7 +539,9 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
         currentViewPhotoLabel={"Freebie Photo"}
       />
 
-      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+      {!direct && (
+        <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+      )}
 
       <CommonDialog
         open={isConfirmOpen}

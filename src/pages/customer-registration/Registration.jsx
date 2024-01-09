@@ -96,7 +96,7 @@ function DirectRegistration() {
 
   const { data, isLoading, isFetching } = useGetAllClientsQuery({
     Search: search,
-    Status: status,
+    // Status: status,
     RegistrationStatus: clientStatus,
     Origin: origin,
     PageNumber: page + 1,
@@ -214,7 +214,7 @@ function DirectRegistration() {
 
   const onVoidSubmit = async () => {
     try {
-      await patchUpdateRegistrationStatus(selectedRowData?.id).unwrap();
+      await putVoidClientRegistration(selectedRowData?.id).unwrap();
       onVoidClose();
       showSnackbar("Client voided successfully", "success");
     } catch (error) {
