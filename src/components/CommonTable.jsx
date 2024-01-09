@@ -55,6 +55,7 @@ function CommonTable({
   status,
   compact,
   moreCompact,
+  midCompact,
   percentageArray,
   pesoArray,
   viewMoreKey,
@@ -83,6 +84,8 @@ function CommonTable({
             : moreCompact
             ? // ? "calc(100vh - 400px)"
               "calc(100vh - 330px)"
+            : midCompact
+            ? "calc(100vh - 280px)"
             : "calc(100vh - 270px)",
         }}
       >
@@ -142,6 +145,8 @@ function CommonTable({
             : moreCompact
             ? // ? "calc(100vh - 400px)"
               "calc(100vh - 330px)"
+            : midCompact
+            ? "calc(100vh - 280px)"
             : null,
         }}
       >

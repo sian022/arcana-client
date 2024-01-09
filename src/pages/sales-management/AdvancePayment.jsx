@@ -8,6 +8,7 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonDialog from "../../components/CommonDialog";
 import { useSelector } from "react-redux";
+import CommonModalForm from "../../components/CommonModalForm";
 
 function AdvancePayment() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -32,11 +33,18 @@ function AdvancePayment() {
     onClose: onArchiveClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isFormOpen,
+    onOpen: onFormOpen,
+    onClose: onFormClose,
+  } = useDisclosure();
+
   const isFetching = false;
 
   const handleAddOpen = () => {
     setDrawerMode("add");
-    onDrawerOpen();
+    // onDrawerOpen();
+    onFormOpen();
   };
 
   const handleDrawerClose = () => {
@@ -70,12 +78,13 @@ function AdvancePayment() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          midCompact
         />
       )}
 
       <CommonDrawer
-        open={isDrawerOpen}
-        onClose={handleDrawerClose}
+        // open={isDrawerOpen}
+        // onClose={handleDrawerClose}
         drawerHeader={
           (drawerMode === "add" ? "Add" : "Edit") + " Advance Payment"
         }
@@ -92,6 +101,14 @@ function AdvancePayment() {
           // error={errors?.storeTypeName}
         />
       </CommonDrawer>
+
+      <CommonModalForm
+        title="Advance Payment"
+        open={isFormOpen}
+        onClose={onFormClose}
+      >
+        <TextField size="small" />
+      </CommonModalForm>
 
       <CommonDialog
         open={isArchiveOpen}

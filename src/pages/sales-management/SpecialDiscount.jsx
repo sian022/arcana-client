@@ -132,6 +132,7 @@ function SpecialDiscount() {
             // pesoArray={pesoArray}
             // onEdit={handleOpenEdit}
             // onHistory={onHistoryOpen}
+            mt={"-20px"}
           />
         )}
       </Box>
@@ -204,6 +205,7 @@ function SpecialDiscount() {
             size="small"
             autoComplete="off"
             type="number"
+            required
             // {...register("storeTypeName")}
             // helperText={errors?.storeTypeName?.message}
             // error={errors?.storeTypeName}

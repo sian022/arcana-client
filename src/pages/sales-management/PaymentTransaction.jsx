@@ -119,6 +119,7 @@ function PaymentTransaction() {
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
+          mt={"-20px"}
         />
       )}
 

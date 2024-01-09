@@ -271,15 +271,13 @@ function UserAccount() {
 
   useEffect(() => {
     setPage(0);
-  }, [search, status, rowsPerPage]);
+  }, [search, status, rowsPerPage, roleFilter]);
 
   useEffect(() => {
     if (watch("userRoleId")?.roleName !== "CDO") {
       setValue("clusters", []);
     }
   }, [watch("userRoleId")]);
-
-  console.log(roleFilter);
 
   return (
     <Box className="commonPageLayout">
