@@ -33,6 +33,7 @@ import {
   useGetAllClustersQuery,
 } from "../../features/setup/api/clusterApi";
 import ControlledAutocompleteMultiple from "../../components/ControlledAutocompleteMultiple";
+import PageHeaderFilterAdd from "../../components/PageHeaderFilterAdd";
 
 function UserAccount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -279,7 +280,7 @@ function UserAccount() {
 
   return (
     <Box className="commonPageLayout">
-      <PageHeaderAdd
+      <PageHeaderFilterAdd
         pageTitle={
           <>
             User Account <Person />
@@ -288,6 +289,9 @@ function UserAccount() {
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
+        filterChoices={userRoleData?.userRoles || []}
+        choiceLabel="roleName"
+        choiceValue="id"
       />
       {isFetching ? (
         <CommonTableSkeleton />

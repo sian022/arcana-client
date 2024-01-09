@@ -15,11 +15,11 @@ import NoData from "../../../assets/images/no-data.jpg";
 function OtherExpensesTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   // const [totalAmount, setTotalAmount] = useState(0);
-  const totalAmount = selectedRowData?.listingFees?.reduce((total, item) => {
+  const totalAmount = selectedRowData?.expenses?.reduce((total, item) => {
     return (
       total +
-      item?.listingItems?.reduce((subtotal, listing) => {
-        return subtotal + (listing.unitCost || 0);
+      item?.expenses?.reduce((subtotal, expense) => {
+        return subtotal + (expense.amount || 0);
       }, 0)
     );
   }, 0);
@@ -38,16 +38,16 @@ function OtherExpensesTab() {
               Other Expenses
             </Typography>
 
-            {selectedRowData?.listingFee &&
-              selectedRowData?.listingFee?.length > 0 && (
+            {/* {selectedRowData?.expenses &&
+              selectedRowData?.expenses?.length > 0 && (
                 <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
                   Expenses Information
                 </Typography>
-              )}
+              )} */}
           </Box>
 
-          {selectedRowData?.listingFees &&
-          selectedRowData?.listingFees?.length > 0 ? (
+          {selectedRowData?.expenses &&
+          selectedRowData?.expenses?.length > 0 ? (
             <Box className="viewListingFeeModal__table">
               <TableContainer
                 sx={{
@@ -68,19 +68,10 @@ function OtherExpensesTab() {
                   >
                     <TableRow>
                       <TableCell sx={{ color: "black !important" }}>
-                        Item Code
+                        Expense Type
                       </TableCell>
                       <TableCell sx={{ color: "black !important" }}>
-                        Item Description
-                      </TableCell>
-                      <TableCell sx={{ color: "black !important" }}>
-                        UOM
-                      </TableCell>
-                      <TableCell sx={{ color: "black !important" }}>
-                        SKU
-                      </TableCell>
-                      <TableCell sx={{ color: "black !important" }}>
-                        Unit Cost
+                        Amount
                       </TableCell>
                       <TableCell sx={{ color: "black !important" }}>
                         Tx No.
@@ -92,17 +83,12 @@ function OtherExpensesTab() {
                   </TableHead>
 
                   <TableBody>
-                    {selectedRowData?.listingFees?.map((item) =>
-                      item?.listingItems?.map((listing) => (
-                        <TableRow key={listing.id}>
-                          <TableCell>{listing.itemCode}</TableCell>
+                    {selectedRowData?.expenses?.map((item) =>
+                      item?.expenses?.map((expense) => (
+                        <TableRow key={expense.id}>
+                          <TableCell>{expense.expenseType}</TableCell>
                           <TableCell>
-                            {listing.itemDescription?.toUpperCase()}
-                          </TableCell>
-                          <TableCell>{listing.uom}</TableCell>
-                          <TableCell>{listing.sku}</TableCell>
-                          <TableCell>
-                            ₱ {listing.unitCost?.toLocaleString()}
+                            ₱ {expense.amount?.toLocaleString()}
                           </TableCell>
                           <TableCell>{item.id}</TableCell>
                           <TableCell>
@@ -113,6 +99,8 @@ function OtherExpensesTab() {
                                     ? "success.main"
                                     : item?.status === "Rejected"
                                     ? "error.main"
+                                    : item?.status === "Voided"
+                                    ? "gray"
                                     : "warning.main",
                                 borderRadius: "5px",
                                 padding: "3px",

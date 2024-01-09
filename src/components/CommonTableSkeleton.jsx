@@ -25,6 +25,7 @@ function CommonTableSkeleton({ compact, moreCompact, mt }) {
             ? // ? "calc(100vh - 400px)"
               "calc(100vh - 330px)"
             : null,
+          overflow: "hidden",
         }}
       >
         <Table>
@@ -38,7 +39,7 @@ function CommonTableSkeleton({ compact, moreCompact, mt }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.from({ length: 6 }, (row, rowIndex) => (
+            {Array.from({ length: 8 }, (row, rowIndex) => (
               <TableRow key={rowIndex}>
                 {Array.from({ length: 5 }, (cell, cellIndex) => (
                   <TableCell key={cellIndex}>

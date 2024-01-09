@@ -74,16 +74,16 @@ function ViewRegistrationDetailsModal({
     { label: "Personal Info", disabled: false },
     { label: "Terms and Conditions", disabled: false },
     { label: "Attachments", disabled: false },
-    { label: "Listing Fee", disabled: false },
     { label: "Freebies", disabled: false },
+    { label: "Listing Fee", disabled: false },
     { label: "Other Expenses", disabled: false },
   ];
 
   navigators[1].disabled = approval && !viewedTabs["Personal Info"];
   navigators[2].disabled = approval && !viewedTabs["Terms and Conditions"];
   navigators[3].disabled = approval && !viewedTabs["Attachments"];
-  navigators[4].disabled = approval && !viewedTabs["Listing Fee"];
-  navigators[5].disabled = approval && !viewedTabs["Freebies"];
+  navigators[4].disabled = approval && !viewedTabs["Freebies"];
+  navigators[5].disabled = approval && !viewedTabs["Listing Fee"];
 
   //RTK Query
   const [putApproveClient, { isLoading: isApproveLoading }] =
@@ -138,10 +138,10 @@ function ViewRegistrationDetailsModal({
     } else if (activeTab === "Terms and Conditions") {
       setActiveTab("Attachments");
     } else if (activeTab === "Attachments") {
-      setActiveTab("Listing Fee");
-    } else if (activeTab === "Listing Fee") {
       setActiveTab("Freebies");
     } else if (activeTab === "Freebies") {
+      setActiveTab("Listing Fee");
+    } else if (activeTab === "Listing Fee") {
       setActiveTab("Other Expenses");
     }
   };
@@ -151,12 +151,12 @@ function ViewRegistrationDetailsModal({
       setActiveTab("Personal Info");
     } else if (activeTab === "Attachments") {
       setActiveTab("Terms and Conditions");
-    } else if (activeTab === "Listing Fee") {
-      setActiveTab("Attachments");
     } else if (activeTab === "Freebies") {
-      setActiveTab("Listing Fee");
-    } else if (activeTab === "Other Expenses") {
+      setActiveTab("Attachments");
+    } else if (activeTab === "Listing Fee") {
       setActiveTab("Freebies");
+    } else if (activeTab === "Other Expenses") {
+      setActiveTab("Listing Fee");
     }
   };
 
@@ -229,8 +229,8 @@ function ViewRegistrationDetailsModal({
           {activeTab === "Personal Info" && <PersonalInfoTab />}
           {activeTab === "Terms and Conditions" && <TermsAndConditionsTab />}
           {activeTab === "Attachments" && <AttachmentsTab />}
-          {activeTab === "Listing Fee" && <ListingFeeTab />}
           {activeTab === "Freebies" && <FreebiesTab />}
+          {activeTab === "Listing Fee" && <ListingFeeTab />}
           {activeTab === "Other Expenses" && <OtherExpensesTab />}
 
           <Box

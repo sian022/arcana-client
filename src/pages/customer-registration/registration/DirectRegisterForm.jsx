@@ -149,7 +149,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   } = useForm({
     resolver: yupResolver(directRegisterPersonalSchema.schema),
     // resolver: yupResolver(regularRegisterSchema.schema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: directRegisterPersonalSchema.defaultValues,
     // defaultValues: regularRegisterSchema.defaultValues,
   });
@@ -444,7 +444,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const handleResetForms = () => {
     reset();
-    setValue("phoneNumber", "");
+    // setValue("phoneNumber", "");
 
     setSameAsOwnersAddress(false);
     setIncludeAuthorizedRepresentative(false);

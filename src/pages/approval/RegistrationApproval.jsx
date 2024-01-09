@@ -142,6 +142,7 @@ function RegistrationApproval() {
     "origin",
     "approvers",
     "registrationStatus",
+    "expenses",
   ];
 
   //Misc Functions

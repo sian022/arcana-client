@@ -49,12 +49,12 @@ function ListingFeeTab() {
               Listing Fee
             </Typography>
 
-            {selectedRowData?.listingFee &&
-              selectedRowData?.listingFee?.length > 0 && (
+            {/* {selectedRowData?.listingFees &&
+              selectedRowData?.listingFees?.length > 0 && (
                 <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
                   Product Information
                 </Typography>
-              )}
+              )} */}
           </Box>
 
           {selectedRowData?.listingFees &&
@@ -124,6 +124,8 @@ function ListingFeeTab() {
                                     ? "success.main"
                                     : item?.status === "Rejected"
                                     ? "error.main"
+                                    : item?.status === "Voided"
+                                    ? "gray"
                                     : "warning.main",
                                 borderRadius: "5px",
                                 padding: "3px",

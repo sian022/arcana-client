@@ -176,6 +176,7 @@ function DirectRegistration() {
     "origin",
     "approvers",
     "registrationStatus",
+    "expenses",
   ];
 
   const tableHeads = [
