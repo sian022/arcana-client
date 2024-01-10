@@ -35,6 +35,7 @@ function DirectRegistration() {
 
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const userDetails = useSelector((state) => state.login.userDetails);
 
   const { notifications } = useContext(AppContext);
 
@@ -283,9 +284,13 @@ function DirectRegistration() {
             // onArchive={true}
             status={status}
             onEdit={
-              clientStatus !== "Voided" &&
-              clientStatus !== "Approved" &&
-              handleEditOpen
+              userDetails?.roleName === "Admin"
+                ? handleEditOpen
+                : userDetails?.roleName !== "Admin"
+                ? clientStatus !== "Voided" &&
+                  clientStatus !== "Approved" &&
+                  handleEditOpen
+                : null
             }
             // onArchive={onArchiveOpen}
             onVoid={clientStatus === "Rejected" && onVoidOpen}
@@ -313,6 +318,7 @@ function DirectRegistration() {
         onRegisterOpen={onRegisterOpen}
         editMode={editMode}
         setEditMode={setEditMode}
+        clientStatus={clientStatus}
       />
 
       <CommonDialog

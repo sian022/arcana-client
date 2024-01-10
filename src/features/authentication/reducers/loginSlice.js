@@ -1,15 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import CryptoJS from "crypto-js";
 import { saltkey } from "../../../utils/saltkey";
+import { decryptString } from "../../../utils/CustomFunctions";
 
 const storedFullname = sessionStorage.getItem("fullname");
+const storedUserDetails = decryptString(sessionStorage.getItem("userDetails"));
 
 const initialState = {
   fullname: storedFullname || "",
   roleName: "",
   token: "",
   isPasswordChanged: false,
-  userDetails: {},
+  userDetails: storedUserDetails || {},
   username: "",
 };
 

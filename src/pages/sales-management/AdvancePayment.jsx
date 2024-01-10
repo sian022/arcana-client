@@ -1,4 +1,4 @@
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
@@ -107,7 +107,28 @@ function AdvancePayment() {
         open={isFormOpen}
         onClose={onFormClose}
       >
-        <TextField size="small" />
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+              Business Info
+            </Typography>
+            <TextField size="small" label="Business Name - Owner's Name" />
+          </Box>
+
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+              Advance Payment Amount
+            </Typography>
+            <TextField size="small" label="Advance Payment Amount" />
+          </Box>
+
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+              Payment Type
+            </Typography>
+            <TextField size="small" sx={{ width: "50%" }} />
+          </Box>
+        </Box>
       </CommonModalForm>
 
       <CommonDialog

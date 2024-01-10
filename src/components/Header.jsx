@@ -108,9 +108,6 @@ function Header() {
   };
 
   const handleLogout = () => {
-    dispatch(notificationApi.util.resetApiState());
-    dispatch(clusterApi.util.resetApiState());
-
     dispatch(setToken(""));
     dispatch(setFullname(""));
     dispatch(setPermissisons(""));
@@ -121,6 +118,8 @@ function Header() {
     dispatch(registrationApi.util.resetApiState());
     dispatch(listingFeeApi.util.resetApiState());
     dispatch(prospectApi.util.resetApiState());
+    dispatch(notificationApi.util.resetApiState());
+    dispatch(clusterApi.util.resetApiState());
 
     // localStorage.removeItem("token");
     // localStorage.removeItem("fullname");

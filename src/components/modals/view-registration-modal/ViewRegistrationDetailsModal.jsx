@@ -85,6 +85,12 @@ function ViewRegistrationDetailsModal({
   navigators[4].disabled = approval && !viewedTabs["Freebies"];
   navigators[5].disabled = approval && !viewedTabs["Listing Fee"];
 
+  if (clientStatus !== "Approved") {
+    for (let i = navigators.length - 1; i >= 3; i--) {
+      navigators.splice(i, 1);
+    }
+  }
+
   //RTK Query
   const [putApproveClient, { isLoading: isApproveLoading }] =
     usePutApproveClientMutation();
@@ -106,7 +112,13 @@ function ViewRegistrationDetailsModal({
 
   const customRibbonContent = (
     <Box sx={{ display: "flex", flex: 1, gap: "10px", alignItems: "center" }}>
-      <Box className="viewRegistrationModal__headers">
+      <Box
+        className={
+          clientStatus !== "Approved"
+            ? "viewRegistrationModal__headersThree"
+            : "viewRegistrationModal__headers"
+        }
+      >
         {navigators.map((item, i) => (
           <Button
             key={i}
@@ -212,12 +224,13 @@ function ViewRegistrationDetailsModal({
       [activeTab]: true,
     });
   }, [activeTab]);
+  console.log(clientStatus);
 
   return (
     <>
       <CommonModal
         // width="800px"
-        width="900px"
+        width={clientStatus === "Approved" ? "900px" : "800px"}
         height="670px"
         disablePadding
         ribbon
