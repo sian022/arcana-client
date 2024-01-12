@@ -106,6 +106,7 @@ function AdvancePayment() {
         title="Advance Payment"
         open={isFormOpen}
         onClose={onFormClose}
+        width={"800px"}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
@@ -115,18 +116,26 @@ function AdvancePayment() {
             <TextField size="small" label="Business Name - Owner's Name" />
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-              Advance Payment Amount
-            </Typography>
-            <TextField size="small" label="Advance Payment Amount" />
-          </Box>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+            }}
+          >
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                Payment Type
+              </Typography>
+              <TextField size="small" />
+            </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-              Payment Type
-            </Typography>
-            <TextField size="small" sx={{ width: "50%" }} />
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                Advance Payment Amount
+              </Typography>
+              <TextField size="small" label="Advance Payment Amount" />
+            </Box>
           </Box>
         </Box>
       </CommonModalForm>

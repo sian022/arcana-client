@@ -87,7 +87,7 @@ function UserManagement() {
                 Cluster
               </Typography>
               <Typography className="pageIndex__navigators__item__text__subTitle">
-                Manage clusters and tag CDOs
+                Manage clusters with tagged CDOs
               </Typography>
             </Box>
 
