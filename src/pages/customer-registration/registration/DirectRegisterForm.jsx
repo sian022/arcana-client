@@ -72,7 +72,6 @@ import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat, PatternFormat } from "react-number-format";
-import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
@@ -240,7 +239,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     useGetAllStoreTypesQuery({ Status: true });
   const { data: termDaysData, isLoading: isTermDaysLoading } =
     useGetAllTermDaysQuery({ Status: true });
-  const { data: clusterData } = useGetAllClustersQuery({ Status: true });
+  const { data: clusterData } = useGetAllClustersQuery({
+    Status: true,
+    ModuleName: "Registration",
+  });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();

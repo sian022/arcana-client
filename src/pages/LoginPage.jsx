@@ -53,7 +53,7 @@ function LoginPage() {
     reset,
   } = useForm({
     resolver: yupResolver(loginSchema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: {
       username: "",
       password: "",

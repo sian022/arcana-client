@@ -18,6 +18,7 @@ import {
 } from "../../features/otherExpenses/api/otherExpensesRegApi";
 import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
 import AddVoidSearchMixin from "../../components/mixins/AddVoidSearchMixin";
+import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function OtherExpenses() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -33,7 +34,7 @@ function OtherExpenses() {
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, setModuleName } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -72,6 +73,8 @@ function OtherExpenses() {
 
   const [patchVoidExpenseRequest, { isLoading: isVoidLoading }] =
     usePatchVoidExpenseRequestMutation();
+
+  const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
   const expenseNavigation = [
@@ -156,6 +159,16 @@ function OtherExpenses() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
+
+  // useEffect(() => {
+  //   setModuleName("Other Expenses");
+  // }, []);
+
+  useEffect(() => {
+    if (expenseStatus === "Rejected") {
+      patchReadNotification({ Tab: "Rejected Expenses" });
+    }
+  }, [expenseStatus]);
 
   return (
     <>

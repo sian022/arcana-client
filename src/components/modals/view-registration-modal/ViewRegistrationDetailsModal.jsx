@@ -224,7 +224,6 @@ function ViewRegistrationDetailsModal({
       [activeTab]: true,
     });
   }, [activeTab]);
-  console.log(clientStatus);
 
   return (
     <>

@@ -10,6 +10,7 @@ import { useGetAllClientsQuery } from "../../features/registration/api/registrat
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
+import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -21,7 +22,7 @@ function RegistrationApproval() {
   const [count, setCount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const { notifications } = useContext(AppContext);
+  const { notifications, setModuleName } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -64,6 +65,8 @@ function RegistrationApproval() {
     PageSize: rowsPerPage,
   });
 
+  const [patchReadNotification] = usePatchReadNotificationMutation();
+
   //Constants
   const registrationNavigation = [
     {
@@ -76,13 +79,13 @@ function RegistrationApproval() {
       case: 2,
       name: "Approved Clients",
       registrationStatus: "Approved",
-      badge: notifications["approvedClient"],
+      // badge: notifications["approvedClient"],
     },
     {
       case: 3,
       name: "Rejected Clients",
       registrationStatus: "Rejected",
-      badge: notifications["rejectedClient"],
+      // badge: notifications["rejectedClient"],
     },
   ];
 
@@ -158,6 +161,16 @@ function RegistrationApproval() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
+
+  // useEffect(() => {
+  //   setModuleName("Registration");
+  // }, []);
+
+  useEffect(() => {
+    if (clientStatus === "Under review") {
+      patchReadNotification({ Tab: "Pending Clients" });
+    }
+  }, [clientStatus]);
 
   return (
     <>

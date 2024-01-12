@@ -9,6 +9,7 @@ import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
 import { useGetAllExpensesQuery } from "../../features/otherExpenses/api/otherExpensesRegApi";
 import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
+import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function OtherExpensesApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -19,7 +20,7 @@ function OtherExpensesApproval() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, setModuleName } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -44,6 +45,8 @@ function OtherExpensesApproval() {
     PageSize: rowsPerPage,
   });
 
+  const [patchReadNotification] = usePatchReadNotificationMutation();
+
   //Constants
   const otherExpensesNavigation = [
     {
@@ -56,13 +59,13 @@ function OtherExpensesApproval() {
       case: 2,
       name: "Approved Expenses",
       expenseStatus: "Approved",
-      badge: notifications["approvedOtherExpenses"],
+      // badge: notifications["approvedOtherExpenses"],
     },
     {
       case: 3,
       name: "Rejected Expenses",
       expenseStatus: "Rejected",
-      badge: notifications["rejectedOtherExpenses"],
+      // badge: notifications["rejectedOtherExpenses"],
     },
   ];
 
@@ -94,6 +97,16 @@ function OtherExpensesApproval() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
+
+  // useEffect(() => {
+  //   setModuleName("Other Expenses");
+  // }, []);
+
+  useEffect(() => {
+    if (expenseStatus === "Under review") {
+      patchReadNotification({ Tab: "Pending Expenses" });
+    }
+  }, [expenseStatus]);
 
   return (
     <>

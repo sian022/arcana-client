@@ -93,7 +93,8 @@ function UserAccount() {
     "companyName",
     "departmentName",
     "locationName",
-    "clusters",
+    "cluster",
+    "clusterId",
   ];
 
   const tableHeads = ["Full ID Number", "Full Name", "Username", "Role Name"];
@@ -138,7 +139,8 @@ function UserAccount() {
   const onDrawerSubmit = async (data) => {
     const {
       userRoleId: { id },
-      clusters,
+      // clusters,
+      clusterId,
       ...restData
     } = data;
 
@@ -147,18 +149,20 @@ function UserAccount() {
         await postUser({
           ...restData,
           userRoleId: id,
-          clusters: clusters?.map((item) => ({
-            clusterId: item.id,
-          })),
+          clusterId: clusterId?.id,
+          // clusters: clusters?.map((item) => ({
+          //   clusterId: item.id,
+          // })),
         }).unwrap();
         setSnackbarMessage("User Account added successfully");
       } else if (drawerMode === "edit") {
         await putUser({
           ...restData,
           userRoleId: id,
-          clusters: clusters?.map((item) => ({
-            clusterId: item.clusterId || item.id,
-          })),
+          clusterId: clusterId?.id,
+          // clusters: clusters?.map((item) => ({
+          //   clusterId: item.clusterId || item.id,
+          // })),
         }).unwrap();
         setSnackbarMessage("User Account updated successfully");
       }
@@ -224,9 +228,13 @@ function UserAccount() {
       )
     );
     setValue(
-      "clusters",
-      editData.clusters?.map((item) => item)
+      "clusterId",
+      clusterData?.cluster?.find((item) => item.cluster === editData.cluster)
     );
+    // setValue(
+    //   "clusters",
+    //   editData.clusters?.map((item) => item)
+    // );
   };
 
   const handleArchiveOpen = (id) => {
@@ -275,7 +283,8 @@ function UserAccount() {
 
   useEffect(() => {
     if (watch("userRoleId")?.roleName !== "CDO") {
-      setValue("clusters", []);
+      // setValue("clusters", []);
+      setValue("clusterId", null);
     }
   }, [watch("userRoleId")]);
 
@@ -327,8 +336,11 @@ function UserAccount() {
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={
           watch("userRoleId")?.roleName === "CDO"
-            ? !isValid || watch("clusters")?.length === 0
+            ? !isValid || !watch("clusterId")
             : !isValid
+          // watch("userRoleId")?.roleName === "CDO"
+          //   ? !isValid || watch("clusters")?.length === 0
+          //   : !isValid
         }
         isLoading={drawerMode === "add" ? isAddUserLoading : isEditUserLoading}
       >
@@ -529,29 +541,30 @@ function UserAccount() {
 
         {watch("userRoleId")?.roleName === "CDO" && (
           <ControlledAutocompleteMultiple
-            name={"clusters"}
-            multiple
+            name={"clusterId"}
+            // multiple
             // filterSelectedOptions
             control={control}
             options={clusterData?.cluster || []}
             getOptionLabel={(option) => option.cluster}
-            // disableClearable
-            getOptionDisabled={(option) => {
-              const clusters = watch("clusters");
-              const isClusterRepeating = Array.isArray(clusters)
-                ? clusters.some((item) => item.cluster === option.cluster)
-                : false;
+            disableClearable
+            // getOptionDisabled={(option) => {
+            //   const clusters = watch("clusters");
+            //   const isClusterRepeating = Array.isArray(clusters)
+            //     ? clusters.some((item) => item.cluster === option.cluster)
+            //     : false;
 
-              return isClusterRepeating;
-            }}
+            //   return isClusterRepeating;
+            // }}
+            getOptionDisabled={(option) => option?.userId !== null}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <TextField
                 {...params}
                 size="small"
                 label="Cluster"
-                helperText={errors?.clusters?.message}
-                error={errors?.clusters}
+                helperText={errors?.clusterId?.message}
+                error={errors?.clusterId}
               />
             )}
           />

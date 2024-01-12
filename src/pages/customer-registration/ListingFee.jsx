@@ -16,10 +16,11 @@ import useSnackbar from "../../hooks/useSnackbar";
 import { useDispatch, useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
-import { notificationApi } from "../../features/notification/api/notificationApi";
+import {
+  notificationApi,
+  usePatchReadNotificationMutation,
+} from "../../features/notification/api/notificationApi";
 import { registrationApi } from "../../features/registration/api/registrationApi";
-import SearchVoidFilterMixin from "../../components/mixins/SearchVoidFilterMixin";
-import AddVoidSearchMixin from "../../components/mixins/AddVoidSearchMixin";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -33,7 +34,7 @@ function ListingFee() {
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, setModuleName } = useContext(AppContext);
   const dispatch = useDispatch();
 
   //Disclosures
@@ -73,6 +74,8 @@ function ListingFee() {
 
   const [deleteCancelListingFee, { isLoading: isDeleteLoading }] =
     useDeleteCancelListingFeeMutation();
+
+  const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
   const listingFeeNavigation = [
@@ -171,6 +174,16 @@ function ListingFee() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
+
+  // useEffect(() => {
+  //   setModuleName("Listing Fee");
+  // }, []);
+
+  useEffect(() => {
+    if (listingFeeStatus === "Rejected") {
+      patchReadNotification({ Tab: "Rejected Listing Fee" });
+    }
+  }, [listingFeeStatus]);
 
   return (
     <>

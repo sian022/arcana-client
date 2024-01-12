@@ -206,7 +206,10 @@ function RegisterRegularForm({ open, onClose }) {
     usePutAddTermsAndCondtionsMutation();
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
-  const { data: clusterData } = useGetAllClustersQuery({ Status: true });
+  const { data: clusterData } = useGetAllClustersQuery({
+    Status: true,
+    ModuleName: "Registration",
+  });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();

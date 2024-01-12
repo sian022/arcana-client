@@ -13,6 +13,7 @@ import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listing
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
+import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function ListingFeeApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -23,7 +24,7 @@ function ListingFeeApproval() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, setModuleName } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -65,6 +66,8 @@ function ListingFeeApproval() {
     PageSize: rowsPerPage,
   });
 
+  const [patchReadNotification] = usePatchReadNotificationMutation();
+
   //Constants
   const listingFeeNavigation = [
     {
@@ -77,13 +80,13 @@ function ListingFeeApproval() {
       case: 2,
       name: "Approved Listing Fee",
       listingFeeStatus: "Approved",
-      badge: notifications["approvedListingFee"],
+      // badge: notifications["approvedListingFee"],
     },
     {
       case: 3,
       name: "Rejected Listing Fee",
       listingFeeStatus: "Rejected",
-      badge: notifications["rejectedListingFee"],
+      // badge: notifications["rejectedListingFee"],
     },
   ];
 
@@ -125,6 +128,16 @@ function ListingFeeApproval() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
+
+  // useEffect(() => {
+  //   setModuleName("Listing Fee");
+  // }, []);
+
+  useEffect(() => {
+    if (listingFeeStatus === "Under review") {
+      patchReadNotification({ Tab: "Pending Listing Fee" });
+    }
+  }, [listingFeeStatus]);
 
   return (
     <>

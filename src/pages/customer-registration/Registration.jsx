@@ -19,6 +19,7 @@ import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import PrintFreebiesModal from "../../components/modals/PrintFreebiesModal";
 import { AppContext } from "../../context/AppContext";
 import SearchVoidFilterMixin from "../../components/mixins/SearchVoidFilterMixin";
+import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -37,7 +38,7 @@ function DirectRegistration() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const userDetails = useSelector((state) => state.login.userDetails);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, setModuleName } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -109,19 +110,21 @@ function DirectRegistration() {
   const [putVoidClientRegistration, { isLoading: isVoidLoading }] =
     usePutVoidClientRegistrationMutation();
 
+  const [patchReadNotification] = usePatchReadNotificationMutation();
+
   //Constants
   const registrationNavigation = [
     {
       case: 1,
       name: "Pending Clients",
       registrationStatus: "Under review",
-      badge: notifications["pendingClient"],
+      // badge: notifications["pendingClient"],
     },
     {
       case: 2,
       name: "Approved Clients",
       registrationStatus: "Approved",
-      badge: notifications["approvedClient"],
+      // badge: notifications["approvedClient"],
     },
     {
       case: 3,
@@ -239,6 +242,16 @@ function DirectRegistration() {
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
+
+  // useEffect(() => {
+  //   setModuleName("Registration");
+  // }, []);
+
+  useEffect(() => {
+    if (clientStatus === "Rejected") {
+      patchReadNotification({ Tab: "Rejected Clients" });
+    }
+  }, [clientStatus]);
 
   return (
     <>

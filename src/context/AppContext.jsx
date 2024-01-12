@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import CommonSnackbar from "../components/CommonSnackbar";
 import useDisclosure from "../hooks/useDisclosure";
 import { useGetNotificationsQuery } from "../features/notification/api/notificationApi";
+import { decryptString } from "../utils/CustomFunctions";
 
 const AppContext = createContext();
 
@@ -10,6 +11,8 @@ const AppProvider = ({ children }) => {
   const [snackbarVariant, setSnackbarVariant] = useState("success");
 
   const [notifications, setNotifications] = useState({});
+  const [moduleName, setModuleName] = useState("");
+  const userId = decryptString(sessionStorage.getItem("userDetails"))?.id;
 
   const {
     isOpen: isSnackbarOpen,
@@ -19,7 +22,6 @@ const AppProvider = ({ children }) => {
 
   const {
     data: notificationData,
-    isLoading: isNotificationLoading,
     isFetching: isNotificationFetching,
     refetch: refetchNotifications,
   } = useGetNotificationsQuery();
@@ -40,6 +42,8 @@ const AppProvider = ({ children }) => {
         setNotifications,
         isNotificationFetching,
         refetchNotifications,
+        setModuleName,
+        userId,
       }}
     >
       <>

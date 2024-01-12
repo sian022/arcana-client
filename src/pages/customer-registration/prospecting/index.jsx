@@ -19,7 +19,8 @@ function Prospect() {
 
   const badges = useSelector((state) => state.badge.value);
 
-  const { notifications, isNotificationFetching } = useContext(AppContext);
+  const { notifications, isNotificationFetching, setModuleName } =
+    useContext(AppContext);
 
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
@@ -54,8 +55,8 @@ function Prospect() {
       name: "For Freebies",
       // badge: badges["forFreebies"],
       // badge: forFreebiesData?.totalCount || 0,
-      badge: notifications["forFreebies"],
-      isBadgeLoading: isNotificationFetching,
+      // badge: notifications["forFreebies"],
+      // isBadgeLoading: isNotificationFetching,
     },
     {
       case: 2,
@@ -63,8 +64,8 @@ function Prospect() {
       // badge: badges["forReleasing"],
       // badge: forReleasingData?.totalCount || 0,
       // isBadgeLoading: isForReleasingLoading,
-      badge: notifications["forReleasing"],
-      isBadgeLoading: isNotificationFetching,
+      // badge: notifications["forReleasing"],
+      // isBadgeLoading: isNotificationFetching,
     },
     {
       case: 3,
@@ -72,8 +73,8 @@ function Prospect() {
       // badge: badges["released"],
       // badge: releasedData?.totalCount || 0,
       // isBadgeLoading: isReleasedLoading,
-      badge: notifications["released"],
-      isBadgeLoading: isNotificationFetching,
+      // badge: notifications["released"],
+      // isBadgeLoading: isNotificationFetching,
     },
   ];
 
@@ -87,6 +88,11 @@ function Prospect() {
   useEffect(() => {
     setTabViewing(1);
   }, [selectedStoreType]);
+
+  useEffect(() => {
+    setModuleName("Prospect");
+  }, []);
+
   return (
     <Box className="commonPageLayout">
       {selectedStoreType ? (
