@@ -364,8 +364,8 @@ function ListingFeeDrawer({
                   size="small"
                   label="Business Name - Owner's Name"
                   required
-                  helperText={errors?.itemId?.message}
-                  error={errors?.itemId}
+                  helperText={errors?.clientId?.message}
+                  error={errors?.clientId}
                   // sx={{ width: "300px" }}
                   sx={{ width: "400px" }}
                 />

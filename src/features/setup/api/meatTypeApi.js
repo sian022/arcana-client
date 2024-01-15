@@ -35,7 +35,7 @@ export const meatTypeApi = createApi({
     }),
     putMeatType: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/UpdateMeatType/UpdateMeatType/${id}`,
+        url: `/MeatType/UpdateMeatType/${id}`,
         method: "PUT",
         body: body,
       }),
@@ -43,7 +43,7 @@ export const meatTypeApi = createApi({
     }),
     patchMeatTypeStatus: builder.mutation({
       query: (id) => ({
-        url: `/UpdateMeatTypeStatus/UpdateMeatTypeStatus/${id}`,
+        url: `/MeatType/UpdateMeatTypeStatus/${id}`,
         method: "PATCH",
       }),
       invalidatesTags: ["Meat Type"],

@@ -82,13 +82,13 @@ function OtherExpenses() {
       case: 1,
       name: "Pending Expenses",
       expenseStatus: "Under review",
-      badge: notifications["pendingOtherExpenses"],
+      // badge: notifications["pendingOtherExpenses"],
     },
     {
       case: 2,
       name: "Approved Expenses",
       expenseStatus: "Approved",
-      badge: notifications["approvedOtherExpenses"],
+      // badge: notifications["approvedOtherExpenses"],
     },
     {
       case: 3,

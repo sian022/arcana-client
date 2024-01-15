@@ -434,8 +434,8 @@ export const directRegisterPersonalSchema = {
     // emailAddress: yup.string().required("Email address is required"),
     clusterId: yup.object().required("Cluster is required"),
     // cluster: yup.number().required("Cluster is required").integer(),
-    latitude: yup.string(),
-    longitude: yup.string(),
+    latitude: yup.string().nullable(),
+    longitude: yup.string().nullable(),
     businessAddress: yup
       .object({
         houseNumber: yup.string(),
@@ -604,5 +604,19 @@ export const requestExpensesSchema = {
         amount: null,
       },
     ],
+  },
+};
+
+//Sales Module
+export const advancePaymentSchema = {
+  schema: yup.object({
+    clientId: yup.object().required("Business Name is required"),
+    paymentType: yup.object().required("Payment Type is required"),
+    amount: yup.number().required("Amount is required"),
+  }),
+  defaultValues: {
+    clientId: null,
+    paymentType: null,
+    amount: null,
   },
 };

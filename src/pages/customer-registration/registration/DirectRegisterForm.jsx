@@ -1416,12 +1416,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   )}
                 />
 
-                <SecondaryButton
+                {/* <SecondaryButton
                   sx={{ maxHeight: "40px" }}
                   onClick={onPinLocationOpen}
                 >
                   Pin Location &nbsp; <PushPin />
-                </SecondaryButton>
+                </SecondaryButton> */}
               </Box>
             </Box>
             <Box className="register__secondRow">
@@ -1558,14 +1558,14 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         </Box>
       </CommonDrawer>
 
-      <PinLocationModal
+      {/* <PinLocationModal
         latitude={latitude}
         setLatitude={setLatitude}
         longitude={longitude}
         setLongitude={setLongitude}
         open={isPinLocationOpen}
         onClose={onPinLocationClose}
-      />
+      /> */}
 
       <CommonDialog
         open={isConfirmOpen}

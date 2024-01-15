@@ -83,13 +83,13 @@ function ListingFee() {
       case: 1,
       name: "Pending Listing Fee",
       listingFeeStatus: "Under review",
-      badge: notifications["pendingListingFee"],
+      // badge: notifications["pendingListingFee"],
     },
     {
       case: 2,
       name: "Approved Listing Fee",
       listingFeeStatus: "Approved",
-      badge: notifications["approvedListingFee"],
+      // badge: notifications["approvedListingFee"],
     },
     {
       case: 3,

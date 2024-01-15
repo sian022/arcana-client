@@ -186,7 +186,7 @@ export const navigationData = [
         path: "/customer-registration/other-expenses",
         name: "Other Expenses",
         icon: "AttachMoney",
-        notifications: ["otherExpenses"],
+        notifications: ["rejectedExpenses"],
       },
       // {
       //   id: 4,
@@ -275,7 +275,7 @@ export const navigationData = [
         name: "Other Expenses Approval",
         path: "/approval/other-expenses-approval",
         icon: "AttachMoney",
-        notifications: ["pendingOtherExpenses"],
+        notifications: ["pendingExpenses"],
       },
     ],
   },

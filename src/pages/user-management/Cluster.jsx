@@ -153,7 +153,6 @@ function Cluster() {
   const onArchiveSubmit = async () => {
     try {
       await patchClusterStatus(selectedId).unwrap();
-      onArchiveClose();
       setSnackbarMessage(
         `Cluster ${status ? "archived" : "restored"} successfully`
       );
@@ -167,6 +166,8 @@ function Cluster() {
 
       onErrorOpen();
     }
+
+    onArchiveClose();
   };
 
   const handleAddOpen = () => {

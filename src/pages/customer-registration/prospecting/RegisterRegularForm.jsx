@@ -1076,12 +1076,12 @@ function RegisterRegularForm({ open, onClose }) {
                   )}
                 />
 
-                <SecondaryButton
+                {/* <SecondaryButton
                   sx={{ maxHeight: "40px" }}
                   onClick={onPinLocationOpen}
                 >
                   Pin Location &nbsp; <PushPin />
-                </SecondaryButton>
+                </SecondaryButton> */}
               </Box>
             </Box>
             <Box className="register__secondRow">
@@ -1201,14 +1201,14 @@ function RegisterRegularForm({ open, onClose }) {
         </Box>
       </CommonDrawer>
 
-      <PinLocationModal
+      {/* <PinLocationModal
         latitude={latitude}
         setLatitude={setLatitude}
         longitude={longitude}
         setLongitude={setLongitude}
         open={isPinLocationOpen}
         onClose={onPinLocationClose}
-      />
+      /> */}
 
       <CommonDialog
         open={isConfirmOpen}

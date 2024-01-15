@@ -35,7 +35,6 @@ function AttachmentsTab() {
 
   return (
     <>
-      {" "}
       <Box className="viewRegistrationModal__attachments">
         <Typography className="viewRegistrationModal__attachments__header">
           Requested by: {selectedRowData?.requestedBy}
@@ -46,7 +45,7 @@ function AttachmentsTab() {
               Attachments
             </Typography>
             <Typography className="viewRegistrationModal__attachments__content__titleGroup__title">
-              {isRepresentativeRequirements > 4
+              {isRepresentativeRequirements
                 ? "Representative's Requirements"
                 : "Owner's Requirements"}
             </Typography>

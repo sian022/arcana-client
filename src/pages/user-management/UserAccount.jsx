@@ -193,6 +193,7 @@ function UserAccount() {
       );
       onSuccessOpen();
     } catch (error) {
+      console.log(error);
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
       } else {

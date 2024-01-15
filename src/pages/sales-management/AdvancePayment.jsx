@@ -1,4 +1,10 @@
-import { Box, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  InputAdornment,
+  MenuItem,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
@@ -9,6 +15,12 @@ import useDisclosure from "../../hooks/useDisclosure";
 import CommonDialog from "../../components/CommonDialog";
 import { useSelector } from "react-redux";
 import CommonModalForm from "../../components/CommonModalForm";
+import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
+import ControlledAutocomplete from "../../components/ControlledAutocomplete";
+import { advancePaymentSchema } from "../../schema/schema";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { NumericFormat } from "react-number-format";
 
 function AdvancePayment() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -19,6 +31,22 @@ function AdvancePayment() {
   const [count, setCount] = useState(null);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  //React Hook Form
+  const {
+    handleSubmit,
+    formState: { errors, isValid, isDirty },
+    register,
+    setValue,
+    reset,
+    control,
+    watch,
+    getValues,
+  } = useForm({
+    resolver: yupResolver(advancePaymentSchema.schema),
+    mode: "onSubmit",
+    defaultValues: advancePaymentSchema.defaultValues,
+  });
 
   // Drawer Disclosures
   const {
@@ -39,6 +67,18 @@ function AdvancePayment() {
     onClose: onFormClose,
   } = useDisclosure();
 
+  //RTK Query
+  const {
+    data: clientData,
+    isLoading: isClientLoading,
+    refetch: refetchClients,
+  } = useGetAllClientsForListingFeeQuery({
+    Status: true,
+    PageNumber: 1,
+    PageSize: 1000,
+    IncludeRejected: drawerMode === "edit" ? true : "",
+  });
+
   const isFetching = false;
 
   const handleAddOpen = () => {
@@ -50,6 +90,12 @@ function AdvancePayment() {
   const handleDrawerClose = () => {
     // reset();
     onDrawerClose();
+    setSelectedId("");
+  };
+
+  const handleFormClose = () => {
+    reset();
+    onFormClose();
     setSelectedId("");
   };
 
@@ -105,15 +151,58 @@ function AdvancePayment() {
       <CommonModalForm
         title="Advance Payment"
         open={isFormOpen}
-        onClose={onFormClose}
+        onClose={handleFormClose}
         width={"800px"}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "5px",
+            }}
+          >
             <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
               Business Info
             </Typography>
-            <TextField size="small" label="Business Name - Owner's Name" />
+
+            <ControlledAutocomplete
+              name={`clientId`}
+              control={control}
+              options={clientData?.regularClient || []}
+              getOptionLabel={(option) =>
+                option.businessName?.toUpperCase() +
+                  " - " +
+                  option.ownersName?.toUpperCase() || ""
+              }
+              disableClearable
+              loading={isClientLoading}
+              disabled={drawerMode === "edit"}
+              // value={clientData?.regularClient?.find(
+              //   (item) => item.businessName === selectedRowData?.businessName
+              // )}
+              // isOptionEqualToValue={(option, value) => option.id === value.id}
+              isOptionEqualToValue={(option, value) => true}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label="Business Name - Owner's Name"
+                  required
+                  helperText={errors?.clientId?.message}
+                  error={errors?.clientId}
+                />
+              )}
+              onChange={(_, value) => {
+                if (watch("clientId") && watch("listingItems")[0]?.itemId) {
+                  onClientConfirmationOpen();
+                  setConfirmationValue(value);
+                  return watch("clientId");
+                } else {
+                  return value;
+                }
+              }}
+            />
           </Box>
 
           <Box
@@ -127,14 +216,57 @@ function AdvancePayment() {
               <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
                 Payment Type
               </Typography>
-              <TextField size="small" />
+
+              <TextField
+                size="small"
+                select
+                disabled={!watch("clientId")}
+                label="Payment Type"
+              >
+                <MenuItem value="Cheque">CHEQUE</MenuItem>
+                <MenuItem value="Cash">CASH</MenuItem>
+                <MenuItem value="Online">ONLINE</MenuItem>
+                <MenuItem value="Listing Fee">LISTING FEE</MenuItem>
+                <MenuItem value="Offset">OFFSET</MenuItem>
+                <MenuItem value="Adv. Payment">ADV. PAYMENT</MenuItem>
+              </TextField>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
               <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
                 Advance Payment Amount
               </Typography>
-              <TextField size="small" label="Advance Payment Amount" />
+
+              <Controller
+                control={control}
+                name={"amount"}
+                render={({ field: { onChange, onBlur, value, ref } }) => (
+                  <NumericFormat
+                    // label="Advance Payment Amount"
+                    placeholder="Advance Payment Amount"
+                    type="text"
+                    size="small"
+                    customInput={TextField}
+                    autoComplete="off"
+                    onValueChange={(e) => {
+                      onChange(Number(e.value));
+                    }}
+                    onBlur={onBlur}
+                    value={value || ""}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">₱</InputAdornment>
+                      ),
+                    }}
+                    // ref={ref}
+                    required
+                    thousandSeparator=","
+                    allowNegative={false}
+                    allowLeadingZeros={false}
+                    disabled={!watch("clientId")}
+                  />
+                )}
+              />
             </Box>
           </Box>
         </Box>
