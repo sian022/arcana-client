@@ -58,17 +58,17 @@ function CancelFreebiesModal({ ...otherProps }) {
     const freebiesLength = selectedRowData?.freebies?.length;
 
     try {
-      await putRejectFreebies({
-        id: selectedRowData?.id,
-        params: {
-          freebieId:
-            selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId,
-        },
-        reason: reason,
-      }).unwrap();
+      await putRejectFreebies(
+        selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId
+        // params: {
+        //   freebieId:
+        //     selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId,
+        // },
+        // reason: reason,
+      ).unwrap();
 
       onClose();
-      onCancelConfirmClose();
+
       setSnackbarMessage("Freebies canceled successfully");
       onSuccessOpen();
     } catch (error) {
@@ -80,6 +80,8 @@ function CancelFreebiesModal({ ...otherProps }) {
 
       onErrorOpen();
     }
+
+    onCancelConfirmClose();
   };
 
   //Misc Functions
@@ -161,14 +163,14 @@ function CancelFreebiesModal({ ...otherProps }) {
             <Typography>
               <span>Prepared by:</span> {fullname ?? "user"}
             </Typography>
-            <TextField
+            {/* <TextField
               label="Reason"
               size="small"
               value={reason}
               onChange={(e) => {
                 setReason(e.target.value.toUpperCase());
               }}
-            />
+            /> */}
           </Box>
         </Box>
         <Box className="releaseFreebieModal__actions">
@@ -180,7 +182,7 @@ function CancelFreebiesModal({ ...otherProps }) {
           </AccentButton>
           <DangerButton
             onClick={onCancelConfirmOpen}
-            disabled={!reason || /^\s*$/.test(reason)}
+            // disabled={!reason || /^\s*$/.test(reason)}
           >
             Cancel Freebies
           </DangerButton>

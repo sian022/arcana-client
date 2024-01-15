@@ -148,7 +148,7 @@ export const registrationApi = createApi({
 
     putVoidClientRegistration: builder.mutation({
       query: (id) => ({
-        url: `/Clients/VoidClientRegistration/${id}`,
+        url: `/Client/VoidClientRegistration/${id}`,
         method: "PUT",
       }),
       invalidatesTags: ["Registration"],

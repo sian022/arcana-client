@@ -53,7 +53,7 @@ function OtherExpensesApproval() {
       case: 1,
       name: "Pending Expenses",
       expenseStatus: "Under review",
-      badge: notifications["pendingOtherExpenses"],
+      badge: notifications["pendingExpenses"],
     },
     {
       case: 2,

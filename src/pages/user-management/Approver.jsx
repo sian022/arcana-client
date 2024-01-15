@@ -380,6 +380,7 @@ function Approver() {
                 }}
                 sx={{ flex: 1 }}
                 disableClearable
+                disabled={!watch("moduleName")}
                 loading={isLoading}
                 isOptionEqualToValue={(option, value) => true}
                 renderInput={(params) => (
@@ -445,6 +446,10 @@ function Approver() {
               level: fields.length + 1,
             });
           }}
+          disabled={
+            !watch("approvers")[watch("approvers")?.length - 1]?.userId ||
+            !watch("moduleName")
+          }
         >
           Add Approver
         </SecondaryButton>

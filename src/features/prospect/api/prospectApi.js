@@ -112,11 +112,11 @@ export const prospectApi = createApi({
     }),
 
     putRejectFreebies: builder.mutation({
-      query: ({ id, params, ...body }) => ({
+      query: (id) => ({
         url: `/Freebies/RejectFreebies/${id}`,
         method: "PUT",
-        params: params,
-        body: body,
+        // params: params,
+        // body: body,
       }),
       invalidatesTags: ["Prospecting"],
     }),

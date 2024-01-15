@@ -609,9 +609,10 @@ function ListingFeeDrawer({
               });
             }}
             disabled={
-              !watch("listingItems")[watch("listingItems").length - 1]
+              !watch("listingItems")[watch("listingItems")?.length - 1]
                 ?.itemId ||
-              !watch("listingItems")[watch("listingItems").length - 1]?.unitCost
+              !watch("listingItems")[watch("listingItems")?.length - 1]
+                ?.unitCost
             }
           >
             Add Product

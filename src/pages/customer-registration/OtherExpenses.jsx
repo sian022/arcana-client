@@ -94,7 +94,7 @@ function OtherExpenses() {
       case: 3,
       name: "Rejected Expenses",
       expenseStatus: "Rejected",
-      badge: notifications["rejectedOtherExpenses"],
+      badge: notifications["rejectedExpenses"],
     },
   ];
 

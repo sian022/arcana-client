@@ -188,7 +188,7 @@ function AdvancePayment() {
                   {...params}
                   size="small"
                   label="Business Name - Owner's Name"
-                  required
+                  // required
                   helperText={errors?.clientId?.message}
                   error={errors?.clientId}
                 />
@@ -259,7 +259,7 @@ function AdvancePayment() {
                       ),
                     }}
                     // ref={ref}
-                    required
+                    // required
                     thousandSeparator=","
                     allowNegative={false}
                     allowLeadingZeros={false}
