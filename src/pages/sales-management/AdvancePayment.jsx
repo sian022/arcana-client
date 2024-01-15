@@ -21,6 +21,9 @@ import { advancePaymentSchema } from "../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
+import { paymentTypes } from "../../utils/Constants";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 function AdvancePayment() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -217,19 +220,25 @@ function AdvancePayment() {
                 Payment Type
               </Typography>
 
-              <TextField
-                size="small"
-                select
+              <ControlledAutocomplete
+                name="paymentType"
+                control={control}
+                options={paymentTypes}
+                getOptionLabel={(option) => option.label.toUpperCase()}
+                disableClearable
                 disabled={!watch("clientId")}
-                label="Payment Type"
-              >
-                <MenuItem value="Cheque">CHEQUE</MenuItem>
-                <MenuItem value="Cash">CASH</MenuItem>
-                <MenuItem value="Online">ONLINE</MenuItem>
-                <MenuItem value="Listing Fee">LISTING FEE</MenuItem>
-                <MenuItem value="Offset">OFFSET</MenuItem>
-                <MenuItem value="Adv. Payment">ADV. PAYMENT</MenuItem>
-              </TextField>
+                isOptionEqualToValue={(option, value) => true}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Payment Type"
+                    // required
+                    helperText={errors?.paymentType?.message}
+                    error={errors?.paymentType}
+                  />
+                )}
+              />
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
@@ -242,8 +251,7 @@ function AdvancePayment() {
                 name={"amount"}
                 render={({ field: { onChange, onBlur, value, ref } }) => (
                   <NumericFormat
-                    // label="Advance Payment Amount"
-                    placeholder="Advance Payment Amount"
+                    label="Advance Payment Amount"
                     type="text"
                     size="small"
                     customInput={TextField}
@@ -253,11 +261,11 @@ function AdvancePayment() {
                     }}
                     onBlur={onBlur}
                     value={value || ""}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">₱</InputAdornment>
-                      ),
-                    }}
+                    // InputProps={{
+                    //   startAdornment: (
+                    //     <InputAdornment position="start">₱</InputAdornment>
+                    //   ),
+                    // }}
                     // ref={ref}
                     // required
                     thousandSeparator=","
@@ -269,6 +277,145 @@ function AdvancePayment() {
               />
             </Box>
           </Box>
+
+          {watch("paymentType")?.label === "Cheque" && (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "20px",
+                mt: "20px",
+              }}
+            >
+              <Controller
+                name="payee"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    label="Payee"
+                    size="small"
+                    autoComplete="off"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    helperText={errors?.payee?.message}
+                    error={errors?.payee}
+                  />
+                )}
+              />
+
+              <Controller
+                name="chequeDate"
+                control={control}
+                render={({ field }) => (
+                  <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <DatePicker
+                      {...field}
+                      label="Cheque Date"
+                      slotProps={{
+                        textField: { size: "small" },
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          helperText={errors?.chequeDate?.message}
+                          error={errors?.chequeDate}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+
+              <Controller
+                name="bankName"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    label="Bank Name"
+                    size="small"
+                    autoComplete="off"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    helperText={errors?.bankName?.message}
+                    error={errors?.bankName}
+                  />
+                )}
+              />
+
+              <Controller
+                name="chequeNo"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    label="Cheque No."
+                    size="small"
+                    autoComplete="off"
+                    {...field}
+                    helperText={errors?.chequeNo?.message}
+                    error={errors?.chequeNo}
+                    type="number"
+                  />
+                )}
+              />
+
+              <Controller
+                name="dateReceived"
+                control={control}
+                render={({ field }) => (
+                  <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <DatePicker
+                      {...field}
+                      label="Date Received"
+                      slotProps={{
+                        textField: { size: "small" },
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          helperText={errors?.dateReceived?.message}
+                          error={errors?.dateReceived}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name={"chequeAmount"}
+                render={({ field: { onChange, onBlur, value, ref } }) => (
+                  <NumericFormat
+                    label="Cheque Amount"
+                    type="text"
+                    size="small"
+                    customInput={TextField}
+                    autoComplete="off"
+                    onValueChange={(e) => {
+                      onChange(Number(e.value));
+                    }}
+                    onBlur={onBlur}
+                    value={value || ""}
+                    // InputProps={{
+                    //   startAdornment: (
+                    //     <InputAdornment position="start">₱</InputAdornment>
+                    //   ),
+                    // }}
+                    thousandSeparator=","
+                    allowNegative={false}
+                    allowLeadingZeros={false}
+                  />
+                )}
+              />
+            </Box>
+          )}
         </Box>
       </CommonModalForm>
 
