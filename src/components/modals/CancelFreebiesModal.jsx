@@ -173,13 +173,13 @@ function CancelFreebiesModal({ ...otherProps }) {
             /> */}
           </Box>
         </Box>
-        <Box className="releaseFreebieModal__actions">
-          <AccentButton
+        <Box className="releaseFreebieModal__actionsEnd">
+          {/* <AccentButton
             sx={{ color: "white !important" }}
             onClick={handleClose}
           >
             Close
-          </AccentButton>
+          </AccentButton> */}
           <DangerButton
             onClick={onCancelConfirmOpen}
             // disabled={!reason || /^\s*$/.test(reason)}
