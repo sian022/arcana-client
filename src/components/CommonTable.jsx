@@ -17,12 +17,12 @@ import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
 import { useDispatch } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
-import CommonTableSkeleton from "./CommonTableSkeleton";
 import { Visibility } from "@mui/icons-material";
 import { formatPhoneNumber } from "../utils/CustomFunctions";
 import moment from "moment";
 
 function CommonTable({
+  mt,
   mapData,
   excludeKeys,
   excludeKeysDisplay,
@@ -39,10 +39,14 @@ function CommonTable({
   onCancelFreebies,
   onManageApprovers,
   onAddPriceChange,
+  onCancel,
   onVoid,
   onHistory,
   onDelete,
   onPrintFreebies,
+  onTagUserInCluster,
+  onViewCluster,
+  onResetPassword,
   page,
   setPage,
   rowsPerPage,
@@ -51,6 +55,7 @@ function CommonTable({
   status,
   compact,
   moreCompact,
+  midCompact,
   percentageArray,
   pesoArray,
   viewMoreKey,
@@ -70,7 +75,20 @@ function CommonTable({
 
   if (!mapData || mapData.length === 0) {
     return (
-      <Box className="noData">
+      <Box
+        className="noData"
+        sx={{
+          height: compact
+            ? // ? "calc(100vh - 370px)"
+              "calc(100vh - 330px)"
+            : moreCompact
+            ? // ? "calc(100vh - 400px)"
+              "calc(100vh - 330px)"
+            : midCompact
+            ? "calc(100vh - 280px)"
+            : "calc(100vh - 270px)",
+        }}
+      >
         {imageLoaded && (
           <>
             <img src={NoData} alt="no-data-img" className="noData__image" />
@@ -109,20 +127,26 @@ function CommonTable({
       .map((key) => transformKey(key));
   }
 
+  const uppercaseKeys = ["storeType"];
+
   if ((editable || archivable) && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
   return (
-    <Box className="tableSuperContainer">
+    <Box className="tableSuperContainer" sx={{ mt: mt && mt }}>
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
         sx={{
           height: compact
-            ? "calc(100vh - 370px)"
+            ? // ? "calc(100vh - 370px)"
+              "calc(100vh - 330px)"
             : moreCompact
-            ? "calc(100vh - 400px)"
+            ? // ? "calc(100vh - 400px)"
+              "calc(100vh - 330px)"
+            : midCompact
+            ? "calc(100vh - 280px)"
             : null,
         }}
       >
@@ -179,12 +203,20 @@ function CommonTable({
                       );
                     }
 
-                    if (keys === "createdAt") {
+                    if (keys === "createdAt" || keys === "updatedAt") {
                       return (
                         <TableCell key={k}>
                           {item[keys] &&
                             moment(item[keys]).format("MMMM D, YYYY")}
                           {/* // H:mm a */}
+                        </TableCell>
+                      );
+                    }
+
+                    if (uppercaseKeys.includes(keys)) {
+                      return (
+                        <TableCell key={k}>
+                          {item[keys]?.toUpperCase()}
                         </TableCell>
                       );
                     }
@@ -229,6 +261,12 @@ function CommonTable({
                         onHistory={onHistory && onHistory}
                         onPrintFreebies={onPrintFreebies && onPrintFreebies}
                         onDelete={onDelete && onDelete}
+                        onTagUserInCluster={
+                          onTagUserInCluster && onTagUserInCluster
+                        }
+                        onViewCluster={onViewCluster && onViewCluster}
+                        onCancel={onCancel && onCancel}
+                        onResetPassword={onResetPassword && onResetPassword}
                         item={item}
                         status={status}
                         disableActions={disableActions}

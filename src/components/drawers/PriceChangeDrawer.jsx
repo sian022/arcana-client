@@ -25,7 +25,12 @@ import { priceChangeSchema } from "../../schema/schema";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import useSnackbar from "../../hooks/useSnackbar";
 import { NumericFormat } from "react-number-format";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DateTimePicker,
+  LocalizationProvider,
+  TimePicker,
+} from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 
@@ -84,16 +89,15 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
   const [postAddPriceChange, { isLoading: isAddPriceChangeLoading }] =
     usePostAddPriceChangeMutation();
 
-  console.log(getValues());
-
   const onPriceChangeSubmit = async (data) => {
     const { effectivityDate, ...noDate } = data;
     // const transformedDate = effectivityDate;
     // const transformedDate = moment(effectivityDate).format("YYYY-MM-DD");
-    let transformedDate = moment(effectivityDate).format("YYYY-MM-DD HH:mm:ss");
-    const currentTime = moment().format("HH:mm:ss");
+    // let transformedDate = moment(effectivityDate).format("YYYY-MM-DD HH:mm:ss");
+    let transformedDate = moment(effectivityDate).format("YYYY-MM-DDTHH:mm:ss");
+    // const currentTime = moment().format("HH:mm:ss");
 
-    transformedDate = transformedDate.replace(/ 00:00:00/, `T${currentTime}`);
+    // transformedDate = transformedDate.replace(/ 00:00:00/, `T${currentTime}`);
 
     try {
       // await postAddPriceChange(data).unwrap();
@@ -104,7 +108,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
       showSnackbar("Price Change added successfully", "success");
       onClose();
       reset();
-      onConfirmSubmitClose();
+      // onConfirmSubmitClose();
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -112,6 +116,8 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
         showSnackbar("Error adding Price Change", "error");
       }
     }
+
+    onConfirmSubmitClose();
   };
 
   const handleDrawerClose = () => {
@@ -161,7 +167,11 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
         drawerHeader={"Add Price Change"}
         open={open}
         onClose={handleDrawerClose}
-        disableSubmit={!isValid}
+        disableSubmit={
+          !isValid || watch("price") <= 0
+          // ||
+          // watch("price") === selectedRowData?.priceChangeHistories?.[0]?.price
+        }
         onSubmit={onConfirmSubmitOpen}
         // zIndex={editMode && 1300}
       >
@@ -180,6 +190,48 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
           value={selectedRowData?.priceChangeHistories?.[0]?.price}
           thousandSeparator=","
         />
+
+        <Controller
+          name="effectivityDate"
+          control={control}
+          render={({ field }) => (
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DateTimePicker
+                {...field}
+                label="Price Effectivity Date"
+                slotProps={{
+                  textField: { size: "small" },
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    helperText={errors?.effectivityDate?.message}
+                    error={errors?.effectivityDate}
+                  />
+                )}
+                // minDate={moment()}
+                minDateTime={moment()}
+                timeSteps={{ minutes: 1 }}
+              />
+              {/* <DatePicker
+                {...field}
+                label="Price Effectivity Date"
+                slotProps={{
+                  textField: { size: "small", required: true },
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    helperText={errors?.effectivityDate?.message}
+                    error={errors?.effectivityDate}
+                  />
+                )}
+                minDate={moment()}
+              /> */}
+            </LocalizationProvider>
+          )}
+        />
+
         <Controller
           control={control}
           name={"price"}
@@ -196,35 +248,11 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
               onBlur={onBlur}
               value={value || ""}
               ref={ref}
-              required
+              // required
               thousandSeparator=","
               helperText={errors?.price?.message}
               error={errors?.price}
             />
-          )}
-        />
-
-        <Controller
-          name="effectivityDate"
-          control={control}
-          render={({ field }) => (
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <DatePicker
-                {...field}
-                label="Price Effectivity Date"
-                slotProps={{
-                  textField: { size: "small", required: true },
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    helperText={errors?.effectivityDate?.message}
-                    error={errors?.effectivityDate}
-                  />
-                )}
-                minDate={moment()}
-              />
-            </LocalizationProvider>
           )}
         />
       </CommonDrawer>

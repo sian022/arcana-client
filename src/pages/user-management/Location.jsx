@@ -18,6 +18,7 @@ import {
   usePutLocationMutation,
 } from "../../features/user-management/api/locationApi";
 import { useSelector } from "react-redux";
+import { LocationOn } from "@mui/icons-material";
 
 function Location() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -178,7 +179,11 @@ function Location() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Location"
+        pageTitle={
+          <>
+            Location <LocationOn />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

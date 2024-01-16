@@ -30,6 +30,8 @@ import { approverApi } from "../features/user-management/api/approverApi";
 import { notificationApi } from "../features/notification/api/notificationApi";
 import { phLocationsApi } from "../features/location/api/phLocationsApi";
 import { clusterApi } from "../features/setup/api/clusterApi";
+import { otherExpensesApi } from "../features/setup/api/otherExpensesApi";
+import { otherExpensesRegApi } from "../features/otherExpenses/api/otherExpensesRegApi";
 
 export const store = configureStore({
   reducer: {
@@ -63,6 +65,8 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [phLocationsApi.reducerPath]: phLocationsApi.reducer,
     [clusterApi.reducerPath]: clusterApi.reducer,
+    [otherExpensesApi.reducerPath]: otherExpensesApi.reducer,
+    [otherExpensesRegApi.reducerPath]: otherExpensesRegApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -90,6 +94,8 @@ export const store = configureStore({
       notificationApi.middleware,
       phLocationsApi.middleware,
       clusterApi.middleware,
+      otherExpensesApi.middleware,
+      otherExpensesRegApi.middleware,
     ]),
 });
 

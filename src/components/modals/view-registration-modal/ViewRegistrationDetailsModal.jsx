@@ -29,6 +29,7 @@ import ListingFeeTab from "./ListingFeeTab";
 import FreebiesTab from "./FreebiesTab";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { listingFeeApi } from "../../../features/listing-fee/api/listingFeeApi";
+import OtherExpensesTab from "./OtherExpensesTab";
 
 function ViewRegistrationDetailsModal({
   approval,
@@ -73,12 +74,22 @@ function ViewRegistrationDetailsModal({
     { label: "Personal Info", disabled: false },
     { label: "Terms and Conditions", disabled: false },
     { label: "Attachments", disabled: false },
-    { label: "Listing Fee", disabled: false },
     { label: "Freebies", disabled: false },
+    { label: "Listing Fee", disabled: false },
+    { label: "Other Expenses", disabled: false },
   ];
 
   navigators[1].disabled = approval && !viewedTabs["Personal Info"];
   navigators[2].disabled = approval && !viewedTabs["Terms and Conditions"];
+  navigators[3].disabled = approval && !viewedTabs["Attachments"];
+  navigators[4].disabled = approval && !viewedTabs["Freebies"];
+  navigators[5].disabled = approval && !viewedTabs["Listing Fee"];
+
+  if (clientStatus !== "Approved") {
+    for (let i = navigators.length - 1; i >= 3; i--) {
+      navigators.splice(i, 1);
+    }
+  }
 
   //RTK Query
   const [putApproveClient, { isLoading: isApproveLoading }] =
@@ -100,8 +111,14 @@ function ViewRegistrationDetailsModal({
   };
 
   const customRibbonContent = (
-    <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
-      <Box className="viewRegistrationModal__headers">
+    <Box sx={{ display: "flex", flex: 1, gap: "10px", alignItems: "center" }}>
+      <Box
+        className={
+          clientStatus !== "Approved"
+            ? "viewRegistrationModal__headersThree"
+            : "viewRegistrationModal__headers"
+        }
+      >
         {navigators.map((item, i) => (
           <Button
             key={i}
@@ -118,7 +135,10 @@ function ViewRegistrationDetailsModal({
           </Button>
         ))}
       </Box>
-      <IconButton sx={{ color: "white !important" }} onClick={handleClose}>
+      <IconButton
+        sx={{ color: "white !important", height: "40px", width: "40px" }}
+        onClick={handleClose}
+      >
         <Close />
       </IconButton>
     </Box>
@@ -130,9 +150,11 @@ function ViewRegistrationDetailsModal({
     } else if (activeTab === "Terms and Conditions") {
       setActiveTab("Attachments");
     } else if (activeTab === "Attachments") {
+      setActiveTab("Freebies");
+    } else if (activeTab === "Freebies") {
       setActiveTab("Listing Fee");
     } else if (activeTab === "Listing Fee") {
-      setActiveTab("Freebies");
+      setActiveTab("Other Expenses");
     }
   };
 
@@ -141,9 +163,11 @@ function ViewRegistrationDetailsModal({
       setActiveTab("Personal Info");
     } else if (activeTab === "Attachments") {
       setActiveTab("Terms and Conditions");
-    } else if (activeTab === "Listing Fee") {
-      setActiveTab("Attachments");
     } else if (activeTab === "Freebies") {
+      setActiveTab("Attachments");
+    } else if (activeTab === "Listing Fee") {
+      setActiveTab("Freebies");
+    } else if (activeTab === "Other Expenses") {
       setActiveTab("Listing Fee");
     }
   };
@@ -204,8 +228,8 @@ function ViewRegistrationDetailsModal({
   return (
     <>
       <CommonModal
-        width="800px"
-        // width="900px"
+        // width="800px"
+        width={clientStatus === "Approved" ? "900px" : "800px"}
         height="670px"
         disablePadding
         ribbon
@@ -217,8 +241,10 @@ function ViewRegistrationDetailsModal({
           {activeTab === "Personal Info" && <PersonalInfoTab />}
           {activeTab === "Terms and Conditions" && <TermsAndConditionsTab />}
           {activeTab === "Attachments" && <AttachmentsTab />}
-          {activeTab === "Listing Fee" && <ListingFeeTab />}
           {activeTab === "Freebies" && <FreebiesTab />}
+          {activeTab === "Listing Fee" && <ListingFeeTab />}
+          {activeTab === "Other Expenses" && <OtherExpensesTab />}
+
           <Box
             sx={{
               display: "flex",
@@ -329,8 +355,9 @@ function ViewRegistrationDetailsModal({
                 size="small"
                 label="Reason"
                 autoComplete="off"
+                value={reason}
                 onChange={(e) => {
-                  setReason(e.target.value);
+                  setReason(e.target.value.toUpperCase());
                 }}
                 multiline
                 rows={3}

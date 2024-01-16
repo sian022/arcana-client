@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   useGetAllApprovedProspectsQuery,
   useGetAllReleasedProspectsQuery,
+  usePatchVoidProspectMutation,
 } from "../../../features/prospect/api/prospectApi";
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
 import CommonTable from "../../../components/CommonTable";
@@ -11,6 +12,10 @@ import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 import useDisclosure from "../../../hooks/useDisclosure";
 import RegisterRegularForm from "./RegisterRegularForm";
 import PrintFreebiesModal from "../../../components/modals/PrintFreebiesModal";
+import CommonDialog from "../../../components/CommonDialog";
+import { notificationApi } from "../../../features/notification/api/notificationApi";
+import useSnackbar from "../../../hooks/useSnackbar";
+import SearchVoidMixin from "../../../components/mixins/SearchVoidMixin";
 
 function Released() {
   const [search, setSearch] = useState("");
@@ -18,12 +23,25 @@ function Released() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+  const [registrationStatus, setRegistrationStatus] = useState("");
+
+  const [voidConfirmBox, setVoidConfirmBox] = useState("");
 
   const dispatch = useDispatch();
   const badges = useSelector((state) => state.badge.value);
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
   );
+  const { showSnackbar } = useSnackbar();
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  //Disclosures
+  const {
+    isOpen: isVoidOpen,
+    onOpen: onVoidOpen,
+    onClose: onVoidClose,
+  } = useDisclosure();
 
   //Constants
   const excludeKeysDisplay = [
@@ -67,13 +85,36 @@ function Released() {
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
     // WithFreebies: true,
-    FreebieStatus: "Released",
+    FreebieStatus: registrationStatus !== "Voided" ? "Released" : "",
+    RegistrationStatus:
+      registrationStatus === "Voided"
+        ? registrationStatus
+        : "Pending registration",
   });
+
+  const [patchVoidProspect, { isLoading: isVoidLoading }] =
+    usePatchVoidProspectMutation();
 
   //Misc Functions
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
+
+  const onVoidSubmit = async () => {
+    try {
+      await patchVoidProspect(selectedRowData?.id).unwrap();
+      onVoidClose();
+      showSnackbar(`Prospect voided successfully`, "success");
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
+    } catch (error) {
+      console.log(error);
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error voiding prospect", "error");
+      }
+    }
+  };
 
   ///UseEffects
   useEffect(() => {
@@ -84,7 +125,12 @@ function Released() {
   return (
     <>
       <Box>
-        <TextField
+        <SearchVoidMixin
+          setSearch={setSearch}
+          setStatus={setRegistrationStatus}
+          status={registrationStatus}
+        />
+        {/* <TextField
           type="search"
           size="small"
           label="Search"
@@ -92,8 +138,9 @@ function Released() {
             debouncedSetSearch(e.target.value);
           }}
           autoComplete="off"
-          sx={{ margin: "15px" }}
-        />
+          // sx={{ margin: "15px" }}
+          sx={{ mb: "15px", mt: "-5px" }}
+        /> */}
 
         {isFetching ? (
           <CommonTableSkeleton compact />
@@ -107,7 +154,10 @@ function Released() {
             setPage={setPage}
             rowsPerPage={rowsPerPage}
             editable
-            onRegularRegister={onRegisterOpen}
+            onRegularRegister={
+              registrationStatus !== "Voided" && onRegisterOpen
+            }
+            onVoid={registrationStatus !== "Voided" && onVoidOpen}
             setRowsPerPage={setRowsPerPage}
             count={count}
             status={status}
@@ -126,6 +176,46 @@ function Released() {
         onClose={onPrintClose}
       />
       {/* </AttachmentsProvider> */}
+
+      <CommonDialog
+        open={isVoidOpen}
+        onClose={onVoidClose}
+        isLoading={isVoidLoading}
+        onYes={onVoidSubmit}
+        disableYes={voidConfirmBox !== selectedRowData?.businessName}
+      >
+        Are you sure you want to void prospect{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.businessName}
+        </span>
+        ? <br />
+        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+          (This action cannot be reversed)
+        </span>
+        <br />
+        <Box
+          sx={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
+        >
+          <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
+            To confirm, type "{selectedRowData?.businessName}" in the box below
+          </Typography>
+          <TextField
+            size="small"
+            // fullWidth
+            autoComplete="off"
+            onChange={(e) => {
+              setVoidConfirmBox(e.target.value);
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "error.main", // Set your desired border color here
+                },
+              },
+            }}
+          />
+        </Box>
+      </CommonDialog>
     </>
   );
 }

@@ -55,6 +55,7 @@ import SuccessButton from "../../../components/SuccessButton";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
+import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -104,17 +105,17 @@ function RegisterRegularForm({ open, onClose }) {
     onClose: onCancelConfirmClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isRedirectListingFeeOpen,
-    onOpen: onRedirectListingFeeOpen,
-    onClose: onRedirectListingFeeClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isRedirectListingFeeOpen,
+  //   onOpen: onRedirectListingFeeOpen,
+  //   onClose: onRedirectListingFeeClose,
+  // } = useDisclosure();
 
-  const {
-    isOpen: isListingFeeOpen,
-    onOpen: onListingFeeOpen,
-    onClose: onListingFeeClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isListingFeeOpen,
+  //   onOpen: onListingFeeOpen,
+  //   onClose: onListingFeeClose,
+  // } = useDisclosure();
 
   // React Hook Form
   const {
@@ -205,6 +206,10 @@ function RegisterRegularForm({ open, onClose }) {
     usePutAddTermsAndCondtionsMutation();
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
+  const { data: clusterData } = useGetAllClustersQuery({
+    Status: true,
+    ModuleName: "Registration",
+  });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
@@ -215,6 +220,7 @@ function RegisterRegularForm({ open, onClose }) {
       ...data,
       // dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
       storeTypeId: data?.storeTypeId?.id,
+      clusterId: data?.clusterId.id,
     };
 
     try {
@@ -231,7 +237,9 @@ function RegisterRegularForm({ open, onClose }) {
       onConfirmClose();
       onClose();
       handleResetForms();
-      debounce(onRedirectListingFeeOpen(), 2000);
+
+      // debounce(onRedirectListingFeeOpen(), 2000);
+
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       setIsAllApiLoading(false);
@@ -421,10 +429,10 @@ function RegisterRegularForm({ open, onClose }) {
     }
   };
 
-  const handleRedirectListingFeeYes = () => {
-    onRedirectListingFeeClose();
-    onListingFeeOpen();
-  };
+  // const handleRedirectListingFeeYes = () => {
+  //   onRedirectListingFeeClose();
+  //   onListingFeeOpen();
+  // };
 
   //Constant JSX
   const customRibbonContent = (
@@ -468,12 +476,6 @@ function RegisterRegularForm({ open, onClose }) {
       </IconButton>
     </Box>
   );
-
-  const handlePhoneNumberInput = (e) => {
-    const maxLength = 10;
-    const inputValue = e.target.value.toString().slice(0, maxLength);
-    e.target.value = inputValue;
-  };
 
   //UseEffects
   useEffect(() => {
@@ -539,11 +541,22 @@ function RegisterRegularForm({ open, onClose }) {
   // }, [sameAsOwnersAddress]);
 
   useEffect(() => {
+    if (!!includeAuthorizedRepresentative) {
+      setRequirementsMode("representative");
+    }
+
     if (!includeAuthorizedRepresentative) {
       setValue("authorizedRepresentative", "");
       setValue("authorizedRepresentativePosition", "");
+      setRequirementsMode("owner");
     }
   }, [includeAuthorizedRepresentative]);
+
+  useEffect(() => {
+    if (clusterData && open) {
+      setValue("clusterId", clusterData?.cluster?.[0]);
+    }
+  }, [open]);
 
   return (
     <>
@@ -577,19 +590,20 @@ function RegisterRegularForm({ open, onClose }) {
                     label="Owner's Name"
                     size="small"
                     autoComplete="off"
-                    required
+                    // required
                     className="register__textField"
                     disabled
                     value={selectedRowData?.ownersName ?? ""}
                   />
+
                   <TextField
                     label="Email Address"
                     size="small"
                     autoComplete="off"
                     // required
-                    disabled
                     className="register__textField"
-                    value={selectedRowData?.emailAddress ?? ""}
+                    // value={selectedRowData?.emailAddress ?? ""}
+                    {...register("emailAddress")}
                   />
                 </Box>
                 <Box className="register__firstRow__customerInformation__row">
@@ -665,7 +679,7 @@ function RegisterRegularForm({ open, onClose }) {
                           }}
                           onBlur={onBlur}
                           value={selectedRowData?.phoneNumber ?? ""}
-                          required
+                          // required
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
@@ -788,7 +802,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Barangay"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.barangayName ?? ""}
@@ -799,7 +813,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Municipality/City"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.city ?? ""}
@@ -808,7 +822,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Province"
                       size="small"
                       autoComplete="off"
-                      required
+                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.province ?? ""}
@@ -834,7 +848,7 @@ function RegisterRegularForm({ open, onClose }) {
                   label="Business Name"
                   size="small"
                   autoComplete="off"
-                  required
+                  // required
                   className="register__textField"
                   disabled
                   value={selectedRowData?.businessName ?? ""}
@@ -843,7 +857,28 @@ function RegisterRegularForm({ open, onClose }) {
 
               <Box className="register__thirdRow__column">
                 <Typography className="register__title">Cluster</Typography>
-                <TextField
+
+                <ControlledAutocomplete
+                  name={"clusterId"}
+                  control={control}
+                  options={clusterData?.cluster || []}
+                  getOptionLabel={(option) => option.cluster.toUpperCase()}
+                  disableClearable
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Cluster"
+                      required
+                      helperText={errors?.clusterId?.message}
+                      error={errors?.clusterId}
+                    />
+                  )}
+                />
+                {/* <TextField
                   label="Cluster Type"
                   size="small"
                   autoComplete="off"
@@ -853,7 +888,7 @@ function RegisterRegularForm({ open, onClose }) {
                   {...register("cluster")}
                   helperText={errors?.cluster?.message}
                   error={errors?.cluster}
-                />
+                /> */}
               </Box>
 
               <Box className="register__thirdRow__column">
@@ -865,7 +900,9 @@ function RegisterRegularForm({ open, onClose }) {
                   name={"storeTypeId"}
                   control={control}
                   options={storeTypeData?.storeTypes || []}
-                  getOptionLabel={(option) => option.storeTypeName}
+                  getOptionLabel={(option) =>
+                    option.storeTypeName.toUpperCase()
+                  }
                   disableClearable
                   // value={storeTypeData?.storeTypes?.find(
                   //   (store) => store.storeTypeName === selectedStoreType
@@ -943,9 +980,8 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Unit No."
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -964,11 +1000,10 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Street Name"
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
                       helperText={errors?.streetName?.message}
                       error={errors?.streetName}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -989,7 +1024,7 @@ function RegisterRegularForm({ open, onClose }) {
                       className="register__textField"
                       helperText={errors?.barangayName?.message}
                       error={errors?.barangayName}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1012,7 +1047,7 @@ function RegisterRegularForm({ open, onClose }) {
                       className="register__textField"
                       helperText={errors?.city?.message}
                       error={errors?.city}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1033,7 +1068,7 @@ function RegisterRegularForm({ open, onClose }) {
                       className="register__textField"
                       helperText={errors?.province?.message}
                       error={errors?.province}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1041,12 +1076,12 @@ function RegisterRegularForm({ open, onClose }) {
                   )}
                 />
 
-                <SecondaryButton
+                {/* <SecondaryButton
                   sx={{ maxHeight: "40px" }}
                   onClick={onPinLocationOpen}
                 >
                   Pin Location &nbsp; <PushPin />
-                </SecondaryButton>
+                </SecondaryButton> */}
               </Box>
             </Box>
             <Box className="register__secondRow">
@@ -1067,29 +1102,60 @@ function RegisterRegularForm({ open, onClose }) {
               </Box>
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
-                  <TextField
+                  {/* <TextField
                     label="Full Name"
                     size="small"
                     autoComplete="off"
-                    // required
+                    required={includeAuthorizedRepresentative}
                     disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentative")}
                     helperText={errors?.authorizedRepresentative?.message}
                     error={errors?.authorizedRepresentative}
+                  /> */}
+
+                  <Controller
+                    control={control}
+                    name="authorizedRepresentative"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Full Name"
+                        size="small"
+                        autoComplete="off"
+                        required={includeAuthorizedRepresentative}
+                        disabled={!includeAuthorizedRepresentative}
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={errors?.authorizedRepresentative?.message}
+                        error={errors?.authorizedRepresentative}
+                      />
+                    )}
                   />
-                  <TextField
-                    label="Position"
-                    size="small"
-                    autoComplete="off"
-                    // required
-                    disabled={!includeAuthorizedRepresentative}
-                    className="register__textField"
-                    {...register("authorizedRepresentativePosition")}
-                    helperText={
-                      errors?.authorizedRepresentativePosition?.message
-                    }
-                    error={errors?.authorizedRepresentativePosition}
+
+                  <Controller
+                    control={control}
+                    name="authorizedRepresentativePosition"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Position"
+                        size="small"
+                        autoComplete="off"
+                        required={includeAuthorizedRepresentative}
+                        disabled={!includeAuthorizedRepresentative}
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={
+                          errors?.authorizedRepresentativePosition?.message
+                        }
+                        error={errors?.authorizedRepresentativePosition}
+                      />
+                    )}
                   />
                 </Box>
               </Box>
@@ -1135,14 +1201,14 @@ function RegisterRegularForm({ open, onClose }) {
         </Box>
       </CommonDrawer>
 
-      <PinLocationModal
+      {/* <PinLocationModal
         latitude={latitude}
         setLatitude={setLatitude}
         longitude={longitude}
         setLongitude={setLongitude}
         open={isPinLocationOpen}
         onClose={onPinLocationClose}
-      />
+      /> */}
 
       <CommonDialog
         open={isConfirmOpen}
@@ -1178,7 +1244,7 @@ function RegisterRegularForm({ open, onClose }) {
         </span>
       </CommonDialog>
 
-      <CommonDialog
+      {/* <CommonDialog
         open={isRedirectListingFeeOpen}
         onClose={onRedirectListingFeeClose}
         onYes={handleRedirectListingFeeYes}
@@ -1191,14 +1257,13 @@ function RegisterRegularForm({ open, onClose }) {
             : "client"}
         </span>
         ?
-      </CommonDialog>
+      </CommonDialog> */}
 
-      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
-      <ListingFeeDrawer
+      {/* <ListingFeeDrawer
         isListingFeeOpen={isListingFeeOpen}
         onListingFeeClose={onListingFeeClose}
         redirect
-      />
+      /> */}
     </>
   );
 }

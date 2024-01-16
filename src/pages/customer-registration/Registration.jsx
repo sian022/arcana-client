@@ -18,6 +18,8 @@ import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import PrintFreebiesModal from "../../components/modals/PrintFreebiesModal";
 import { AppContext } from "../../context/AppContext";
+import SearchVoidFilterMixin from "../../components/mixins/SearchVoidFilterMixin";
+import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -34,8 +36,9 @@ function DirectRegistration() {
 
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const userDetails = useSelector((state) => state.login.userDetails);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, setModuleName } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -95,7 +98,7 @@ function DirectRegistration() {
 
   const { data, isLoading, isFetching } = useGetAllClientsQuery({
     Search: search,
-    Status: status,
+    // Status: status,
     RegistrationStatus: clientStatus,
     Origin: origin,
     PageNumber: page + 1,
@@ -107,19 +110,21 @@ function DirectRegistration() {
   const [putVoidClientRegistration, { isLoading: isVoidLoading }] =
     usePutVoidClientRegistrationMutation();
 
+  const [patchReadNotification] = usePatchReadNotificationMutation();
+
   //Constants
   const registrationNavigation = [
     {
       case: 1,
       name: "Pending Clients",
       registrationStatus: "Under review",
-      badge: notifications["pendingClient"],
+      // badge: notifications["pendingClient"],
     },
     {
       case: 2,
       name: "Approved Clients",
       registrationStatus: "Approved",
-      badge: notifications["approvedClient"],
+      // badge: notifications["approvedClient"],
     },
     {
       case: 3,
@@ -173,6 +178,9 @@ function DirectRegistration() {
     "listingFees",
     "createdAt",
     "origin",
+    "approvers",
+    "registrationStatus",
+    "expenses",
   ];
 
   const tableHeads = [
@@ -211,7 +219,7 @@ function DirectRegistration() {
 
   const onVoidSubmit = async () => {
     try {
-      await patchUpdateRegistrationStatus(selectedRowData?.id).unwrap();
+      await putVoidClientRegistration(selectedRowData?.id).unwrap();
       onVoidClose();
       showSnackbar("Client voided successfully", "success");
     } catch (error) {
@@ -235,6 +243,16 @@ function DirectRegistration() {
     setCount(data?.totalCount);
   }, [data]);
 
+  // useEffect(() => {
+  //   setModuleName("Registration");
+  // }, []);
+
+  useEffect(() => {
+    if (clientStatus === "Rejected") {
+      patchReadNotification({ Tab: "Rejected Clients" });
+    }
+  }, [clientStatus]);
+
   return (
     <>
       <Box className="commonPageLayout">
@@ -246,13 +264,18 @@ function DirectRegistration() {
           onOpen={onRegisterOpen}
           addTitle="Register Direct"
         />
-        {/* <Box>
-          <TextField type="search" placeholder="Search" size="small" />
-        </Box> */}
-        <SearchFilterMixin
+
+        {/* <SearchFilterMixin
           setSearch={setSearch}
           selectOptions={selectOptions}
           setSelectValue={setOrigin}
+        /> */}
+        <SearchVoidFilterMixin
+          setSearch={setSearch}
+          selectOptions={selectOptions}
+          setSelectValue={setOrigin}
+          status={clientStatus}
+          setStatus={setClientStatus}
         />
 
         {isFetching ? (
@@ -273,9 +296,17 @@ function DirectRegistration() {
             onHistory={onHistoryOpen}
             // onArchive={true}
             status={status}
-            onEdit={handleEditOpen}
+            onEdit={
+              userDetails?.roleName === "Admin"
+                ? handleEditOpen
+                : userDetails?.roleName !== "Admin"
+                ? clientStatus !== "Voided" &&
+                  clientStatus !== "Approved" &&
+                  handleEditOpen
+                : null
+            }
             // onArchive={onArchiveOpen}
-            onVoid={onVoidOpen}
+            onVoid={clientStatus === "Rejected" && onVoidOpen}
             onPrintFreebies={onPrintOpen}
             disableActions={
               (!selectedRowData?.freebies ||
@@ -300,6 +331,7 @@ function DirectRegistration() {
         onRegisterOpen={onRegisterOpen}
         editMode={editMode}
         setEditMode={setEditMode}
+        clientStatus={clientStatus}
       />
 
       <CommonDialog

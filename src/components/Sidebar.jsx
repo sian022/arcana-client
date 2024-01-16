@@ -22,6 +22,7 @@ import {
   toggleSidebarSmallScreen,
 } from "../features/misc/reducers/disclosureSlice";
 import { AppContext } from "../context/AppContext";
+import { usePatchReadNotificationMutation } from "../features/notification/api/notificationApi";
 
 function Sidebar() {
   const [activeModule, setActiveModule] = useState("");

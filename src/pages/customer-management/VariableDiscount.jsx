@@ -20,6 +20,7 @@ import {
 } from "../../features/setup/api/discountTypeApi";
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
+import { Label } from "@mui/icons-material";
 
 function VariableDiscount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -168,7 +169,6 @@ function VariableDiscount() {
 
     // Object.keys(editData).forEach((key) => {
     //   setValue(key, editData[key]);
-    //   console.log(typeof editData[key]);
     // });
 
     setValue("id", editData.id);
@@ -231,7 +231,11 @@ function VariableDiscount() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Variable Discount"
+        pageTitle={
+          <>
+            Variable Discount <Label />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
@@ -292,7 +296,6 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
               thousandSeparator=","
               // disabled={data?.discount?.length > 0 && drawerMode === "add"}
               disabled
@@ -322,7 +325,6 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
               thousandSeparator=","
             />
           )}
@@ -346,7 +348,7 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
+            
               thousandSeparator=","
               disabled
             />
@@ -369,7 +371,6 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
               thousandSeparator=","
               allowNegative={false}
               decimalScale={0}
@@ -405,7 +406,6 @@ function VariableDiscount() {
               onBlur={onBlur}
               value={value || ""}
               // ref={ref}
-              required
               thousandSeparator=","
               allowNegative={false}
               decimalScale={0}

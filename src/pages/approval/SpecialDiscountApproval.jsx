@@ -76,7 +76,7 @@ function SpecialDiscountApproval() {
           setTabViewing={setTabViewing}
         />
 
-        <Box sx={{ padding: "15px" }}>
+        <Box sx={{ padding: "15px", my: "-20px" }}>
           <TextField
             type="search"
             size="small"

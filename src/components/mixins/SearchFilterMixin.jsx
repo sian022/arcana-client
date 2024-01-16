@@ -8,7 +8,7 @@ function SearchFilterMixin({ setSearch, selectOptions, setSelectValue }) {
 
   return (
     // <Paper elevation={1}>
-    <Box className="pageHeader">
+    <Box className="pageHeader" sx={{ my: "-20px" }}>
       <Box className="pageHeader__left">
         <TextField
           type="search"

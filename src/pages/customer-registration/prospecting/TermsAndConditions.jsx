@@ -64,11 +64,11 @@ function TermsAndConditions({ direct, editMode, storeType }) {
       e.target.value !== "" ? parseFloat(e.target.value) : e.target.value;
 
     if (
-      (parsedValue < 0 || parsedValue > 10) &&
+      (parsedValue < 1 || parsedValue > 10) &&
       parsedValue !== "" &&
       parsedValue !== null
     ) {
-      showSnackbar("Value must be between 0% and 10%", "error");
+      showSnackbar("Value must be between 1% and 10%", "error");
       return;
     }
 
@@ -342,7 +342,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                     />
                   )}
                   onChange={(_, value) => {
-                    console.log(value);
                     dispatch(
                       setTermsAndConditions({
                         property: "termDaysId",
@@ -495,7 +494,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                       />
                     )}
                     onChange={(_, value) => {
-                      console.log(value);
                       dispatch(
                         setTermsAndConditions({
                           property: "termDaysId",
@@ -640,6 +638,50 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             )}
           </RadioGroup>
         </Box>
+
+        {/* <Box className="terms__column__item">
+          <Box className="terms__column__item__title">
+            <Typography>Special Discount</Typography>
+          </Box>
+          <Box
+            // className="termsAndConditionsFixedDiscount"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              mt: "10px",
+              justifyContent: "center",
+              // position: "absolute",
+              // right: "-35px",
+            }}
+          >
+            <TextField
+              sx={{
+                width: "200px",
+                // position: "absolute",
+                // right: "-25px",
+                "& .MuiInputBase-root": {
+                  height: "30px",
+                },
+              }}
+              type="number"
+              value={
+                termsAndConditions["fixedDiscount"].discountPercentage != null
+                  ? termsAndConditions[
+                      "fixedDiscount"
+                    ].discountPercentage.toString()
+                  : ""
+              }
+              onChange={(e) => {
+                handleFixedDiscountChange(e);
+              }}
+              InputProps={{
+                inputProps: { min: 0, max: 10 },
+              }}
+            />
+            {"%"}
+          </Box>
+        </Box> */}
 
         {direct && !editMode && (
           <>

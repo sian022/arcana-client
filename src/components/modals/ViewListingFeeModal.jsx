@@ -102,7 +102,7 @@ function ViewListingFeeModal({
       showSnackbar("Listing Fee approved successfully", "success");
       onApproveConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags());
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -223,7 +223,9 @@ function ViewListingFeeModal({
                   {selectedRowData?.listingItems?.map((item, index) => (
                     <TableRow key={index}>
                       <TableCell>{item.itemCode}</TableCell>
-                      <TableCell>{item.itemDescription}</TableCell>
+                      <TableCell>
+                        {item.itemDescription?.toUpperCase()}
+                      </TableCell>
                       <TableCell>{item.uom}</TableCell>
                       <TableCell>{item.sku}</TableCell>
                       <TableCell>₱ {item.unitCost?.toLocaleString()}</TableCell>
@@ -337,8 +339,9 @@ function ViewListingFeeModal({
                 size="small"
                 label="Reason"
                 autoComplete="off"
+                value={reason}
                 onChange={(e) => {
-                  setReason(e.target.value);
+                  setReason(e.target.value.toUpperCase());
                 }}
                 multiline
                 rows={3}

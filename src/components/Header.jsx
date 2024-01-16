@@ -39,6 +39,7 @@ import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
 import { prospectApi } from "../features/prospect/api/prospectApi";
 import { notificationApi } from "../features/notification/api/notificationApi";
 import moment from "moment";
+import { clusterApi } from "../features/setup/api/clusterApi";
 
 function Header() {
   const dispatch = useDispatch();
@@ -107,8 +108,6 @@ function Header() {
   };
 
   const handleLogout = () => {
-    dispatch(notificationApi.util.resetApiState());
-
     dispatch(setToken(""));
     dispatch(setFullname(""));
     dispatch(setPermissisons(""));
@@ -119,6 +118,8 @@ function Header() {
     dispatch(registrationApi.util.resetApiState());
     dispatch(listingFeeApi.util.resetApiState());
     dispatch(prospectApi.util.resetApiState());
+    dispatch(notificationApi.util.resetApiState());
+    dispatch(clusterApi.util.resetApiState());
 
     // localStorage.removeItem("token");
     // localStorage.removeItem("fullname");

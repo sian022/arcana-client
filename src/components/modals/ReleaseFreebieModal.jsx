@@ -265,7 +265,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                         ?.transactionNumber || ""}
                 </Typography>
                 <Typography>
-                  <span>Date:</span> {moment().format("MMM DD, YYYY")}
+                  <span>Date:</span> {moment().format("MMM D, YYYY")}
                 </Typography>
               </Box>
             </Box>
@@ -291,7 +291,9 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                     <TableRow key={i}>
                       <TableCell>{item.quantity}</TableCell>
                       <TableCell>{item.itemId?.itemCode}</TableCell>
-                      <TableCell>{item.itemDescription}</TableCell>
+                      <TableCell>
+                        {item.itemDescription?.toUpperCase()}
+                      </TableCell>
                       <TableCell>{item.uom}</TableCell>
                     </TableRow>
                   ))}
@@ -302,7 +304,9 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                     <TableRow key={i}>
                       <TableCell>{item.quantity}</TableCell>
                       <TableCell>{item.itemCode}</TableCell>
-                      <TableCell>{item.itemDescription}</TableCell>
+                      <TableCell>
+                        {item.itemDescription?.toUpperCase()}
+                      </TableCell>
                       <TableCell>{item.uom}</TableCell>
                     </TableRow>
                   ))}
@@ -448,7 +452,8 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                       border: "none !important",
                       bgcolor: "white !important",
                       position: "absolute",
-                      right: "305px",
+                      // right: "305px",
+                      right: "330px",
                       // right: signature ? "330px" : "305px",
                       bottom: "83px",
                     }}
@@ -534,7 +539,9 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
         currentViewPhotoLabel={"Freebie Photo"}
       />
 
-      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+      {!direct && (
+        <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
+      )}
 
       <CommonDialog
         open={isConfirmOpen}

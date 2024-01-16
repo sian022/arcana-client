@@ -22,6 +22,7 @@ import PageHeaderSearch from "../../components/PageHeaderSearch";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import {
   Cancel,
+  HowToVote,
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
@@ -172,7 +173,6 @@ function Approver() {
           })),
           // ...restData,
         }).unwrap();
-        // console.log(data);
         setSnackbarMessage("Approver updated successfully");
       }
 
@@ -271,10 +271,6 @@ function Approver() {
     }
   }, [isDrawerOpen]);
 
-  // console.log("Approvers: ", data);
-  // console.log("Selected Row: ", selectedRowData);
-  // console.log("Hook Form: ", getValues());
-
   return (
     <Box className="commonPageLayout">
       {/* <PageHeaderSearch
@@ -284,7 +280,11 @@ function Approver() {
         setStatus={setStatus}
       /> */}
       <PageHeaderAdd
-        pageTitle="Approver"
+        pageTitle={
+          <>
+            Approver <HowToVote />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
@@ -344,7 +344,6 @@ function Approver() {
               {...params}
               size="small"
               label="Module Name"
-              required
               helperText={errors?.userId?.message}
               error={errors?.userId}
             />
@@ -381,6 +380,7 @@ function Approver() {
                 }}
                 sx={{ flex: 1 }}
                 disableClearable
+                disabled={!watch("moduleName")}
                 loading={isLoading}
                 isOptionEqualToValue={(option, value) => true}
                 renderInput={(params) => (
@@ -388,7 +388,6 @@ function Approver() {
                     {...params}
                     size="small"
                     label="Approver Name"
-                    required
                     helperText={errors?.userId?.message}
                     error={errors?.userId}
                   />
@@ -447,6 +446,10 @@ function Approver() {
               level: fields.length + 1,
             });
           }}
+          disabled={
+            !watch("approvers")[watch("approvers")?.length - 1]?.userId ||
+            !watch("moduleName")
+          }
         >
           Add Approver
         </SecondaryButton>

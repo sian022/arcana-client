@@ -96,6 +96,32 @@ function Approval() {
               <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
             </Box>
           </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("other-expenses-approval")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Other Expenses Approval
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Approval and rejection of other expenses requests
+              </Typography>
+            </Box>
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              {!!notifications?.pendingOtherExpenses &&
+              !notifications?.pendingOtherExpenses !== 0 ? (
+                <Box className="notificationsLarge">
+                  {notifications?.pendingOtherExpenses}
+                </Box>
+              ) : (
+                <Box></Box>
+              )}
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
+          </Box>
         </Box>
       </Box>
     );

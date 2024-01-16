@@ -23,6 +23,21 @@ export const changePasswordSchema = {
   },
 };
 
+export const initialChangePasswordSchema = {
+  schema: yup.object({
+    oldPassword: yup.string(),
+    newPassword: yup.string().required("New password is required"),
+    confirmNewPassword: yup
+      .string()
+      .required("Confirm new password is required"),
+  }),
+  defaultValues: {
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  },
+};
+
 //Setup Schema
 export const productSchema = {
   schema: yup.object({
@@ -171,6 +186,8 @@ export const userAccountSchema = {
     username: yup.string().required("Username is required"),
     password: yup.string(),
     userRoleId: yup.object().required("Role is required"),
+    clusterId: yup.object().nullable(),
+    // clusters: yup.array().of(yup.object()),
   }),
   // .required(),
   defaultValues: {
@@ -179,8 +196,30 @@ export const userAccountSchema = {
     username: "",
     password: "",
     userRoleId: null,
+    clusterId: null,
+    // clusters: [],
   },
 };
+
+// export const userAccountCdoSchema = {
+//   schema: yup.object({
+//     fullIdNo: yup.string().required("Full ID number is required"),
+//     fullname: yup.string().required("Fullname is required"),
+//     username: yup.string().required("Username is required"),
+//     password: yup.string(),
+//     userRoleId: yup.object().required("Role is required"),
+//     clusterId: yup.object().required("Cluster is required"),
+//   }),
+//   // .required(),
+//   defaultValues: {
+//     fullIdNo: "",
+//     fullname: "",
+//     username: "",
+//     password: "",
+//     userRoleId: null,
+//     clusterId: null,
+//   },
+// };
 
 export const userRoleSchema = {
   schema: yup.object({
@@ -341,12 +380,14 @@ export const regularRegisterSchema = {
     // .required("Representative name is required")
     authorizedRepresentativePosition: yup.string(),
     // .required("Representative position is required")
-    cluster: yup.number().required("Cluster is required").integer(),
+    // cluster: yup.number().required("Cluster is required").integer(),
+    clusterId: yup.object().required("Cluster is required"),
     longitude: yup.string(),
     // .required("Longitude is required")
     latitude: yup.string(),
     // .required("Latitude is required")
     birthDate: yup.date().required("Birthdate is required"),
+    emailAddress: yup.string(),
     storeTypeId: yup.object().required("Business type is required"),
   }),
   defaultValues: {
@@ -359,10 +400,12 @@ export const regularRegisterSchema = {
     tinNumber: "",
     authorizedRepresentative: "",
     authorizedRepresentativePosition: "",
-    cluster: null,
-    longitude: "155.1",
-    latitude: "122.2",
+    // cluster: null,
+    clusterId: null,
+    longitude: "",
+    latitude: "",
     birthDate: null,
+    emailAddress: "",
     storeTypeId: null,
   },
 };
@@ -389,7 +432,10 @@ export const directRegisterPersonalSchema = {
     storeTypeId: yup.object().required("Business type is required"),
     emailAddress: yup.string(),
     // emailAddress: yup.string().required("Email address is required"),
-    cluster: yup.number().required("Cluster is required").integer(),
+    clusterId: yup.object().required("Cluster is required"),
+    // cluster: yup.number().required("Cluster is required").integer(),
+    latitude: yup.string().nullable(),
+    longitude: yup.string().nullable(),
     businessAddress: yup
       .object({
         houseNumber: yup.string(),
@@ -422,7 +468,10 @@ export const directRegisterPersonalSchema = {
     businessName: "",
     storeTypeId: null,
     emailAddress: "",
-    cluster: null,
+    clusterId: null,
+    // cluster: null,
+    latitude: "",
+    longitude: "",
     businessAddress: {
       houseNumber: "",
       streetName: "",
@@ -498,13 +547,76 @@ export const priceChangeSchema = {
 
 export const clusterSchema = {
   schema: yup.object({
-    clusterCode: yup.string().required("Cluster code is required"),
-    clusterDescription: yup
-      .string()
-      .required("Cluster description is required"),
+    cluster: yup.string().required("Cluster is required"),
   }),
   defaultValues: {
-    clusterCode: "",
-    clusterDescription: "",
+    cluster: "",
+  },
+};
+
+export const clusterTagSchema = {
+  schema: yup.object({
+    clusterId: yup.number().required("Cluster is required"),
+    userId: yup.object().required("CDO is required"),
+  }),
+  defaultValues: {
+    clusterId: null,
+    userId: null,
+  },
+};
+
+export const otherExpensesSchema = {
+  schema: yup.object({
+    expenseType: yup.string().required("Expense type is required"),
+  }),
+  defaultValues: {
+    expenseType: "",
+  },
+};
+
+//Sales Module
+export const specialDiscountSchema = {
+  schema: yup.object({
+    clientId: yup.object().required("Client is required"),
+    specialDiscount: yup.number().required("Special Discount is required"),
+  }),
+  defaultValues: {
+    clientId: null,
+    specialDiscount: null,
+  },
+};
+
+export const requestExpensesSchema = {
+  schema: yup.object({
+    clientId: yup.object().required("Business Name is required"),
+    expenses: yup.array().of(
+      yup.object({
+        otherExpenseId: yup.object().required("Expense Type is required"),
+        amount: yup.string().required("Amount is required"),
+      })
+    ),
+  }),
+  defaultValues: {
+    clientId: null,
+    expenses: [
+      {
+        otherExpenseId: null,
+        amount: null,
+      },
+    ],
+  },
+};
+
+//Sales Module
+export const advancePaymentSchema = {
+  schema: yup.object({
+    clientId: yup.object().required("Business Name is required"),
+    paymentType: yup.object().required("Payment Type is required"),
+    amount: yup.number().required("Amount is required"),
+  }),
+  defaultValues: {
+    clientId: null,
+    paymentType: null,
+    amount: null,
   },
 };

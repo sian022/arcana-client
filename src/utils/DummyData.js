@@ -6,7 +6,7 @@ export const dummyTableData = [
     company: "once",
     department: "stage",
     location: "spoken",
-    actions: "class",
+    // actions: "class",
   },
   {
     fullName: "Lewis Adams",
@@ -15,7 +15,7 @@ export const dummyTableData = [
     company: "meat",
     department: "choose",
     location: "red",
-    actions: "eye",
+    // actions: "eye",
   },
   // {
   //   fullName: "Milton Wheeler",

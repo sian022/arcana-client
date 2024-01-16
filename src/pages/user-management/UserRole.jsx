@@ -21,6 +21,7 @@ import RoleTable from "../../components/RoleTable";
 import RoleTaggingModal from "../../components/modals/RoleTaggingModal";
 import { useSelector } from "react-redux";
 import useSnackbar from "../../hooks/useSnackbar";
+import { SupervisorAccount } from "@mui/icons-material";
 
 function UserRole() {
   const { showSnackbar, closeSnackbar } = useSnackbar();
@@ -217,7 +218,11 @@ function UserRole() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="User Role"
+        pageTitle={
+          <>
+            User Role <SupervisorAccount />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

@@ -46,8 +46,6 @@ function Attachments() {
   const [currentViewPhotoLabelCamel, setCurrentViewPhotoLabelCamel] =
     useState("");
 
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
-
   const ownerRequirementRefs = {
     signature: useRef(),
     storePhoto: useRef(),
@@ -255,6 +253,7 @@ function Attachments() {
                 onChange={(e) => {
                   setRequirementsMode(e.target.value);
                 }}
+                disabled
               />
             </Box>
           </Box>
@@ -470,6 +469,7 @@ function Attachments() {
                 onChange={(e) => {
                   setRequirementsMode(e.target.value);
                 }}
+                disabled
               />
             </Box>
           </Box>

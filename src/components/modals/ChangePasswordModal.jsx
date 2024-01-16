@@ -72,13 +72,17 @@ function ChangePasswordModal({ ...otherProps }) {
         newPassword,
       }).unwrap();
       showSnackbar("Password changed successfully", "success");
+      handleCloseModal();
     } catch (error) {
       console.log(error);
-      showSnackbar(error.data.messages[0], "error");
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error changing password", "error");
+      }
     }
 
     onConfirmClose();
-    handleCloseModal();
   };
 
   const handleCloseModal = () => {

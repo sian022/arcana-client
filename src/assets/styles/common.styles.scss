@@ -20,6 +20,7 @@
   & &__title {
     font-weight: bold;
     font-size: 30px;
+    white-space: nowrap;
   }
 
   &__left {
@@ -240,10 +241,15 @@
 
   &__navigators {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    // grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
+    max-height: 380px;
+    // height: 380px;
+    overflow: auto;
 
     &__item {
+      // position: absolute;
       cursor: pointer;
       background-color: $secondary;
       border-radius: 20px;
@@ -252,10 +258,13 @@
       gap: 20px;
       justify-content: space-between;
       // align-items: center;
+      height: 80px;
 
       &__text {
         display: flex;
         flex-direction: column;
+        text-overflow: ellipsis;
+        overflow: hidden;
 
         & &__title {
           font-size: 20px;
@@ -287,7 +296,7 @@
     }
 
     &__item:hover {
-      transform: translateY(2px);
+      // transform: translateY(2px);
       background-color: $secondary-hover;
     }
   }

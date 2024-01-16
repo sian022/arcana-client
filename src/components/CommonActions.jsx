@@ -12,7 +12,9 @@ import {
   HowToReg,
   MonetizationOn,
   More,
+  Password,
   PeopleAlt,
+  PersonAdd,
   Print,
   RemoveCircle,
   RequestPage,
@@ -37,7 +39,11 @@ function CommonActions({
   onAddPriceChange,
   onVoid,
   onDelete,
+  onCancel,
   onHistory,
+  onResetPassword,
+  onTagUserInCluster,
+  onViewCluster,
   disableActions,
   item,
   status,
@@ -76,6 +82,14 @@ function CommonActions({
       onAddPriceChange();
     } else if (action === "delete") {
       onDelete();
+    } else if (action === "tagUserInCluster") {
+      onTagUserInCluster();
+    } else if (action === "viewCluster") {
+      onViewCluster();
+    } else if (action === "cancel") {
+      onCancel();
+    } else if (action === "resetPassword") {
+      onResetPassword();
     }
 
     onClose();
@@ -117,6 +131,38 @@ function CommonActions({
           >
             <Tag />
             Tagging
+          </MenuItem>
+        )}
+
+        {onViewCluster && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("tag");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("viewCluster") : false
+            }
+          >
+            <Visibility />
+            View Cluster
+          </MenuItem>
+        )}
+
+        {onTagUserInCluster && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("tagUserInCluster");
+            }}
+            disabled={
+              disableActions
+                ? disableActions?.includes("tagUserInCluster")
+                : false
+            }
+          >
+            <PersonAdd />
+            Tag CDO
           </MenuItem>
         )}
 
@@ -327,6 +373,36 @@ function CommonActions({
           >
             <Delete />
             Delete
+          </MenuItem>
+        )}
+
+        {onCancel && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("cancel");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("cancel") : false
+            }
+          >
+            <Cancel />
+            Cancel
+          </MenuItem>
+        )}
+
+        {onResetPassword && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("resetPassword");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("resetPassword") : false
+            }
+          >
+            <Password />
+            Reset Password
           </MenuItem>
         )}
       </Menu>

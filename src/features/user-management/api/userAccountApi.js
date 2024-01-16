@@ -55,7 +55,15 @@ export const userAccountApi = createApi({
         method: "PATCH",
         body: body,
       }),
-      invalidatesTags: ["User"],
+      // invalidatesTags: ["User"],
+    }),
+
+    patchResetPassword: builder.mutation({
+      query: (id) => ({
+        url: `/User/ResetPassword/${id}`,
+        method: "PATCH",
+      }),
+      // invalidatesTags: ["User"],
     }),
   }),
 });
@@ -66,4 +74,5 @@ export const {
   usePutUserMutation,
   usePatchUserStatusMutation,
   usePatchChangePasswordMutation,
+  usePatchResetPasswordMutation,
 } = userAccountApi;

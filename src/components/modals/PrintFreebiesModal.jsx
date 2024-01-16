@@ -3,8 +3,6 @@ import CommonModal from "../CommonModal";
 import {
   Box,
   CircularProgress,
-  IconButton,
-  Input,
   Table,
   TableBody,
   TableCell,
@@ -19,14 +17,10 @@ import useDisclosure from "../../hooks/useDisclosure";
 import SignatureCanvasModal from "./SignatureCanvasModal";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import { usePutReleaseProspectMutation } from "../../features/prospect/api/prospectApi";
-import { base64ToBlob, debounce } from "../../utils/CustomFunctions";
 import SuccessSnackbar from "../SuccessSnackbar";
 import ErrorSnackbar from "../ErrorSnackbar";
 import CommonDialog from "../CommonDialog";
 import ViewPhotoModal from "./ViewPhotoModal";
-import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
-import { DirectReleaseContext } from "../../context/DirectReleaseContext";
 import SuccessButton from "../SuccessButton";
 import { useReactToPrint } from "react-to-print";
 import "../../assets/styles/print.styles.scss";
@@ -47,15 +41,6 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
   const address = selectedRowData?.ownersAddress;
   const { fullname } = useSelector((state) => state.login);
 
-  const fileUploadRef = useRef();
-
-  const {
-    signatureDirect,
-    photoProofDirect,
-    setSignatureDirect,
-    setPhotoProofDirect,
-  } = useContext(DirectReleaseContext);
-
   const printRef = useRef(null);
 
   const {
@@ -68,18 +53,6 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
     isOpen: isConfirmOpen,
     onOpen: onConfirmOpen,
     onClose: onConfirmClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isCancelConfirmOpen,
-    onOpen: onCancelConfirmOpen,
-    onClose: onCancelConfirmClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isRegisterOpen,
-    onOpen: onRegisterOpen,
-    onClose: onRegisterClose,
   } = useDisclosure();
 
   const {
@@ -183,6 +156,7 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                   </Box>
                 </Box>
               </Box>
+
               <TableContainer className="releaseFreebieModal__tableContainer">
                 <Table>
                   <TableHead
@@ -205,7 +179,9 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                       <TableRow key={i}>
                         <TableCell>{item.quantity}</TableCell>
                         <TableCell>{item.itemCode}</TableCell>
-                        <TableCell>{item.itemDescription}</TableCell>
+                        <TableCell>
+                          {item.itemDescription?.toUpperCase()}
+                        </TableCell>
                         <TableCell>{item.uom}</TableCell>
                       </TableRow>
                     ))}
@@ -216,7 +192,9 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
                       <TableRow key={i}>
                         <TableCell>{item.quantity}</TableCell>
                         <TableCell>{item.itemCode}</TableCell>
-                        <TableCell>{item.itemDescription}</TableCell>
+                        <TableCell>
+                          {item.itemDescription?.toUpperCase()}
+                        </TableCell>
                         <TableCell>{item.uom}</TableCell>
                       </TableRow>
                     ))}
@@ -349,8 +327,6 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
         currentViewPhoto={photoProof}
         currentViewPhotoLabel={"Freebie Photo"}
       />
-
-      <RegisterRegularForm open={isRegisterOpen} onClose={onRegisterClose} />
 
       <CommonDialog
         open={isConfirmOpen}

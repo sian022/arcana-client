@@ -72,7 +72,7 @@ import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat, PatternFormat } from "react-number-format";
-import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
+import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -82,7 +82,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     setRepresentativeRequirements,
     setRepresentativeRequirementsIsLink,
     setRequirementsMode,
-    convertSignatureToBase64,
   } = useContext(AttachmentsContext);
 
   const { showSnackbar } = useSnackbar();
@@ -135,18 +134,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     onClose: onCancelConfirmClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isRedirectListingFeeOpen,
-    onOpen: onRedirectListingFeeOpen,
-    onClose: onRedirectListingFeeClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isListingFeeOpen,
-    onOpen: onListingFeeOpen,
-    onClose: onListingFeeClose,
-  } = useDisclosure();
-
   // React Hook Form
   const {
     handleSubmit,
@@ -161,7 +148,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   } = useForm({
     resolver: yupResolver(directRegisterPersonalSchema.schema),
     // resolver: yupResolver(regularRegisterSchema.schema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: directRegisterPersonalSchema.defaultValues,
     // defaultValues: regularRegisterSchema.defaultValues,
   });
@@ -209,34 +196,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         const value = termsAndConditions[key];
         return value !== null && value !== "";
       }),
-      // isValid: Object.keys(termsAndConditions).every((key) => {
-      //   if (
-      //     key === "" &&
-      //     (termsAndConditions[key].discountPercentage === null ||
-      //       termsAndConditions[key].discountPercentage === "" ||
-      //       termsAndConditions[key].discountPercentage === NaN ||
-      //       termsAndConditions[key].discountPercentage === undefined) &&
-      //     termsAndConditions["variableDiscount"] === false
-      //   ) {
-      //     return false;
-      //   }
-
-      //   if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
-      //     return true;
-      //   } else if (termsAndConditions["terms"] !== 3 && key === "creditLimit") {
-      //     return true;
-      //   }
-
-      //   if (key === "modeOfPayments") {
-      //     if (termsAndConditions[key]?.length === 0) {
-      //       return false;
-      //     }
-      //     return true;
-      //   }
-
-      //   const value = termsAndConditions[key];
-      //   return value !== null && value !== "";
-      // }),
       icon: <Gavel />,
       disabled: false,
     },
@@ -280,6 +239,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     useGetAllStoreTypesQuery({ Status: true });
   const { data: termDaysData, isLoading: isTermDaysLoading } =
     useGetAllTermDaysQuery({ Status: true });
+  const { data: clusterData } = useGetAllClustersQuery({
+    Status: true,
+    ModuleName: "Registration",
+  });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
@@ -295,6 +258,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         ...data,
         dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
         storeTypeId: data?.storeTypeId?.id,
+        clusterId: data?.clusterId?.id,
         clientId: selectedRowData?.id,
       };
 
@@ -370,9 +334,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       onConfirmClose();
       onClose();
       handleResetForms();
-      if (!editMode) {
-        debounce(onRedirectListingFeeOpen(), 2000);
-      }
 
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
@@ -485,6 +446,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const handleResetForms = () => {
     reset();
+    // setValue("phoneNumber", "");
+
     setSameAsOwnersAddress(false);
     setIncludeAuthorizedRepresentative(false);
 
@@ -630,17 +593,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     return false;
   };
 
-  const handleRedirectListingFeeYes = () => {
-    onRedirectListingFeeClose();
-    onListingFeeOpen();
-  };
-
-  const handlePhoneNumberInput = (e) => {
-    const maxLength = 10;
-    const inputValue = e.target.value.toString().slice(0, maxLength);
-    e.target.value = inputValue;
-  };
-
   const handleSameAsOwnersAddress = () => {
     setSameAsOwnersAddress((prev) => !prev);
     if (!sameAsOwnersAddress) {
@@ -675,37 +627,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   };
 
   //UseEffects
-  // useEffect(() => {
-  //   if (sameAsOwnersAddress) {
-  //     setValue(
-  //       "businessAddress.houseNumber",
-  //       watch("ownersAddress.houseNumber"),
-  //       { shouldValidate: true }
-  //     );
-  //     setValue(
-  //       "businessAddress.streetName",
-  //       watch("ownersAddress.streetName"),
-  //       { shouldValidate: true }
-  //     ),
-  //       setValue(
-  //         "businessAddress.barangayName",
-  //         watch("ownersAddress.barangayName"),
-  //         { shouldValidate: true }
-  //       );
-  //     setValue("businessAddress.city", watch("ownersAddress.city"), {
-  //       shouldValidate: true,
-  //     }),
-  //       setValue("businessAddress.province", watch("ownersAddress.province"), {
-  //         shouldValidate: true,
-  //       });
-  //   } else {
-  //     setValue("businessAddress.houseNumber", "", { shouldValidate: true });
-  //     setValue("businessAddress.streetName", "", { shouldValidate: true });
-  //     setValue("businessAddress.barangayName", "", { shouldValidate: true });
-  //     setValue("businessAddress.city", "", { shouldValidate: true });
-  //     setValue("businessAddress.province", "", { shouldValidate: true });
-  //   }
-  // }, [sameAsOwnersAddress]);
 
   useEffect(() => {
     if (editMode) {
@@ -717,7 +638,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setValue("phoneNumber", selectedRowData?.phoneNumber);
       setValue("ownersAddress", selectedRowData?.ownersAddress);
       setValue("businessName", selectedRowData?.businessName);
-      setValue("cluster", selectedRowData?.cluster);
+      setValue(
+        "clusterId",
+        clusterData?.cluster?.find(
+          (item) => item.id === selectedRowData?.cluster
+        )
+      );
       setValue(
         "storeTypeId",
         storeTypeData?.storeTypes?.find(
@@ -740,6 +666,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         )
       ) {
         setSameAsOwnersAddress(true);
+      }
+      if (
+        selectedRowData?.authorizedRepresentative &&
+        selectedRowData?.authorizedRepresentativePosition
+      ) {
+        setIncludeAuthorizedRepresentative(true);
       }
 
       // Terms and Conditions
@@ -772,15 +704,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   discountPercentage:
                     selectedRowData?.fixedDiscount?.discountPercentage * 100,
                 },
-          // fixedDiscount:
-          //   selectedRowData?.fixedDiscount === null
-          //     ? {
-          //         discountPercentage: null,
-          //       }
-          //     : {
-          //         discountPercentage:
-          //           selectedRowData?.fixedDiscount?.discountPercentage,
-          //       },
         })
       );
 
@@ -815,7 +738,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           photoIdRepresentative: true,
           authorizationLetter: true,
         });
-      } else {
+      } else if (selectedRowData?.attachments?.length <= 4) {
         setRequirementsMode("owner");
         setOwnersRequirements({
           signature: selectedRowData?.attachments?.find(
@@ -842,11 +765,20 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   }, [open, termDaysData]);
 
   useEffect(() => {
-    if (!includeAuthorizedRepresentative) {
+    if (!!includeAuthorizedRepresentative) {
+      setRequirementsMode("representative");
+    } else if (!includeAuthorizedRepresentative) {
       setValue("authorizedRepresentative", "");
       setValue("authorizedRepresentativePosition", "");
+      setRequirementsMode("owner");
     }
   }, [includeAuthorizedRepresentative]);
+
+  useEffect(() => {
+    if (clusterData && open) {
+      setValue("clusterId", clusterData?.cluster?.[0]);
+    }
+  }, [open, clusterData]);
 
   return (
     <>
@@ -877,16 +809,26 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   Customer's Information
                 </Typography>
                 <Box className="register__firstRow__customerInformation__row">
-                  <TextField
-                    label="Owner's Name"
-                    size="small"
-                    autoComplete="off"
-                    required
-                    className="register__textField"
-                    {...register("ownersName")}
-                    helperText={errors?.ownersName?.message}
-                    error={errors?.ownersName}
+                  <Controller
+                    control={control}
+                    name="ownersName"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Owner's Name"
+                        size="small"
+                        autoComplete="off"
+                        required
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={errors?.ownersName?.message}
+                        error={errors?.ownersName}
+                      />
+                    )}
                   />
+
                   <TextField
                     label="Email Address"
                     size="small"
@@ -1076,7 +1018,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     <Controller
                       name="ownersAddress.houseNumber"
                       control={control}
-                      defaultValue="" // Set your default value here if needed
+                      defaultValue=""
                       render={({ field }) => (
                         <TextField
                           label="Unit No."
@@ -1084,6 +1026,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           autoComplete="off"
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={
                             errors?.ownersAddress?.houseNumber?.message
                           }
@@ -1113,6 +1058,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           autoComplete="off"
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={
                             errors?.ownersAddress?.streetName?.message
                           }
@@ -1144,6 +1092,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           required
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={
                             errors?.ownersAddress?.barangayName?.message
                           }
@@ -1176,6 +1127,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           required
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={errors?.ownersAddress?.city?.message}
                           error={errors?.ownersAddress?.city}
                         />
@@ -1205,6 +1159,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           required
                           className="register__textField"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.toUpperCase())
+                          }
                           helperText={errors?.ownersAddress?.province?.message}
                           error={errors?.ownersAddress?.province}
                         />
@@ -1229,20 +1186,51 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 <Typography className="register__title">
                   Business Name
                 </Typography>
-                <TextField
-                  label="Business Name"
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  {...register("businessName")}
-                  helperText={errors?.businessName?.message}
-                  error={errors?.businessName}
+
+                <Controller
+                  control={control}
+                  name="businessName"
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Business Name"
+                      size="small"
+                      autoComplete="off"
+                      required
+                      className="register__textField"
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
+                      onBlur={onBlur}
+                      value={value}
+                      inputRef={ref}
+                      helperText={errors?.businessName?.message}
+                      error={errors?.businessName}
+                    />
+                  )}
                 />
               </Box>
+
               <Box className="register__thirdRow__column">
                 <Typography className="register__title">Cluster</Typography>
-                <TextField
+                <ControlledAutocomplete
+                  name={"clusterId"}
+                  control={control}
+                  options={clusterData?.cluster || []}
+                  getOptionLabel={(option) => option.cluster.toUpperCase()}
+                  disableClearable
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Cluster"
+                      required
+                      helperText={errors?.clusterId?.message}
+                      error={errors?.clusterId}
+                    />
+                  )}
+                />
+                {/* <TextField
                   label="Cluster Type"
                   size="small"
                   autoComplete="off"
@@ -1252,7 +1240,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   {...register("cluster")}
                   helperText={errors?.cluster?.message}
                   error={errors?.cluster}
-                />
+                /> */}
               </Box>
 
               <Box className="register__thirdRow__column">
@@ -1263,7 +1251,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   name={"storeTypeId"}
                   control={control}
                   options={storeTypeData?.storeTypes || []}
-                  getOptionLabel={(option) => option.storeTypeName}
+                  getOptionLabel={(option) =>
+                    option.storeTypeName.toUpperCase()
+                  }
                   disableClearable
                   // value={storeTypeData?.storeTypes?.find(
                   //   (store) => store.storeTypeName === selectedStoreType
@@ -1328,7 +1318,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       autoComplete="off"
                       // required
                       className="register__textField"
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1351,7 +1341,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       className="register__textField"
                       helperText={errors?.businessAddress?.streetName?.message}
                       error={errors?.businessAddress?.streetName}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1374,7 +1364,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                         errors?.businessAddress?.barangayName?.message
                       }
                       error={errors?.businessAddress?.barangayName}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1397,7 +1387,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       className="register__textField"
                       helperText={errors?.businessAddress?.city?.message}
                       error={errors?.businessAddress?.city}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1418,7 +1408,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       className="register__textField"
                       helperText={errors?.businessAddress?.province?.message}
                       error={errors?.businessAddress?.province}
-                      onChange={onChange}
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
                       inputRef={ref}
@@ -1426,12 +1416,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   )}
                 />
 
-                <SecondaryButton
+                {/* <SecondaryButton
                   sx={{ maxHeight: "40px" }}
                   onClick={onPinLocationOpen}
                 >
                   Pin Location &nbsp; <PushPin />
-                </SecondaryButton>
+                </SecondaryButton> */}
               </Box>
             </Box>
             <Box className="register__secondRow">
@@ -1452,11 +1442,55 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               </Box>
               <Box className="register__secondRow">
                 <Box className="register__secondRow__content">
-                  <TextField
+                  <Controller
+                    control={control}
+                    name="authorizedRepresentative"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Full Name"
+                        size="small"
+                        autoComplete="off"
+                        required={includeAuthorizedRepresentative}
+                        disabled={!includeAuthorizedRepresentative}
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={errors?.authorizedRepresentative?.message}
+                        error={errors?.authorizedRepresentative}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name="authorizedRepresentativePosition"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Position"
+                        size="small"
+                        autoComplete="off"
+                        required={includeAuthorizedRepresentative}
+                        disabled={!includeAuthorizedRepresentative}
+                        className="register__textField"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value}
+                        inputRef={ref}
+                        helperText={
+                          errors?.authorizedRepresentativePosition?.message
+                        }
+                        error={errors?.authorizedRepresentativePosition}
+                      />
+                    )}
+                  />
+
+                  {/* <TextField
                     label="Full Name"
                     size="small"
                     autoComplete="off"
-                    // required
+                    required={includeAuthorizedRepresentative}
                     disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentative")}
@@ -1467,7 +1501,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     label="Position"
                     size="small"
                     autoComplete="off"
-                    // required
+                    required={includeAuthorizedRepresentative}
                     disabled={!includeAuthorizedRepresentative}
                     className="register__textField"
                     {...register("authorizedRepresentativePosition")}
@@ -1475,7 +1509,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       errors?.authorizedRepresentativePosition?.message
                     }
                     error={errors?.authorizedRepresentativePosition}
-                  />
+                  /> */}
                 </Box>
               </Box>
             </Box>
@@ -1524,14 +1558,14 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         </Box>
       </CommonDrawer>
 
-      <PinLocationModal
+      {/* <PinLocationModal
         latitude={latitude}
         setLatitude={setLatitude}
         longitude={longitude}
         setLongitude={setLongitude}
         open={isPinLocationOpen}
         onClose={onPinLocationClose}
-      />
+      /> */}
 
       <CommonDialog
         open={isConfirmOpen}
@@ -1562,28 +1596,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           (Fields will be reset)
         </span>
       </CommonDialog>
-
-      <CommonDialog
-        open={isRedirectListingFeeOpen}
-        onClose={onRedirectListingFeeClose}
-        onYes={handleRedirectListingFeeYes}
-        noIcon
-      >
-        Continue to listing fee for{" "}
-        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData?.businessName
-            ? selectedRowData?.businessName
-            : "client"}
-        </span>
-        ?
-      </CommonDialog>
-
-      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
-      <ListingFeeDrawer
-        isListingFeeOpen={isListingFeeOpen}
-        onListingFeeClose={onListingFeeClose}
-        redirect
-      />
     </>
   );
 }

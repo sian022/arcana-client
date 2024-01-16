@@ -29,6 +29,7 @@ import { NumericFormat } from "react-number-format";
 import ProductsTable from "../../components/customTables/ProductsTable";
 import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
 import PriceChangeDrawer from "../../components/drawers/PriceChangeDrawer";
+import { LocalMall } from "@mui/icons-material";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -112,6 +113,7 @@ function Products() {
     reset,
     getValues,
     control,
+    watch,
   } = useForm({
     resolver: yupResolver(
       drawerMode === "add" ? productSchema.schema : productEditSchema.schema
@@ -160,16 +162,17 @@ function Products() {
         }).unwrap();
         setSnackbarMessage("Product added successfully");
       } else if (drawerMode === "edit") {
-        if (changePrice) {
-          await putProduct({
-            ...restData,
-            uomId,
-            productSubCategoryId,
-            meatTypeId,
-            price: priceChange,
-          }).unwrap();
-          setSnackbarMessage("Product updated successfully");
-        } else if (!changePrice) {
+        // if (changePrice) {
+        //   await putProduct({
+        //     ...restData,
+        //     uomId,
+        //     productSubCategoryId,
+        //     meatTypeId,
+        //     price: priceChange,
+        //   }).unwrap();
+        //   setSnackbarMessage("Product updated successfully");
+        // } else
+        if (!changePrice) {
           await putProduct({
             ...restData,
             uomId,
@@ -288,17 +291,21 @@ function Products() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
-  useEffect(() => {
-    if (!changePrice) {
-      setValue("priceChange", null);
-      setValue("effectivityDate", null);
-    }
-  }, [changePrice]);
+  // useEffect(() => {
+  //   if (!changePrice) {
+  //     setValue("priceChange", null);
+  //     setValue("effectivityDate", null);
+  //   }
+  // }, [changePrice]);
 
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Products"
+        pageTitle={
+          <>
+            Products <LocalMall />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
@@ -332,7 +339,7 @@ function Products() {
         onClose={handleDrawerClose}
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Product"}
         onSubmit={handleSubmit(onDrawerSubmit)}
-        disableSubmit={!isValid}
+        disableSubmit={!isValid || watch("price") <= 0}
         isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
@@ -440,7 +447,6 @@ function Products() {
                 onBlur={onBlur}
                 value={value || ""}
                 ref={ref}
-                required
                 thousandSeparator=","
                 helperText={errors?.price?.message}
                 error={errors?.price}

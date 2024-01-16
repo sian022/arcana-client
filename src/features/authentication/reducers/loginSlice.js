@@ -1,15 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import CryptoJS from "crypto-js";
 import { saltkey } from "../../../utils/saltkey";
+import { decryptString } from "../../../utils/CustomFunctions";
 
 const storedFullname = sessionStorage.getItem("fullname");
+const storedUserDetails = decryptString(sessionStorage.getItem("userDetails"));
 
 const initialState = {
   fullname: storedFullname || "",
   roleName: "",
   token: "",
   isPasswordChanged: false,
-  userDetails: {},
+  userDetails: storedUserDetails || {},
+  username: "",
 };
 
 export const loginSlice = createSlice({
@@ -48,8 +51,24 @@ export const loginSlice = createSlice({
     setRoleName: (state, action) => {
       state.roleName = action.payload;
     },
+    setTokenTemp: (state, action) => {
+      state.token = action.payload;
+    },
+    setUsername: (state, action) => {
+      state.username = action.payload;
+    },
+    setUserDetailsTemp: (state, action) => {
+      state.userDetails = action.payload;
+    },
   },
 });
 
-export const { setFullname, setToken, setUserDetails, setRoleName } =
-  loginSlice.actions;
+export const {
+  setFullname,
+  setToken,
+  setUserDetails,
+  setRoleName,
+  setTokenTemp,
+  setUsername,
+  setUserDetailsTemp,
+} = loginSlice.actions;

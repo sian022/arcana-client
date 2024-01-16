@@ -17,7 +17,7 @@ export const discountTypeApi = createApi({
   endpoints: (builder) => ({
     postDiscountType: builder.mutation({
       query: (body) => ({
-        url: "/Discount/AddNewVariableDiscount",
+        url: "/VariableDiscount/AddNewVariableDiscount",
         method: "POST",
         body: body,
       }),
@@ -26,7 +26,7 @@ export const discountTypeApi = createApi({
     getAllDiscountTypes: builder.query({
       query: (params) => ({
         params: params,
-        url: "/Discount/GetVariableDiscount",
+        url: "/VariableDiscount/GetVariableDiscount",
         method: "GET",
       }),
       providesTags: ["Discount Type"],
@@ -35,7 +35,7 @@ export const discountTypeApi = createApi({
     }),
     putDiscountType: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/Discount/UpdateVariableDiscount/${id}`,
+        url: `/VariableDiscount/UpdateVariableDiscount/${id}`,
         method: "PUT",
         body: body,
       }),
@@ -43,7 +43,7 @@ export const discountTypeApi = createApi({
     }),
     patchDiscountTypeStatus: builder.mutation({
       query: (id) => ({
-        url: `/Discount/UpdateVariableDiscountStatus/${id}`,
+        url: `/VariableDiscount/UpdateVariableDiscountStatus/${id}`,
         method: "PATCH",
       }),
       invalidatesTags: ["Discount Type"],
@@ -51,7 +51,7 @@ export const discountTypeApi = createApi({
 
     deleteVariableDiscount: builder.mutation({
       query: (id) => ({
-        url: `/Discount/DeleteVariableDiscount/${id}`,
+        url: `/VariableDiscount/DeleteVariableDiscount/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Discount Type"],

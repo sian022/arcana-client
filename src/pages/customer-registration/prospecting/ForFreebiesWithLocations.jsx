@@ -274,7 +274,6 @@ function ForFreebiesWithLocations() {
   };
 
   const handleEditOpen = (editData) => {
-    console.log(editData);
     setDrawerMode("edit");
     onDrawerOpen();
 

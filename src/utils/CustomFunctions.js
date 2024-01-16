@@ -33,6 +33,8 @@ export const formatDate = (month, day, year, hours, minutes) => {
 };
 
 export const decryptString = (data) => {
+  if (!data) return null;
+
   const bytes = CryptoJS.AES.decrypt(data, saltkey);
   const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   return decryptedData;

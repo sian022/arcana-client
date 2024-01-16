@@ -1,4 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "@emotion/react";
+import { customerRegistrationTheme } from "../theme/customerRegistrationTheme";
 import LoginPage from "../pages/LoginPage";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../pages/Dashboard";
@@ -27,12 +29,15 @@ import ListingFeeApproval from "../pages/approval/ListingFeeApproval";
 import VariableDiscount from "../pages/customer-management/VariableDiscount";
 import BusinessType from "../pages/customer-management/BusinessType";
 import Approver from "../pages/user-management/Approver";
-import Cluster from "../pages/customer-management/Cluster";
 import SalesManagement from "../pages/sales-management";
 import SalesTransaction from "../pages/sales-management/SalesTransaction";
 import PaymentTransaction from "../pages/sales-management/PaymentTransaction";
 import SpecialDiscount from "../pages/sales-management/SpecialDiscount";
 import AdvancePayment from "../pages/sales-management/AdvancePayment";
+import Cluster from "../pages/user-management/Cluster";
+import ExpensesSetup from "../pages/customer-management/ExpensesSetup";
+import OtherExpenses from "../pages/customer-registration/OtherExpenses";
+import OtherExpensesApproval from "../pages/approval/OtherExpensesApproval";
 
 export const router = createBrowserRouter([
   {
@@ -68,17 +73,21 @@ export const router = createBrowserRouter([
             element: <Approver />,
           },
           {
-            path: "company",
-            element: <Company />,
+            path: "cluster",
+            element: <Cluster />,
           },
-          {
-            path: "department",
-            element: <Department />,
-          },
-          {
-            path: "location",
-            element: <Location />,
-          },
+          // {
+          //   path: "company",
+          //   element: <Company />,
+          // },
+          // {
+          //   path: "department",
+          //   element: <Department />,
+          // },
+          // {
+          //   path: "location",
+          //   element: <Location />,
+          // },
         ],
       },
       {
@@ -128,8 +137,8 @@ export const router = createBrowserRouter([
             element: <TermDays />,
           },
           {
-            path: "cluster",
-            element: <Cluster />,
+            path: "expenses-setup",
+            element: <ExpensesSetup />,
           },
         ],
       },
@@ -145,7 +154,11 @@ export const router = createBrowserRouter([
       // },
       {
         path: "customer-registration",
-        element: <CustomerRegistration />,
+        element: (
+          // <ThemeProvider theme={customerRegistrationTheme}>
+          <CustomerRegistration />
+          // </ThemeProvider>
+        ),
         children: [
           {
             path: "prospect",
@@ -163,6 +176,10 @@ export const router = createBrowserRouter([
           //   path: "freebies",
           //   element: <Freebies />,
           // },
+          {
+            path: "other-expenses",
+            element: <OtherExpenses />,
+          },
         ],
       },
 
@@ -197,10 +214,10 @@ export const router = createBrowserRouter([
             path: "registration-approval",
             element: <RegistrationApproval />,
           },
-          {
-            path: "sp-discount-approval",
-            element: <SpecialDiscountApproval />,
-          },
+          // {
+          //   path: "sp-discount-approval",
+          //   element: <SpecialDiscountApproval />,
+          // },
           {
             path: "listing-fee-approval",
             element: <ListingFeeApproval />,
@@ -209,6 +226,10 @@ export const router = createBrowserRouter([
           //   path: "freebie-approval",
           //   element: <FreebieApproval />,
           // },
+          {
+            path: "other-expenses-approval",
+            element: <OtherExpensesApproval />,
+          },
         ],
       },
     ],

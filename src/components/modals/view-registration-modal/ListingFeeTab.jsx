@@ -49,12 +49,12 @@ function ListingFeeTab() {
               Listing Fee
             </Typography>
 
-            {selectedRowData?.listingFee &&
-              selectedRowData?.listingFee?.length > 0 && (
+            {/* {selectedRowData?.listingFees &&
+              selectedRowData?.listingFees?.length > 0 && (
                 <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
                   Product Information
                 </Typography>
-              )}
+              )} */}
           </Box>
 
           {selectedRowData?.listingFees &&
@@ -107,7 +107,9 @@ function ListingFeeTab() {
                       item?.listingItems?.map((listing) => (
                         <TableRow key={listing.id}>
                           <TableCell>{listing.itemCode}</TableCell>
-                          <TableCell>{listing.itemDescription}</TableCell>
+                          <TableCell>
+                            {listing.itemDescription?.toUpperCase()}
+                          </TableCell>
                           <TableCell>{listing.uom}</TableCell>
                           <TableCell>{listing.sku}</TableCell>
                           <TableCell>
@@ -122,11 +124,16 @@ function ListingFeeTab() {
                                     ? "success.main"
                                     : item?.status === "Rejected"
                                     ? "error.main"
+                                    : item?.status === "Voided"
+                                    ? "gray"
                                     : "warning.main",
                                 borderRadius: "5px",
                                 padding: "3px",
                                 color: "white !important",
                                 fontWeight: "500",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
                               }}
                             >
                               {item.status === "Under review"

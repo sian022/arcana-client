@@ -32,6 +32,7 @@ import {
 } from "../../features/listing-fee/api/listingFeeApi";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NumericFormat } from "react-number-format";
+import { notificationApi } from "../../features/notification/api/notificationApi";
 
 function ListingFeeDrawer({
   editMode,
@@ -108,6 +109,18 @@ function ListingFeeDrawer({
   });
 
   //RTK Query
+  // const {
+  //   data: clientData,
+  //   isLoading: isClientLoading,
+  //   refetch: refetchClients,
+  // } = useGetAllClientsQuery({
+  //   RegistrationStatus: "Approved",
+  //   Status: true,
+  //   PageNumber: 1,
+  //   PageSize: 1000,
+  //   // IncludeRejected: editMode ? editMode : "",
+  // });
+
   const {
     data: clientData,
     isLoading: isClientLoading,
@@ -118,8 +131,9 @@ function ListingFeeDrawer({
     PageSize: 1000,
     IncludeRejected: editMode ? editMode : "",
   });
+
   const { data: productData, isLoading: isProductLoading } =
-    useGetAllProductsQuery({ Status: true });
+    useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
 
   const [postListingFee, { isLoading: isAddLoading }] =
     usePostListingFeeMutation();
@@ -153,6 +167,7 @@ function ListingFeeDrawer({
         });
         onListingFeeViewClose();
         setSnackbarMessage("Listing Fee updated successfully");
+        dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       } else {
         response = await postListingFee({
           clientId: data.clientId.id,
@@ -167,12 +182,14 @@ function ListingFeeDrawer({
         setSnackbarMessage(
           `Listing Fee ${editMode ? "updated" : "added"} successfully`
         );
+        dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       }
 
       dispatch(setSelectedRow(response?.data));
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
       handleDrawerClose();
       onSuccessOpen();
-      refetchClients();
+      // refetchClients();
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
@@ -256,34 +273,6 @@ function ListingFeeDrawer({
     onClientConfirmationClose();
   };
 
-  //UseEffects
-  // useEffect(() => {
-  //   setValue("clientId", clientId);
-  //   const freebiesLength = selectedRowData?.freebies?.length;
-
-  //   if (updateListingFee && isListingFeeOpen) {
-  //     const originalFreebies =
-  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
-
-  //     const transformedFreebies = originalFreebies.map((item) => ({
-  //       itemId: item,
-  //       itemDescription: item.itemDescription,
-  //       uom: item.uom,
-  //     }));
-
-  //     setValue("freebies", transformedFreebies);
-  //     setValue(
-  //       "freebieRequestId",
-  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
-  //         null
-  //     );
-  //   }
-
-  //   return () => {
-  //     setValue("clientId", null);
-  //   };
-  // }, [isListingFeeOpen]);
-
   useEffect(() => {
     if (redirect && clientData) {
       const foundItem = clientData?.regularClient?.find(
@@ -316,6 +305,7 @@ function ListingFeeDrawer({
           unitCost: item.unitCost,
         }))
       );
+
       handleRecalculateTotalAmount();
     }
   }, [isListingFeeOpen, clientData]);
@@ -327,18 +317,38 @@ function ListingFeeDrawer({
         open={isListingFeeOpen}
         onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
         width="1000px"
-        disableSubmit={!isValid}
+        disableSubmit={!isValid || totalAmount < 0}
         onSubmit={onConfirmSubmitOpen}
         // zIndex={editMode && 1300}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-          <Box sx={{ display: "flex", gap: "10px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                Client Information
+              </Typography>
+            </Box>
+
             <ControlledAutocomplete
               name={`clientId`}
               control={control}
               options={clientData?.regularClient || []}
               getOptionLabel={(option) =>
-                option.businessName + " - " + option.ownersName || ""
+                option.businessName?.toUpperCase() +
+                  " - " +
+                  option.ownersName?.toUpperCase() || ""
               }
               disableClearable
               loading={isClientLoading}
@@ -354,8 +364,8 @@ function ListingFeeDrawer({
                   size="small"
                   label="Business Name - Owner's Name"
                   required
-                  helperText={errors?.itemId?.message}
-                  error={errors?.itemId}
+                  helperText={errors?.clientId?.message}
+                  error={errors?.clientId}
                   // sx={{ width: "300px" }}
                   sx={{ width: "400px" }}
                 />
@@ -370,24 +380,6 @@ function ListingFeeDrawer({
                 }
               }}
             />
-
-            {/* <Controller
-              control={control}
-              name={`customerName`}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <TextField
-                  label="Customer Name"
-                  size="small"
-                  autoComplete="off"
-                  disabled
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  value={value || ""}
-                  ref={ref}
-                  sx={{ width: "300px" }}
-                />
-              )}
-            /> */}
           </Box>
 
           <Box
@@ -447,8 +439,27 @@ function ListingFeeDrawer({
                         )
                       );
 
+                    const isInitialValue = selectedRowData?.listingItems?.some(
+                      (item) => item?.itemCode === option.itemCode
+                    );
+
+                    // const isInitialValueStillSelected =
+                    //   selectedClientData?.listingFees?.some((request) =>
+                    //     request?.listingItems?.some((item) =>
+                    //       selectedRowData?.listingItems.some(
+                    //         (initialItem) =>
+                    //           initialItem?.itemCode === item.itemCode
+                    //       )
+                    //     )
+                    //   );
+
                     return (
-                      isListingFeeRepeating || isListingFeeRepeatingBackend
+                      isListingFeeRepeating ||
+                      (editMode
+                        ? !isInitialValue &&
+                          // !isInitialValueStillSelected &&
+                          isListingFeeRepeatingBackend
+                        : isListingFeeRepeatingBackend)
                     );
                   }}
                   disableClearable
@@ -488,7 +499,7 @@ function ListingFeeDrawer({
                       disabled
                       onChange={onChange}
                       onBlur={onBlur}
-                      value={value || ""}
+                      value={value?.toUpperCase() || ""}
                       ref={ref}
                       sx={{ width: "400px" }}
                     />
@@ -552,6 +563,8 @@ function ListingFeeDrawer({
                       // ref={ref}
                       required
                       thousandSeparator=","
+                      allowNegative={false}
+                      allowLeadingZeros={false}
                       disabled={!watch("clientId")}
                     />
                   )}
@@ -595,6 +608,12 @@ function ListingFeeDrawer({
                 unitCost: null,
               });
             }}
+            disabled={
+              !watch("listingItems")[watch("listingItems")?.length - 1]
+                ?.itemId ||
+              !watch("listingItems")[watch("listingItems")?.length - 1]
+                ?.unitCost
+            }
           >
             Add Product
           </SecondaryButton>

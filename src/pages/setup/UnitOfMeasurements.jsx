@@ -18,6 +18,7 @@ import {
 } from "../../features/setup/api/uomApi";
 import { uomSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
+import { SquareFoot } from "@mui/icons-material";
 
 function UnitOfMeasurements() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -177,7 +178,11 @@ function UnitOfMeasurements() {
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
-        pageTitle="Unit of Measurements"
+        pageTitle={
+          <>
+            Unit of Measurements <SquareFoot />
+          </>
+        }
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}

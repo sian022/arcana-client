@@ -61,8 +61,6 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
     onClose();
   };
 
-  // console.log(selectedRowData);
-  // console.log(data?.find((item) => item.id === selectedRowData?.id));
   const onArchiveSubmit = async () => {
     try {
       await deletePriceChange(
@@ -300,7 +298,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         isLoading={isDeleteLoading}
         // noIcon={!status}
       >
-        Are you sure you want to archive price change of <br />
+        Are you sure you want to delete price change of <br />
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
           ₱{" "}
           {selectedRowData?.futurePriceChanges?.[

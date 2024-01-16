@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import moment from "moment";
 import React from "react";
 import { useSelector } from "react-redux";
+import { formatPhoneNumber } from "../../../utils/CustomFunctions";
 
 function PersonalInfoTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -40,7 +41,7 @@ function PersonalInfoTab() {
               Contact Number:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              +63{selectedRowData?.phoneNumber}
+              +63 {formatPhoneNumber(selectedRowData?.phoneNumber)}
             </Typography>
           </Box>
 
@@ -49,7 +50,7 @@ function PersonalInfoTab() {
               Email Address:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              {selectedRowData?.emailAddress}
+              {selectedRowData?.emailAddress || "N/A"}
             </Typography>
           </Box>
 

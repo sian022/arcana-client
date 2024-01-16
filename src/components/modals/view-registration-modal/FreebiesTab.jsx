@@ -39,12 +39,12 @@ function FreebiesTab() {
             <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
               Freebies
             </Typography>
-            {selectedRowData?.freebies &&
+            {/* {selectedRowData?.freebies &&
               selectedRowData?.freebies?.length > 0 && (
                 <Typography className="viewRegistrationModal__listingFee__content__titleGroup__title">
                   Product Information
                 </Typography>
-              )}
+              )} */}
           </Box>
 
           {selectedRowData?.freebies &&
@@ -54,8 +54,8 @@ function FreebiesTab() {
                 sx={{
                   maxHeight: "280px",
                   overflow: "auto",
-                  width: "620px",
-                  // width: "700px",
+                  // width: "620px",
+                  width: "720px",
                   // maxWidth: "700px",
                   borderRadius: "10px",
                 }}
@@ -87,7 +87,9 @@ function FreebiesTab() {
                       item?.freebies?.map((freebie) => (
                         <TableRow key={freebie.id}>
                           <TableCell>{freebie.itemCode}</TableCell>
-                          <TableCell>{freebie.itemDescription}</TableCell>
+                          <TableCell>
+                            {freebie.itemDescription?.toUpperCase()}
+                          </TableCell>
                           <TableCell>{freebie.uom}</TableCell>
                           <TableCell>{freebie.quantity}</TableCell>
                         </TableRow>
