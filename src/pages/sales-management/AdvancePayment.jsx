@@ -131,31 +131,13 @@ function AdvancePayment() {
         />
       )}
 
-      <CommonDrawer
-        // open={isDrawerOpen}
-        // onClose={handleDrawerClose}
-        drawerHeader={
-          (drawerMode === "add" ? "Add" : "Edit") + " Advance Payment"
-        }
-        // onSubmit={handleSubmit(onDrawerSubmit)}
-        // disableSubmit={!isValid}
-        // isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
-      >
-        <TextField
-          label="Business Type Name"
-          size="small"
-          autoComplete="off"
-          // {...register("storeTypeName")}
-          // helperText={errors?.storeTypeName?.message}
-          // error={errors?.storeTypeName}
-        />
-      </CommonDrawer>
-
       <CommonModalForm
         title="Advance Payment"
         open={isFormOpen}
         onClose={handleFormClose}
-        width={"800px"}
+        onSubmit={handleFormClose}
+        width="800px"
+        height="520px"
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           <Box
@@ -181,10 +163,6 @@ function AdvancePayment() {
               disableClearable
               loading={isClientLoading}
               disabled={drawerMode === "edit"}
-              // value={clientData?.regularClient?.find(
-              //   (item) => item.businessName === selectedRowData?.businessName
-              // )}
-              // isOptionEqualToValue={(option, value) => option.id === value.id}
               isOptionEqualToValue={(option, value) => true}
               renderInput={(params) => (
                 <TextField
@@ -226,7 +204,7 @@ function AdvancePayment() {
                 options={paymentTypes}
                 getOptionLabel={(option) => option.label.toUpperCase()}
                 disableClearable
-                disabled={!watch("clientId")}
+                // disabled={!watch("clientId")}
                 isOptionEqualToValue={(option, value) => true}
                 renderInput={(params) => (
                   <TextField
@@ -271,7 +249,7 @@ function AdvancePayment() {
                     thousandSeparator=","
                     allowNegative={false}
                     allowLeadingZeros={false}
-                    disabled={!watch("clientId")}
+                    // disabled={!watch("clientId")}
                   />
                 )}
               />
