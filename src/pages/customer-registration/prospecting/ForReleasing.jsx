@@ -166,7 +166,7 @@ function ForReleasing() {
     watch,
   } = useForm({
     resolver: yupResolver(prospectSchema.schema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: prospectSchema.defaultValues,
   });
 

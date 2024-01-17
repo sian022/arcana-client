@@ -145,7 +145,7 @@ function ForFreebies() {
   } = useForm({
     resolver: yupResolver(prospectSchema.schema),
     // resolver: yupResolver(prospectWithLocationsSchema.schema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: prospectSchema.defaultValues,
     // defaultValues: prospectWithLocationsSchema.defaultValues,
   });
