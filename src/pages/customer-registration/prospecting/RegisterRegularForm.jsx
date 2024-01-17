@@ -128,6 +128,7 @@ function RegisterRegularForm({ open, onClose }) {
     control,
     watch,
     trigger,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(regularRegisterSchema.schema),
     mode: "onChange",
@@ -340,6 +341,7 @@ function RegisterRegularForm({ open, onClose }) {
 
   const handleResetForms = () => {
     reset();
+    clearErrors();
     setSameAsOwnersAddress(false);
     setIncludeAuthorizedRepresentative(false);
 
