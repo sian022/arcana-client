@@ -557,7 +557,7 @@ function UserAccount() {
 
             //   return isClusterRepeating;
             // }}
-            getOptionDisabled={(option) => option?.userId !== null}
+            // getOptionDisabled={(option) => option?.userId !== null}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <TextField
