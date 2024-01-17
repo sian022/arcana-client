@@ -159,7 +159,7 @@ export const navigationData = [
     path: "/customer-registration",
     name: "Customer Registration",
     icon: "AddBusiness",
-    notifications: ["rejectedClient", "rejectedListingFee"],
+    notifications: ["rejectedClient", "rejectedListingFee", "rejectedExpenses"],
     sub: [
       {
         id: 1,
@@ -241,7 +241,7 @@ export const navigationData = [
     path: "/approval",
     name: "Approval",
     icon: "Approval",
-    notifications: ["pendingClient", "pendingListingFee"],
+    notifications: ["pendingClient", "pendingListingFee", "pendingExpenses"],
     sub: [
       {
         id: 1,

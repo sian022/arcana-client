@@ -112,10 +112,10 @@ function CustomerRegistration() {
             </Box>
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.rejectedOtherExpenses &&
-              !notifications?.rejectedOtherExpenses !== 0 ? (
+              {!!notifications?.rejectedExpenses &&
+              !notifications?.rejectedExpenses !== 0 ? (
                 <Box className="notificationsLarge">
-                  {notifications?.rejectedOtherExpenses}
+                  {notifications?.rejectedExpenses}
                 </Box>
               ) : (
                 <Box></Box>
