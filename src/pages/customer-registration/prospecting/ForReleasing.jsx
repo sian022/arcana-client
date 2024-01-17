@@ -164,6 +164,7 @@ function ForReleasing() {
     reset,
     control,
     watch,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(prospectSchema.schema),
     mode: "onSubmit",
@@ -291,6 +292,7 @@ function ForReleasing() {
 
   const handleDrawerClose = () => {
     reset();
+    clearErrors();
     onDrawerClose();
     onCancelConfirmClose();
     setSelectedId("");
