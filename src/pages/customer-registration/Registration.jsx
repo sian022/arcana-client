@@ -181,6 +181,8 @@ function DirectRegistration() {
     "approvers",
     "registrationStatus",
     "expenses",
+    "clusterId",
+    "clusterName",
   ];
 
   const tableHeads = [
