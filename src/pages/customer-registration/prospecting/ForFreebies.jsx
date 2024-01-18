@@ -142,10 +142,11 @@ function ForFreebies() {
     control,
     watch,
     getValues,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(prospectSchema.schema),
     // resolver: yupResolver(prospectWithLocationsSchema.schema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: prospectSchema.defaultValues,
     // defaultValues: prospectWithLocationsSchema.defaultValues,
   });
@@ -274,6 +275,7 @@ function ForFreebies() {
 
   const handleDrawerClose = () => {
     reset();
+    clearErrors();
     onDrawerClose();
     setSelectedId("");
     onCancelConfirmClose();

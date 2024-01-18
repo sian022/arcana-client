@@ -146,6 +146,8 @@ function RegistrationApproval() {
     "approvers",
     "registrationStatus",
     "expenses",
+    "clusterId",
+    "clusterName",
   ];
 
   //Misc Functions
@@ -193,7 +195,7 @@ function RegistrationApproval() {
           <CommonTable
             mapData={data?.regularClient}
             excludeKeysDisplay={excludeKeysDisplay}
-            tableHeads={tableHeads}
+            // tableHeads={tableHeads}
             moreCompact
             editable
             onView={onViewOpen}

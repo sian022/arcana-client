@@ -137,7 +137,7 @@ function PersonalInfoTab() {
               Cluster:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              {selectedRowData?.cluster}
+              {selectedRowData?.clusterName}
             </Typography>
           </Box>
 

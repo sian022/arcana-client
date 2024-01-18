@@ -111,10 +111,10 @@ function Approval() {
             </Box>
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.pendingOtherExpenses &&
-              !notifications?.pendingOtherExpenses !== 0 ? (
+              {!!notifications?.pendingExpenses &&
+              !notifications?.pendingExpenses !== 0 ? (
                 <Box className="notificationsLarge">
-                  {notifications?.pendingOtherExpenses}
+                  {notifications?.pendingExpenses}
                 </Box>
               ) : (
                 <Box></Box>

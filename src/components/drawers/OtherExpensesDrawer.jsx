@@ -483,7 +483,10 @@ function OtherExpensesDrawer({
             disabled={
               !watch("expenses")[watch("expenses")?.length - 1]
                 ?.otherExpenseId ||
-              !watch("expenses")[watch("expenses")?.length - 1]?.amount
+              watch("expenses")[watch("expenses")?.length - 1]?.amount ==
+                null ||
+              watch("expenses")[watch("expenses")?.length - 1]?.amount ==
+                undefined
             }
           >
             Add Expense

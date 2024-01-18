@@ -145,6 +145,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     control,
     watch,
     trigger,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(directRegisterPersonalSchema.schema),
     // resolver: yupResolver(regularRegisterSchema.schema),
@@ -446,6 +447,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const handleResetForms = () => {
     reset();
+    clearErrors();
     // setValue("phoneNumber", "");
 
     setSameAsOwnersAddress(false);
