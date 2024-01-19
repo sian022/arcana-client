@@ -21,9 +21,9 @@ import { advancePaymentSchema } from "../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
-import { paymentTypes } from "../../utils/Constants";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { paymentTypesAdvPayment } from "../../utils/Constants";
 
 function AdvancePayment() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -201,7 +201,7 @@ function AdvancePayment() {
               <ControlledAutocomplete
                 name="paymentType"
                 control={control}
-                options={paymentTypes}
+                options={paymentTypesAdvPayment}
                 getOptionLabel={(option) => option.label.toUpperCase()}
                 disableClearable
                 // disabled={!watch("clientId")}

@@ -31,3 +31,18 @@ export const paymentTypes = [
     value: "Adv. Payment",
   },
 ];
+
+export const paymentTypesAdvPayment = [
+  {
+    label: "Cheque",
+    value: "Cheque",
+  },
+  {
+    label: "Cash",
+    value: "Cash",
+  },
+  {
+    label: "Online",
+    value: "Online",
+  },
+];
