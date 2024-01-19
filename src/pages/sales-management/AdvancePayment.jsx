@@ -394,6 +394,80 @@ function AdvancePayment() {
               />
             </Box>
           )}
+
+          {watch("paymentType")?.label === "Online" && (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "20px",
+                mt: "20px",
+              }}
+            >
+              <Controller
+                name="accountName"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    label="Account Name"
+                    size="small"
+                    autoComplete="off"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    helperText={errors?.accountName?.message}
+                    error={errors?.accountName}
+                  />
+                )}
+              />
+
+              <Controller
+                name="accountNumber"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    label="Account No."
+                    size="small"
+                    autoComplete="off"
+                    {...field}
+                    helperText={errors?.accountNumber?.message}
+                    error={errors?.accountNumber}
+                    type="number"
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name={"paymentAmount"}
+                render={({ field: { onChange, onBlur, value, ref } }) => (
+                  <NumericFormat
+                    label="Amount"
+                    type="text"
+                    size="small"
+                    customInput={TextField}
+                    autoComplete="off"
+                    onValueChange={(e) => {
+                      onChange(Number(e.value));
+                    }}
+                    onBlur={onBlur}
+                    value={value || ""}
+                    // InputProps={{
+                    //   startAdornment: (
+                    //     <InputAdornment position="start">₱</InputAdornment>
+                    //   ),
+                    // }}
+                    thousandSeparator=","
+                    allowNegative={false}
+                    allowLeadingZeros={false}
+                  />
+                )}
+              />
+            </Box>
+          )}
         </Box>
       </CommonModalForm>
 
