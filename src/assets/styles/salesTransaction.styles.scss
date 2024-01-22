@@ -1,0 +1,68 @@
+@import "./index.styles.scss";
+
+.ribbon {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  z-index: 99;
+  overflow: hidden;
+  width: 93px;
+  height: 93px;
+  text-align: right;
+}
+
+.red span {
+  background: linear-gradient(#f70505 0, #8f0808 100%);
+}
+
+.red span::before {
+  border-left-color: #8f0808;
+  border-top-color: #8f0808;
+}
+
+.red span::after {
+  border-right-color: #8f0808;
+  border-top-color: #8f0808;
+}
+
+.ribbon span {
+  font-size: 0.5rem;
+  color: #fff;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 700;
+  line-height: 32px;
+  transform: rotate(45deg);
+  width: 125px;
+  display: block;
+  background: #8f0808;
+  background: linear-gradient(#a52727 0, #8f0808 100%);
+  box-shadow: 0 3px 10px -5px #000;
+  position: absolute;
+  top: 17px;
+  right: -29px;
+}
+
+.ribbon span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: -1;
+  border-left: 3px solid #a52727;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #a52727;
+}
+
+.ribbon span::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: -1;
+  border-right: 3px solid #a52727;
+  border-left: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #a52727;
+}

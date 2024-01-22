@@ -620,3 +620,21 @@ export const advancePaymentSchema = {
     amount: null,
   },
 };
+
+export const salesTransactionSchema = {
+  schema: yup.object({
+    clientId: yup.object().required("Business Name is required"),
+    items: yup.array().of(
+      yup.object({
+        itemId: yup.object().required("Expense Type is required"),
+        quantity: yup.number().required("Quantity is required"),
+        // amount: yup.string().required("Amount is required"),
+      })
+    ),
+  }),
+
+  defaultValues: {
+    clientId: null,
+    items: [{ itemId: null, quantity: null }],
+  },
+};
