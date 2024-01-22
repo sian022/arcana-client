@@ -61,7 +61,6 @@ import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import DangerButton from "../../../components/DangerButton";
-import ListingFeeModal from "../../../components/modals/ListingFeeModal";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";

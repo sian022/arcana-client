@@ -221,6 +221,7 @@ function SpecialDiscount() {
                   }}
                   onBlur={onBlur}
                   value={value || ""}
+                  // sx={{ width: "200px" }}
                   // InputProps={{
                   //   startAdornment: (
                   //     <InputAdornment position="start">₱</InputAdornment>

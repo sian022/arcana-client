@@ -5,7 +5,6 @@ import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
 import { dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
-import ListingFeeModal from "../../components/modals/ListingFeeModal";
 import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
