@@ -1,8 +1,15 @@
-import { Box, IconButton, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
-import { Sort } from "@mui/icons-material";
+import { Add, Sort } from "@mui/icons-material";
 
 function SalesTransaction() {
   return (
@@ -15,16 +22,18 @@ function SalesTransaction() {
           flex: 1,
           mb: "20px",
           flexDirection: "column",
-          // borderRadius: "5px",
+          borderRadius: "5px",
+          bgcolor: "primary.main",
         }}
       >
         <Box
           sx={{
             border: "1px solid red",
             height: "70px",
-            bgcolor: "primary.main",
+            // bgcolor: "primary.main",
           }}
         ></Box>
+
         <Box
           sx={{
             display: "flex",
@@ -33,6 +42,8 @@ function SalesTransaction() {
             // px: "5px",
             mx: "5px",
             gap: "5px",
+            bgcolor: "white !important",
+            borderRadius: "5px",
           }}
         >
           <Box
@@ -97,7 +108,244 @@ function SalesTransaction() {
               </SecondaryButton>
             </Box>
 
-            <Box sx={{ flex: 1, border: "1px solid orange" }}></Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                flex: 1,
+                border: "1px solid orange",
+              }}
+            >
+              <Button
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  px: "20px",
+                  py: "5px",
+                  m: "5px",
+                  // color: "secondary.main",
+                  color: "black",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "left",
+                  }}
+                >
+                  <Typography
+                    fontSize="1.2rem"
+                    fontWeight="700"
+                    textTransform="none"
+                  >
+                    52319
+                  </Typography>
+                  <Typography fontSize="12px">
+                    Rapsarap Chicken Nuggets 200G
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{ display: "flex", gap: "20px", alignItems: "center" }}
+                >
+                  <Box>
+                    <Typography fontWeight="700" fontSize="1.3rem">
+                      ₱ 200.99
+                    </Typography>
+                  </Box>
+                  <Add />
+                </Box>
+
+                {/* </IconButton> */}
+              </Button>
+
+              <Button
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  px: "20px",
+                  py: "5px",
+                  m: "5px",
+                  // color: "secondary.main",
+                  color: "black",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "left",
+                  }}
+                >
+                  <Typography
+                    fontSize="1.2rem"
+                    fontWeight="700"
+                    textTransform="none"
+                  >
+                    52319
+                  </Typography>
+                  <Typography fontSize="12px">
+                    Rapsarap Chicken Nuggets 200G
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{ display: "flex", gap: "20px", alignItems: "center" }}
+                >
+                  <Box>
+                    <Typography fontWeight="700" fontSize="1.3rem">
+                      ₱ 200.99
+                    </Typography>
+                  </Box>
+                  <Add />
+                </Box>
+
+                {/* </IconButton> */}
+              </Button>
+
+              <Button
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  px: "20px",
+                  py: "5px",
+                  m: "5px",
+                  // color: "secondary.main",
+                  color: "black",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "left",
+                  }}
+                >
+                  <Typography
+                    fontSize="1.2rem"
+                    fontWeight="700"
+                    textTransform="none"
+                  >
+                    52319
+                  </Typography>
+                  <Typography fontSize="12px">
+                    Rapsarap Chicken Nuggets 200G
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{ display: "flex", gap: "20px", alignItems: "center" }}
+                >
+                  <Box>
+                    <Typography fontWeight="700" fontSize="1.3rem">
+                      ₱ 200.99
+                    </Typography>
+                  </Box>
+                  <Add />
+                </Box>
+
+                {/* </IconButton> */}
+              </Button>
+
+              <Button
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  px: "20px",
+                  py: "5px",
+                  m: "5px",
+                  // color: "secondary.main",
+                  color: "black",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "left",
+                  }}
+                >
+                  <Typography
+                    fontSize="1.2rem"
+                    fontWeight="700"
+                    textTransform="none"
+                  >
+                    52319
+                  </Typography>
+                  <Typography fontSize="12px">
+                    Rapsarap Chicken Nuggets 200G
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{ display: "flex", gap: "20px", alignItems: "center" }}
+                >
+                  <Box>
+                    <Typography fontWeight="700" fontSize="1.3rem">
+                      ₱ 200.99
+                    </Typography>
+                  </Box>
+                  <Add />
+                </Box>
+
+                {/* </IconButton> */}
+              </Button>
+
+              <Button
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  px: "20px",
+                  py: "5px",
+                  m: "5px",
+                  // color: "secondary.main",
+                  color: "black",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "left",
+                  }}
+                >
+                  <Typography
+                    fontSize="1.2rem"
+                    fontWeight="700"
+                    textTransform="none"
+                  >
+                    52319
+                  </Typography>
+                  <Typography fontSize="12px">
+                    Rapsarap Chicken Nuggets 200G
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{ display: "flex", gap: "20px", alignItems: "center" }}
+                >
+                  <Box>
+                    <Typography fontWeight="700" fontSize="1.3rem">
+                      ₱ 200.99
+                    </Typography>
+                  </Box>
+                  <Add />
+                </Box>
+
+                {/* </IconButton> */}
+              </Button>
+            </Box>
           </Box>
 
           <Box
@@ -112,7 +360,7 @@ function SalesTransaction() {
         <Box
           sx={{
             border: "1px solid red",
-            height: "70px",
+            height: "40px",
             bgcolor: "primary.main",
           }}
         ></Box>
