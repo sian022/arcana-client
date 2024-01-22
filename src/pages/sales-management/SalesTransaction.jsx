@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
 import { Add, KeyboardDoubleArrowRight, Sort } from "@mui/icons-material";
@@ -18,8 +18,11 @@ import { useForm } from "react-hook-form";
 import TertiaryButton from "../../components/TertiaryButton";
 import moment from "moment";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
+import { debounce } from "../../utils/CustomFunctions";
 
 function SalesTransaction() {
+  const [search, setSearch] = useState("");
+
   //React Hook Form
   const {
     handleSubmit,
@@ -49,46 +52,17 @@ function SalesTransaction() {
   });
 
   const { data: productData, isFetching: isProductFetching } =
-    useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
+    useGetAllProductsQuery({
+      Status: true,
+      Page: 1,
+      PageSize: 1000,
+      Search: search,
+    });
 
-  const data = [
-    {
-      id: 1,
-      label: "52319",
-      description: "Rapsarap Chicken Nuggets 200G",
-      price: "₱ 200.99",
-    },
-    {
-      id: 2,
-      label: "12345",
-      description: "Sample Product 1",
-      price: "₱ 99.99",
-    },
-    {
-      id: 3,
-      label: "67890",
-      description: "Sample Product 2",
-      price: "₱ 150.50",
-    },
-    {
-      id: 4,
-      label: "98765",
-      description: "Sample Product 3",
-      price: "₱ 180.75",
-    },
-    {
-      id: 5,
-      label: "13579",
-      description: "Sample Product 4",
-      price: "₱ 120.00",
-    },
-    {
-      id: 6,
-      label: "13579",
-      description: "Sample Product 4",
-      price: "₱ 120.00",
-    },
-  ];
+  //Functions
+  const debouncedSetSearch = debounce((value) => {
+    setSearch(value);
+  }, 200);
 
   return (
     <Box className="commonPageLayout">
@@ -199,6 +173,9 @@ function SalesTransaction() {
                 placeholder="Search"
                 sx={{ width: "300px" }}
                 autoComplete="off"
+                onChange={(e) => {
+                  debouncedSetSearch(e.target.value);
+                }}
               />
 
               <SecondaryButton>
@@ -264,13 +241,24 @@ function SalesTransaction() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography
-                      fontWeight="700"
-                      fontSize="1.3rem"
-                      whiteSpace="nowrap"
+                    <Box
+                      sx={{
+                        bgcolor: "success.main",
+                        p: "5px",
+                        borderRadius: "10px",
+                      }}
                     >
-                      ₱ {item.priceChangeHistories?.[0]?.price}
-                    </Typography>
+                      <Typography
+                        fontWeight="700"
+                        // fontSize="1.3rem"
+                        whiteSpace="nowrap"
+                        // color="green"
+                        color="white !important"
+                      >
+                        ₱ {item.priceChangeHistories?.[0]?.price}
+                      </Typography>
+                    </Box>
+
                     <Add />
                   </Box>
                 </Button>
@@ -282,6 +270,7 @@ function SalesTransaction() {
             sx={{
               display: "flex",
               width: "300px",
+              // width: "400px",
               boxShadow:
                 "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05)!important",
 
