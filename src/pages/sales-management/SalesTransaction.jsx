@@ -10,11 +10,14 @@ import {
 import React from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
-import { Add, Sort } from "@mui/icons-material";
+import { Add, KeyboardDoubleArrowRight, Sort } from "@mui/icons-material";
 import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { salesTransactionSchema } from "../../schema/schema";
 import { useForm } from "react-hook-form";
+import TertiaryButton from "../../components/TertiaryButton";
+import moment from "moment";
+import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 
 function SalesTransaction() {
   //React Hook Form
@@ -44,6 +47,9 @@ function SalesTransaction() {
     PageSize: 1000,
     // IncludeRejected: drawerMode === "edit" ? true : "",
   });
+
+  const { data: productData, isFetching: isProductFetching } =
+    useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
 
   const data = [
     {
@@ -90,9 +96,8 @@ function SalesTransaction() {
       <Box
         sx={{
           display: "flex",
-          // gap: "5px",
           // flex: 1,
-          mb: "20px",
+          // mb: "20px",
           flexDirection: "column",
           borderRadius: "5px",
           bgcolor: "primary.main",
@@ -104,32 +109,35 @@ function SalesTransaction() {
             // height: "70px",
             height: "60px",
             mx: "15px",
-            // mt: "10px",
-            // bgcolor: "primary.main",
             display: "flex",
             alignItems: "center",
             gap: "10px",
+            justifyContent: "space-between",
           }}
         >
-          <Typography color="white !important">Transaction No:</Typography>
-          <Typography
-            color="white !important"
-            fontSize="1.4rem"
-            fontWeight="700"
-          >
-            62291
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <Typography color="white !important">Transaction No:</Typography>
+            <Typography
+              color="white !important"
+              fontSize="1.4rem"
+              fontWeight="700"
+            >
+              62291
+            </Typography>
+          </Box>
+
+          <Button color="white" variant="contained">
+            Transactions List &nbsp; <KeyboardDoubleArrowRight />
+          </Button>
         </Box>
 
         <Box
           sx={{
             display: "flex",
             flex: 1,
-            // px: "5px",
             mx: "15px",
-            p: "5px",
-            gap: "5px",
-            // bgcolor: "white !important",
+            p: "15px",
+            gap: "10px",
             bgcolor: "#fdfdfd",
             borderRadius: "5px",
             overflow: "hidden",
@@ -143,7 +151,6 @@ function SalesTransaction() {
               gap: "15px",
               // overflow: "auto",
               overflow: "hidden",
-              p: "5px",
               height: "100% !important",
             }}
           >
@@ -158,17 +165,15 @@ function SalesTransaction() {
               }
               disableClearable
               loading={isClientLoading}
-              // disabled={drawerMode === "edit"}
-              isOptionEqualToValue={(option, value) => true}
+              isOptionEqualToValue={() => true}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   size="small"
-                  label="Business Name - Owner's Name"
-                  // required
+                  // label="Business Name - Owner's Name"
+                  placeholder="Business Name - Owner's Name"
                   helperText={errors?.clientId?.message}
                   error={errors?.clientId}
-                  sx={{ mt: "5px", mx: "5px" }}
                 />
               )}
               // onChange={(_, value) => {
@@ -185,9 +190,7 @@ function SalesTransaction() {
             <Box
               sx={{
                 display: "flex",
-                gap: "5px",
                 justifyContent: "space-between",
-                mx: "5px",
               }}
             >
               <TextField
@@ -199,7 +202,7 @@ function SalesTransaction() {
               />
 
               <SecondaryButton>
-                Filters &nbsp;
+                Sort &nbsp;
                 <Sort />
               </SecondaryButton>
             </Box>
@@ -207,74 +210,71 @@ function SalesTransaction() {
             <Box
               sx={{
                 flex: 1,
+                overflow: "auto",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: "5px",
+                pb: "5px",
               }}
             >
-              <Box
-                sx={{
-                  overflow: "auto",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {data.map((item) => (
-                  <Button
-                    key={item.id}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      px: "20px",
-                      py: "5px",
-                      m: "5px",
-                      color: "black",
-                      boxShadow:
-                        "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05)!important",
+              {productData?.items?.map((item) => (
+                <Button
+                  key={item.id}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    p: "5px 20px",
+                    color: "black",
+                    boxShadow:
+                      "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05)!important",
 
-                      bgcolor: "white !important",
-                      border: "1px solid #dee2e6!important",
-                    }}
-                  >
-                    {/* <Box className="ribbon red">
+                    bgcolor: "white !important",
+                    border: "1px solid #dee2e6!important",
+                  }}
+                >
+                  {/* <Box className="ribbon red">
                       <span>Hot</span>
                     </Box> */}
 
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        textAlign: "left",
-                      }}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "left",
+                    }}
+                  >
+                    <Typography
+                      fontSize="1.2rem"
+                      fontWeight="700"
+                      textTransform="none"
                     >
-                      <Typography
-                        fontSize="1.2rem"
-                        fontWeight="700"
-                        textTransform="none"
-                      >
-                        {item.label}
-                      </Typography>
-                      <Typography fontSize="12px">
-                        {item.description}
-                      </Typography>
-                    </Box>
+                      {item.itemCode}
+                    </Typography>
+                    <Typography fontSize="12px">
+                      {item.itemDescription}
+                    </Typography>
+                  </Box>
 
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: "20px",
-                        alignItems: "center",
-                      }}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "20px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography
+                      fontWeight="700"
+                      fontSize="1.3rem"
+                      whiteSpace="nowrap"
                     >
-                      <Box>
-                        <Typography fontWeight="700" fontSize="1.3rem">
-                          {item.price}
-                        </Typography>
-                      </Box>
-                      <Add />
-                    </Box>
-                  </Button>
-                ))}
-              </Box>
+                      ₱ {item.priceChangeHistories?.[0]?.price}
+                    </Typography>
+                    <Add />
+                  </Box>
+                </Button>
+              ))}
             </Box>
           </Box>
 
@@ -294,12 +294,25 @@ function SalesTransaction() {
 
         <Box
           sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             height: "40px",
             bgcolor: "primary.main",
             borderBottomLeftRadius: "5px",
             borderBottomRightRadius: "5px",
+            px: "15px",
+            py: "5px",
           }}
-        ></Box>
+        >
+          <Typography color="white !important">User: Sian Dela Cruz</Typography>
+
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <Typography color="white !important">
+              Date: {moment().format("M/DD/YY h:mm a")}
+            </Typography>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
