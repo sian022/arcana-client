@@ -171,7 +171,7 @@ function SalesTransaction() {
                 type="search"
                 size="small"
                 placeholder="Search"
-                sx={{ width: "300px" }}
+                sx={{ width: "300px", bgcolor: "white !important" }}
                 autoComplete="off"
                 onChange={(e) => {
                   debouncedSetSearch(e.target.value);
@@ -244,7 +244,7 @@ function SalesTransaction() {
                     <Box
                       sx={{
                         bgcolor: "success.main",
-                        p: "5px",
+                        p: "5px 10px",
                         borderRadius: "10px",
                       }}
                     >
