@@ -101,10 +101,25 @@ function SalesTransaction() {
       >
         <Box
           sx={{
-            height: "70px",
+            // height: "70px",
+            height: "60px",
+            mx: "15px",
+            // mt: "10px",
             // bgcolor: "primary.main",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
           }}
-        ></Box>
+        >
+          <Typography color="white !important">Transaction No:</Typography>
+          <Typography
+            color="white !important"
+            fontSize="1.4rem"
+            fontWeight="700"
+          >
+            62291
+          </Typography>
+        </Box>
 
         <Box
           sx={{
