@@ -255,7 +255,7 @@ function SalesTransaction() {
                         // color="green"
                         color="white !important"
                       >
-                        ₱ {item.priceChangeHistories?.[0]?.price}
+                        ₱ {item.priceChangeHistories?.[0]?.price?.toFixed(2)}
                       </Typography>
                     </Box>
 
