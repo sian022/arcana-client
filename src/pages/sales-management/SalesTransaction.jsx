@@ -3,10 +3,12 @@ import {
   Box,
   Button,
   Card,
+  ClickAwayListener,
   Divider,
   IconButton,
   Skeleton,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -16,6 +18,7 @@ import {
   Add,
   AddCircleOutline,
   Filter,
+  Info,
   KeyboardDoubleArrowRight,
   Remove,
   RemoveCircleOutline,
@@ -31,11 +34,14 @@ import moment from "moment";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { debounce } from "../../utils/CustomFunctions";
 import { useSelector } from "react-redux";
+import NoProductFound from "../../assets/images/NoProductFound.svg";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
 
   const fullName = useSelector((state) => state.login.fullname);
+
+  //Disclosures
 
   //React Hook Form
   const {
@@ -83,7 +89,16 @@ function SalesTransaction() {
     setSearch(value);
   }, 200);
 
-  console.log(getValues());
+  const handleTotalAmount = () => {
+    let totalAmount = 0;
+
+    fields.forEach((item) => {
+      totalAmount +=
+        item.itemId?.priceChangeHistories?.[0]?.price * item.quantity;
+    });
+
+    return totalAmount;
+  };
 
   return (
     <Box className="commonPageLayout">
@@ -202,7 +217,7 @@ function SalesTransaction() {
 
               <Box sx={{ display: "flex", gap: "10px" }}>
                 <SecondaryButton>
-                  {/* Sort &nbsp; */}
+                  Filters &nbsp;
                   <Tune />
                 </SecondaryButton>
 
@@ -240,6 +255,21 @@ function SalesTransaction() {
                     />
                   ))}
                 </Box>
+              ) : productData?.items?.length === 0 ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: 1,
+                  }}
+                >
+                  <img
+                    width="200px"
+                    src={NoProductFound}
+                    alt="no-product-found"
+                  />
+                </Box>
               ) : (
                 productData?.items?.map((item) => (
                   <Button
@@ -267,6 +297,7 @@ function SalesTransaction() {
                       if (existingItemIndex !== -1) {
                         // Item with the same itemCode already exists, so increment the quantity
                         update(existingItemIndex, {
+                          itemId: watch("items")[existingItemIndex]?.itemId,
                           quantity:
                             watch("items")[existingItemIndex].quantity + 1,
                         });
@@ -324,9 +355,13 @@ function SalesTransaction() {
                           color="white !important"
                         >
                           ₱{" "}
-                          {item.priceChangeHistories?.[0]?.price
-                            ?.toFixed(2)
-                            ?.toLocaleString()}
+                          {item.priceChangeHistories?.[0]?.price?.toLocaleString(
+                            undefined,
+                            {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }
+                          )}
                         </Typography>
                       </Box>
 
@@ -385,44 +420,120 @@ function SalesTransaction() {
                 flex: 1,
               }}
             >
-              {fields.map((orderItem, index) => (
+              {fields.length === 0 ? (
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between",
+                    justifyContent: "center",
+                    flex: 1,
                   }}
-                  key={index}
                 >
-                  <Box>
-                    <Typography fontSize="1rem" color="gray">
-                      {orderItem.itemId?.itemCode}
-                    </Typography>
-
-                    <Typography fontSize="1rem" fontWeight="600">
-                      ₱ {orderItem.itemId?.priceChangeHistories?.[0]?.price}
-                    </Typography>
-                  </Box>
-
+                  <img
+                    // width="200px"
+                    width="150px"
+                    src={NoProductFound}
+                    alt="no-product-found"
+                  />
+                </Box>
+              ) : (
+                fields.map((orderItem, index) => (
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      gap: "10px",
+                      justifyContent: "space-between",
                     }}
+                    key={index}
                   >
-                    <IconButton color="warning" onClick={() => remove(index)}>
-                      <Remove />
-                    </IconButton>
+                    <Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                        }}
+                      >
+                        <Typography fontSize="1rem" color="gray">
+                          {orderItem.itemId?.itemCode}
+                        </Typography>
 
-                    <Typography>{orderItem.quantity}</Typography>
+                        {/* <ClickAwayListener onClickAway={handleTooltipClose}>
+                          <div>
+                            <Tooltip
+                              PopperProps={{
+                                disablePortal: true,
+                              }}
+                              onClose={handleTooltipClose}
+                              open={open}
+                              disableFocusListener
+                              disableHoverListener
+                              disableTouchListener
+                              title="Add"
+                            >
+                              <Button onClick={handleTooltipOpen}>Click</Button>
+                            </Tooltip>
+                          </div>
+                        </ClickAwayListener> */}
 
-                    <IconButton color="secondary">
-                      <Add />
-                    </IconButton>
+                        <Tooltip title={orderItem.itemId?.itemDescription}>
+                          <Info
+                            fontSize=""
+                            sx={{ color: "gray", cursor: "pointer" }}
+                          />
+                        </Tooltip>
+                      </Box>
+
+                      <Typography fontSize="1rem" fontWeight="600">
+                        ₱{" "}
+                        {(
+                          orderItem.itemId?.priceChangeHistories?.[0]?.price *
+                          orderItem.quantity
+                        ).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </Typography>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}
+                    >
+                      <IconButton
+                        color="warning"
+                        onClick={() => {
+                          watch("items")[index]?.quantity > 1
+                            ? update(index, {
+                                itemId: watch("items")[index]?.itemId,
+                                quantity: watch("items")[index]?.quantity - 1,
+                              })
+                            : remove(index);
+                        }}
+                      >
+                        <Remove />
+                      </IconButton>
+
+                      <Typography>{orderItem.quantity}</Typography>
+
+                      <IconButton
+                        color="secondary"
+                        onClick={() => {
+                          update(index, {
+                            itemId: watch("items")[index]?.itemId,
+                            quantity: watch("items")[index].quantity + 1,
+                          });
+                        }}
+                      >
+                        <Add />
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
-              ))}
+                ))
+              )}
             </Box>
 
             <Divider sx={{ borderStyle: "dashed" }} />
@@ -451,7 +562,11 @@ function SalesTransaction() {
                   color="primary"
                   // color="#1E90FF"
                 >
-                  ₱ 250,000.00
+                  ₱{" "}
+                  {handleTotalAmount().toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Typography>
               </Box>
 
