@@ -3,25 +3,39 @@ import {
   Box,
   Button,
   Card,
+  Divider,
   IconButton,
+  Skeleton,
   TextField,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
-import { Add, KeyboardDoubleArrowRight, Sort } from "@mui/icons-material";
+import {
+  Add,
+  AddCircleOutline,
+  Filter,
+  KeyboardDoubleArrowRight,
+  Remove,
+  RemoveCircleOutline,
+  Sort,
+  SwapVert,
+  Tune,
+} from "@mui/icons-material";
 import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { salesTransactionSchema } from "../../schema/schema";
-import { useForm } from "react-hook-form";
-import TertiaryButton from "../../components/TertiaryButton";
+import { useFieldArray, useForm } from "react-hook-form";
 import moment from "moment";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { debounce } from "../../utils/CustomFunctions";
+import { useSelector } from "react-redux";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
+
+  const fullName = useSelector((state) => state.login.fullname);
 
   //React Hook Form
   const {
@@ -37,6 +51,11 @@ function SalesTransaction() {
     resolver: yupResolver(salesTransactionSchema.schema),
     mode: "onSubmit",
     defaultValues: salesTransactionSchema.defaultValues,
+  });
+
+  const { fields, append, remove, update } = useFieldArray({
+    control,
+    name: "items",
   });
 
   //RTK Query
@@ -64,6 +83,8 @@ function SalesTransaction() {
     setSearch(value);
   }, 200);
 
+  console.log(getValues());
+
   return (
     <Box className="commonPageLayout">
       {/* <Typography>Sales Transaction</Typography> */}
@@ -75,7 +96,8 @@ function SalesTransaction() {
           flexDirection: "column",
           borderRadius: "5px",
           bgcolor: "primary.main",
-          height: "580px",
+          // height: "580px",
+          height: "85vh",
         }}
       >
         <Box
@@ -137,7 +159,7 @@ function SalesTransaction() {
                   " - " +
                   option.ownersName?.toUpperCase() || ""
               }
-              disableClearable
+              // disableClearable
               loading={isClientLoading}
               isOptionEqualToValue={() => true}
               renderInput={(params) => (
@@ -171,17 +193,23 @@ function SalesTransaction() {
                 type="search"
                 size="small"
                 placeholder="Search"
-                sx={{ width: "300px", bgcolor: "white !important" }}
+                sx={{ width: "50%", bgcolor: "white !important" }}
                 autoComplete="off"
                 onChange={(e) => {
                   debouncedSetSearch(e.target.value);
                 }}
               />
 
-              <SecondaryButton>
-                Sort &nbsp;
-                <Sort />
-              </SecondaryButton>
+              <Box sx={{ display: "flex", gap: "10px" }}>
+                <SecondaryButton>
+                  {/* Sort &nbsp; */}
+                  <Tune />
+                </SecondaryButton>
+
+                {/* <SecondaryButton>
+                  <SwapVert />
+                </SecondaryButton> */}
+              </Box>
             </Box>
 
             <Box
@@ -195,80 +223,125 @@ function SalesTransaction() {
                 pb: "5px",
               }}
             >
-              {productData?.items?.map((item) => (
-                <Button
-                  key={item.id}
+              {isProductFetching ? (
+                <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    p: "5px 20px",
-                    color: "black",
-                    boxShadow:
-                      "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05)!important",
-
-                    bgcolor: "white !important",
-                    border: "1px solid #dee2e6!important",
+                    flexDirection: "column",
+                    gap: "5px",
+                    overflow: "hidden",
                   }}
                 >
-                  {/* <Box className="ribbon red">
-                      <span>Hot</span>
-                    </Box> */}
-
-                  <Box
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <Skeleton
+                      height="60px"
+                      key={index}
+                      sx={{ transform: "none" }}
+                    />
+                  ))}
+                </Box>
+              ) : (
+                productData?.items?.map((item) => (
+                  <Button
+                    key={item.id}
                     sx={{
                       display: "flex",
-                      flexDirection: "column",
-                      textAlign: "left",
-                    }}
-                  >
-                    <Typography
-                      fontSize="1.2rem"
-                      fontWeight="700"
-                      textTransform="none"
-                    >
-                      {item.itemCode}
-                    </Typography>
-                    <Typography fontSize="12px">
-                      {item.itemDescription}
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: "20px",
+                      justifyContent: "space-between",
                       alignItems: "center",
+                      p: "5px 20px",
+                      color: "black",
+                      boxShadow:
+                        "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05)!important",
+
+                      bgcolor: "white !important",
+                      border: "1px solid #dee2e6!important",
+                    }}
+                    onClick={() => {
+                      const existingItemIndex = watch("items").findIndex(
+                        (existingItem) =>
+                          existingItem.itemId?.itemCode === item.itemCode
+                      );
+
+                      console.log(existingItemIndex);
+
+                      if (existingItemIndex !== -1) {
+                        // Item with the same itemCode already exists, so increment the quantity
+                        update(existingItemIndex, {
+                          quantity:
+                            watch("items")[existingItemIndex].quantity + 1,
+                        });
+                      } else {
+                        // Item with the itemCode does not exist, so add a new item with quantity 1
+                        append({
+                          itemId: item,
+                          quantity: 1,
+                        });
+                      }
                     }}
                   >
+                    {/* <Box className="ribbon red">
+                    <span>Hot</span>
+                  </Box> */}
+
                     <Box
                       sx={{
-                        bgcolor: "success.main",
-                        p: "5px 10px",
-                        borderRadius: "10px",
+                        display: "flex",
+                        flexDirection: "column",
+                        textAlign: "left",
                       }}
                     >
                       <Typography
+                        fontSize="1.2rem"
                         fontWeight="700"
-                        // fontSize="1.3rem"
-                        whiteSpace="nowrap"
-                        // color="green"
-                        color="white !important"
+                        textTransform="none"
                       >
-                        ₱ {item.priceChangeHistories?.[0]?.price?.toFixed(2)}
+                        {item.itemCode}
+                      </Typography>
+                      <Typography fontSize="12px">
+                        {item.itemDescription}
                       </Typography>
                     </Box>
 
-                    <Add />
-                  </Box>
-                </Button>
-              ))}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: "20px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          bgcolor: "success.main",
+                          p: "5px 10px",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        <Typography
+                          fontWeight="700"
+                          // fontSize="1.3rem"
+                          whiteSpace="nowrap"
+                          // color="green"
+                          color="white !important"
+                        >
+                          ₱{" "}
+                          {item.priceChangeHistories?.[0]?.price
+                            ?.toFixed(2)
+                            ?.toLocaleString()}
+                        </Typography>
+                      </Box>
+
+                      <Add />
+                    </Box>
+                  </Button>
+                ))
+              )}
             </Box>
           </Box>
 
           <Box
             sx={{
               display: "flex",
+              flexDirection: "column",
               width: "300px",
               // width: "400px",
               boxShadow:
@@ -277,8 +350,114 @@ function SalesTransaction() {
               bgcolor: "white !important",
               border: "1px solid #dee2e6!important",
               borderRadius: "5px",
+              padding: "10px 20px",
+              gap: "5px",
             }}
-          ></Box>
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography fontSize="1.2rem" fontWeight="700">
+                Order Details
+              </Typography>
+
+              <Button
+                sx={{ textTransform: "none", color: "gray" }}
+                onClick={() => remove()}
+              >
+                Clear All
+              </Button>
+            </Box>
+
+            <Divider />
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                overflow: "auto",
+                gap: "15px",
+                py: "5px",
+                flex: 1,
+              }}
+            >
+              {fields.map((orderItem, index) => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                  key={index}
+                >
+                  <Box>
+                    <Typography fontSize="1rem" color="gray">
+                      {orderItem.itemId?.itemCode}
+                    </Typography>
+
+                    <Typography fontSize="1rem" fontWeight="600">
+                      ₱ {orderItem.itemId?.priceChangeHistories?.[0]?.price}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <IconButton color="warning" onClick={() => remove(index)}>
+                      <Remove />
+                    </IconButton>
+
+                    <Typography>{orderItem.quantity}</Typography>
+
+                    <IconButton color="secondary">
+                      <Add />
+                    </IconButton>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+
+            <Divider sx={{ borderStyle: "dashed" }} />
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
+                mt: "15px",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography fontSize="1.3rem" color="gray">
+                  Total:
+                </Typography>
+                <Typography
+                  fontSize="1.3rem"
+                  fontWeight="700"
+                  color="primary"
+                  // color="#1E90FF"
+                >
+                  ₱ 250,000.00
+                </Typography>
+              </Box>
+
+              <SecondaryButton size="large">Cashout</SecondaryButton>
+            </Box>
+          </Box>
         </Box>
 
         <Box
@@ -294,7 +473,7 @@ function SalesTransaction() {
             py: "5px",
           }}
         >
-          <Typography color="white !important">User: Sian Dela Cruz</Typography>
+          <Typography color="white !important">User: {fullName}</Typography>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
             <Typography color="white !important">
