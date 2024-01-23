@@ -16,14 +16,9 @@ import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
 import {
   Add,
-  AddCircleOutline,
-  Filter,
   Info,
   KeyboardDoubleArrowRight,
   Remove,
-  RemoveCircleOutline,
-  Sort,
-  SwapVert,
   Tune,
 } from "@mui/icons-material";
 import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
@@ -35,9 +30,11 @@ import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { debounce } from "../../utils/CustomFunctions";
 import { useSelector } from "react-redux";
 import NoProductFound from "../../assets/images/NoProductFound.svg";
+import useLongPress from "../../hooks/useLongPress";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
+  const [addIndex, setAddIndex] = useState("");
 
   const fullName = useSelector((state) => state.login.fullname);
 
@@ -99,6 +96,28 @@ function SalesTransaction() {
 
     return totalAmount;
   };
+
+  const defaultOptions = {
+    shouldPreventDefault: true,
+    delay: 500,
+  };
+
+  const addLongPressEvent = (index) =>
+    useLongPress(
+      () => {
+        update(index, {
+          itemId: watch("items")[index]?.itemId,
+          quantity: watch("items")[index].quantity + 1,
+        });
+      },
+      () => {
+        update(index, {
+          itemId: watch("items")[index]?.itemId,
+          quantity: watch("items")[index].quantity + 1,
+        });
+      },
+      defaultOptions
+    );
 
   return (
     <Box className="commonPageLayout">
@@ -518,9 +537,14 @@ function SalesTransaction() {
                       </IconButton>
 
                       <Typography>{orderItem.quantity}</Typography>
+                      {/* <input
+                        style={{ width: "20px" }}
+                        value={watch("items")?.[index]?.quantity}
+                      /> */}
 
                       <IconButton
                         color="secondary"
+                        // {...addLongPressEvent(index)}
                         onClick={() => {
                           update(index, {
                             itemId: watch("items")[index]?.itemId,
