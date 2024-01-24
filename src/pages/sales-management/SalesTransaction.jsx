@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
 import {
@@ -34,7 +34,9 @@ import useLongPress from "../../hooks/useLongPress";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
-  const [addIndex, setAddIndex] = useState("");
+  const [currentTime, setCurrentTime] = useState(
+    moment().format("M/DD/YY h:mm a")
+  );
 
   const fullName = useSelector((state) => state.login.fullname);
 
@@ -119,6 +121,15 @@ function SalesTransaction() {
       defaultOptions
     );
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTime(moment().format("M/DD/YY h:mm a"));
+    }, 1000); // Update every second
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array to run effect only once on mount
+
   return (
     <Box className="commonPageLayout">
       {/* <Typography>Sales Transaction</Typography> */}
@@ -146,13 +157,20 @@ function SalesTransaction() {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <Typography color="white !important">Transaction No:</Typography>
+            {/* <Typography color="white !important">Transaction No:</Typography>
             <Typography
               color="white !important"
               fontSize="1.4rem"
               fontWeight="700"
             >
               62291
+            </Typography> */}
+            <Typography
+              color="white !important"
+              fontSize="1.4rem"
+              fontWeight="700"
+            >
+              Sales Transaction
             </Typography>
           </Box>
 
@@ -234,7 +252,7 @@ function SalesTransaction() {
                 }}
               />
 
-              <Box sx={{ display: "flex", gap: "10px" }}>
+              <Box sx={{ display: "flex", gap: "10px", position: "relative" }}>
                 <SecondaryButton>
                   Filters &nbsp;
                   <Tune />
@@ -616,7 +634,8 @@ function SalesTransaction() {
 
           <Box sx={{ display: "flex", gap: "10px" }}>
             <Typography color="white !important">
-              Date: {moment().format("M/DD/YY h:mm a")}
+              Date: {currentTime}
+              {/* Date: {moment().format("M/DD/YY h:mm a")} */}
             </Typography>
           </Box>
         </Box>
