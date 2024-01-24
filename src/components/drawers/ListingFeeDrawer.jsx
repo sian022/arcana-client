@@ -622,7 +622,6 @@ function ListingFeeDrawer({
           <Box
             sx={{
               display: "flex",
-              gap: "10px",
               mr: "50px",
               position: "absolute",
               left: "600px",

@@ -345,7 +345,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                     dispatch(
                       setTermsAndConditions({
                         property: "termDaysId",
-                        value: value?.id,
                         value,
                       })
                     );
@@ -497,7 +496,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                       dispatch(
                         setTermsAndConditions({
                           property: "termDaysId",
-                          value: value?.id,
                           value,
                         })
                       );

@@ -64,7 +64,6 @@ export const getIconElement = (iconName) => {
     StoreMallDirectory: <StoreMallDirectory />,
     Label: <Label />,
     CalendarToday: <CalendarToday />,
-    SquareFoot: <SquareFoot />,
     Redeem: <Redeem />,
     PersonAdd: <PersonAdd />,
     Payment: <Payment />,
