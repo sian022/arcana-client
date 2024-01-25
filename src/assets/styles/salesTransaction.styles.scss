@@ -66,3 +66,17 @@
   border-bottom: 3px solid transparent;
   border-top: 3px solid #a52727;
 }
+
+.input-quantity {
+  display: inline-block;
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+  width: 2em;
+  line-height: inherit;
+  vertical-align: inherit;
+  text-align: right;
+  color: inherit;
+  font: inherit;
+  background: none;
+}
