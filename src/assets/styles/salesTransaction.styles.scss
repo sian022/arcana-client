@@ -38,6 +38,7 @@
       &__searchFilter {
         display: flex;
         justify-content: space-between;
+        gap: 10px;
 
         &__search {
           width: 50%;
@@ -168,6 +169,11 @@
             // gap: 10px;
             gap: 15px;
           }
+        }
+
+        &__item.swiped {
+          transition: transform 0.3s ease;
+          transform: translateX(-100%);
         }
       }
 

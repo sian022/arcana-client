@@ -33,7 +33,7 @@ export const loginSlice = createSlice({
     },
     setFullname: (state, action) => {
       state.fullname = action.payload;
-      // localStorage.setItem("fullname", action.payload);
+      // sessionStorage.setItem("fullname", action.payload);
       sessionStorage.setItem("fullname", action.payload);
     },
     setToken: (state, action) => {
@@ -42,7 +42,7 @@ export const loginSlice = createSlice({
         JSON.stringify(action.payload),
         saltkey
       ).toString();
-      // localStorage.setItem("token", ciphertext);
+      // sessionStorage.setItem("token", ciphertext);
       sessionStorage.setItem("token", ciphertext);
     },
     setIsPasswordChanged: (state) => {

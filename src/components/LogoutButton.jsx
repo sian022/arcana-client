@@ -30,9 +30,9 @@ function LogoutButton() {
     sessionStorage.removeItem("fullname");
     sessionStorage.removeItem("permissions");
 
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("fullname");
-    // localStorage.removeItem("permissions");
+    // sessionStorage.removeItem("token");
+    // sessionStorage.removeItem("fullname");
+    // sessionStorage.removeItem("permissions");
     navigate("/login");
   };
 

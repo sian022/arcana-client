@@ -16,7 +16,7 @@ const ViewMap = () => {
   const [longitude, setLongitude] = useState(0);
   const [latitude, setLatitude] = useState(0);
   const [locations, setLocations] = useState(
-    JSON.parse(localStorage.getItem("locations")) || []
+    JSON.parse(sessionStorage.getItem("locations")) || []
   );
   const [socket, setSocket] = useState(null);
   const { id, user, user_type, pickup_location } = useParams();
@@ -76,7 +76,7 @@ const ViewMap = () => {
   const exitMap = () => {
     socket.emit("leave_rooms", id);
     socket.emit("leave_rooms", "admin");
-    localStorage.removeItem("locations");
+    sessionStorage.removeItem("locations");
     navigate(`/${user_type}`);
   };
   const ambulanceIcon = new L.Icon({

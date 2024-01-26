@@ -36,6 +36,8 @@ import useLongPress from "../../hooks/useLongPress";
 import AddItemModal from "../../components/modals/sales-management/AddItemModal";
 import useDisclosure from "../../hooks/useDisclosure";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
+import { useSwipeable } from "react-swipeable";
+import SwipeableItem from "../../components/sales-transaction/SwipeableItem";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
@@ -50,6 +52,12 @@ function SalesTransaction() {
   const fullName = useSelector((state) => state.login.fullname);
 
   const dispatch = useDispatch();
+
+  // //React Swipeable
+  // const { ref: swipeableRef } = useSwipeable({
+  //   onSwipedLeft: (eventData) => alert("User Swiped!"),
+  //   trackMouse: true,
+  // });
 
   //Disclosures
   const {
@@ -361,121 +369,142 @@ function SalesTransaction() {
                   </Box>
                 ) : (
                   fields.map((orderItem, index) => (
-                    <Box
-                      className="salesTransaction__body__orderDetails__itemsList__item"
+                    <SwipeableItem
                       key={index}
-                    >
-                      <Box>
-                        <Box className="salesTransaction__body__orderDetails__itemsList__item__labels">
-                          <Typography fontSize="1rem" color="gray">
-                            {orderItem.itemId?.itemCode}
-                          </Typography>
-
-                          <Tooltip title={orderItem.itemId?.itemDescription}>
-                            <Info
-                              fontSize=""
-                              sx={{ color: "gray", cursor: "pointer" }}
-                            />
-                          </Tooltip>
-                        </Box>
-
-                        <Typography fontSize="1rem" fontWeight="600">
-                          <span style={{ whiteSpace: "nowrap" }}>
-                            ₱{" "}
-                            {(
-                              orderItem.itemId?.priceChangeHistories?.[0]
-                                ?.price * orderItem.quantity
-                            ).toLocaleString(undefined, {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                          </span>
-                        </Typography>
-                      </Box>
-
-                      <Box className="salesTransaction__body__orderDetails__itemsList__item__right">
-                        <IconButton
-                          color="warning"
-                          onClick={() => {
-                            watch("items")[index]?.quantity > 1
-                              ? update(index, {
-                                  itemId: watch("items")[index]?.itemId,
-                                  quantity: watch("items")[index]?.quantity - 1,
-                                })
-                              : remove(index);
-                          }}
-                        >
-                          <Remove />
-                        </IconButton>
-
-                        {/* <input
-                      className="input-quantity"
-                      type="number"
-                      {...register(`items[${index}].quantity`)}
-                      onChange={(e) => {
-                        setValue(`items[${index}].quantity`, e.target.value);
-                      }}
-                    /> */}
-                        <Typography
-                          sx={{ cursor: "pointer" }}
-                          onClick={handleClickQuantity}
-                        >
-                          {orderItem.quantity.toLocaleString()}
-                        </Typography>
-
-                        <Popover
-                          open={isQuantityOpen}
-                          anchorEl={anchorEl}
-                          onClose={handleCloseQuantity}
-                          anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "center",
-                          }}
-                          transformOrigin={{
-                            vertical: "bottom",
-                            horizontal: "left",
-                          }}
-                        >
-                          <Box
-                            sx={{ display: "flex", flexDirection: "column" }}
-                          >
-                            <Controller
-                              control={control}
-                              name={`items[${index}].quantity`}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  size="small"
-                                  sx={{
-                                    width: "50px",
-                                    // "& .MuiInputBase-root": {
-                                    //   height: "30px",
-                                    // },
-                                  }}
-                                  // onChange={(e) => {
-                                  //   field.onChange(e);
-                                  // }}
-                                />
-                              )}
-                            />
-                          </Box>
-                        </Popover>
-
-                        <IconButton
-                          color="secondary"
-                          // {...addLongPressEvent(index)}
-                          onClick={() => {
-                            update(index, {
+                      orderItem={orderItem}
+                      onMinus={() => {
+                        watch("items")[index]?.quantity > 1
+                          ? update(index, {
                               itemId: watch("items")[index]?.itemId,
-                              quantity:
-                                parseInt(watch("items")[index].quantity) + 1,
-                            });
-                          }}
-                        >
-                          <Add />
-                        </IconButton>
-                      </Box>
-                    </Box>
+                              quantity: watch("items")[index]?.quantity - 1,
+                            })
+                          : remove(index);
+                      }}
+                      onPlus={() => {
+                        update(index, {
+                          itemId: watch("items")[index]?.itemId,
+                          quantity:
+                            parseInt(watch("items")[index].quantity) + 1,
+                        });
+                      }}
+                      onSwipeLeft={() => remove(index)}
+                    />
+                    // <Box
+                    //   key={index}
+                    //   ref={swipeableRef}
+                    //   className="salesTransaction__body__orderDetails__itemsList__item"
+                    // >
+                    //   <Box>
+                    //     <Tooltip
+                    //       title={orderItem.itemId?.itemDescription}
+                    //       sx={{ cursor: "pointer" }}
+                    //     >
+                    //       <Box className="salesTransaction__body__orderDetails__itemsList__item__labels">
+                    //         <Typography fontSize="1rem" color="gray">
+                    //           {orderItem.itemId?.itemCode}
+                    //         </Typography>
+
+                    //         <Info fontSize="" sx={{ color: "gray" }} />
+                    //       </Box>
+                    //     </Tooltip>
+
+                    //     <Typography fontSize="1rem" fontWeight="600">
+                    //       <span style={{ whiteSpace: "nowrap" }}>
+                    //         ₱{" "}
+                    //         {(
+                    //           orderItem.itemId?.priceChangeHistories?.[0]
+                    //             ?.price * orderItem.quantity
+                    //         ).toLocaleString(undefined, {
+                    //           minimumFractionDigits: 2,
+                    //           maximumFractionDigits: 2,
+                    //         })}
+                    //       </span>
+                    //     </Typography>
+                    //   </Box>
+
+                    //   <Box className="salesTransaction__body__orderDetails__itemsList__item__right">
+                    //     <IconButton
+                    //       color="warning"
+                    //       onClick={() => {
+                    //         watch("items")[index]?.quantity > 1
+                    //           ? update(index, {
+                    //               itemId: watch("items")[index]?.itemId,
+                    //               quantity: watch("items")[index]?.quantity - 1,
+                    //             })
+                    //           : remove(index);
+                    //       }}
+                    //     >
+                    //       <Remove />
+                    //     </IconButton>
+
+                    //     {/* <input
+                    //   className="input-quantity"
+                    //   type="number"
+                    //   {...register(`items[${index}].quantity`)}
+                    //   onChange={(e) => {
+                    //     setValue(`items[${index}].quantity`, e.target.value);
+                    //   }}
+                    // /> */}
+                    //     <Typography
+                    //       sx={{ cursor: "pointer" }}
+                    //       onClick={handleClickQuantity}
+                    //     >
+                    //       {orderItem.quantity.toLocaleString()}
+                    //     </Typography>
+
+                    //     <Popover
+                    //       open={isQuantityOpen}
+                    //       anchorEl={anchorEl}
+                    //       onClose={handleCloseQuantity}
+                    //       anchorOrigin={{
+                    //         vertical: "top",
+                    //         horizontal: "center",
+                    //       }}
+                    //       transformOrigin={{
+                    //         vertical: "bottom",
+                    //         horizontal: "left",
+                    //       }}
+                    //     >
+                    //       <Box
+                    //         sx={{ display: "flex", flexDirection: "column" }}
+                    //       >
+                    //         <Controller
+                    //           control={control}
+                    //           name={`items[${index}].quantity`}
+                    //           render={({ field }) => (
+                    //             <TextField
+                    //               {...field}
+                    //               size="small"
+                    //               sx={{
+                    //                 width: "50px",
+                    //                 // "& .MuiInputBase-root": {
+                    //                 //   height: "30px",
+                    //                 // },
+                    //               }}
+                    //               // onChange={(e) => {
+                    //               //   field.onChange(e);
+                    //               // }}
+                    //             />
+                    //           )}
+                    //         />
+                    //       </Box>
+                    //     </Popover>
+
+                    //     <IconButton
+                    //       color="secondary"
+                    //       // {...addLongPressEvent(index)}
+                    //       onClick={() => {
+                    //         update(index, {
+                    //           itemId: watch("items")[index]?.itemId,
+                    //           quantity:
+                    //             parseInt(watch("items")[index].quantity) + 1,
+                    //         });
+                    //       }}
+                    //     >
+                    //       <Add />
+                    //     </IconButton>
+                    //   </Box>
+                    // </Box>
                   ))
                 )}
               </Box>

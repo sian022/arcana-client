@@ -121,9 +121,9 @@ function Header() {
     dispatch(notificationApi.util.resetApiState());
     dispatch(clusterApi.util.resetApiState());
 
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("fullname");
-    // localStorage.removeItem("permissions");
+    // sessionStorage.removeItem("token");
+    // sessionStorage.removeItem("fullname");
+    // sessionStorage.removeItem("permissions");
     navigate("/login");
   };
 
