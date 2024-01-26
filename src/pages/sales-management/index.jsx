@@ -30,7 +30,7 @@ function SalesManagement() {
                 Sales Transaction
               </Typography>
               <Typography className="pageIndex__navigators__item__text__subTitle">
-                Manage sales
+                POS and attaching of CI photo
               </Typography>
             </Box>
 
@@ -49,7 +49,7 @@ function SalesManagement() {
                 Payment Transaction
               </Typography>
               <Typography className="pageIndex__navigators__item__text__subTitle">
-                Manage payments
+                Manage and create payments
               </Typography>
             </Box>
 
@@ -68,7 +68,7 @@ function SalesManagement() {
                 Special Discount
               </Typography>
               <Typography className="pageIndex__navigators__item__text__subTitle">
-                Manage special discounts
+                Manage and create special discounts
               </Typography>
             </Box>
 
@@ -87,7 +87,7 @@ function SalesManagement() {
                 Advance Payment
               </Typography>
               <Typography className="pageIndex__navigators__item__text__subTitle">
-                Manage advance payments
+                Manage and create advance payments
               </Typography>
             </Box>
 

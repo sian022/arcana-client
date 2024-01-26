@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CommonModal from "../../CommonModal";
 import { Box, TextField, Typography } from "@mui/material";
 import SecondaryButton from "../../SecondaryButton";
@@ -11,6 +11,7 @@ function AddItemModal({ onSubmit, isValid, ...otherProps }) {
   const [quantity, setQuantity] = useState(1);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const quantityRef = useRef();
 
   //Functions
   const handleClose = () => {
@@ -24,7 +25,11 @@ function AddItemModal({ onSubmit, isValid, ...otherProps }) {
   };
 
   useEffect(() => {
-    setQuantity;
+    if (open) {
+      setTimeout(() => {
+        quantityRef.current.select();
+      }, 0);
+    }
   }, [open]);
 
   return (
@@ -48,6 +53,8 @@ function AddItemModal({ onSubmit, isValid, ...otherProps }) {
         value={quantity}
         thousandSeparator=","
         autoComplete="off"
+        inputRef={quantityRef}
+        autoFocus
       />
 
       <Box

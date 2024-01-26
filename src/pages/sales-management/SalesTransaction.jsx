@@ -70,7 +70,7 @@ function SalesTransaction() {
     getValues,
   } = useForm({
     resolver: yupResolver(salesTransactionSchema.schema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: salesTransactionSchema.defaultValues,
   });
 
@@ -121,22 +121,6 @@ function SalesTransaction() {
   const handleCloseQuantity = () => {
     setAnchorEl(null);
   };
-
-  // const handleTotalAmount = () => {
-  //   let totalAmount = 0;
-
-  //   fields.forEach((item) => {
-  //     totalAmount +=
-  //       item.itemId?.priceChangeHistories?.[0]?.price * item.quantity;
-  //   });
-
-  //   return totalAmount;
-  // };
-
-  // const defaultOptions = {
-  //   shouldPreventDefault: true,
-  //   delay: 500,
-  // };
 
   const addLongPressEvent = (index) =>
     useLongPress(
@@ -190,32 +174,9 @@ function SalesTransaction() {
   return (
     <>
       <Box className="commonPageLayout">
-        {/* <Typography>Sales Transaction</Typography> */}
-        <Box
-          sx={{
-            display: "flex",
-            // flex: 1,
-            // mb: "20px",
-            flexDirection: "column",
-            borderRadius: "5px",
-            bgcolor: "primary.main",
-            // height: "580px",
-            height: "85vh",
-          }}
-        >
-          <Box
-            sx={{
-              // height: "70px",
-              height: "60px",
-              mx: "15px",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              {/* <Typography color="white !important">Transaction No:</Typography>
+        <Box className="salesTransaction">
+          <Box className="salesTransaction__header">
+            {/* <Typography color="white !important">Transaction No:</Typography>
           <Typography
             color="white !important"
             fontSize="1.4rem"
@@ -223,43 +184,21 @@ function SalesTransaction() {
           >
             62291
           </Typography> */}
-              <Typography
-                color="white !important"
-                fontSize="1.4rem"
-                fontWeight="700"
-              >
-                Sales Transaction
-              </Typography>
-            </Box>
+            <Typography
+              color="white !important"
+              fontSize="1.4rem"
+              fontWeight="700"
+            >
+              Sales Transaction
+            </Typography>
 
             <Button color="white" variant="contained">
               Transactions List &nbsp; <KeyboardDoubleArrowRight />
             </Button>
           </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              flex: 1,
-              mx: "15px",
-              p: "15px",
-              gap: "10px",
-              bgcolor: "#fdfdfd",
-              borderRadius: "5px",
-              overflow: "hidden",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flex: 1,
-                flexDirection: "column",
-                gap: "15px",
-                // overflow: "auto",
-                overflow: "hidden",
-                height: "100% !important",
-              }}
-            >
+          <Box className="salesTransaction__body">
+            <Box className="salesTransaction__body__itemsForm">
               <ControlledAutocomplete
                 name={`clientId`}
                 control={control}
@@ -293,29 +232,20 @@ function SalesTransaction() {
                 // }}
               />
 
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
+              <Box className="salesTransaction__body__itemsForm__searchFilter">
                 <TextField
+                  className="salesTransaction__body__itemsForm__searchFilter__search"
                   type="search"
                   size="small"
                   placeholder="Search"
-                  sx={{ width: "50%", bgcolor: "white !important" }}
                   autoComplete="off"
                   onChange={(e) => {
                     debouncedSetSearch(e.target.value);
                   }}
                 />
 
-                <Box
-                  sx={{ display: "flex", gap: "10px", position: "relative" }}
-                >
-                  <Box
-                    sx={{ display: "flex", alignItems: "center", gap: "5px" }}
-                  >
+                <Box className="salesTransaction__body__itemsForm__searchFilter__right">
+                  <Box className="salesTransaction__body__itemsForm__searchFilter__right__quickAdd">
                     <Checkbox
                       checked={quickAdd}
                       onChange={(e) => setQuickAdd(e.target.checked)}
@@ -327,33 +257,12 @@ function SalesTransaction() {
                     Filters &nbsp;
                     <Tune />
                   </SecondaryButton>
-
-                  {/* <SecondaryButton>
-                <SwapVert />
-              </SecondaryButton> */}
                 </Box>
               </Box>
 
-              <Box
-                sx={{
-                  flex: 1,
-                  overflow: "auto",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "5px",
-                  pb: "5px",
-                }}
-              >
+              <Box className="salesTransaction__body__itemsForm__itemsList">
                 {isProductFetching ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "5px",
-                      overflow: "hidden",
-                    }}
-                  >
+                  <Box className="salesTransaction__body__itemsForm__itemsList__skeletons">
                     {Array.from({ length: 7 }).map((_, index) => (
                       <Skeleton
                         height="60px"
@@ -363,14 +272,7 @@ function SalesTransaction() {
                     ))}
                   </Box>
                 ) : productData?.items?.length === 0 ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flex: 1,
-                    }}
-                  >
+                  <Box className="salesTransaction__body__itemsForm__itemsList__noProductFound">
                     <img
                       width="200px"
                       src={NoProductFound}
@@ -380,19 +282,8 @@ function SalesTransaction() {
                 ) : (
                   productData?.items?.map((item) => (
                     <Button
+                      className="salesTransaction__body__itemsForm__itemsList__itemCard"
                       key={item.id}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        p: "5px 20px",
-                        color: "black",
-                        boxShadow:
-                          "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05)!important",
-
-                        bgcolor: "white !important",
-                        border: "1px solid #dee2e6!important",
-                      }}
                       onClick={() => {
                         if (quickAdd) {
                           handleAddItem(item);
@@ -403,16 +294,10 @@ function SalesTransaction() {
                       }}
                     >
                       {/* <Box className="ribbon red">
-                  <span>Hot</span>
-                </Box> */}
+                        <span>Hot</span>
+                      </Box> */}
 
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          textAlign: "left",
-                        }}
-                      >
+                      <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__labels">
                         <Typography
                           fontSize="1.2rem"
                           fontWeight="700"
@@ -425,25 +310,11 @@ function SalesTransaction() {
                         </Typography>
                       </Box>
 
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: "20px",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            bgcolor: "success.main",
-                            p: "5px 10px",
-                            borderRadius: "10px",
-                          }}
-                        >
+                      <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__right">
+                        <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__right__price">
                           <Typography
                             fontWeight="700"
-                            // fontSize="1.3rem"
                             whiteSpace="nowrap"
-                            // color="green"
                             color="white !important"
                           >
                             <span style={{ whiteSpace: "nowrap" }}>
@@ -467,62 +338,20 @@ function SalesTransaction() {
               </Box>
             </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "300px",
-                // width: "400px",
-                boxShadow:
-                  "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05)!important",
-
-                bgcolor: "white !important",
-                border: "1px solid #dee2e6!important",
-                borderRadius: "5px",
-                padding: "10px 20px",
-                gap: "5px",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+            <Box className="salesTransaction__body__orderDetails">
+              <Box className="salesTransaction__body__orderDetails__header">
                 <Typography fontSize="1.2rem" fontWeight="700">
                   Order Details
                 </Typography>
 
-                <Button
-                  sx={{ textTransform: "none", color: "gray" }}
-                  onClick={() => remove()}
-                >
-                  Clear All
-                </Button>
+                <Button onClick={() => remove()}>Clear All</Button>
               </Box>
 
               <Divider />
 
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  overflow: "auto",
-                  gap: "15px",
-                  py: "5px",
-                  flex: 1,
-                }}
-              >
+              <Box className="salesTransaction__body__orderDetails__itemsList">
                 {fields.length === 0 ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flex: 1,
-                    }}
-                  >
+                  <Box className="salesTransaction__body__orderDetails__itemsList__noProductFound">
                     <img
                       // width="200px"
                       width="150px"
@@ -533,42 +362,14 @@ function SalesTransaction() {
                 ) : (
                   fields.map((orderItem, index) => (
                     <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
+                      className="salesTransaction__body__orderDetails__itemsList__item"
                       key={index}
                     >
                       <Box>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                          }}
-                        >
+                        <Box className="salesTransaction__body__orderDetails__itemsList__item__labels">
                           <Typography fontSize="1rem" color="gray">
                             {orderItem.itemId?.itemCode}
                           </Typography>
-
-                          {/* <ClickAwayListener onClickAway={handleTooltipClose}>
-                        <div>
-                          <Tooltip
-                            PopperProps={{
-                              disablePortal: true,
-                            }}
-                            onClose={handleTooltipClose}
-                            open={open}
-                            disableFocusListener
-                            disableHoverListener
-                            disableTouchListener
-                            title="Add"
-                          >
-                            <Button onClick={handleTooltipOpen}>Click</Button>
-                          </Tooltip>
-                        </div>
-                      </ClickAwayListener> */}
 
                           <Tooltip title={orderItem.itemId?.itemDescription}>
                             <Info
@@ -592,14 +393,7 @@ function SalesTransaction() {
                         </Typography>
                       </Box>
 
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          // gap: "10px",
-                          gap: "15px",
-                        }}
-                      >
+                      <Box className="salesTransaction__body__orderDetails__itemsList__item__right">
                         <IconButton
                           color="warning"
                           onClick={() => {
@@ -688,21 +482,8 @@ function SalesTransaction() {
 
               <Divider sx={{ borderStyle: "dashed" }} />
 
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "15px",
-                  mt: "15px",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
+              <Box className="salesTransaction__body__orderDetails__total">
+                <Box className="salesTransaction__body__orderDetails__total__amount">
                   <Typography fontSize="1.3rem" color="gray">
                     Total:
                   </Typography>
@@ -710,7 +491,6 @@ function SalesTransaction() {
                     fontSize="1.3rem"
                     fontWeight="700"
                     color="primary"
-                    // color="#1E90FF"
                   >
                     <span style={{ whiteSpace: "nowrap" }}>
                       ₱{" "}
@@ -719,10 +499,6 @@ function SalesTransaction() {
                         maximumFractionDigits: 2,
                       })}
                     </span>
-                    {/* {handleTotalAmount().toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })} */}
                   </Typography>
                 </Box>
 
@@ -733,27 +509,10 @@ function SalesTransaction() {
             </Box>
           </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              height: "40px",
-              bgcolor: "primary.main",
-              borderBottomLeftRadius: "5px",
-              borderBottomRightRadius: "5px",
-              px: "15px",
-              py: "5px",
-            }}
-          >
-            <Typography color="white !important">User: {fullName}</Typography>
+          <Box className="salesTransaction__footer">
+            <Typography>User: {fullName}</Typography>
 
-            <Box sx={{ display: "flex", gap: "10px" }}>
-              <Typography color="white !important">
-                Date: {currentTime}
-                {/* Date: {moment().format("M/DD/YY h:mm a")} */}
-              </Typography>
-            </Box>
+            <Typography>Date: {currentTime}</Typography>
           </Box>
         </Box>
       </Box>
