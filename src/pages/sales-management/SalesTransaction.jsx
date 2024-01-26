@@ -155,7 +155,7 @@ function SalesTransaction() {
       defaultOptions
     );
 
-  const handleAddItem = (item) => {
+  const handleAddItem = (item, quantity) => {
     const existingItemIndex = watch("items").findIndex(
       (existingItem) => existingItem.itemId?.itemCode === item.itemCode
     );
@@ -164,13 +164,16 @@ function SalesTransaction() {
       // Item with the same itemCode already exists, so increment the quantity
       update(existingItemIndex, {
         itemId: watch("items")[existingItemIndex]?.itemId,
-        quantity: parseInt(watch("items")[existingItemIndex].quantity) + 1,
+        quantity: quantity
+          ? parseInt(watch("items")[existingItemIndex].quantity) +
+            parseInt(quantity)
+          : parseInt(watch("items")[existingItemIndex].quantity) + 1,
       });
     } else {
       // Item with the itemCode does not exist, so add a new item with quantity 1
       append({
         itemId: item,
-        quantity: 1,
+        quantity: quantity ? parseInt(quantity) : 1,
       });
     }
   };
@@ -443,14 +446,16 @@ function SalesTransaction() {
                             // color="green"
                             color="white !important"
                           >
-                            ₱{" "}
-                            {item.priceChangeHistories?.[0]?.price?.toLocaleString(
-                              undefined,
-                              {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              }
-                            )}
+                            <span style={{ whiteSpace: "nowrap" }}>
+                              ₱{" "}
+                              {item.priceChangeHistories?.[0]?.price?.toLocaleString(
+                                undefined,
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                }
+                              )}
+                            </span>
                           </Typography>
                         </Box>
 
@@ -574,14 +579,16 @@ function SalesTransaction() {
                         </Box>
 
                         <Typography fontSize="1rem" fontWeight="600">
-                          ₱{" "}
-                          {(
-                            orderItem.itemId?.priceChangeHistories?.[0]?.price *
-                            orderItem.quantity
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
+                          <span style={{ whiteSpace: "nowrap" }}>
+                            ₱{" "}
+                            {(
+                              orderItem.itemId?.priceChangeHistories?.[0]
+                                ?.price * orderItem.quantity
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </span>
                         </Typography>
                       </Box>
 
@@ -619,7 +626,7 @@ function SalesTransaction() {
                           sx={{ cursor: "pointer" }}
                           onClick={handleClickQuantity}
                         >
-                          {orderItem.quantity}
+                          {orderItem.quantity.toLocaleString()}
                         </Typography>
 
                         <Popover
@@ -705,11 +712,13 @@ function SalesTransaction() {
                     color="primary"
                     // color="#1E90FF"
                   >
-                    ₱{" "}
-                    {totalAmount.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    <span style={{ whiteSpace: "nowrap" }}>
+                      ₱{" "}
+                      {totalAmount.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
                     {/* {handleTotalAmount().toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
@@ -749,7 +758,11 @@ function SalesTransaction() {
         </Box>
       </Box>
 
-      <AddItemModal open={isAddItemOpen} onClose={onAddItemClose} />
+      <AddItemModal
+        open={isAddItemOpen}
+        onClose={onAddItemClose}
+        onSubmit={handleAddItem}
+      />
     </>
   );
 }

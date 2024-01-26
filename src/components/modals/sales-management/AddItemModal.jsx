@@ -4,12 +4,24 @@ import { Box, TextField, Typography } from "@mui/material";
 import SecondaryButton from "../../SecondaryButton";
 import DangerButton from "../../DangerButton";
 import { useSelector } from "react-redux";
+import { NumericFormat } from "react-number-format";
 
 function AddItemModal({ onSubmit, isValid, ...otherProps }) {
   const { onClose, open } = otherProps;
   const [quantity, setQuantity] = useState(1);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  //Functions
+  const handleClose = () => {
+    onClose();
+    setQuantity(1);
+  };
+
+  const handleSubmit = () => {
+    onSubmit(selectedRowData, quantity);
+    handleClose();
+  };
 
   useEffect(() => {
     setQuantity;
@@ -26,14 +38,18 @@ function AddItemModal({ onSubmit, isValid, ...otherProps }) {
         </Typography>
       </Box>
 
-      <TextField
-        type="number"
+      <NumericFormat
+        customInput={TextField}
+        sx={{ mt: "10px" }}
         size="small"
         label="Quantity"
-        onChange={(e) => setQuantity(e.target.value)}
+        type="text"
+        onValueChange={(e) => setQuantity(e.value)}
         value={quantity}
-        sx={{ mt: "10px" }}
+        thousandSeparator=","
+        autoComplete="off"
       />
+
       <Box
         sx={{
           display: "flex",
@@ -43,8 +59,8 @@ function AddItemModal({ onSubmit, isValid, ...otherProps }) {
         }}
         className="roleTaggingModal__actions"
       >
-        <DangerButton onClick={onClose}>Close</DangerButton>
-        <SecondaryButton onClick={onSubmit} disabled={!quantity}>
+        <DangerButton onClick={handleClose}>Close</DangerButton>
+        <SecondaryButton onClick={handleSubmit} disabled={!quantity}>
           Add Item
         </SecondaryButton>
       </Box>
