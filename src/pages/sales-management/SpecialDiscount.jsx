@@ -15,6 +15,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CommonModalForm from "../../components/CommonModalForm";
 import { NumericFormat } from "react-number-format";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function SpecialDiscount() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -29,6 +30,7 @@ function SpecialDiscount() {
   const [isOneTimeUse, setIsOneTimeUse] = useState(false);
 
   const { notifications } = useContext(AppContext);
+  const { showSnackbar } = useSnackbar();
 
   //React Hook Form
   const {
@@ -38,6 +40,7 @@ function SpecialDiscount() {
     reset,
     control,
     watch,
+    getValues,
   } = useForm({
     resolver: yupResolver(specialDiscountSchema.schema),
     mode: "onChange",
@@ -89,6 +92,26 @@ function SpecialDiscount() {
   const isFetching = false;
 
   //Functions
+  const onSubmit = (data) => {
+    const transformedData = {
+      ...data,
+      clientId: data.clientId?.id,
+    };
+
+    try {
+      console.log(transformedData);
+      showSnackbar("Successfully added special discount", "success");
+      handleFormClose();
+    } catch (error) {
+      console.log(error);
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error adding special discount", "error");
+      }
+    }
+  };
+
   const handleAddOpen = () => {
     setDrawerMode("add");
     onDrawerOpen();
@@ -150,7 +173,7 @@ function SpecialDiscount() {
         title="Special Discount"
         open={isFormOpen}
         onClose={handleFormClose}
-        onSubmit={handleFormClose}
+        onSubmit={handleSubmit(onSubmit)}
         width="600px"
         disableSubmit={!isValid || !isDirty}
         // height="520px"
@@ -218,7 +241,7 @@ function SpecialDiscount() {
                   customInput={TextField}
                   autoComplete="off"
                   onValueChange={(e) => {
-                    onChange(Number(e.value));
+                    onChange(e.value === "" ? null : Number(e.value));
                   }}
                   onBlur={onBlur}
                   value={value || ""}
@@ -234,6 +257,8 @@ function SpecialDiscount() {
                   allowNegative={false}
                   allowLeadingZeros={false}
                   decimalScale={2}
+                  format={(value) => (value <= 10 ? value : 10)}
+                  max={10}
                   // disabled={!watch("clientId")}
                 />
               )}

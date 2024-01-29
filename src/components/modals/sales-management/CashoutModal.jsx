@@ -5,9 +5,12 @@ import { cashoutSchema } from "../../../schema/schema";
 import { Box, TextField } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
+import useSnackbar from "../../../hooks/useSnackbar";
 
 function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   const { onClose } = props;
+
+  const { showSnackbar } = useSnackbar();
 
   //React Hook Form
   const {
@@ -36,9 +39,20 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     };
 
     const combinedData = { ...transformedOrderData, ...data };
-    console.log(combinedData);
-    resetTransaction();
-    handleClose();
+
+    try {
+      console.log(combinedData);
+      resetTransaction();
+      handleClose();
+      showSnackbar("Transaction successfully added!", "success");
+    } catch (error) {
+      console.log(error);
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error adding transaction", "error");
+      }
+    }
   };
 
   const handleClose = () => {

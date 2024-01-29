@@ -30,7 +30,7 @@ function SalesManagement() {
                 Sales Transaction
               </Typography>
               <Typography className="pageIndex__navigators__item__text__subTitle">
-                POS and attaching of CI photo
+                POS and transactions list with attaching of CI photo
               </Typography>
             </Box>
 
