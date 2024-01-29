@@ -136,6 +136,7 @@ function AdvancePayment() {
         open={isFormOpen}
         onClose={handleFormClose}
         onSubmit={handleFormClose}
+        disableSubmit={!isValid || !isDirty}
         width="800px"
         height="520px"
       >
@@ -436,33 +437,6 @@ function AdvancePayment() {
                     helperText={errors?.accountNumber?.message}
                     error={errors?.accountNumber}
                     type="number"
-                  />
-                )}
-              />
-
-              <Controller
-                control={control}
-                name={"paymentAmount"}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <NumericFormat
-                    label="Amount"
-                    type="text"
-                    size="small"
-                    customInput={TextField}
-                    autoComplete="off"
-                    onValueChange={(e) => {
-                      onChange(Number(e.value));
-                    }}
-                    onBlur={onBlur}
-                    value={value || ""}
-                    // InputProps={{
-                    //   startAdornment: (
-                    //     <InputAdornment position="start">₱</InputAdornment>
-                    //   ),
-                    // }}
-                    thousandSeparator=","
-                    allowNegative={false}
-                    allowLeadingZeros={false}
                   />
                 )}
               />

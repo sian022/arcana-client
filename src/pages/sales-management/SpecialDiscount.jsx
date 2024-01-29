@@ -152,6 +152,7 @@ function SpecialDiscount() {
         onClose={handleFormClose}
         onSubmit={handleFormClose}
         width="600px"
+        disableSubmit={!isValid || !isDirty}
         // height="520px"
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -208,7 +209,7 @@ function SpecialDiscount() {
 
             <Controller
               control={control}
-              name={"spDiscount"}
+              name={"specialDiscount"}
               render={({ field: { onChange, onBlur, value, ref } }) => (
                 <NumericFormat
                   label="Special Discount (%)"
@@ -232,6 +233,7 @@ function SpecialDiscount() {
                   thousandSeparator=","
                   allowNegative={false}
                   allowLeadingZeros={false}
+                  decimalScale={2}
                   // disabled={!watch("clientId")}
                 />
               )}
@@ -247,88 +249,6 @@ function SpecialDiscount() {
           </Box>
         </Box>
       </CommonModalForm>
-
-      <CommonDrawer
-        open={isDrawerOpen}
-        onClose={handleDrawerClose}
-        width={"400px"}
-        drawerHeader={
-          (drawerMode === "add" ? "Add" : "Edit") + " Special Discount"
-        }
-        // onSubmit={handleSubmit(onDrawerSubmit)}
-        // disableSubmit={!isValid}
-        // isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-          <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-            Customer Name
-          </Typography>
-
-          <ControlledAutocomplete
-            name={`clientId`}
-            control={control}
-            options={clientData?.regularClient || []}
-            getOptionLabel={(option) =>
-              option.businessName + " - " + option.ownersName || ""
-            }
-            disableClearable
-            loading={isClientLoading}
-            disabled={editMode}
-            // value={clientData?.regularClient?.find(
-            //   (item) => item.businessName === selectedRowData?.businessName
-            // )}
-            // isOptionEqualToValue={(option, value) => option.id === value.id}
-            isOptionEqualToValue={(option, value) => true}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                size="small"
-                label="Business Name - Owner's Name"
-                // required
-                helperText={errors?.itemId?.message}
-                error={errors?.itemId}
-                // sx={{ width: "400px" }}
-              />
-            )}
-          />
-        </Box>
-
-        {/* <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-          <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-            Customer Name
-          </Typography>
-          <TextField
-            label="Customer Name"
-            size="small"
-            autoComplete="off"
-            // {...register("storeTypeName")}
-            // helperText={errors?.storeTypeName?.message}
-            // error={errors?.storeTypeName}
-          />
-        </Box> */}
-
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-          <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-            Special Discount
-          </Typography>
-
-          <TextField
-            label="Special Discount"
-            size="small"
-            autoComplete="off"
-            type="number"
-            // required
-            // {...register("storeTypeName")}
-            // helperText={errors?.storeTypeName?.message}
-            // error={errors?.storeTypeName}
-          />
-        </Box>
-
-        <Box sx={{ display: "flex", gap: "5px" }}>
-          <Checkbox />
-          <Typography>One time use only</Typography>
-        </Box>
-      </CommonDrawer>
     </>
   );
 }

@@ -890,3 +890,10 @@
     flex: 1;
   }
 }
+
+//Sales Transaction
+.cashoutModal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}

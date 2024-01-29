@@ -6,7 +6,7 @@ import DangerButton from "../../DangerButton";
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
 
-function AddItemModal({ onSubmit, isValid, ...otherProps }) {
+function AddItemModal({ onSubmit, ...otherProps }) {
   const { onClose, open } = otherProps;
   const [quantity, setQuantity] = useState(1);
 
@@ -33,43 +33,45 @@ function AddItemModal({ onSubmit, isValid, ...otherProps }) {
   }, [open]);
 
   return (
-    <CommonModal {...otherProps} width="350px">
-      <Box>
-        <Typography fontSize="1.3rem" fontWeight="700">
-          {selectedRowData?.itemCode}
-        </Typography>
-        <Typography fontSize="1.1rem">
-          {selectedRowData?.itemDescription}
-        </Typography>
-      </Box>
+    <CommonModal {...otherProps} width="350px" closeTopRight>
+      <Box component="form" onSubmit={handleSubmit}>
+        <Box>
+          <Typography fontSize="1.3rem" fontWeight="700">
+            {selectedRowData?.itemCode}
+          </Typography>
+          <Typography fontSize="1.1rem">
+            {selectedRowData?.itemDescription}
+          </Typography>
+        </Box>
 
-      <NumericFormat
-        customInput={TextField}
-        sx={{ mt: "10px" }}
-        size="small"
-        label="Quantity"
-        type="text"
-        onValueChange={(e) => setQuantity(e.value)}
-        value={quantity}
-        thousandSeparator=","
-        autoComplete="off"
-        inputRef={quantityRef}
-        autoFocus
-      />
+        <NumericFormat
+          customInput={TextField}
+          sx={{ mt: "10px", width: "100%" }}
+          size="small"
+          label="Quantity"
+          type="text"
+          onValueChange={(e) => setQuantity(e.value)}
+          value={quantity}
+          thousandSeparator=","
+          autoComplete="off"
+          inputRef={quantityRef}
+          autoFocus
+        />
 
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "end",
-          gap: "10px",
-          marginTop: "20px",
-        }}
-        className="roleTaggingModal__actions"
-      >
-        <DangerButton onClick={handleClose}>Close</DangerButton>
-        <SecondaryButton onClick={handleSubmit} disabled={!quantity}>
-          Add Item
-        </SecondaryButton>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+            gap: "10px",
+            marginTop: "20px",
+          }}
+          className="roleTaggingModal__actions"
+        >
+          <DangerButton onClick={handleClose}>Close</DangerButton>
+          <SecondaryButton type="submit" disabled={!quantity}>
+            Add Item
+          </SecondaryButton>
+        </Box>
       </Box>
     </CommonModal>
   );

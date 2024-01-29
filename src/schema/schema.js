@@ -635,3 +635,12 @@ export const salesTransactionSchema = {
     items: [],
   },
 };
+
+export const cashoutSchema = {
+  schema: yup.object({
+    chargeInvoiceNo: yup.string().required("Charge Invoice No. is required"),
+  }),
+  defaultValues: {
+    chargeInvoiceNo: "",
+  },
+};
