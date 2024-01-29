@@ -348,9 +348,13 @@ function SalesTransaction() {
                       <SwipeableItem
                         key={index}
                         setValue={(newValue) =>
-                          setValue(`items[${index}].quantity`, newValue)
+                          setValue(
+                            `items[${index}].quantity`,
+                            parseInt(newValue)
+                          )
                         }
-                        orderItem={orderItem}
+                        orderItem={watch("items")[index]}
+                        // orderItem={orderItem}
                         onMinus={() => {
                           watch("items")[index]?.quantity > 1
                             ? update(index, {

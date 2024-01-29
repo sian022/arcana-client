@@ -27,8 +27,7 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
 
   //React Swipeable
   const swipeable = useSwipeable({
-    onSwipedLeft: (eventData) => {
-      // console.log(eventData);
+    onSwipedLeft: () => {
       setIsSwiped(true);
       setTimeout(async () => {
         try {
@@ -43,7 +42,8 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
   });
 
   //Functions
-  const handleQuantitySubmit = () => {
+  const handleQuantitySubmit = (e) => {
+    e.preventDefault();
     setValue(quantity);
     handleQuantiyClose();
   };
@@ -135,7 +135,11 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
               borderRadius: "20px",
             }}
           >
-            <Box sx={{ display: "flex", gap: "5px" }}>
+            <Box
+              sx={{ display: "flex", gap: "5px" }}
+              component="form"
+              onSubmit={handleQuantitySubmit}
+            >
               <TextField
                 size="small"
                 sx={{
@@ -151,7 +155,7 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
                 inputRef={quantityRef}
               />
 
-              <IconButton color="success" onClick={handleQuantitySubmit}>
+              <IconButton color="success" type="submit">
                 <Check />
               </IconButton>
 
