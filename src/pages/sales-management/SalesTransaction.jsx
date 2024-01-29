@@ -42,6 +42,7 @@ import TransactionsList from "../../components/sales-transaction/TransactionsLis
 function SalesTransaction() {
   const [search, setSearch] = useState("");
   const [quickAdd, setQuickAdd] = useState(false);
+  const [viewFilters, setViewFilters] = useState(false);
   const [transactionsMode, setTransactionsMode] = useState(
     sessionStorage.getItem("transactionsMode") || false
   );
@@ -119,12 +120,12 @@ function SalesTransaction() {
   const totalAmount = useMemo(() => {
     let total = 0;
 
-    fields.forEach((item) => {
+    watch("items").forEach((item) => {
       total += item.itemId?.priceChangeHistories?.[0]?.price * item.quantity;
     });
 
     return total;
-  }, [fields]);
+  }, [watch("items")]);
 
   const handleAddItem = (item, quantity) => {
     const existingItemIndex = watch("items").findIndex(
@@ -241,10 +242,30 @@ function SalesTransaction() {
                       <Typography>Quick Add</Typography>
                     </Box>
 
-                    <SecondaryButton>
+                    <SecondaryButton
+                      onClick={() => setViewFilters((prev) => !prev)}
+                    >
                       Filters &nbsp;
                       <Tune />
                     </SecondaryButton>
+
+                    <Box
+                      sx={{
+                        display: viewFilters ? "flex" : "none",
+                        position: "absolute",
+                        right: 0,
+                        top: "40px",
+                        zIndex: 2,
+                        backgroundColor: "white !important",
+                        border: "1px solid #dee2e6 !important",
+                        boxShadow:
+                          "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important",
+                        borderRadius: "5px",
+                        padding: "20px",
+                      }}
+                    >
+                      Under construction
+                    </Box>
                   </Box>
                 </Box>
 
