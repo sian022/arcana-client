@@ -50,9 +50,6 @@ function SalesTransaction() {
     moment().format("M/DD/YY h:mm a")
   );
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const isQuantityOpen = Boolean(anchorEl);
-
   const fullName = useSelector((state) => state.login.fullname);
 
   const dispatch = useDispatch();
@@ -128,14 +125,6 @@ function SalesTransaction() {
 
     return total;
   }, [fields]);
-
-  const handleClickQuantity = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseQuantity = () => {
-    setAnchorEl(null);
-  };
 
   const addLongPressEvent = (index) =>
     useLongPress(

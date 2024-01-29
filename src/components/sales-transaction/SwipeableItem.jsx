@@ -1,16 +1,28 @@
 import { Add, Info, Remove } from "@mui/icons-material";
-import { Box, IconButton, Popover, Tooltip, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import {
+  Box,
+  IconButton,
+  Popover,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import useDisclosure from "../../hooks/useDisclosure";
 
-function SwipeableItem({
-  orderItem,
-  handleClickQuantity,
-  onMinus,
-  onPlus,
-  onSwipeLeft,
-}) {
+function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
   const [isSwiped, setIsSwiped] = useState(false);
+  const [quantity, setQuantity] = useState(orderItem.quantity);
+
+  const anchorRef = useRef();
+
+  //Disclosures
+  const {
+    isOpen: isQuantityOpen,
+    onOpen: onQuantityOpen,
+    onClose: onQuantityClose,
+  } = useDisclosure();
 
   //React Swipeable
   const swipeable = useSwipeable({
@@ -28,6 +40,8 @@ function SwipeableItem({
     preventScrollOnSwipe: true,
     trackMouse: true,
   });
+
+  console.log(isQuantityOpen);
 
   return (
     <Box
@@ -72,14 +86,20 @@ function SwipeableItem({
           <Remove />
         </IconButton>
 
-        <Typography sx={{ cursor: "pointer" }} onClick={handleClickQuantity}>
+        <Typography
+          sx={{ cursor: "pointer" }}
+          onClick={() => {
+            onQuantityOpen();
+          }}
+          ref={anchorRef}
+        >
           {orderItem.quantity.toLocaleString()}
         </Typography>
 
-        {/* <Popover
+        <Popover
           open={isQuantityOpen}
-          anchorEl={anchorEl}
-          onClose={handleCloseQuantity}
+          anchorEl={anchorRef.current}
+          onClose={onQuantityClose}
           anchorOrigin={{
             vertical: "top",
             horizontal: "center",
@@ -90,27 +110,21 @@ function SwipeableItem({
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Controller
-              control={control}
-              name={`items[${index}].quantity`}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  size="small"
-                  sx={{
-                    width: "50px",
-                    // "& .MuiInputBase-root": {
-                    //   height: "30px",
-                    // },
-                  }}
-                  // onChange={(e) => {
-                  //   field.onChange(e);
-                  // }}
-                />
-              )}
+            <TextField
+              size="small"
+              sx={{
+                width: "50px",
+                // "& .MuiInputBase-root": {
+                //   height: "30px",
+                // },
+              }}
+              onChange={(e) => {
+                setQuantity(e.target.value);
+              }}
+              value={quantity}
             />
           </Box>
-        </Popover> */}
+        </Popover>
 
         <IconButton color="secondary" onClick={onPlus}>
           <Add />
