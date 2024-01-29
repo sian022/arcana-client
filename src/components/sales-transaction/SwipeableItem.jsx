@@ -1,4 +1,4 @@
-import { Add, Info, Remove } from "@mui/icons-material";
+import { Add, Cancel, Check, Close, Info, Remove } from "@mui/icons-material";
 import {
   Box,
   IconButton,
@@ -16,6 +16,7 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
   const [quantity, setQuantity] = useState(orderItem.quantity);
 
   const anchorRef = useRef();
+  const quantityRef = useRef();
 
   //Disclosures
   const {
@@ -41,7 +42,18 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
     trackMouse: true,
   });
 
-  console.log(isQuantityOpen);
+  //Functions
+  const handleQuantityOpen = () => {
+    onQuantityOpen();
+  };
+
+  useEffect(() => {
+    if (isQuantityOpen) {
+      setTimeout(() => {
+        quantityRef.current.select();
+      }, 0);
+    }
+  }, [isQuantityOpen]);
 
   return (
     <Box
@@ -109,20 +121,38 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
             horizontal: "left",
           }}
         >
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <TextField
-              size="small"
-              sx={{
-                width: "50px",
-                // "& .MuiInputBase-root": {
-                //   height: "30px",
-                // },
-              }}
-              onChange={(e) => {
-                setQuantity(e.target.value);
-              }}
-              value={quantity}
-            />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              padding: "10px",
+              borderRadius: "20px",
+            }}
+          >
+            <Box sx={{ display: "flex", gap: "5px" }}>
+              <TextField
+                size="small"
+                sx={{
+                  width: "200px",
+                  // "& .MuiInputBase-root": {
+                  //   height: "30px",
+                  // },
+                }}
+                onChange={(e) => {
+                  setQuantity(e.target.value);
+                }}
+                value={quantity}
+                inputRef={quantityRef}
+              />
+
+              <IconButton color="success">
+                <Check />
+              </IconButton>
+
+              <IconButton color="error">
+                <Close />
+              </IconButton>
+            </Box>
           </Box>
         </Popover>
 

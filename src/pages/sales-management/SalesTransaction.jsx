@@ -32,7 +32,6 @@ import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { debounce } from "../../utils/CustomFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import NoProductFound from "../../assets/images/NoProductFound.svg";
-import useLongPress from "../../hooks/useLongPress";
 import AddItemModal from "../../components/modals/sales-management/AddItemModal";
 import useDisclosure from "../../hooks/useDisclosure";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
@@ -125,23 +124,6 @@ function SalesTransaction() {
 
     return total;
   }, [fields]);
-
-  const addLongPressEvent = (index) =>
-    useLongPress(
-      () => {
-        update(index, {
-          itemId: watch("items")[index]?.itemId,
-          quantity: watch("items")[index].quantity + 1,
-        });
-      },
-      () => {
-        update(index, {
-          itemId: watch("items")[index]?.itemId,
-          quantity: watch("items")[index].quantity + 1,
-        });
-      },
-      defaultOptions
-    );
 
   const handleAddItem = (item, quantity) => {
     const existingItemIndex = watch("items").findIndex(
