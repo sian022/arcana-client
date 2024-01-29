@@ -79,6 +79,7 @@ function SalesTransaction() {
     control,
     watch,
     getValues,
+    setValue,
   } = useForm({
     resolver: yupResolver(salesTransactionSchema.schema),
     mode: "onSubmit",
@@ -346,6 +347,9 @@ function SalesTransaction() {
                     fields.map((orderItem, index) => (
                       <SwipeableItem
                         key={index}
+                        setValue={(newValue) =>
+                          setValue(`items[${index}].quantity`, newValue)
+                        }
                         orderItem={orderItem}
                         onMinus={() => {
                           watch("items")[index]?.quantity > 1

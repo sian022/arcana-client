@@ -43,8 +43,14 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
   });
 
   //Functions
-  const handleQuantityOpen = () => {
-    onQuantityOpen();
+  const handleQuantitySubmit = () => {
+    setValue(quantity);
+    handleQuantiyClose();
+  };
+
+  const handleQuantiyClose = () => {
+    setQuantity(orderItem.quantity);
+    onQuantityClose();
   };
 
   useEffect(() => {
@@ -111,7 +117,7 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
         <Popover
           open={isQuantityOpen}
           anchorEl={anchorRef.current}
-          onClose={onQuantityClose}
+          onClose={handleQuantiyClose}
           anchorOrigin={{
             vertical: "top",
             horizontal: "center",
@@ -145,11 +151,11 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
                 inputRef={quantityRef}
               />
 
-              <IconButton color="success">
+              <IconButton color="success" onClick={handleQuantitySubmit}>
                 <Check />
               </IconButton>
 
-              <IconButton color="error">
+              <IconButton color="error" onClick={handleQuantiyClose}>
                 <Close />
               </IconButton>
             </Box>
