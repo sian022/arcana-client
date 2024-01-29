@@ -13,8 +13,9 @@ function SwipeableItem({
   const [isSwiped, setIsSwiped] = useState(false);
 
   //React Swipeable
-  const { ref: swipeableRef } = useSwipeable({
+  const swipeable = useSwipeable({
     onSwipedLeft: (eventData) => {
+      // console.log(eventData);
       setIsSwiped(true);
       setTimeout(async () => {
         try {
@@ -30,7 +31,7 @@ function SwipeableItem({
 
   return (
     <Box
-      ref={swipeableRef}
+      {...swipeable}
       className={`salesTransaction__body__orderDetails__itemsList__item ${
         isSwiped ? "swiped" : ""
       }`}
