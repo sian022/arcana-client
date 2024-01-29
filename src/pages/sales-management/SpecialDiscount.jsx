@@ -7,7 +7,6 @@ import useDisclosure from "../../hooks/useDisclosure";
 import CommonTable from "../../components/CommonTable";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { dummyTableData } from "../../utils/DummyData";
-import CommonDrawer from "../../components/CommonDrawer";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import { specialDiscountSchema } from "../../schema/schema";
@@ -16,6 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import CommonModalForm from "../../components/CommonModalForm";
 import { NumericFormat } from "react-number-format";
 import useSnackbar from "../../hooks/useSnackbar";
+import CommonDialog from "../../components/CommonDialog";
 
 function SpecialDiscount() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -50,15 +50,15 @@ function SpecialDiscount() {
   //Disclosures
 
   const {
-    isOpen: isDrawerOpen,
-    onOpen: onDrawerOpen,
-    onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isFormOpen,
     onOpen: onFormOpen,
     onClose: onFormClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose,
   } = useDisclosure();
 
   //Constants
@@ -100,8 +100,9 @@ function SpecialDiscount() {
 
     try {
       console.log(transformedData);
-      showSnackbar("Successfully added special discount", "success");
       handleFormClose();
+      onConfirmClose();
+      showSnackbar("Successfully added special discount", "success");
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
@@ -109,6 +110,7 @@ function SpecialDiscount() {
       } else {
         showSnackbar("Error adding special discount", "error");
       }
+      onConfirmClose();
     }
   };
 
@@ -173,7 +175,8 @@ function SpecialDiscount() {
         title="Special Discount"
         open={isFormOpen}
         onClose={handleFormClose}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onConfirmOpen}
+        // onSubmit={handleSubmit(onSubmit)}
         width="600px"
         disableSubmit={!isValid || !isDirty}
         // height="520px"
@@ -274,6 +277,14 @@ function SpecialDiscount() {
           </Box>
         </Box>
       </CommonModalForm>
+
+      <CommonDialog
+        open={isConfirmOpen}
+        onClose={onConfirmClose}
+        onYes={handleSubmit(onSubmit)}
+      >
+        Confirm adding of special discount?
+      </CommonDialog>
     </>
   );
 }

@@ -6,11 +6,20 @@ import { Box, TextField } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
 import useSnackbar from "../../../hooks/useSnackbar";
+import CommonDialog from "../../CommonDialog";
+import useDisclosure from "../../../hooks/useDisclosure";
 
 function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   const { onClose } = props;
 
   const { showSnackbar } = useSnackbar();
+
+  //Disclosures
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose,
+  } = useDisclosure();
 
   //React Hook Form
   const {
@@ -44,6 +53,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
       console.log(combinedData);
       resetTransaction();
       handleClose();
+      onConfirmClose();
       showSnackbar("Transaction successfully added!", "success");
     } catch (error) {
       console.log(error);
@@ -52,6 +62,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
       } else {
         showSnackbar("Error adding transaction", "error");
       }
+      onConfirmClose();
     }
   };
 
@@ -61,131 +72,141 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   };
 
   return (
-    <CommonModalForm
-      onSubmit={handleSubmit(onSubmit)}
-      title="Cashout"
-      width="800px"
-      disableSubmit={!isValid || !isDirty}
-      {...props}
-      onClose={handleClose}
-    >
-      <Box className="cashoutModal">
-        <NumericFormat
-          label="Amount Due (₱)"
-          type="text"
-          size="small"
-          customInput={TextField}
-          autoComplete="off"
-          value={total}
-          thousandSeparator=","
-          allowNegative={false}
-          allowLeadingZeros={false}
-          decimalScale={2}
-          disabled
-          prefix="₱"
-        />
+    <>
+      <CommonModalForm
+        onSubmit={onConfirmOpen}
+        title="Cashout"
+        width="800px"
+        disableSubmit={!isValid || !isDirty}
+        {...props}
+        onClose={handleClose}
+      >
+        <Box className="cashoutModal">
+          <NumericFormat
+            label="Amount Due (₱)"
+            type="text"
+            size="small"
+            customInput={TextField}
+            autoComplete="off"
+            value={total}
+            thousandSeparator=","
+            allowNegative={false}
+            allowLeadingZeros={false}
+            decimalScale={2}
+            disabled
+            prefix="₱"
+          />
 
-        <NumericFormat
-          label="Net of Sales (₱)"
-          type="text"
-          size="small"
-          customInput={TextField}
-          autoComplete="off"
-          value={4795}
-          thousandSeparator=","
-          allowNegative={false}
-          allowLeadingZeros={false}
-          decimalScale={2}
-          disabled
-          prefix="₱"
-        />
+          <NumericFormat
+            label="Net of Sales (₱)"
+            type="text"
+            size="small"
+            customInput={TextField}
+            autoComplete="off"
+            value={4795}
+            thousandSeparator=","
+            allowNegative={false}
+            allowLeadingZeros={false}
+            decimalScale={2}
+            disabled
+            prefix="₱"
+          />
 
-        <TextField
-          label="Business Name"
-          size="small"
-          disabled
-          value={orderData?.clientId?.businessName}
-        />
+          <TextField
+            label="Business Name"
+            size="small"
+            disabled
+            value={orderData?.clientId?.businessName}
+          />
 
-        <NumericFormat
-          label="Special Discount (%)"
-          type="text"
-          size="small"
-          customInput={TextField}
-          autoComplete="off"
-          value={10}
-          thousandSeparator=","
-          allowNegative={false}
-          allowLeadingZeros={false}
-          decimalScale={2}
-          disabled
-          suffix="%"
-        />
+          <NumericFormat
+            label="Special Discount (%)"
+            type="text"
+            size="small"
+            customInput={TextField}
+            autoComplete="off"
+            value={10}
+            thousandSeparator=","
+            allowNegative={false}
+            allowLeadingZeros={false}
+            decimalScale={2}
+            disabled
+            suffix="%"
+          />
 
-        <NumericFormat
-          label="Discount (%)"
-          type="text"
-          size="small"
-          customInput={TextField}
-          autoComplete="off"
-          value={10 + "%"}
-          thousandSeparator=","
-          allowNegative={false}
-          allowLeadingZeros={false}
-          decimalScale={2}
-          disabled
-          suffix="%"
-        />
+          <NumericFormat
+            label="Discount (%)"
+            type="text"
+            size="small"
+            customInput={TextField}
+            autoComplete="off"
+            value={10 + "%"}
+            thousandSeparator=","
+            allowNegative={false}
+            allowLeadingZeros={false}
+            decimalScale={2}
+            disabled
+            suffix="%"
+          />
 
-        <NumericFormat
-          label="Special Discount Amount (₱)"
-          type="text"
-          size="small"
-          customInput={TextField}
-          autoComplete="off"
-          value={139.75}
-          thousandSeparator=","
-          allowNegative={false}
-          allowLeadingZeros={false}
-          decimalScale={2}
-          disabled
-          prefix="₱"
-        />
+          <NumericFormat
+            label="Special Discount Amount (₱)"
+            type="text"
+            size="small"
+            customInput={TextField}
+            autoComplete="off"
+            value={139.75}
+            thousandSeparator=","
+            allowNegative={false}
+            allowLeadingZeros={false}
+            decimalScale={2}
+            disabled
+            prefix="₱"
+          />
 
-        <NumericFormat
-          label="Discount Amount (₱)"
-          type="text"
-          size="small"
-          customInput={TextField}
-          autoComplete="off"
-          value={139.75}
-          thousandSeparator=","
-          allowNegative={false}
-          allowLeadingZeros={false}
-          decimalScale={2}
-          disabled
-          prefix="₱"
-        />
+          <NumericFormat
+            label="Discount Amount (₱)"
+            type="text"
+            size="small"
+            customInput={TextField}
+            autoComplete="off"
+            value={139.75}
+            thousandSeparator=","
+            allowNegative={false}
+            allowLeadingZeros={false}
+            decimalScale={2}
+            disabled
+            prefix="₱"
+          />
 
-        <Controller
-          name="chargeInvoiceNo"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              label="Charge Invoice No."
-              size="small"
-              autoComplete="off"
-              type="number"
-              {...field}
-              onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-              helperText={errors?.payee?.message}
-              error={errors?.payee}
-            />
-          )}
-        />
-      </Box>
-    </CommonModalForm>
+          <Controller
+            name="chargeInvoiceNo"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                label="Charge Invoice No."
+                size="small"
+                autoComplete="off"
+                type="number"
+                {...field}
+                onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                helperText={errors?.payee?.message}
+                error={errors?.payee}
+              />
+            )}
+          />
+        </Box>
+      </CommonModalForm>
+
+      <CommonDialog
+        open={isConfirmOpen}
+        onYes={handleSubmit(onSubmit)}
+        onClose={onConfirmClose}
+      >
+        Confirm cashout of transaction?
+      </CommonDialog>
+    </>
   );
 }
 

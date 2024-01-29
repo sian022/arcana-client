@@ -52,7 +52,7 @@ function AdvancePayment() {
     defaultValues: advancePaymentSchema.defaultValues,
   });
 
-  // Drawer Disclosures
+  //Disclosures
 
   const {
     isOpen: isArchiveOpen,
@@ -64,6 +64,12 @@ function AdvancePayment() {
     isOpen: isFormOpen,
     onOpen: onFormOpen,
     onClose: onFormClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose,
   } = useDisclosure();
 
   //RTK Query
@@ -116,6 +122,7 @@ function AdvancePayment() {
       console.log(transformedData);
       showSnackbar("Advance Payment added successfully!", "success");
       handleFormClose();
+      onConfirmClose();
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
@@ -123,6 +130,7 @@ function AdvancePayment() {
       } else {
         showSnackbar("Error adding Advance Payment", "error");
       }
+      onConfirmClose();
     }
   };
 
@@ -170,7 +178,8 @@ function AdvancePayment() {
         title="Advance Payment"
         open={isFormOpen}
         onClose={handleFormClose}
-        onSubmit={handleSubmit(onSubmit)}
+        // onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onConfirmOpen}
         disableSubmit={!isValid || !isDirty}
         width="800px"
         height="520px"
@@ -508,6 +517,14 @@ function AdvancePayment() {
           {selectedRowData?.storeTypeName}
         </span>
         ?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isConfirmOpen}
+        onClose={onConfirmClose}
+        onYes={handleSubmit(onSubmit)}
+      >
+        Confirm adding of advance payment?
       </CommonDialog>
     </Box>
   );
