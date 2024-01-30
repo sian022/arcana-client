@@ -209,11 +209,14 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  // margin-top: 1px;
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
+    overflow: auto;
 
     &__left {
       display: flex;
@@ -228,7 +231,7 @@
 
     &__right {
       display: flex;
-      gap: 20px;
+      gap: 10px;
       align-items: center;
     }
   }
