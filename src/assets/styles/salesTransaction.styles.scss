@@ -205,6 +205,35 @@
   }
 }
 
+.transactionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &__left {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+
+      & &__title {
+        font-weight: 700;
+        font-size: 2rem;
+      }
+    }
+
+    &__right {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+  }
+}
+
 .swipeableItemQuantity {
   display: flex;
   gap: 5px;

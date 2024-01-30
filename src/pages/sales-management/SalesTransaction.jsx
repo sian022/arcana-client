@@ -2,31 +2,21 @@ import "../../assets/styles/salesTransaction.styles.scss";
 import {
   Box,
   Button,
-  Card,
   Checkbox,
-  ClickAwayListener,
   Divider,
-  IconButton,
   Popover,
   Skeleton,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
-import {
-  Add,
-  Info,
-  KeyboardDoubleArrowRight,
-  Remove,
-  Tune,
-} from "@mui/icons-material";
+import { Add, KeyboardDoubleArrowRight, Tune } from "@mui/icons-material";
 import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { salesTransactionSchema } from "../../schema/schema";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import moment from "moment";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { debounce } from "../../utils/CustomFunctions";
@@ -38,6 +28,7 @@ import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import SwipeableItem from "../../components/sales-transaction/SwipeableItem";
 import CashoutModal from "../../components/modals/sales-management/CashoutModal";
 import TransactionsList from "../../components/sales-transaction/TransactionsList";
+import UnderConstruction from "../../assets/images/under-construction.svg";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
@@ -261,7 +252,12 @@ function SalesTransaction() {
                       }}
                       elevation={3}
                     >
-                      <Box sx={{ padding: "20px" }}>Under construction</Box>
+                      <Box sx={{ padding: "20px" }}>
+                        <img src={UnderConstruction} width="150px" />
+                        <Typography sx={{ mt: 1 }}>
+                          Under construction!
+                        </Typography>
+                      </Box>
                     </Popover>
                   </Box>
                 </Box>
