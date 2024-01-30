@@ -17,7 +17,7 @@ import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
 import { useDispatch } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
-import { Visibility } from "@mui/icons-material";
+import { Attachment, Visibility } from "@mui/icons-material";
 import { formatPhoneNumber } from "../utils/CustomFunctions";
 import moment from "moment";
 
@@ -47,12 +47,14 @@ function CommonTable({
   onTagUserInCluster,
   onViewCluster,
   onResetPassword,
+  onAttach,
   page,
   setPage,
   rowsPerPage,
   setRowsPerPage,
   count = 0,
   status,
+  expanded,
   compact,
   moreCompact,
   midCompact,
@@ -60,6 +62,7 @@ function CommonTable({
   pesoArray,
   viewMoreKey,
   onViewMoreClick,
+  highlightSelected,
   disableActions,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -78,7 +81,9 @@ function CommonTable({
       <Box
         className="noData"
         sx={{
-          height: compact
+          height: expanded
+            ? "calc(100vh - 220px)"
+            : compact
             ? // ? "calc(100vh - 370px)"
               "calc(100vh - 330px)"
             : moreCompact
@@ -86,7 +91,7 @@ function CommonTable({
               "calc(100vh - 330px)"
             : midCompact
             ? "calc(100vh - 280px)"
-            : "calc(100vh - 270px)",
+            : null,
         }}
       >
         {imageLoaded && (
@@ -139,7 +144,9 @@ function CommonTable({
         component={Paper}
         className="tableSuperContainer__tableContainer"
         sx={{
-          height: compact
+          height: expanded
+            ? "calc(100vh - 220px)"
+            : compact
             ? // ? "calc(100vh - 370px)"
               "calc(100vh - 330px)"
             : moreCompact
@@ -165,6 +172,10 @@ function CommonTable({
                   key={j}
                   onClick={() => {
                     dispatch(setSelectedRow(item));
+                  }}
+                  sx={{
+                    cursor: highlightSelected && "pointer",
+                    // bgcolor: highlightSelected && "gray",
                   }}
                 >
                   {dataToMapKeys.map((keys, k) => {
@@ -240,6 +251,18 @@ function CommonTable({
                       </TableCell>
                     );
                   })}
+
+                  {onAttach && (
+                    <TableCell key={j}>
+                      <IconButton
+                        sx={{ color: "secondary.main" }}
+                        onClick={onAttach}
+                      >
+                        <Attachment />
+                      </IconButton>
+                    </TableCell>
+                  )}
+
                   {(editable || archivable) && (
                     <TableCell>
                       <CommonActions

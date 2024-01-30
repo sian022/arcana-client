@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DangerButton from "../DangerButton";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Input, InputLabel, TextField, Typography } from "@mui/material";
 import { KeyboardDoubleArrowLeft } from "@mui/icons-material";
 import CommonTable from "../CommonTable";
 import { dummyTransactionsData } from "../../utils/DummyData";
@@ -18,6 +18,15 @@ function TransactionsList({ setTransactionsMode }) {
   const [dateToTemp, setDateToTemp] = useState(moment());
 
   //Constants
+  const tableHeads = [
+    "Tx Number",
+    "Time",
+    "Amount",
+    "Payment Type",
+    "Business Name",
+    "CI No.",
+    // "Attach CI",
+  ];
   const pesoArray = ["amount"];
 
   //Functions
@@ -30,9 +39,75 @@ function TransactionsList({ setTransactionsMode }) {
   console.log("Date To: ", dateTo);
 
   return (
-    <Box className="transactionsList">
-      <Box className="transactionsList__header">
-        <Box className="transactionsList__header__left">
+    <>
+      <Box className="transactionsList">
+        <Box className="transactionsList__header">
+          <Box className="transactionsList__header__left">
+            <Typography className="transactionsList__header__left__title">
+              Transactions List
+            </Typography>
+          </Box>
+
+          <Box className="transactionsList__header__right">
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DatePicker
+                label="Date From"
+                value={dateFromTemp}
+                onChange={setDateFromTemp}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    InputLabelProps: { style: { paddingTop: "2px" } },
+                  },
+                }}
+                sx={{ width: "180px" }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DatePicker
+                label="Date To"
+                value={dateToTemp}
+                onChange={setDateToTemp}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    InputLabelProps: { style: { paddingTop: "2px" } },
+                  },
+                }}
+                sx={{ width: "180px" }}
+                minDate={dateFromTemp}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+
+            <SecondaryButton
+              size="medium"
+              onClick={handleSubmitDate}
+              sx={{ ml: "10px" }}
+            >
+              Submit
+            </SecondaryButton>
+          </Box>
+        </Box>
+
+        <CommonTable
+          tableHeads={tableHeads}
+          mapData={dummyTransactionsData}
+          pesoArray={pesoArray}
+          page={page}
+          setPage={setPage}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+          count={dummyTransactionsData.length}
+          highlightSelected
+          // onAttach={true}
+          // expanded
+          // compact
+        />
+
+        <Box className="transactionsList__footer">
           <DangerButton
             size="medium"
             onClick={() => {
@@ -43,58 +118,18 @@ function TransactionsList({ setTransactionsMode }) {
             <KeyboardDoubleArrowLeft /> Back to POS
           </DangerButton>
 
-          <Typography className="transactionsList__header__left__title">
-            Transactions List
-          </Typography>
-        </Box>
-
-        <Box className="transactionsList__header__right">
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker
-              label="Date From"
-              value={dateFromTemp}
-              onChange={setDateFromTemp}
-              slotProps={{
-                textField: { size: "small" },
-              }}
-              sx={{ width: "180px", whiteSpace: "pre-wrap", p: 0, m: 0 }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker
-              label="Date To"
-              value={dateToTemp}
-              onChange={setDateToTemp}
-              slotProps={{
-                textField: { size: "small" },
-              }}
-              sx={{ width: "180px" }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-
           <SecondaryButton
             size="medium"
-            onClick={handleSubmitDate}
-            sx={{ ml: "10px" }}
+            // onClick={() => {
+            //   setTransactionsMode(false);
+            //   sessionStorage.removeItem("transactionsMode");
+            // }}
           >
-            Submit
+            Select
           </SecondaryButton>
         </Box>
       </Box>
-
-      <CommonTable
-        mapData={dummyTransactionsData}
-        pesoArray={pesoArray}
-        page={page}
-        setPage={setPage}
-        rowsPerPage={rowsPerPage}
-        setRowsPerPage={setRowsPerPage}
-        count={dummyTransactionsData.length}
-      />
-    </Box>
+    </>
   );
 }
 
