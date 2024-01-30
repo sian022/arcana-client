@@ -205,6 +205,13 @@
   }
 }
 
+.swipeableItemQuantity {
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+  border-radius: 20px;
+}
+
 .ribbon {
   position: absolute;
   right: -5px;

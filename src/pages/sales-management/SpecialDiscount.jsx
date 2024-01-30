@@ -102,7 +102,7 @@ function SpecialDiscount() {
       console.log(transformedData);
       handleFormClose();
       onConfirmClose();
-      showSnackbar("Successfully added special discount", "success");
+      showSnackbar("Special discount added successfully", "success");
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
@@ -112,17 +112,6 @@ function SpecialDiscount() {
       }
       onConfirmClose();
     }
-  };
-
-  const handleAddOpen = () => {
-    setDrawerMode("add");
-    onDrawerOpen();
-  };
-
-  const handleDrawerClose = () => {
-    // reset();
-    onDrawerClose();
-    setSelectedId("");
   };
 
   const handleFormClose = () => {
@@ -178,7 +167,7 @@ function SpecialDiscount() {
         onSubmit={onConfirmOpen}
         // onSubmit={handleSubmit(onSubmit)}
         width="600px"
-        disableSubmit={!isValid || !isDirty}
+        disableSubmit={!isValid || !isDirty || watch("specialDiscount") === 0}
         // height="520px"
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -204,7 +193,6 @@ function SpecialDiscount() {
               }
               disableClearable
               loading={isClientLoading}
-              disabled={drawerMode === "edit"}
               isOptionEqualToValue={(option, value) => true}
               renderInput={(params) => (
                 <TextField
@@ -244,24 +232,34 @@ function SpecialDiscount() {
                   customInput={TextField}
                   autoComplete="off"
                   onValueChange={(e) => {
-                    onChange(e.value === "" ? null : Number(e.value));
+                    const newValue = e.value === "" ? null : Number(e.value);
+                    onChange(newValue);
+
+                    // Check if the entered value is more than 10 and show an alert
+                    if (newValue != null && newValue > 10) {
+                      alert("Special Discount cannot be more than 10%");
+                      // You may replace the alert with your preferred way of notifying the user
+                    }
                   }}
                   onBlur={onBlur}
                   value={value || ""}
-                  // sx={{ width: "200px" }}
-                  // InputProps={{
-                  //   startAdornment: (
-                  //     <InputAdornment position="start">₱</InputAdornment>
-                  //   ),
-                  // }}
-                  // ref={ref}
-                  // required
                   thousandSeparator=","
                   allowNegative={false}
                   allowLeadingZeros={false}
                   decimalScale={2}
-                  format={(value) => (value <= 10 ? value : 10)}
-                  max={10}
+                  inputRef={ref}
+                  isAllowed={(values) => {
+                    const { floatValue } = values;
+                    // Check if the floatValue is greater than 10 and show a snackbar
+                    if (floatValue != null && floatValue > 10) {
+                      showSnackbar(
+                        "Value should be between 1% and 10%",
+                        "error"
+                      );
+                      return false; // Prevent updating the value
+                    }
+                    return true;
+                  }}
                   // disabled={!watch("clientId")}
                 />
               )}
@@ -269,10 +267,18 @@ function SpecialDiscount() {
           </Box>
 
           <Box sx={{ display: "flex", gap: "5px", justifyContent: "end" }}>
-            <Checkbox
-              onChange={(e) => setIsOneTimeUse(e.target.checked)}
-              checked={isOneTimeUse}
+            <Controller
+              control={control}
+              name="isOneTime"
+              render={({ field }) => (
+                <Checkbox
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.checked)}
+                  checked={field.value}
+                />
+              )}
             />
+
             <Typography>One time use only</Typography>
           </Box>
         </Box>

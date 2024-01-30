@@ -27,7 +27,7 @@ function CommonDialog({
   return (
     <Dialog {...otherProps}>
       <Box className="commonDialog__roof" />
-      <Box className="commonDialog__content">
+      <Box className="commonDialog__content" component="form" onSubmit={onYes}>
         {/* {!noIcon && (
           <Box className="commonDialog__imageWrapper">
             <img
@@ -59,7 +59,7 @@ function CommonDialog({
 
         <DialogTitle className="commonDialog__title">{children}</DialogTitle>
         <DialogActions>
-          <SecondaryButton onClick={onYes} disabled={isLoading || disableYes}>
+          <SecondaryButton type="submit" disabled={isLoading || disableYes}>
             {isLoading ? <CircularProgress size="20px" color="white" /> : "Yes"}
           </SecondaryButton>
           <DangerButton onClick={onClose} disabled={isLoading}>

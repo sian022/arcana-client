@@ -579,10 +579,12 @@ export const specialDiscountSchema = {
   schema: yup.object({
     clientId: yup.object().required("Client is required"),
     specialDiscount: yup.number().required("Special Discount is required"),
+    isOneTime: yup.boolean(),
   }),
   defaultValues: {
     clientId: null,
     specialDiscount: null,
+    isOneTime: false,
   },
 };
 

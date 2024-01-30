@@ -13,7 +13,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
 import {
@@ -53,12 +53,7 @@ function SalesTransaction() {
   const fullName = useSelector((state) => state.login.fullname);
 
   const dispatch = useDispatch();
-
-  // //React Swipeable
-  // const { ref: swipeableRef } = useSwipeable({
-  //   onSwipedLeft: (eventData) => alert("User Swiped!"),
-  //   trackMouse: true,
-  // });
+  const filterRef = useRef();
 
   //Disclosures
   const {
@@ -125,7 +120,7 @@ function SalesTransaction() {
     });
 
     return total;
-  }, [watch("items")]);
+  }, [watch()]);
 
   const handleAddItem = (item, quantity) => {
     const existingItemIndex = watch("items").findIndex(
@@ -242,30 +237,32 @@ function SalesTransaction() {
                       <Typography>Quick Add</Typography>
                     </Box>
 
-                    <SecondaryButton
-                      onClick={() => setViewFilters((prev) => !prev)}
-                    >
-                      Filters &nbsp;
-                      <Tune />
-                    </SecondaryButton>
-
-                    <Box
-                      sx={{
-                        display: viewFilters ? "flex" : "none",
-                        position: "absolute",
-                        right: 0,
-                        top: "40px",
-                        zIndex: 2,
-                        backgroundColor: "white !important",
-                        border: "1px solid #dee2e6 !important",
-                        boxShadow:
-                          "0 4px 12px -4px hsla(0, 0%, 8%, 0.1), 0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important",
-                        borderRadius: "5px",
-                        padding: "20px",
-                      }}
-                    >
-                      Under construction
+                    <Box ref={filterRef}>
+                      <SecondaryButton
+                        onClick={() => setViewFilters((prev) => !prev)}
+                        sx={{ height: "100%" }}
+                      >
+                        Filters &nbsp;
+                        <Tune />
+                      </SecondaryButton>
                     </Box>
+
+                    <Popover
+                      open={viewFilters}
+                      anchorEl={filterRef.current}
+                      onClose={() => setViewFilters(false)}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                      }}
+                      transformOrigin={{
+                        // vertical: "bottom",
+                        horizontal: "right",
+                      }}
+                      elevation={3}
+                    >
+                      <Box sx={{ padding: "20px" }}>Under construction</Box>
+                    </Popover>
                   </Box>
                 </Box>
 
@@ -374,6 +371,7 @@ function SalesTransaction() {
                             parseInt(newValue)
                           )
                         }
+                        remove={() => remove(index)}
                         orderItem={watch("items")[index]}
                         // orderItem={orderItem}
                         onMinus={() => {

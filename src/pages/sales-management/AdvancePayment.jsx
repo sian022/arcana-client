@@ -100,7 +100,7 @@ function AdvancePayment() {
         bankName: data.bankName,
         chequeNumber: data.chequeNumber,
         dateReceived: data.dateReceived,
-        chequeAmount: data.chequeAmount,
+        chequeAmount: Number(data.chequeAmount),
       };
     } else if (data.paymentType.label === "Online") {
       transformedData = {
@@ -298,17 +298,11 @@ function AdvancePayment() {
                     }}
                     onBlur={onBlur}
                     value={value || ""}
-                    // InputProps={{
-                    //   startAdornment: (
-                    //     <InputAdornment position="start">₱</InputAdornment>
-                    //   ),
-                    // }}
-                    // ref={ref}
-                    // required
                     thousandSeparator=","
                     allowNegative={false}
                     allowLeadingZeros={false}
                     prefix="₱"
+                    decimalScale={2}
                     // disabled={!watch("clientId")}
                   />
                 )}
@@ -428,7 +422,7 @@ function AdvancePayment() {
 
               <Controller
                 control={control}
-                name={"chequeAmount"}
+                name="chequeAmount"
                 render={({ field: { onChange, onBlur, value, ref } }) => (
                   <NumericFormat
                     label="Cheque Amount"
@@ -441,15 +435,11 @@ function AdvancePayment() {
                     }}
                     onBlur={onBlur}
                     value={value || ""}
-                    // InputProps={{
-                    //   startAdornment: (
-                    //     <InputAdornment position="start">₱</InputAdornment>
-                    //   ),
-                    // }}
                     thousandSeparator=","
                     allowNegative={false}
                     allowLeadingZeros={false}
                     prefix="₱"
+                    decimalScale={2}
                   />
                 )}
               />

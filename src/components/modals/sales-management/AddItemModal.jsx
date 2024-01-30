@@ -5,6 +5,7 @@ import SecondaryButton from "../../SecondaryButton";
 import DangerButton from "../../DangerButton";
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
+import useSnackbar from "../../../hooks/useSnackbar";
 
 function AddItemModal({ onSubmit, ...otherProps }) {
   const { onClose, open } = otherProps;
@@ -12,6 +13,7 @@ function AddItemModal({ onSubmit, ...otherProps }) {
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const quantityRef = useRef();
+  const { showSnackbar } = useSnackbar();
 
   //Functions
   const handleClose = () => {
@@ -19,9 +21,14 @@ function AddItemModal({ onSubmit, ...otherProps }) {
     setQuantity(1);
   };
 
-  const handleSubmit = () => {
-    onSubmit(selectedRowData, quantity);
-    handleClose();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (quantity == 0) {
+      showSnackbar("Quantity should be higher than 0", "error");
+    } else {
+      onSubmit(selectedRowData, quantity);
+      handleClose();
+    }
   };
 
   useEffect(() => {
@@ -45,17 +52,21 @@ function AddItemModal({ onSubmit, ...otherProps }) {
         </Box>
 
         <NumericFormat
-          customInput={TextField}
-          sx={{ mt: "10px", width: "100%" }}
-          size="small"
           label="Quantity"
+          size="small"
           type="text"
-          onValueChange={(e) => setQuantity(e.value)}
+          sx={{ mt: "10px", width: "100%" }}
+          customInput={TextField}
+          onValueChange={(e) => {
+            e.value !== "" && setQuantity(Number(e.value));
+          }}
           value={quantity}
           thousandSeparator=","
           autoComplete="off"
           inputRef={quantityRef}
           autoFocus
+          allowNegative={false}
+          allowLeadingZeros={false}
         />
 
         <Box

@@ -10,8 +10,16 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import useDisclosure from "../../hooks/useDisclosure";
+import { NumericFormat } from "react-number-format";
 
-function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
+function SwipeableItem({
+  remove,
+  setValue,
+  orderItem,
+  onMinus,
+  onPlus,
+  onSwipeLeft,
+}) {
   const [isSwiped, setIsSwiped] = useState(false);
   const [quantity, setQuantity] = useState(orderItem.quantity);
 
@@ -28,14 +36,18 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
   //React Swipeable
   const swipeable = useSwipeable({
     onSwipedLeft: () => {
-      setIsSwiped(true);
-      setTimeout(async () => {
-        try {
-          await onSwipeLeft();
-        } finally {
-          setIsSwiped(false);
-        }
-      }, [500]);
+      if (isQuantityOpen) {
+        return;
+      } else {
+        setIsSwiped(true);
+        setTimeout(async () => {
+          try {
+            await onSwipeLeft();
+          } finally {
+            setIsSwiped(false);
+          }
+        }, [500]);
+      }
     },
     preventScrollOnSwipe: true,
     trackMouse: true,
@@ -44,7 +56,7 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
   //Functions
   const handleQuantitySubmit = (e) => {
     e.preventDefault();
-    setValue(quantity);
+    quantity === 0 ? remove() : setValue(quantity);
     handleQuantiyClose();
   };
 
@@ -126,43 +138,38 @@ function SwipeableItem({ setValue, orderItem, onMinus, onPlus, onSwipeLeft }) {
             vertical: "bottom",
             horizontal: "left",
           }}
+          elevation={3}
         >
           <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              padding: "10px",
-              borderRadius: "20px",
-            }}
+            className="swipeableItemQuantity"
+            component="form"
+            onSubmit={handleQuantitySubmit}
           >
-            <Box
-              sx={{ display: "flex", gap: "5px" }}
-              component="form"
-              onSubmit={handleQuantitySubmit}
-            >
-              <TextField
-                size="small"
-                sx={{
-                  width: "200px",
-                  // "& .MuiInputBase-root": {
-                  //   height: "30px",
-                  // },
-                }}
-                onChange={(e) => {
-                  setQuantity(e.target.value);
-                }}
-                value={quantity}
-                inputRef={quantityRef}
-              />
+            <NumericFormat
+              label="Quantity"
+              size="small"
+              type="text"
+              sx={{ width: "200px" }}
+              customInput={TextField}
+              onValueChange={(e) => {
+                e.value !== "" && setQuantity(Number(e.value));
+              }}
+              value={quantity}
+              thousandSeparator=","
+              autoComplete="off"
+              inputRef={quantityRef}
+              autoFocus
+              allowNegative={false}
+              allowLeadingZeros={false}
+            />
 
-              <IconButton color="success" type="submit">
-                <Check />
-              </IconButton>
+            <IconButton color="success" type="submit">
+              <Check />
+            </IconButton>
 
-              <IconButton color="error" onClick={handleQuantiyClose}>
-                <Close />
-              </IconButton>
-            </Box>
+            <IconButton color="error" onClick={handleQuantiyClose}>
+              <Close />
+            </IconButton>
           </Box>
         </Popover>
 
