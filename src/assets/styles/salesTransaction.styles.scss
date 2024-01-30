@@ -88,8 +88,8 @@
           color: black;
           box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
             0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important;
-          background-color: white !important;
           border: 1px solid #dee2e6 !important;
+          background-color: white !important;
 
           &__labels {
             display: flex;
@@ -229,6 +229,11 @@
       }
     }
 
+    &__center {
+      display: flex;
+      gap: 10px;
+    }
+
     &__right {
       display: flex;
       gap: 10px;
@@ -241,6 +246,11 @@
     justify-content: space-between;
     gap: 10px;
     align-items: center;
+
+    &__right {
+      display: flex;
+      gap: 10px;
+    }
   }
 }
 

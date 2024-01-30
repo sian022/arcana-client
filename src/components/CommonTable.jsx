@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
 import { Attachment, Visibility } from "@mui/icons-material";
 import { formatPhoneNumber } from "../utils/CustomFunctions";
@@ -62,10 +62,13 @@ function CommonTable({
   pesoArray,
   viewMoreKey,
   onViewMoreClick,
+  attachKey,
   highlightSelected,
   disableActions,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   useEffect(() => {
     const image = new Image();
@@ -165,6 +168,7 @@ function CommonTable({
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {dataToMap.map((item, j) => {
               return (
@@ -175,7 +179,10 @@ function CommonTable({
                   }}
                   sx={{
                     cursor: highlightSelected && "pointer",
-                    // bgcolor: highlightSelected && "gray",
+                    bgcolor:
+                      highlightSelected &&
+                      shallowEqual(selectedRowData, item) &&
+                      "#e0dede",
                   }}
                 >
                   {dataToMapKeys.map((keys, k) => {
@@ -184,6 +191,20 @@ function CommonTable({
                       excludeKeysDisplay?.includes(keys)
                     ) {
                       return null;
+                    }
+
+                    if (keys === attachKey) {
+                      return (
+                        <TableCell key={k}>
+                          <Attachment
+                            sx={{
+                              color: !item[keys]
+                                ? "error.main"
+                                : "success.main",
+                            }}
+                          />
+                        </TableCell>
+                      );
                     }
 
                     let total = 0;

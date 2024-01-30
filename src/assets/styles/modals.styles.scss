@@ -897,3 +897,22 @@
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
+
+.viewAttachmentModal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__canvas {
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 1px solid $secondary;
+    width: 666px;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+}

@@ -6,6 +6,7 @@ export const dummyTransactionsData = [
     paymentType: "Cash",
     businessName: "JK's Papaitan",
     "CINo.": "20012",
+    attachmentStatus: true,
   },
   {
     txNumber: 2,
@@ -14,6 +15,7 @@ export const dummyTransactionsData = [
     paymentType: "Credit Card",
     businessName: "Sunny's Grill",
     "CINo.": "20013",
+    attachmentStatus: true,
   },
   {
     txNumber: 3,
@@ -22,6 +24,7 @@ export const dummyTransactionsData = [
     paymentType: "Debit Card",
     businessName: "Green Garden Cafe",
     "CINo.": "20014",
+    attachmentStatus: false,
   },
   {
     txNumber: 4,
@@ -30,6 +33,7 @@ export const dummyTransactionsData = [
     paymentType: "Mobile Payment",
     businessName: "Spice Kingdom",
     "CINo.": "20015",
+    attachmentStatus: true,
   },
   {
     txNumber: 5,
@@ -38,6 +42,7 @@ export const dummyTransactionsData = [
     paymentType: "Cash",
     businessName: "Mia's Bakery",
     "CINo.": "20016",
+    attachmentStatus: true,
   },
   {
     txNumber: 6,
@@ -46,6 +51,7 @@ export const dummyTransactionsData = [
     paymentType: "Credit Card",
     businessName: "Ocean Breeze Restaurant",
     "CINo.": "20017",
+    attachmentStatus: false,
   },
   {
     txNumber: 7,
@@ -54,6 +60,7 @@ export const dummyTransactionsData = [
     paymentType: "Debit Card",
     businessName: "Golden Wok",
     "CINo.": "20018",
+    attachmentStatus: false,
   },
 ];
 

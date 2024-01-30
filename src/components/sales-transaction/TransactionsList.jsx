@@ -8,6 +8,10 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import SecondaryButton from "../SecondaryButton";
+import TertiaryButton from "../TertiaryButton";
+import useDisclosure from "../../hooks/useDisclosure";
+import SelectTransactionModal from "../modals/sales-management/SelectTransactionModal";
+import ViewAttachmentModal from "../modals/sales-management/ViewAttachmentModal";
 
 function TransactionsList({ setTransactionsMode }) {
   const [page, setPage] = useState(0);
@@ -17,6 +21,19 @@ function TransactionsList({ setTransactionsMode }) {
   const [dateFromTemp, setDateFromTemp] = useState(moment());
   const [dateToTemp, setDateToTemp] = useState(moment());
 
+  //Disclosures
+  const {
+    isOpen: isSelectOpen,
+    onOpen: onSelectOpen,
+    onClose: onSelectClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isAttachmentOpen,
+    onOpen: onAttachmentOpen,
+    onClose: onAttachmentClose,
+  } = useDisclosure();
+
   //Constants
   const tableHeads = [
     "Tx Number",
@@ -25,6 +42,7 @@ function TransactionsList({ setTransactionsMode }) {
     "Payment Type",
     "Business Name",
     "CI No.",
+    "",
     // "Attach CI",
   ];
   const pesoArray = ["amount"];
@@ -48,7 +66,7 @@ function TransactionsList({ setTransactionsMode }) {
             </Typography>
           </Box>
 
-          <Box className="transactionsList__header__right">
+          <Box className="transactionsList__header__center">
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date From"
@@ -60,11 +78,10 @@ function TransactionsList({ setTransactionsMode }) {
                     InputLabelProps: { style: { paddingTop: "2px" } },
                   },
                 }}
-                sx={{ width: "180px" }}
+                sx={{ width: "160px" }}
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
-
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date To"
@@ -76,7 +93,7 @@ function TransactionsList({ setTransactionsMode }) {
                     InputLabelProps: { style: { paddingTop: "2px" } },
                   },
                 }}
-                sx={{ width: "180px" }}
+                sx={{ width: "160px" }}
                 minDate={dateFromTemp}
                 renderInput={(params) => <TextField {...params} />}
               />
@@ -90,6 +107,19 @@ function TransactionsList({ setTransactionsMode }) {
               Submit
             </SecondaryButton>
           </Box>
+
+          <Box className="transactionsList__header__right">
+            <DangerButton
+              size="medium"
+              onClick={() => {
+                setTransactionsMode(false);
+                sessionStorage.removeItem("transactionsMode");
+              }}
+              sx={{ ml: "30px", height: "100%" }}
+            >
+              <KeyboardDoubleArrowLeft /> Back to POS
+            </DangerButton>
+          </Box>
         </Box>
 
         <CommonTable
@@ -102,13 +132,14 @@ function TransactionsList({ setTransactionsMode }) {
           setRowsPerPage={setRowsPerPage}
           count={dummyTransactionsData.length}
           highlightSelected
+          attachKey="attachmentStatus"
           // onAttach={true}
           // expanded
           // compact
         />
 
         <Box className="transactionsList__footer">
-          <DangerButton
+          {/* <DangerButton
             size="medium"
             onClick={() => {
               setTransactionsMode(false);
@@ -116,19 +147,27 @@ function TransactionsList({ setTransactionsMode }) {
             }}
           >
             <KeyboardDoubleArrowLeft /> Back to POS
-          </DangerButton>
+          </DangerButton> */}
+          <Box></Box>
 
-          <SecondaryButton
-            size="medium"
-            // onClick={() => {
-            //   setTransactionsMode(false);
-            //   sessionStorage.removeItem("transactionsMode");
-            // }}
-          >
-            Select
-          </SecondaryButton>
+          <Box className="transactionsList__footer__right">
+            <TertiaryButton size="medium" onClick={onAttachmentOpen}>
+              View Attachment
+            </TertiaryButton>
+
+            <SecondaryButton size="medium" onClick={onSelectOpen}>
+              Select
+            </SecondaryButton>
+          </Box>
         </Box>
       </Box>
+
+      <SelectTransactionModal open={isSelectOpen} onClose={onSelectClose} />
+
+      <ViewAttachmentModal
+        open={isAttachmentOpen}
+        onClose={onAttachmentClose}
+      />
     </>
   );
 }
