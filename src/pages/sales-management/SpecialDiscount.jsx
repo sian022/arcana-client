@@ -288,6 +288,7 @@ function SpecialDiscount() {
         open={isConfirmOpen}
         onClose={onConfirmClose}
         onYes={handleSubmit(onSubmit)}
+        noIcon
       >
         Confirm adding of special discount?
       </CommonDialog>
