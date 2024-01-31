@@ -172,9 +172,45 @@ export const registrationApi = createApi({
     }),
 
     //View Tabs
+    getTermsByClientId: builder.query({
+      query: ({ id }) => ({
+        url: `/terms/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
+
     getAttachmentsByClientId: builder.query({
       query: ({ id }) => ({
         url: `/attachments/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
+
+    getFreebiesByClientId: builder.query({
+      query: ({ id }) => ({
+        url: `/freebies/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
+
+    getListingFeeByClientId: builder.query({
+      query: ({ id }) => ({
+        url: `/listingfee/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
+
+    getOtherExpensesByClientId: builder.query({
+      query: ({ id }) => ({
+        url: `/other-expenses/${id}`,
         method: "GET",
       }),
       transformResponse: (response) => response.value,
@@ -201,5 +237,13 @@ export const {
   usePutUpdateClientAttachmentsMutation,
   usePutReleaseFreebiesMutation,
   usePostValidateClientMutation,
+
+  //View Tabs
+  useGetTermsByClientIdQuery,
+  useLazyGetTermsByClientIdQuery,
   useGetAttachmentsByClientIdQuery,
+  useLazyGetAttachmentsByClientIdQuery,
+  useGetFreebiesByClientIdQuery,
+  useGetListingFeeByClientIdQuery,
+  useGetOtherExpensesByClientIdQuery,
 } = registrationApi;

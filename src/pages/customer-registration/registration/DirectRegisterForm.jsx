@@ -30,6 +30,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
+  useGetAttachmentsByClientIdQuery,
+  useGetTermsByClientIdQuery,
+  useLazyGetAttachmentsByClientIdQuery,
+  useLazyGetTermsByClientIdQuery,
   usePostDirectRegistrationMutation,
   usePostValidateClientMutation,
   usePutAddAttachmentsForDirectMutation,
@@ -245,6 +249,15 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
+
+  //Fetch Terms and Attachments
+  const [triggerTerms, { data: termsData, isLoading: isTermsDataLoading }] =
+    useLazyGetTermsByClientIdQuery({ id: selectedRowData?.id });
+
+  const [
+    triggerAttachments,
+    { data: attachmentsData, isLoading: isAttachmentsDataLoading },
+  ] = useLazyGetAttachmentsByClientIdQuery({ id: selectedRowData?.id });
 
   //Drawer Functions
   const onSubmit = async (data) => {
@@ -630,6 +643,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   useEffect(() => {
     if (editMode) {
+      //Triggers
+      triggerTerms();
+      triggerAttachments();
+
       //Personal Info
       setValue("ownersName", selectedRowData?.ownersName);
       setValue("emailAddress", selectedRowData?.emailAddress);
@@ -762,7 +779,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         });
       }
     }
-  }, [open, termDaysData]);
+  }, [open, termDaysData, termsData, attachmentsData]);
 
   useEffect(() => {
     if (!!includeAuthorizedRepresentative) {
