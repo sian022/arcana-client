@@ -172,60 +172,9 @@ export const registrationApi = createApi({
     }),
 
     //View Tabs
-    getPersonalInfoById: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/Clients/GetAllClients",
-        method: "GET",
-      }),
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-
-    getTermsById: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/Clients/GetAllClients",
-        method: "GET",
-      }),
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-
-    getAttachnmentsById: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/Clients/GetAllClients",
-        method: "GET",
-      }),
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-
-    getFreebiesById: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/Clients/GetAllClients",
-        method: "GET",
-      }),
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-
-    getListingFeeById: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/Clients/GetAllClients",
-        method: "GET",
-      }),
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-
-    getExpensesById: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/Clients/GetAllClients",
+    getAttachmentsByClientId: builder.query({
+      query: ({ id }) => ({
+        url: `/attachments/${id}`,
         method: "GET",
       }),
       transformResponse: (response) => response.value,
@@ -252,4 +201,5 @@ export const {
   usePutUpdateClientAttachmentsMutation,
   usePutReleaseFreebiesMutation,
   usePostValidateClientMutation,
+  useGetAttachmentsByClientIdQuery,
 } = registrationApi;

@@ -157,7 +157,7 @@ function TransactionsList({ setTransactionsMode }) {
                 slotProps={{
                   textField: {
                     size: "small",
-                    InputLabelProps: { style: { paddingTop: "2px" } },
+                    // InputLabelProps: { style: { paddingTop: "2px" } },
                   },
                 }}
                 sx={{ width: "200px" }}
@@ -173,7 +173,7 @@ function TransactionsList({ setTransactionsMode }) {
                 slotProps={{
                   textField: {
                     size: "small",
-                    InputLabelProps: { style: { paddingTop: "2px" } },
+                    // InputLabelProps: { style: { paddingTop: "2px" } },
                   },
                 }}
                 sx={{ width: "200px" }}

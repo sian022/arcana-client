@@ -12,13 +12,13 @@ import {
 import { useSelector } from "react-redux";
 import useDisclosure from "../../../hooks/useDisclosure";
 import ViewPhotoModal from "../ViewPhotoModal";
+import { useGetAttachmentsByClientIdQuery } from "../../../features/registration/api/registrationApi";
 
 function AttachmentsTab() {
   const [currentViewPhoto, setCurrentViewPhoto] = useState(null);
   const [currentViewPhotoLabel, setCurrentViewPhotoLabel] = useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const isRepresentativeRequirements = selectedRowData?.attachments?.length > 4;
 
   //Disclosures
   const {
@@ -26,6 +26,13 @@ function AttachmentsTab() {
     onOpen: onViewPhotoOpen,
     onClose: onViewPhotoClose,
   } = useDisclosure();
+
+  //RTK Query
+  const { data, error, isLoading } = useGetAttachmentsByClientIdQuery({
+    id: selectedRowData?.id,
+  });
+
+  const isRepresentativeRequirements = data?.attachments?.length > 4;
 
   const handleViewPhoto = (file, label) => {
     onViewPhotoOpen();
@@ -60,7 +67,7 @@ function AttachmentsTab() {
               </Typography>
               <SecondaryButton
                 onClick={() => {
-                  const foundItem = selectedRowData?.attachments.find(
+                  const foundItem = data?.attachments.find(
                     (item) => item.documentType.toLowerCase() === "signature"
                   );
                   handleViewPhoto(
@@ -80,7 +87,7 @@ function AttachmentsTab() {
               </Typography>
               <SecondaryButton
                 onClick={() => {
-                  const foundItem = selectedRowData?.attachments.find(
+                  const foundItem = data?.attachments.find(
                     (item) => item.documentType.toLowerCase() === "store photo"
                   );
                   handleViewPhoto(foundItem?.documentLink, "Store Photo");
@@ -97,7 +104,7 @@ function AttachmentsTab() {
               </Typography>
               <SecondaryButton
                 onClick={() => {
-                  const foundItem = selectedRowData?.attachments.find(
+                  const foundItem = data?.attachments.find(
                     (item) =>
                       item.documentType.toLowerCase() === "business permit"
                   );
@@ -115,7 +122,7 @@ function AttachmentsTab() {
               </Typography>
               <SecondaryButton
                 onClick={() => {
-                  const foundItem = selectedRowData?.attachments.find(
+                  const foundItem = data?.attachments.find(
                     (item) =>
                       item.documentType.toLowerCase() === "photo id owner"
                   );
@@ -135,7 +142,7 @@ function AttachmentsTab() {
                   </Typography>
                   <SecondaryButton
                     onClick={() => {
-                      const foundItem = selectedRowData?.attachments.find(
+                      const foundItem = data?.attachments.find(
                         (item) =>
                           item.documentType.toLowerCase() ===
                           "photo id representative"
@@ -157,7 +164,7 @@ function AttachmentsTab() {
                   </Typography>
                   <SecondaryButton
                     onClick={() => {
-                      const foundItem = selectedRowData?.attachments.find(
+                      const foundItem = data?.attachments.find(
                         (item) =>
                           item.documentType.toLowerCase() ===
                           "authorization letter"
