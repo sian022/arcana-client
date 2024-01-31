@@ -4,9 +4,11 @@ import {
   Button,
   Checkbox,
   Divider,
+  IconButton,
   Popover,
   Skeleton,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -228,15 +230,17 @@ function SalesTransaction() {
                       <Typography>Quick Add</Typography>
                     </Box>
 
-                    <Box ref={filterRef}>
-                      <SecondaryButton
-                        onClick={() => setViewFilters((prev) => !prev)}
-                        sx={{ height: "100%" }}
-                      >
-                        Filters &nbsp;
-                        <Tune />
-                      </SecondaryButton>
-                    </Box>
+                    <Tooltip title="Filters">
+                      <Box ref={filterRef}>
+                        <IconButton
+                          onClick={() => setViewFilters((prev) => !prev)}
+                          sx={{ height: "100%" }}
+                        >
+                          {/* Filters &nbsp; */}
+                          <Tune />
+                        </IconButton>
+                      </Box>
+                    </Tooltip>
 
                     <Popover
                       open={viewFilters}

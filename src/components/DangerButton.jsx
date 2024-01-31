@@ -3,7 +3,13 @@ import React from "react";
 
 function DangerButton({ children, ...otherProps }) {
   return (
-    <Button size="small" variant="contained" color="error" {...otherProps}>
+    <Button
+      size="small"
+      // variant="contained"
+      variant="outlined"
+      color="error"
+      {...otherProps}
+    >
       {children}
     </Button>
   );

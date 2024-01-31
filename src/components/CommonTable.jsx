@@ -55,6 +55,7 @@ function CommonTable({
   count = 0,
   status,
   expanded,
+  lessCompact,
   compact,
   moreCompact,
   midCompact,
@@ -86,6 +87,8 @@ function CommonTable({
         sx={{
           height: expanded
             ? "calc(100vh - 220px)"
+            : lessCompact
+            ? "calc(100vh - 290px)"
             : compact
             ? // ? "calc(100vh - 370px)"
               "calc(100vh - 330px)"
@@ -149,6 +152,8 @@ function CommonTable({
         sx={{
           height: expanded
             ? "calc(100vh - 220px)"
+            : lessCompact
+            ? "calc(100vh - 290px)"
             : compact
             ? // ? "calc(100vh - 370px)"
               "calc(100vh - 330px)"
@@ -182,7 +187,7 @@ function CommonTable({
                     bgcolor:
                       highlightSelected &&
                       shallowEqual(selectedRowData, item) &&
-                      "#e0dede",
+                      "#f3f3f3",
                   }}
                 >
                   {dataToMapKeys.map((keys, k) => {

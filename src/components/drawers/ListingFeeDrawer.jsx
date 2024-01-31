@@ -363,7 +363,7 @@ function ListingFeeDrawer({
                   {...params}
                   size="small"
                   label="Business Name - Owner's Name"
-                  required
+                  // required
                   helperText={errors?.clientId?.message}
                   error={errors?.clientId}
                   // sx={{ width: "300px" }}
@@ -472,7 +472,7 @@ function ListingFeeDrawer({
                       {...params}
                       size="small"
                       label="Product Code"
-                      required
+                      // required
                       helperText={errors?.itemId?.message}
                       error={errors?.itemId}
                       sx={{ width: "180px" }}
@@ -561,10 +561,11 @@ function ListingFeeDrawer({
                       onBlur={onBlur}
                       value={value || ""}
                       // ref={ref}
-                      required
+                      // required
                       thousandSeparator=","
                       allowNegative={false}
                       allowLeadingZeros={false}
+                      prefix="₱"
                       disabled={!watch("clientId")}
                     />
                   )}
@@ -625,7 +626,8 @@ function ListingFeeDrawer({
               mr: "50px",
               position: "absolute",
               left: "600px",
-              gap: "23px",
+              // gap: "23px",
+              gap: "16px",
             }}
           >
             <Typography
@@ -637,8 +639,9 @@ function ListingFeeDrawer({
             >
               Total Amount
             </Typography>
+
             <Typography sx={{ fontSize: "1rem" }}>
-              {totalAmount?.toLocaleString() || 0}
+              ₱{totalAmount?.toLocaleString() || 0}
             </Typography>
           </Box>
         </Box>
