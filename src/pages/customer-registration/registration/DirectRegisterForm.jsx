@@ -657,12 +657,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setValue("ownersAddress", selectedRowData?.ownersAddress);
       setValue("businessName", selectedRowData?.businessName);
       setValue(
-        "clusterId",
-        clusterData?.cluster?.find(
-          (item) => item.id === selectedRowData?.cluster
-        )
-      );
-      setValue(
         "storeTypeId",
         storeTypeData?.storeTypes?.find(
           (item) => item.storeTypeName === selectedRowData?.storeType
