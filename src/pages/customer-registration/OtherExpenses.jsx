@@ -98,26 +98,20 @@ function OtherExpenses() {
     },
   ];
 
-  const excludeKeysDisplay = [
-    // "id",
-    "status",
-    "requestId",
-    "registrationStatus",
-    "approvalHistories",
-    "updateHistories",
-    "expenses",
-    "clientId",
-    "approvers",
-    "createdAt",
-    "updatedAt",
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Transaction Number",
+    "Total Amount",
+    "Requested By",
   ];
 
-  const tableHeads = [
-    "Transaction Number",
-    "Requested By",
-    "Owner's Name",
-    "Business Name",
-    "Total Amount",
+  const customOrderKeys = [
+    "businessName",
+    "ownersName",
+    "id",
+    "totalAmount",
+    "requestedBy",
   ];
 
   const pesoArray = ["totalAmount"];
@@ -196,7 +190,6 @@ function OtherExpenses() {
           <CommonTable
             mapData={data?.expenses}
             moreCompact
-            excludeKeysDisplay={excludeKeysDisplay}
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
@@ -205,6 +198,7 @@ function OtherExpenses() {
             editable
             onView={onViewOpen}
             tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             pesoArray={pesoArray}
             onEdit={expenseStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}

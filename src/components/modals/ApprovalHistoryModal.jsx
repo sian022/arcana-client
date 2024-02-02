@@ -24,31 +24,56 @@ import {
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { formatOrdinalPrefix } from "../../utils/CustomFunctions";
+import { useLazyGetClientApprovalHistoryByIdQuery } from "../../features/registration/api/registrationApi";
+import { useLazyGetListingFeeApprovalHistoriesByIdQuery } from "../../features/listing-fee/api/listingFeeApi";
+import { useLazyGetExpensesApprovalHistoryByIdQuery } from "../../features/otherExpenses/api/otherExpensesRegApi";
+import ApprovalHistorySkeleton from "../skeletons/ApprovalHistorySkeleton";
 
 function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
-  const { onClose, ...noOnCloseProps } = otherProps;
+  const { onClose, open } = otherProps;
   // const [steps, setSteps] = useState([
   //   { label: "REQUESTED", icon: <EventNote /> },
   // ]);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const combinedHistories = [
-    ...(selectedRowData?.clientApprovalHistories || []),
-    ...(selectedRowData?.updateHistories || []),
+  //RTK Query
+  const [
+    triggerClient,
+    { data: clientApprovalData, isFetching: isClientApprovalFetching },
+  ] = useLazyGetClientApprovalHistoryByIdQuery();
+
+  const [
+    triggerListingFee,
+    { data: listingFeeApprovalData, isFetching: isListingFeeApprovalFetching },
+  ] = useLazyGetListingFeeApprovalHistoriesByIdQuery();
+
+  const [
+    triggerOtherExpenses,
+    {
+      data: otherExpensesApprovalData,
+      isFetching: isOtherExpensesApprovalFetching,
+    },
+  ] = useLazyGetExpensesApprovalHistoryByIdQuery();
+
+  const combinedClientHistories = [
+    ...(clientApprovalData?.approvalHistories || []),
+    ...(clientApprovalData?.updateHistories || []),
   ];
 
   const combinedListingFeeHistories = [
-    ...(selectedRowData?.listingFeeApprovalHistories || []),
-    ...(selectedRowData?.updateHistories || []),
+    ...(listingFeeApprovalData?.approvalHistories || []),
+    ...(listingFeeApprovalData?.updateHistories || []),
   ];
 
   const combinedOtherExpensesHistories = [
-    ...(selectedRowData?.approvalHistories || []),
-    ...(selectedRowData?.updateHistories || []),
+    ...(otherExpensesApprovalData?.approvalHistories || []),
+    ...(otherExpensesApprovalData?.updateHistories || []),
   ];
 
-  combinedHistories.sort(
+  combinedClientHistories.sort(
     (a, b) =>
       new Date(b.createdAt || b.updatedAt) -
       new Date(a.createdAt || a.updatedAt)
@@ -85,12 +110,44 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     }
   };
 
+  useEffect(() => {
+    if (open) {
+      setIsLoading(true);
+      if (variant === "registration") {
+        triggerClient({ id: selectedRowData?.id }, { preferCacheValue: true });
+      } else if (variant === "listingFee") {
+        triggerListingFee(
+          { id: selectedRowData?.requestId },
+          { preferCacheValue: true }
+        );
+      } else if (variant === "otherExpenses") {
+        triggerOtherExpenses(
+          { id: selectedRowData?.requestId },
+          { preferCacheValue: true }
+        );
+      }
+    } else if (!open) {
+      setIsLoading(true);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    // Set a timeout to change the loading state after the first second
+    const loadingTimeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    // Clear the timeout on component unmount
+    return () => clearTimeout(loadingTimeout);
+  }, [isLoading]);
+
   return (
     <CommonModal width="650px" {...otherProps}>
       <Box className="approvalHistoryModal">
         <Typography className="approvalHistoryModal__title">
           Approval History
         </Typography>
+
         <Box
           sx={{
             position: "absolute",
@@ -102,121 +159,121 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
             <Close />
           </IconButton>
         </Box>
-        <Box className="approvalHistoryModal__content">
-          <Box className="approvalHistoryModal__content__headStepper">
-            <Stepper
-              alternativeLabel
-              activeStep={
-                variant === "registration"
-                  ? handleActiveStep(combinedHistories?.[0])
-                  : variant === "listingFee"
-                  ? handleActiveStep(combinedListingFeeHistories?.[0])
-                  : variant === "otherExpenses"
-                  ? handleActiveStep(combinedOtherExpensesHistories?.[0])
-                  : null
-              }
-              // activeStep={
-              //   variant === "registration" &&
-              //   selectedRowData?.clientApprovalHistories?.length === 0
-              //     ? 1
-              //     : variant === "listingFee" &&
-              //       selectedRowData?.listingFeeApprovalHistories?.length === 0
-              //     ? 1
-              //     : handleActiveStep(
-              //         selectedRowData?.clientApprovalHistories?.[0]?.level,
-              //         selectedRowData?.clientApprovalHistories?.[0]?.status
-              //       )
-              // }
-            >
-              <Step>
-                <StepLabel>REQUESTED</StepLabel>
-              </Step>
 
-              {selectedRowData?.approvers?.map((item, index) => (
-                <Step key={index}>
-                  <StepLabel
-                  // StepIconComponent={() => (
-                  //   <Cancel
-                  //     sx={{
-                  //       color: "error.main",
-                  //       // width: "1.7rem",
-                  //       // height: "1.7rem",
-                  //     }}
-                  //   />
-                  // )}
-                  // StepIconComponent={() => item.icon}
-                  >
-                    {item.name}
-                    {/* {formatOrdinalPrefix(item.level)} Approval */}
-                  </StepLabel>
+        {isLoading ||
+        isClientApprovalFetching ||
+        isListingFeeApprovalFetching ||
+        isOtherExpensesApprovalFetching ? (
+          <ApprovalHistorySkeleton />
+        ) : (
+          <Box className="approvalHistoryModal__content">
+            <Box className="approvalHistoryModal__content__headStepper">
+              <Stepper
+                alternativeLabel
+                activeStep={
+                  variant === "registration"
+                    ? handleActiveStep(combinedClientHistories?.[0])
+                    : variant === "listingFee"
+                    ? handleActiveStep(combinedListingFeeHistories?.[0])
+                    : variant === "otherExpenses"
+                    ? handleActiveStep(combinedOtherExpensesHistories?.[0])
+                    : null
+                }
+              >
+                <Step>
+                  <StepLabel>REQUESTED</StepLabel>
                 </Step>
-              ))}
-            </Stepper>
-          </Box>
 
-          <Box className="approvalHistoryModal__content__body">
-            <Stepper orientation="vertical">
-              {variant === "registration" &&
-                combinedHistories.map((history, index) => (
-                  <Step key={index} active expanded>
+                {(variant === "listingFee"
+                  ? listingFeeApprovalData
+                  : variant === "otherExpenses"
+                  ? otherExpensesApprovalData
+                  : clientApprovalData
+                )?.approvers?.map((item, index) => (
+                  <Step key={index}>
                     <StepLabel
-                      StepIconComponent={() =>
-                        history?.status === "Rejected" ? (
-                          <Cancel sx={{ color: "error.main" }} />
-                        ) : history?.status === "Approved" ? (
-                          <CheckCircle sx={{ color: "success.main" }} />
-                        ) : (
-                          // <Circle sx={{ color: "gray" }} />
-                          <Circle sx={{ color: "primary.main" }} />
-                        )
-                      }
-                      sx={{ position: "relative" }}
+                    // StepIconComponent={() => (
+                    //   <Cancel
+                    //     sx={{
+                    //       color: "error.main",
+                    //       // width: "1.7rem",
+                    //       // height: "1.7rem",
+                    //     }}
+                    //   />
+                    // )}
+                    // StepIconComponent={() => item.icon}
                     >
-                      <span
-                        style={{
-                          position: "absolute",
-                          left: "-170px",
-                          fontWeight: "600",
-                        }}
-                      >
-                        {moment(
-                          history?.createdAt || history?.updatedAt
-                        ).format("MMMM D H:mm a")}
-                      </span>
-                      <span
-                        style={{
-                          fontWeight: "700",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {!history?.status
-                          ? "REQUESTED"
-                          : `${history?.status} - ${formatOrdinalPrefix(
-                              history?.level
-                            )} Approval`}
-                      </span>
+                      {item.name}
+                      {/* {formatOrdinalPrefix(item.level)} Approval */}
                     </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            </Box>
 
-                    {!history?.status && (
-                      <StepContent>
-                        <Typography fontSize="14px">
-                          Name:{" "}
-                          <span style={{ fontWeight: "500" }}>
-                            {selectedRowData?.requestedBy}
-                          </span>
-                        </Typography>
-                        {history?.reason && (
+            <Box className="approvalHistoryModal__content__body">
+              <Stepper orientation="vertical">
+                {variant === "registration" &&
+                  combinedClientHistories.map((history, index) => (
+                    <Step key={index} active expanded>
+                      <StepLabel
+                        StepIconComponent={() =>
+                          history?.status === "Rejected" ? (
+                            <Cancel sx={{ color: "error.main" }} />
+                          ) : history?.status === "Approved" ? (
+                            <CheckCircle sx={{ color: "success.main" }} />
+                          ) : (
+                            // <Circle sx={{ color: "gray" }} />
+                            <Circle sx={{ color: "primary.main" }} />
+                          )
+                        }
+                        sx={{ position: "relative" }}
+                      >
+                        <span
+                          style={{
+                            position: "absolute",
+                            left: "-170px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {moment(
+                            history?.createdAt || history?.updatedAt
+                          ).format("MMMM D H:mm a")}
+                        </span>
+                        <span
+                          style={{
+                            fontWeight: "700",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {!history?.status
+                            ? "REQUESTED"
+                            : `${history?.status} - ${formatOrdinalPrefix(
+                                history?.level
+                              )} Approval`}
+                        </span>
+                      </StepLabel>
+
+                      {!history?.status && (
+                        <StepContent>
                           <Typography fontSize="14px">
-                            Remarks:{" "}
+                            Name:{" "}
                             <span style={{ fontWeight: "500" }}>
-                              {history?.reason}
+                              {selectedRowData?.requestedBy}
                             </span>
                           </Typography>
-                        )}
-                      </StepContent>
-                    )}
+                          {history?.reason && (
+                            <Typography fontSize="14px">
+                              Remarks:{" "}
+                              <span style={{ fontWeight: "500" }}>
+                                {history?.reason}
+                              </span>
+                            </Typography>
+                          )}
+                        </StepContent>
+                      )}
 
-                    {/* {!history?.status && (
+                      {/* {!history?.status && (
                       <StepContent>
                         <Typography fontSize="14px">
                           Name:{" "}
@@ -227,216 +284,216 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                       </StepContent>
                     )} */}
 
-                    {!!history?.createdAt && (
-                      <StepContent>
-                        <Typography fontSize="14px">
-                          Name:{" "}
-                          <span style={{ fontWeight: "500" }}>
-                            {history?.approver}
-                          </span>
-                        </Typography>
-                        {history?.reason && (
+                      {!!history?.createdAt && (
+                        <StepContent>
                           <Typography fontSize="14px">
-                            Remarks:{" "}
+                            Name:{" "}
                             <span style={{ fontWeight: "500" }}>
-                              {history?.reason}
+                              {history?.approver}
                             </span>
                           </Typography>
-                        )}
-                      </StepContent>
-                    )}
-                  </Step>
-                ))}
+                          {history?.reason && (
+                            <Typography fontSize="14px">
+                              Remarks:{" "}
+                              <span style={{ fontWeight: "500" }}>
+                                {history?.reason}
+                              </span>
+                            </Typography>
+                          )}
+                        </StepContent>
+                      )}
+                    </Step>
+                  ))}
 
-              {variant === "listingFee" &&
-                combinedListingFeeHistories.map((history, index) => (
-                  <Step key={index} active expanded>
-                    <StepLabel
-                      StepIconComponent={() =>
-                        history?.status === "Rejected" ? (
-                          <Cancel sx={{ color: "error.main" }} />
-                        ) : history?.status === "Approved" ? (
-                          <CheckCircle sx={{ color: "success.main" }} />
-                        ) : (
-                          // <Circle sx={{ color: "gray" }} />
-                          <Circle sx={{ color: "primary.main" }} />
-                        )
-                      }
-                      sx={{ position: "relative" }}
-                    >
-                      <span
-                        style={{
-                          position: "absolute",
-                          left: "-170px",
-                          fontWeight: "600",
-                        }}
+                {variant === "listingFee" &&
+                  combinedListingFeeHistories.map((history, index) => (
+                    <Step key={index} active expanded>
+                      <StepLabel
+                        StepIconComponent={() =>
+                          history?.status === "Rejected" ? (
+                            <Cancel sx={{ color: "error.main" }} />
+                          ) : history?.status === "Approved" ? (
+                            <CheckCircle sx={{ color: "success.main" }} />
+                          ) : (
+                            // <Circle sx={{ color: "gray" }} />
+                            <Circle sx={{ color: "primary.main" }} />
+                          )
+                        }
+                        sx={{ position: "relative" }}
                       >
-                        {moment(
-                          history?.createdAt || history?.updatedAt
-                        ).format("MMMM D H:mm a")}
-                      </span>
-                      <span
-                        style={{
-                          fontWeight: "700",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {!history?.status
-                          ? "REQUESTED"
-                          : `${history?.status} - ${formatOrdinalPrefix(
-                              history?.level
-                            )} Approval`}
-                      </span>
-                    </StepLabel>
+                        <span
+                          style={{
+                            position: "absolute",
+                            left: "-170px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {moment(
+                            history?.createdAt || history?.updatedAt
+                          ).format("MMMM D H:mm a")}
+                        </span>
+                        <span
+                          style={{
+                            fontWeight: "700",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {!history?.status
+                            ? "REQUESTED"
+                            : `${history?.status} - ${formatOrdinalPrefix(
+                                history?.level
+                              )} Approval`}
+                        </span>
+                      </StepLabel>
 
-                    {/* {!history?.status && (
-                      <StepContent>
-                        <Typography fontSize="14px">
-                          Name:{" "}
-                          <span style={{ fontWeight: "500" }}>
-                            {selectedRowData?.requestedBy}
-                          </span>
-                        </Typography>
-                      </StepContent>
-                    )} */}
-
-                    {!!history?.createdAt && (
-                      <StepContent>
-                        <Typography fontSize="14px">
-                          Name:{" "}
-                          <span style={{ fontWeight: "500" }}>
-                            {history?.approver}
-                          </span>
-                        </Typography>
-                        {history?.reason && (
+                      {!history?.status && (
+                        <StepContent>
                           <Typography fontSize="14px">
-                            Remarks:{" "}
+                            Name:{" "}
                             <span style={{ fontWeight: "500" }}>
-                              {history?.reason}
+                              {selectedRowData?.requestedBy}
                             </span>
                           </Typography>
-                        )}
-                      </StepContent>
-                    )}
-                  </Step>
-                ))}
+                        </StepContent>
+                      )}
 
-              {variant === "otherExpenses" &&
-                combinedOtherExpensesHistories.map((history, index) => (
-                  <Step key={index} active expanded>
-                    <StepLabel
-                      StepIconComponent={() =>
-                        history?.status === "Rejected" ? (
-                          <Cancel sx={{ color: "error.main" }} />
-                        ) : history?.status === "Approved" ? (
-                          <CheckCircle sx={{ color: "success.main" }} />
-                        ) : (
-                          // <Circle sx={{ color: "gray" }} />
-                          <Circle sx={{ color: "primary.main" }} />
-                        )
-                      }
-                      sx={{ position: "relative" }}
-                    >
-                      <span
-                        style={{
-                          position: "absolute",
-                          left: "-170px",
-                          fontWeight: "600",
-                        }}
-                      >
-                        {moment(
-                          history?.createdAt || history?.updatedAt
-                        ).format("MMMM D H:mm a")}
-                      </span>
-                      <span
-                        style={{
-                          fontWeight: "700",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {!history?.status
-                          ? "REQUESTED"
-                          : `${history?.status} - ${formatOrdinalPrefix(
-                              history?.level
-                            )} Approval`}
-                      </span>
-                    </StepLabel>
-
-                    {/* {!history?.status && (
-                      <StepContent>
-                        <Typography fontSize="14px">
-                          Name:{" "}
-                          <span style={{ fontWeight: "500" }}>
-                            {selectedRowData?.requestedBy}
-                          </span>
-                        </Typography>
-                      </StepContent>
-                    )} */}
-
-                    {!!history?.createdAt && (
-                      <StepContent>
-                        <Typography fontSize="14px">
-                          Name:{" "}
-                          <span style={{ fontWeight: "500" }}>
-                            {history?.approver}
-                          </span>
-                        </Typography>
-                        {history?.reason && (
+                      {!!history?.createdAt && (
+                        <StepContent>
                           <Typography fontSize="14px">
-                            Remarks:{" "}
+                            Name:{" "}
                             <span style={{ fontWeight: "500" }}>
-                              {history?.reason}
+                              {history?.approver}
                             </span>
                           </Typography>
-                        )}
-                      </StepContent>
-                    )}
-                  </Step>
-                ))}
+                          {history?.reason && (
+                            <Typography fontSize="14px">
+                              Remarks:{" "}
+                              <span style={{ fontWeight: "500" }}>
+                                {history?.reason}
+                              </span>
+                            </Typography>
+                          )}
+                        </StepContent>
+                      )}
+                    </Step>
+                  ))}
 
-              <Step active expanded>
-                <StepLabel
-                  StepIconComponent={() => (
-                    <Circle sx={{ color: "primary.main" }} />
-                  )}
-                  sx={{ position: "relative" }}
-                >
-                  <span
-                    style={{
-                      position: "absolute",
-                      left: "-170px",
-                      fontWeight: "600",
-                    }}
+                {variant === "otherExpenses" &&
+                  combinedOtherExpensesHistories.map((history, index) => (
+                    <Step key={index} active expanded>
+                      <StepLabel
+                        StepIconComponent={() =>
+                          history?.status === "Rejected" ? (
+                            <Cancel sx={{ color: "error.main" }} />
+                          ) : history?.status === "Approved" ? (
+                            <CheckCircle sx={{ color: "success.main" }} />
+                          ) : (
+                            // <Circle sx={{ color: "gray" }} />
+                            <Circle sx={{ color: "primary.main" }} />
+                          )
+                        }
+                        sx={{ position: "relative" }}
+                      >
+                        <span
+                          style={{
+                            position: "absolute",
+                            left: "-170px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {moment(
+                            history?.createdAt || history?.updatedAt
+                          ).format("MMMM D H:mm a")}
+                        </span>
+                        <span
+                          style={{
+                            fontWeight: "700",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {!history?.status
+                            ? "REQUESTED"
+                            : `${history?.status} - ${formatOrdinalPrefix(
+                                history?.level
+                              )} Approval`}
+                        </span>
+                      </StepLabel>
+
+                      {!history?.status && (
+                        <StepContent>
+                          <Typography fontSize="14px">
+                            Name:{" "}
+                            <span style={{ fontWeight: "500" }}>
+                              {selectedRowData?.requestedBy}
+                            </span>
+                          </Typography>
+                        </StepContent>
+                      )}
+
+                      {!!history?.createdAt && (
+                        <StepContent>
+                          <Typography fontSize="14px">
+                            Name:{" "}
+                            <span style={{ fontWeight: "500" }}>
+                              {history?.approver}
+                            </span>
+                          </Typography>
+                          {history?.reason && (
+                            <Typography fontSize="14px">
+                              Remarks:{" "}
+                              <span style={{ fontWeight: "500" }}>
+                                {history?.reason}
+                              </span>
+                            </Typography>
+                          )}
+                        </StepContent>
+                      )}
+                    </Step>
+                  ))}
+
+                <Step active expanded>
+                  <StepLabel
+                    StepIconComponent={() => (
+                      <Circle sx={{ color: "primary.main" }} />
+                    )}
+                    sx={{ position: "relative" }}
                   >
-                    {moment(selectedRowData?.createdAt).format("MMMM D H:mm a")}
-                  </span>
-
-                  <span
-                    style={{
-                      fontWeight: "700",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    REQUESTED
-                  </span>
-                </StepLabel>
-
-                <StepContent>
-                  <Typography fontSize="14px">
-                    Name:{" "}
-                    <span style={{ fontWeight: "500" }}>
-                      {selectedRowData?.requestedBy}
+                    <span
+                      style={{
+                        position: "absolute",
+                        left: "-170px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {moment(selectedRowData?.createdAt).format(
+                        "MMMM D H:mm a"
+                      )}
                     </span>
-                  </Typography>
-                </StepContent>
-              </Step>
-            </Stepper>
+
+                    <span
+                      style={{
+                        fontWeight: "700",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      REQUESTED
+                    </span>
+                  </StepLabel>
+
+                  <StepContent>
+                    <Typography fontSize="14px">
+                      Name:{" "}
+                      <span style={{ fontWeight: "500" }}>
+                        {selectedRowData?.requestedBy}
+                      </span>
+                    </Typography>
+                  </StepContent>
+                </Step>
+              </Stepper>
+            </Box>
           </Box>
-        </Box>
+        )}
       </Box>
-      {/* <Box className="approvalHistoryModal__actions">
-        <SecondaryButton onClick={onClose}>Confirm</SecondaryButton>
-      </Box> */}
     </CommonModal>
   );
 }

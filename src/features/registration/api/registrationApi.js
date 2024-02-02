@@ -216,6 +216,15 @@ export const registrationApi = createApi({
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
+
+    getClientApprovalHistoryById: builder.query({
+      query: ({ id }) => ({
+        url: `/client/${id}/approval-history`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
   }),
 });
 
@@ -246,4 +255,7 @@ export const {
   useGetFreebiesByClientIdQuery,
   useGetListingFeeByClientIdQuery,
   useGetOtherExpensesByClientIdQuery,
+
+  //Approval History
+  useLazyGetClientApprovalHistoryByIdQuery,
 } = registrationApi;

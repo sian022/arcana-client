@@ -80,6 +80,15 @@ export const listingFeeApi = createApi({
       }),
       invalidatesTags: ["Listing Fee"],
     }),
+
+    getListingFeeApprovalHistoriesById: builder.query({
+      query: ({ id }) => ({
+        url: `/listing-fee/${id}/approval-history`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
   }),
 });
 
@@ -90,4 +99,7 @@ export const {
   usePutRejectListingFeeMutation,
   usePutUpdateListingFeeMutation,
   useDeleteCancelListingFeeMutation,
+
+  //Approval History
+  useLazyGetListingFeeApprovalHistoriesByIdQuery,
 } = listingFeeApi;

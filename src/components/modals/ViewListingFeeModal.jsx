@@ -72,19 +72,6 @@ function ViewListingFeeModal({
     // <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
     <>
       <Box className="viewListingFeeModal__headers">
-        <Box className="viewListingFeeModal__headers__txNumber">
-          <Typography fontSize="12px" color="white !important">
-            Transaction Number
-          </Typography>
-          <Typography
-            fontSize="1.2rem"
-            color="white !important"
-            fontWeight="600"
-          >
-            {selectedRowData?.listingFeeId}
-          </Typography>
-        </Box>
-
         <Typography className="viewListingFeeModal__headers__title">
           Listing Fee
         </Typography>

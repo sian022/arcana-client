@@ -487,6 +487,7 @@ function RegisterRegularForm({ open, onClose }) {
         (store) => store.storeTypeName === selectedRowData?.storeType
       )
     );
+    setValue("emailAddress", selectedRowData?.emailAddress);
   }, [open]);
 
   const handleSameAsOwnersAddress = () => {

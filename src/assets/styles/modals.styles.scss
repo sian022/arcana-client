@@ -695,6 +695,13 @@
       overflow: auto;
       padding-left: 200px;
     }
+
+    &__bodySkeleton {
+      // max-height: 300px;
+      max-height: 350px;
+      overflow: hidden;
+      padding-left: 100px;
+    }
     // &__body {
     //   display: flex;
     //   flex-direction: column;
