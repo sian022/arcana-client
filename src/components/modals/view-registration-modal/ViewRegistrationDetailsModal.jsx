@@ -303,12 +303,13 @@ function ViewRegistrationDetailsModal({
                         gap: "10px",
                       }}
                     >
+                      <DangerButton contained onClick={onRejectConfirmOpen}>
+                        Reject
+                      </DangerButton>
+
                       <SuccessButton onClick={onApproveConfirmOpen}>
                         Approve
                       </SuccessButton>
-                      <DangerButton onClick={onRejectConfirmOpen}>
-                        Reject
-                      </DangerButton>
                     </Box>
                   </>
                 )}

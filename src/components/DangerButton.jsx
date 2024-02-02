@@ -1,12 +1,12 @@
 import { Button } from "@mui/material";
 import React from "react";
 
-function DangerButton({ children, ...otherProps }) {
+function DangerButton({ children, contained, ...otherProps }) {
   return (
     <Button
       size="small"
       // variant="contained"
-      variant="outlined"
+      variant={contained ? "contained" : "outlined"}
       color="error"
       {...otherProps}
     >

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import CommonModalForm from "../../CommonModalForm";
 import { Controller, useForm } from "react-hook-form";
 import { cashoutSchema } from "../../../schema/schema";
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
 import useSnackbar from "../../../hooks/useSnackbar";
@@ -10,7 +10,7 @@ import CommonDialog from "../../CommonDialog";
 import useDisclosure from "../../../hooks/useDisclosure";
 
 function CashoutModal({ total, resetTransaction, orderData, ...props }) {
-  const { onClose } = props;
+  const { onClose, open } = props;
 
   const { showSnackbar } = useSnackbar();
 
@@ -20,6 +20,8 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     onOpen: onConfirmOpen,
     onClose: onConfirmClose,
   } = useDisclosure();
+
+  const chargeInvoiceRef = useRef();
 
   //React Hook Form
   const {
@@ -71,6 +73,14 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     onClose();
   };
 
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => {
+        chargeInvoiceRef.current.select();
+      }, 0);
+    }
+  }, [open]);
+
   return (
     <>
       <CommonModalForm
@@ -82,6 +92,17 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
         onClose={handleClose}
       >
         <Box className="cashoutModal">
+          {/* <Typography>Business Info</Typography> */}
+          <TextField
+            label="Business Name - Owner's Name"
+            size="small"
+            disabled
+            value={`${orderData?.clientId?.businessName} - ${orderData?.clientId?.ownersName}`}
+            sx={{ gridColumn: "span 2" }}
+          />
+
+          {/* <Typography>Sales Info</Typography> */}
+
           <NumericFormat
             label="Amount Due (₱)"
             type="text"
@@ -103,20 +124,13 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             size="small"
             customInput={TextField}
             autoComplete="off"
-            value={4795}
+            value={total}
             thousandSeparator=","
             allowNegative={false}
             allowLeadingZeros={false}
             decimalScale={2}
             disabled
             prefix="₱"
-          />
-
-          <TextField
-            label="Business Name"
-            size="small"
-            disabled
-            value={orderData?.clientId?.businessName}
           />
 
           <NumericFormat
@@ -126,21 +140,6 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             customInput={TextField}
             autoComplete="off"
             value={10}
-            thousandSeparator=","
-            allowNegative={false}
-            allowLeadingZeros={false}
-            decimalScale={2}
-            disabled
-            suffix="%"
-          />
-
-          <NumericFormat
-            label="Discount (%)"
-            type="text"
-            size="small"
-            customInput={TextField}
-            autoComplete="off"
-            value={10 + "%"}
             thousandSeparator=","
             allowNegative={false}
             allowLeadingZeros={false}
@@ -165,6 +164,21 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
           />
 
           <NumericFormat
+            label="Discount (%)"
+            type="text"
+            size="small"
+            customInput={TextField}
+            autoComplete="off"
+            value={10 + "%"}
+            thousandSeparator=","
+            allowNegative={false}
+            allowLeadingZeros={false}
+            decimalScale={2}
+            disabled
+            suffix="%"
+          />
+
+          <NumericFormat
             label="Discount Amount (₱)"
             type="text"
             size="small"
@@ -179,6 +193,8 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             prefix="₱"
           />
 
+          <Box></Box>
+
           <Controller
             name="chargeInvoiceNo"
             control={control}
@@ -190,6 +206,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
                 autoComplete="off"
                 type="number"
                 {...field}
+                inputRef={chargeInvoiceRef}
                 onChange={(e) => field.onChange(e.target.value.toUpperCase())}
                 helperText={errors?.payee?.message}
                 error={errors?.payee}

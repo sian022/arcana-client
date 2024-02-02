@@ -216,7 +216,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                       </StepContent>
                     )}
 
-                    {!history?.status && (
+                    {/* {!history?.status && (
                       <StepContent>
                         <Typography fontSize="14px">
                           Name:{" "}
@@ -225,7 +225,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           </span>
                         </Typography>
                       </StepContent>
-                    )}
+                    )} */}
 
                     {!!history?.createdAt && (
                       <StepContent>
@@ -289,7 +289,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                       </span>
                     </StepLabel>
 
-                    {!history?.status && (
+                    {/* {!history?.status && (
                       <StepContent>
                         <Typography fontSize="14px">
                           Name:{" "}
@@ -298,7 +298,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           </span>
                         </Typography>
                       </StepContent>
-                    )}
+                    )} */}
 
                     {!!history?.createdAt && (
                       <StepContent>
@@ -362,7 +362,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                       </span>
                     </StepLabel>
 
-                    {!history?.status && (
+                    {/* {!history?.status && (
                       <StepContent>
                         <Typography fontSize="14px">
                           Name:{" "}
@@ -371,7 +371,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           </span>
                         </Typography>
                       </StepContent>
-                    )}
+                    )} */}
 
                     {!!history?.createdAt && (
                       <StepContent>
