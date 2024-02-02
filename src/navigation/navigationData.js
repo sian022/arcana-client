@@ -99,9 +99,9 @@ export const navigationData = [
       },
       // {
       //   id: 6,
-      //   name: "Business Type",
-      //   path: "/product-setup/business-type",
-      //   icon: "StoreMallDirectory",
+      //   name: "Price Mode Code",
+      //   path: "/product-setup/price-mode-code",
+      //   icon: "AttachMoney",
       // },
     ],
   },

@@ -112,24 +112,18 @@ function ForFreebies() {
   // Constants;
   // const excludeKeys = [];
 
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "isActive",
-    "origin",
-    "addedBy",
-    "status",
-    "freebies",
-    "ownersAddress",
-    "registrationStatus",
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Business Type",
+    "Contact Number",
   ];
 
-  const tableHeads = [
-    "Owner's Name",
-    "Mobile Number",
-    "Email Address",
-    "Business Name",
-    "Business Type",
+  const customOrderKeys = [
+    "businessName",
+    "ownersName",
+    "storeType",
+    "phoneNumber",
   ];
 
   //React Hook Form
@@ -322,8 +316,8 @@ function ForFreebies() {
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
-            excludeKeysDisplay={excludeKeysDisplay}
             tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             archivable
             onView={handleEditOpen}
             onArchive={handleArchiveOpen}

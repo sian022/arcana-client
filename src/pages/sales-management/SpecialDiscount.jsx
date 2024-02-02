@@ -6,7 +6,10 @@ import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonTable from "../../components/CommonTable";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import { dummyTableData } from "../../utils/DummyData";
+import {
+  dummySpecialDiscountData,
+  dummyTableData,
+} from "../../utils/DummyData";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import { specialDiscountSchema } from "../../schema/schema";
@@ -26,8 +29,6 @@ function SpecialDiscount() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
-
-  const [isOneTimeUse, setIsOneTimeUse] = useState(false);
 
   const { notifications } = useContext(AppContext);
   const { showSnackbar } = useSnackbar();
@@ -91,6 +92,14 @@ function SpecialDiscount() {
 
   const isFetching = false;
 
+  //Constants
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Special Discount",
+    "Created At",
+  ];
+
   //Functions
   const onSubmit = (data) => {
     const transformedData = {
@@ -141,7 +150,8 @@ function SpecialDiscount() {
           <CommonTableSkeleton moreCompact />
         ) : (
           <CommonTable
-            mapData={dummyTableData}
+            mapData={dummySpecialDiscountData}
+            tableHeads={tableHeads}
             moreCompact
             // excludeKeysDisplay={excludeKeysDisplay}
             count={count}

@@ -38,6 +38,7 @@ import Cluster from "../pages/user-management/Cluster";
 import ExpensesSetup from "../pages/customer-management/ExpensesSetup";
 import OtherExpenses from "../pages/customer-registration/OtherExpenses";
 import OtherExpensesApproval from "../pages/approval/OtherExpensesApproval";
+import PriceModeCode from "../pages/setup/PriceModeCode";
 
 export const router = createBrowserRouter([
   {
@@ -115,8 +116,8 @@ export const router = createBrowserRouter([
             element: <UnitOfMeasurements />,
           },
           // {
-          //   path: "business-type",
-          //   element: <StoreType />,
+          //   path: "price-mode-code",
+          //   element: <PriceModeCode />,
           // },
         ],
       },

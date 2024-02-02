@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonTable from "../../components/CommonTable";
-import { dummyTableData } from "../../utils/DummyData";
+import { dummyAdvancePaymentData, dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonDialog from "../../components/CommonDialog";
 import { useSelector } from "react-redux";
@@ -86,6 +86,17 @@ function AdvancePayment() {
 
   const isFetching = false;
 
+  //Constants
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Amount",
+    "Payment Type",
+    "Created At",
+  ];
+
+  const pesoArray = ["amount"];
+
   //Functions
   const onSubmit = (data) => {
     let transformedData;
@@ -157,9 +168,9 @@ function AdvancePayment() {
         <CommonTableSkeleton />
       ) : (
         <CommonTable
-          mapData={dummyTableData}
-          // excludeKeysDisplay={excludeKeysDisplay}
-          // tableHeads={tableHeads}
+          mapData={dummyAdvancePaymentData}
+          tableHeads={tableHeads}
+          pesoArray={pesoArray}
           editable
           archivable
           // onEdit={handleEditOpen}

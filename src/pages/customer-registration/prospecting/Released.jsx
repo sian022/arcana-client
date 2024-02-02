@@ -44,24 +44,18 @@ function Released() {
   } = useDisclosure();
 
   //Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "isActive",
-    "origin",
-    "addedBy",
-    "status",
-    "freebies",
-    "ownersAddress",
-    "registrationStatus",
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Business Type",
+    "Contact Number",
   ];
 
-  const tableHeads = [
-    "Owner's Name",
-    "Mobile Number",
-    "Email Address",
-    "Business Name",
-    "Business Type",
+  const customOrderKeys = [
+    "businessName",
+    "ownersName",
+    "storeType",
+    "phoneNumber",
   ];
 
   //Disclosures
@@ -148,7 +142,7 @@ function Released() {
           <CommonTable
             mapData={data?.requestedProspect}
             tableHeads={tableHeads}
-            excludeKeysDisplay={excludeKeysDisplay}
+            customOrderKeys={customOrderKeys}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
