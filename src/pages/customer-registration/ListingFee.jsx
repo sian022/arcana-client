@@ -117,7 +117,7 @@ function ListingFee() {
   const excludeKeysDisplay = [
     "listingItems",
     "clientId",
-    "listingFeeId",
+    // "listingFeeId",
     "approvalId",
     "status",
     "cancellationReason",
@@ -125,14 +125,16 @@ function ListingFee() {
     "listingFeeApprovalHistories",
     "registrationStatus",
     "approvers",
+    "createdAt",
   ];
 
   const tableHeads = [
     "Owner's Name",
     "Business Name",
+    "Transaction Number",
     "Requested By",
     "Total Amount",
-    "Created At",
+    // "Created At",
   ];
 
   const pesoArray = ["total"];

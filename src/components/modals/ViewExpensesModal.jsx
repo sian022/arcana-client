@@ -66,9 +66,23 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
     // <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
     <>
       <Box className="viewExpensesModal__headers">
+        <Box className="viewExpensesModal__headers__txNumber">
+          <Typography fontSize="12px" color="white !important">
+            Transaction Number
+          </Typography>
+          <Typography
+            fontSize="1.2rem"
+            color="white !important"
+            fontWeight="600"
+          >
+            {selectedRowData?.id}
+          </Typography>
+        </Box>
+
         <Typography className="viewExpensesModal__headers__title">
-          Other Expenses Form
+          Other Expenses
         </Typography>
+
         <IconButton
           sx={{
             color: "white !important",

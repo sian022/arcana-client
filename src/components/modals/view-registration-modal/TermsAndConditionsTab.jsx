@@ -31,7 +31,7 @@ function TermsAndConditionsTab() {
                 Freezer:
               </Typography>
               <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-                {selectedRowData?.freezer ? "Yes" : "No"}
+                {data?.freezer ? "Yes" : "No"}
               </Typography>
             </Box>
 
@@ -40,7 +40,7 @@ function TermsAndConditionsTab() {
                 Type of Customer:
               </Typography>
               <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-                {selectedRowData?.typeOfCustomer}
+                {data?.typeOfCustomer}
               </Typography>
             </Box>
 
@@ -49,7 +49,7 @@ function TermsAndConditionsTab() {
                 Direct Delivery:
               </Typography>
               <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-                {selectedRowData?.freezer ? "Yes" : "No"}
+                {data?.freezer ? "Yes" : "No"}
               </Typography>
             </Box>
 
@@ -58,7 +58,7 @@ function TermsAndConditionsTab() {
                 Booking Coverage:
               </Typography>
               <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-                {selectedRowData?.bookingCoverage}
+                {data?.bookingCoverage}
               </Typography>
             </Box>
 
@@ -67,20 +67,14 @@ function TermsAndConditionsTab() {
                 Mode of Payment:
               </Typography>
               <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-                {/* {selectedRowData?.modeOfPayment} */}
-                {selectedRowData?.modeOfPayments?.some(
-                  (item) => item.id === 1
-                ) && "Cash"}{" "}
-                {selectedRowData?.modeOfPayments?.some(
-                  (item) => item.id === 1
-                ) &&
-                  selectedRowData?.modeOfPayments?.some(
-                    (item) => item.id === 2
-                  ) &&
+                {/* {data?.modeofPayment} */}
+                {data?.modeofPayments?.some((item) => item.id === 1) &&
+                  "Cash"}{" "}
+                {data?.modeofPayments?.some((item) => item.id === 1) &&
+                  data?.modeofPayments?.some((item) => item.id === 2) &&
                   "&"}{" "}
-                {selectedRowData?.modeOfPayments?.some(
-                  (item) => item.id === 2
-                ) && "Online / Check"}
+                {data?.modeofPayments?.some((item) => item.id === 2) &&
+                  "Online / Check"}
               </Typography>
             </Box>
 
@@ -103,11 +97,11 @@ function TermsAndConditionsTab() {
                 Discount:
               </Typography>
               <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-                {selectedRowData?.fixedDiscount?.discountPercentage
+                {data?.fixedDiscount?.discountPercentage
                   ? `Fixed (${(
-                      selectedRowData?.fixedDiscount?.discountPercentage * 100
+                      data?.fixedDiscount?.discountPercentage * 100
                     ).toFixed(2)}%)`
-                  : selectedRowData?.variableDiscount
+                  : data?.variableDiscount
                   ? "Variable"
                   : "N/A"}
               </Typography>

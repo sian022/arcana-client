@@ -98,23 +98,8 @@ function OtherExpenses() {
     },
   ];
 
-  const selectOptions = [
-    {
-      value: "all",
-      label: "All",
-    },
-    {
-      value: "prospecting",
-      label: "Prospect",
-    },
-    {
-      value: "direct",
-      label: "Direct",
-    },
-  ];
-
   const excludeKeysDisplay = [
-    "id",
+    // "id",
     "status",
     "requestId",
     "registrationStatus",
@@ -123,9 +108,19 @@ function OtherExpenses() {
     "expenses",
     "clientId",
     "approvers",
+    "createdAt",
+    "updatedAt",
   ];
 
-  const pesoArray = ["amount"];
+  const tableHeads = [
+    "Transaction Number",
+    "Requested By",
+    "Owner's Name",
+    "Business Name",
+    "Total Amount",
+  ];
+
+  const pesoArray = ["totalAmount"];
 
   //Misc Functions
   const handleOpenEdit = () => {
@@ -209,7 +204,7 @@ function OtherExpenses() {
             setPage={setPage}
             editable
             onView={onViewOpen}
-            // tableHeads={tableHeads}
+            tableHeads={tableHeads}
             pesoArray={pesoArray}
             onEdit={expenseStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}

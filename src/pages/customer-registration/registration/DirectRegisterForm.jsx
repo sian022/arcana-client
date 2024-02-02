@@ -689,33 +689,33 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       // Terms and Conditions
       dispatch(
         setWholeTermsAndConditions({
-          freezer: selectedRowData?.freezer,
-          typeOfCustomer: selectedRowData?.typeOfCustomer,
-          directDelivery: selectedRowData?.directDelivery,
+          freezer: termsData?.freezer,
+          typeOfCustomer: termsData?.typeOfCustomer,
+          directDelivery: termsData?.directDelivery,
           bookingCoverageId: parseInt(
-            selectedRowData?.bookingCoverage.substring(1),
+            termsData?.bookingCoverage.substring(1),
             10
           ),
-          // terms: selectedRowData?.terms?.termId,
+          // terms: termsData?.terms?.termId,
           terms: termsData?.termId,
           termDaysId: termDaysData?.termDays?.find(
-            (day) => day.id === selectedRowData?.terms?.termDaysId
+            (day) => day.id === termsData?.terms?.termDaysId
           ),
-          modeOfPayments: selectedRowData?.modeOfPayments?.map((payment) => ({
+          modeOfPayments: termsData?.modeofPayments?.map((payment) => ({
             modeOfPaymentId: payment.id,
           })),
-          creditLimit: selectedRowData?.terms?.creditLimit,
-          variableDiscount: !selectedRowData?.variableDiscount
+          creditLimit: termsData?.terms?.creditLimit,
+          variableDiscount: !termsData?.variableDiscount
             ? false
-            : selectedRowData?.variableDiscount,
+            : termsData?.variableDiscount,
           fixedDiscount:
-            selectedRowData?.fixedDiscount === null
+            termsData?.fixedDiscount === null
               ? {
                   discountPercentage: null,
                 }
               : {
                   discountPercentage:
-                    selectedRowData?.fixedDiscount?.discountPercentage * 100,
+                    termsData?.fixedDiscount?.discountPercentage * 100,
                 },
         })
       );
