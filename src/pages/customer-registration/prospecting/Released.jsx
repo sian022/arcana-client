@@ -147,7 +147,6 @@ function Released() {
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
-            // excludeKeys={excludeKeys}
             tableHeads={tableHeads}
             excludeKeysDisplay={excludeKeysDisplay}
             page={page}

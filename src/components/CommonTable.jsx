@@ -24,9 +24,9 @@ import moment from "moment";
 function CommonTable({
   mt,
   mapData,
-  excludeKeys,
   excludeKeysDisplay,
   tableHeads,
+  customOrderKeys,
   editable,
   archivable,
   onEdit,
@@ -115,21 +115,12 @@ function CommonTable({
   var dataToMap = mapData;
   var tableHeadsList;
 
-  if (excludeKeys) {
-    const filteredData = mapData?.map((obj) => {
-      const filteredObj = Object.fromEntries(
-        Object.entries(obj).filter(([key, value]) => !excludeKeys.includes(key))
-      );
-      return filteredObj;
-    });
-    dataToMap = filteredData;
-  }
-
   const dataToMapKeys = Object.keys(dataToMap[0]);
+
   if (tableHeads) {
     tableHeadsList = tableHeads;
   } else {
-    tableHeadsList = dataToMapKeys
+    tableHeadsList = (customOrderKeys || dataToMapKeys)
       .filter(
         (key) =>
           // key !== "id"
@@ -190,7 +181,7 @@ function CommonTable({
                       "#f3f3f3",
                   }}
                 >
-                  {dataToMapKeys.map((keys, k) => {
+                  {(customOrderKeys || dataToMapKeys).map((keys, k) => {
                     if (
                       // keys === "id"
                       excludeKeysDisplay?.includes(keys)
@@ -236,6 +227,16 @@ function CommonTable({
                       return (
                         <TableCell key={k}>
                           {item[keys] && "+63 " + formatPhoneNumber(item[keys])}
+                        </TableCell>
+                      );
+                    }
+
+                    if (keys === "origin") {
+                      return (
+                        <TableCell key={k}>
+                          {item[keys] === "Prospecting"
+                            ? "Prospect"
+                            : item[keys]}
                         </TableCell>
                       );
                     }

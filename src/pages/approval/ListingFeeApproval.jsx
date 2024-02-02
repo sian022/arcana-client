@@ -89,25 +89,20 @@ function ListingFeeApproval() {
     },
   ];
 
-  const excludeKeysDisplay = [
-    "listingItems",
-    "clientId",
-    "listingFeeId",
-    "approvalId",
-    "status",
-    "cancellationReason",
-    "requestId",
-    "listingFeeApprovalHistories",
-    "registrationStatus",
-    "approvers",
+  const tableHeads = [
+    "Business Name",
+    "Business Name",
+    "Transaction Number",
+    "Total Amount",
+    "Requested By",
   ];
 
-  const tableHeads = [
-    "Owner's Name",
-    "Business Name",
-    "Requested By",
-    "Total Amount",
-    "Created At",
+  const customOrderKeys = [
+    "businessName",
+    "clientName",
+    "listingFeeId",
+    "total",
+    "requestedBy",
   ];
 
   const pesoArray = ["total"];
@@ -167,7 +162,6 @@ function ListingFeeApproval() {
           <CommonTable
             mapData={data?.listingFees}
             moreCompact
-            excludeKeysDisplay={excludeKeysDisplay}
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
@@ -176,6 +170,7 @@ function ListingFeeApproval() {
             editable
             onView={onViewOpen}
             tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             pesoArray={pesoArray}
             onHistory={onHistoryOpen}
           />

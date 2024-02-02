@@ -328,18 +328,12 @@ function ForReleasing() {
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
-            // excludeKeys={excludeKeys}
             excludeKeysDisplay={excludeKeysDisplay}
             tableHeads={tableHeads}
             editable
-            // archivable
-            // onEdit={handleEditOpen}
             onView={handleEditOpen}
             onCancelFreebies={onFreebieCancelOpen}
-            // onUpdateFreebies={onFreebieUpdateOpen}
             onUpdateFreebies={onFreebieFormOpen}
-            // onArchive={handleArchiveOpen}
-            // onFreebie={onFreebieFormOpen}
             onReleaseFreebie={onFreebieReleaseOpen}
             page={page}
             setPage={setPage}

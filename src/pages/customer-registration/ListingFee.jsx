@@ -129,12 +129,19 @@ function ListingFee() {
   ];
 
   const tableHeads = [
-    "Owner's Name",
+    "Business Name",
     "Business Name",
     "Transaction Number",
-    "Requested By",
     "Total Amount",
-    // "Created At",
+    "Requested By",
+  ];
+
+  const customOrderKeys = [
+    "businessName",
+    "clientName",
+    "listingFeeId",
+    "total",
+    "requestedBy",
   ];
 
   const pesoArray = ["total"];
@@ -217,7 +224,9 @@ function ListingFee() {
           <CommonTable
             mapData={data?.listingFees}
             moreCompact
-            excludeKeysDisplay={excludeKeysDisplay}
+            tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
+            pesoArray={pesoArray}
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
@@ -225,8 +234,6 @@ function ListingFee() {
             setPage={setPage}
             editable
             onView={onViewOpen}
-            tableHeads={tableHeads}
-            pesoArray={pesoArray}
             onEdit={listingFeeStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
             onCancel={listingFeeStatus === "Rejected" && onDeleteOpen}
@@ -235,7 +242,6 @@ function ListingFee() {
         )}
       </Box>
 
-      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
       <ListingFeeDrawer
         isListingFeeOpen={isListingFeeOpen}
         onListingFeeClose={onListingFeeClose}

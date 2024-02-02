@@ -66,9 +66,6 @@ function TransactionsList({ setTransactionsMode }) {
     setDateTo(dateToTemp);
   };
 
-  console.log("Date From: ", dateFrom);
-  console.log("Date To: ", dateTo);
-
   return (
     <>
       <Box className="transactionsList">

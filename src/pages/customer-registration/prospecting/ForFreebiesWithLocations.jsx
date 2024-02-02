@@ -347,7 +347,6 @@ function ForFreebiesWithLocations() {
     }
   }, [isDrawerOpen]);
 
-  console.log(errors);
   return (
     <>
       <Box>
@@ -362,12 +361,9 @@ function ForFreebiesWithLocations() {
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
-            // excludeKeys={excludeKeys}
             excludeKeysDisplay={excludeKeysDisplay}
             tableHeads={tableHeads}
-            // editable
             archivable
-            // onEdit={handleEditOpen}
             onView={handleEditOpen}
             onArchive={handleArchiveOpen}
             onFreebie={onFreebieFormOpen}

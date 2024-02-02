@@ -114,7 +114,6 @@ function OtherExpensesDrawer({
   const [putUpdateExpenses, { isLoading: isUpdateLoading }] =
     usePutUpdateExpensesMutation();
 
-  console.log(getValues());
   //Drawer Functions
   const onExpensesSubmit = async (data) => {
     // if (hasDuplicateItemCodes(watch("expenses"))) {
