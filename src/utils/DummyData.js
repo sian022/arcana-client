@@ -155,6 +155,63 @@ export const dummyAdvancePaymentData = [
   },
 ];
 
+export const dummyPaymentData = [
+  {
+    date: "JAN-20-24",
+    transactionNo: 1,
+    businessName: "Kiana's BBQ and Wings",
+    ownersName: "Kiana Kaslana",
+    chargeInvoiceNo: 20012,
+    amount: 1000.23,
+    amountBalance: 500.23,
+  },
+  {
+    date: "FEB-15-24",
+    transactionNo: 2,
+    businessName: "Sunny Delights Bakery",
+    ownersName: "Samantha Sunshine",
+    chargeInvoiceNo: 20013,
+    amount: 750.5,
+    amountBalance: 250.5,
+  },
+  {
+    date: "MAR-10-24",
+    transactionNo: 3,
+    businessName: "Taste of Italy Pizzeria",
+    ownersName: "Luigi Rossi",
+    chargeInvoiceNo: 20014,
+    amount: 1200.75,
+    amountBalance: 600.75,
+  },
+  {
+    date: "APR-05-24",
+    transactionNo: 4,
+    businessName: "Spice Paradise Indian Cuisine",
+    ownersName: "Raj Patel",
+    chargeInvoiceNo: 20015,
+    amount: 900.8,
+    amountBalance: 300.8,
+  },
+  {
+    date: "MAY-01-24",
+    transactionNo: 5,
+    businessName: "Seafood Haven",
+    ownersName: "Marina Fisher",
+    chargeInvoiceNo: 20016,
+    amount: 850.25,
+    amountBalance: 150.25,
+  },
+  {
+    date: "JUN-08-24",
+    transactionNo: 6,
+    businessName: "Green Harvest Organic Market",
+    ownersName: "Emma Greene",
+    chargeInvoiceNo: 20017,
+    amount: 600.4,
+    amountBalance: 200.4,
+  },
+];
+
 export const dummyTableData = [
   {
     fullName: "Mario Bradley",

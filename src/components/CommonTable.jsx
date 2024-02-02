@@ -160,7 +160,16 @@ function CommonTable({
           <TableHead>
             <TableRow>
               {tableHeadsList.map((item, i) => (
-                <TableCell key={i}>{item}</TableCell>
+                <TableCell
+                  sx={{
+                    position: item === "Actions" && "sticky",
+                    right: item === "Actions" && 0,
+                    bgcolor: item === "Actions" && "primary.main",
+                  }}
+                  key={i}
+                >
+                  {item}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -291,7 +300,13 @@ function CommonTable({
                   )}
 
                   {(editable || archivable) && (
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        right: 0,
+                        bgcolor: "white !important",
+                      }}
+                    >
                       <CommonActions
                         onEdit={onEdit}
                         onArchive={onArchive}
