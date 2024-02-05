@@ -1,24 +1,23 @@
-import { Autocomplete, Box, TextField } from "@mui/material";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import { priceModeSetupSchema } from "../../schema/schema";
+import { priceModeTaggingSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
-import { Link, Settings } from "@mui/icons-material";
-import {
-  usePutPriceModeMutation,
-  useGetAllPriceModeQuery,
-  usePostPriceModeMutation,
-  usePatchPriceModeStatusMutation,
-} from "../../features/setup/api/priceModeSetupApi";
+import { Link } from "@mui/icons-material";
+import { useLazyGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
+import { useGetAllPriceModeQuery } from "../../features/setup/api/priceModeSetupApi";
+import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
+import ControlledAutocomplete from "../../components/ControlledAutocomplete";
+import { NumericFormat } from "react-number-format";
 
 function PriceModeManagement() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -79,25 +78,34 @@ function PriceModeManagement() {
     setValue,
     reset,
     getValues,
+    control,
+    watch,
   } = useForm({
-    resolver: yupResolver(priceModeSetupSchema.schema),
+    resolver: yupResolver(priceModeTaggingSchema.schema),
     mode: "onChange",
-    defaultValues: priceModeSetupSchema.defaultValues,
+    defaultValues: priceModeTaggingSchema.defaultValues,
+  });
+
+  const { fields, append, remove, update } = useFieldArray({
+    control,
+    name: "items",
   });
 
   //RTK Query
-  const [postPriceMode, { isLoading: isAddLoading }] =
-    usePostPriceModeMutation();
   const { data, isLoading, isFetching } = useGetAllPriceModeQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-  const [putPriceMode, { isLoading: isUpdateLoading }] =
-    usePutPriceModeMutation();
-  const [patchPrideModeStatus, { isLoading: isArchiveLoading }] =
-    usePatchPriceModeStatusMutation();
+
+  const { data: productData, isLoading: isProductLoading } =
+    useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
+
+  const [
+    triggerProductsById,
+    { data: productsByIdData, isFetching: isProductsByIdFetching },
+  ] = useLazyGetAllItemsByPriceModeIdQuery();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -158,11 +166,6 @@ function PriceModeManagement() {
     setValue("priceModeDescription", editData.priceModeDescription);
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
@@ -178,6 +181,20 @@ function PriceModeManagement() {
     setPage(0);
   }, [search, status, rowsPerPage]);
 
+  useEffect(() => {
+    if (isDrawerOpen) {
+      triggerProductsById(
+        {
+          PriceModeId: selectedRowData?.id,
+          Status: true,
+          PageSize: 1000,
+          PageNumber: 1,
+        },
+        { preferCacheValue: true }
+      );
+    }
+  }, [isDrawerOpen]);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
@@ -186,7 +203,6 @@ function PriceModeManagement() {
             Price Mode Management <Link />
           </>
         }
-        onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
         removeAdd
@@ -199,6 +215,7 @@ function PriceModeManagement() {
           editable
           // onEdit={handleEditOpen}
           // onArchive={handleArchiveOpen}
+          onManageProducts={handleAddOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -211,44 +228,116 @@ function PriceModeManagement() {
       )}
 
       <CommonDrawer
+        width="600px"
         open={isDrawerOpen}
         onClose={handleDrawerClose}
-        drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Price Mode"}
+        drawerHeader="Manage Products"
         onSubmit={handleSubmit(onDrawerSubmit)}
         disableSubmit={!isValid}
-        isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
+        isLoading={
+          drawerMode === "add"
+            ? false
+            : // isAddLoading
+              // isUpdateLoading
+              false
+        }
       >
-        <TextField
-          label="Price Mode Code"
-          size="small"
-          autoComplete="off"
-          {...register("priceMode")}
-          helperText={errors?.priceMode?.message}
-          error={errors?.priceMode}
-        />
-        <TextField
-          label="Price Mode Description"
-          size="small"
-          autoComplete="off"
-          {...register("priceModeDescription")}
-          helperText={errors?.priceModeDescription?.message}
-          error={errors?.priceModeDescription}
-        />
+        <Box className="priceModeManagement">
+          <Typography fontSize="1.2rem" fontWeight="700">
+            Price Mode Info
+          </Typography>
+
+          <Box className="priceModeManagement__row">
+            <TextField
+              label="Price Mode"
+              size="small"
+              value={selectedRowData?.priceModeCode}
+              sx={{ pointerEvents: "none", width: "25%" }}
+              readOnly
+            />
+
+            <TextField
+              label="Price Mode Description"
+              size="small"
+              value={selectedRowData?.priceModeDescription}
+              sx={{ pointerEvents: "none", width: "75%" }}
+              readOnly
+            />
+          </Box>
+
+          <Typography fontSize="1.2rem" fontWeight="700" mt="10px">
+            Products List
+          </Typography>
+
+          <Box className="priceModeManagement__row">
+            {fields.map((item, index) => (
+              <Box
+                sx={{ display: "flex", flexDirection: "column", gap: "10px" }}
+              >
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: "10px" }}
+                >
+                  <ControlledAutocomplete
+                    name={`items[${index}].itemId`}
+                    control={control}
+                    options={productData?.items || []}
+                    getOptionLabel={(option) => option.itemCode || ""}
+                    disableClearable
+                    loading={isProductLoading}
+                    isOptionEqualToValue={(option, value) => true}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        label="Product Code"
+                        // required
+                        helperText={errors?.itemId?.message}
+                        error={errors?.itemId}
+                        sx={{ width: "180px" }}
+                      />
+                    )}
+                    // onChange={(_, value) => {
+                    //   setValue(
+                    //     `items[${index}].itemDescription`,
+                    //     value?.itemDescription
+                    //   );
+                    //   setValue(`items[${index}].uom`, value?.uom);
+                    //   return value;
+                    // }}
+                  />
+
+                  <Controller
+                    control={control}
+                    name={`items[${index}].price`}
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <NumericFormat
+                        label="Price"
+                        type="text"
+                        size="small"
+                        customInput={TextField}
+                        autoComplete="off"
+                        onValueChange={(e) => {
+                          onChange(Number(e.value));
+                          handleRecalculateTotalAmount();
+                        }}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        // ref={ref}
+                        // required
+                        thousandSeparator=","
+                        allowNegative={false}
+                        allowLeadingZeros={false}
+                        prefix="₱"
+                      />
+                    )}
+                  />
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </Box>
       </CommonDrawer>
 
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-        noIcon={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.priceModeCode}
-        </span>
-        ?
-      </CommonDialog>
       <SuccessSnackbar
         open={isSuccessOpen}
         onClose={onSuccessClose}

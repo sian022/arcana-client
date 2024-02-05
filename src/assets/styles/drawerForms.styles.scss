@@ -270,6 +270,7 @@
 .attachmentsContainer {
   flex: 1;
 }
+
 .attachments {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -418,19 +419,18 @@
   }
 }
 
-// ul {
-//   background-color: white !important;
-//   color: $secondary !important;
-// }
+//Others
+.priceModeManagement {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-direction: column;
 
-// .buttonActive {
-//   background-color: $secondary !important;
-
-//   & svg {
-//     color: white !important;
-//     z-index: 0;
-//   }
-// }
+  &__row {
+    display: flex;
+    gap: 10px;
+  }
+}
 
 //Wild Cards
 .overlay {

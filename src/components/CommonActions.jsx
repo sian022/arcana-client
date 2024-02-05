@@ -19,6 +19,7 @@ import {
   RemoveCircle,
   RequestPage,
   Restore,
+  ShoppingCart,
   Tag,
   Update,
   Visibility,
@@ -44,6 +45,7 @@ function CommonActions({
   onResetPassword,
   onTagUserInCluster,
   onViewCluster,
+  onManageProducts,
   disableActions,
   item,
   status,
@@ -90,6 +92,8 @@ function CommonActions({
       onCancel();
     } else if (action === "resetPassword") {
       onResetPassword();
+    } else if (action === "manageProducts") {
+      onManageProducts();
     }
 
     onClose();
@@ -191,6 +195,23 @@ function CommonActions({
           >
             {status ? <Archive /> : <Restore />}
             {status ? "Archive" : "Restore"}
+          </MenuItem>
+        )}
+
+        {onManageProducts && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("manageProducts");
+            }}
+            disabled={
+              disableActions
+                ? disableActions?.includes("manageProducts")
+                : false
+            }
+          >
+            <ShoppingCart />
+            Manage Products
           </MenuItem>
         )}
 

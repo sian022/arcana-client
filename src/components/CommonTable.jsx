@@ -48,6 +48,7 @@ function CommonTable({
   onViewCluster,
   onResetPassword,
   onAttach,
+  onManageProducts,
   page,
   setPage,
   rowsPerPage,
@@ -332,6 +333,7 @@ function CommonTable({
                         onViewCluster={onViewCluster && onViewCluster}
                         onCancel={onCancel && onCancel}
                         onResetPassword={onResetPassword && onResetPassword}
+                        onManageProducts={onManageProducts && onManageProducts}
                         item={item}
                         status={status}
                         disableActions={disableActions}
