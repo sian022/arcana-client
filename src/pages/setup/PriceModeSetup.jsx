@@ -106,7 +106,7 @@ function UnitOfMeasurements() {
         await postPriceMode(data).unwrap();
         setSnackbarMessage("Price Mode added successfully");
       } else if (drawerMode === "edit") {
-        await putPriceMode(data).unwrap();
+        await putPriceMode({ id: selectedRowData?.id, ...data }).unwrap();
         setSnackbarMessage("Price Mode updated successfully");
       }
 
@@ -154,9 +154,8 @@ function UnitOfMeasurements() {
     setDrawerMode("edit");
     onDrawerOpen();
 
-    Object.keys(editData).forEach((key) => {
-      setValue(key, editData[key]);
-    });
+    setValue("priceMode", editData.priceModeCode);
+    setValue("priceModeDescription", editData.priceModeDescription);
   };
 
   const handleArchiveOpen = (id) => {
