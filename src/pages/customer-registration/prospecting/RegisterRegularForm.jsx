@@ -771,7 +771,7 @@ function RegisterRegularForm({ open, onClose }) {
                   control={control}
                   options={priceModeData || []}
                   getOptionLabel={(option) =>
-                    option.priceModeCode?.toUpperCase()
+                    `${option.priceModeCode?.toUpperCase()} -  ${option.priceModeDescription?.toUpperCase()}`
                   }
                   disableClearable
                   isOptionEqualToValue={(option, value) =>

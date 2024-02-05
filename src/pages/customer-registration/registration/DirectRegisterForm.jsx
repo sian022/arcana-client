@@ -668,6 +668,16 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       );
       setValue("businessAddress", selectedRowData?.businessAddress);
       setValue(
+        "clusterId",
+        clusterData?.cluster?.find(
+          (item) => selectedRowData?.clusterId === item.id
+        )
+      );
+      setValue(
+        "priceModeId",
+        priceModeData.find((item) => selectedRowData?.priceModeId === item.id)
+      );
+      setValue(
         "authorizedRepresentative",
         selectedRowData?.authorizedRepresentative
       );
@@ -779,61 +789,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           photoIdOwner: true,
         });
       }
-
-      // Old Version
-      // if (selectedRowData?.attachments?.length > 4) {
-      //   setRequirementsMode("representative");
-      //   setRepresentativeRequirements({
-      //     signature: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Signature"
-      //     )?.documentLink,
-      //     storePhoto: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Store Photo"
-      //     )?.documentLink,
-      //     businessPermit: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Business Permit"
-      //     )?.documentLink,
-      //     photoIdOwner: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Photo ID Owner"
-      //     )?.documentLink,
-      //     photoIdRepresentative: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Photo ID Representative"
-      //     )?.documentLink,
-      //     authorizationLetter: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Authorization Letter"
-      //     )?.documentLink,
-      //   });
-      //   setRepresentativeRequirementsIsLink({
-      //     signature: true,
-      //     storePhoto: true,
-      //     businessPermit: true,
-      //     photoIdOwner: true,
-      //     photoIdRepresentative: true,
-      //     authorizationLetter: true,
-      //   });
-      // } else if (selectedRowData?.attachments?.length <= 4) {
-      //   setRequirementsMode("owner");
-      //   setOwnersRequirements({
-      //     signature: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Signature"
-      //     )?.documentLink,
-      //     storePhoto: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Store Photo"
-      //     )?.documentLink,
-      //     businessPermit: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Business Permit"
-      //     )?.documentLink,
-      //     photoIdOwner: selectedRowData?.attachments?.find(
-      //       (item) => item.documentType === "Photo ID Owner"
-      //     )?.documentLink,
-      //   });
-      //   setOwnersRequirementsIsLink({
-      //     signature: true,
-      //     storePhoto: true,
-      //     businessPermit: true,
-      //     photoIdOwner: true,
-      //   });
-      // }
     }
   }, [open, termDaysData, termsData, attachmentsData]);
 
@@ -848,10 +803,19 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   }, [includeAuthorizedRepresentative]);
 
   useEffect(() => {
-    if (clusterData && open) {
+    if (!editMode && clusterData && open) {
       setValue("clusterId", clusterData?.cluster?.[0]);
     }
   }, [open, clusterData]);
+
+  useEffect(() => {
+    if (!editMode && priceModeData && open) {
+      setValue(
+        "priceModeId",
+        priceModeData?.find((item) => item.priceModeDescription === "Regular")
+      );
+    }
+  }, [open, priceModeData]);
 
   useEffect(() => {
     if (editMode) {
@@ -1095,7 +1059,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       control={control}
                       options={priceModeData || []}
                       getOptionLabel={(option) =>
-                        option.priceModeCode?.toUpperCase()
+                        `${option.priceModeCode?.toUpperCase()} -  ${option.priceModeDescription?.toUpperCase()}`
                       }
                       disableClearable
                       isOptionEqualToValue={(option, value) =>
