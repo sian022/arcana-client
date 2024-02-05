@@ -38,7 +38,8 @@ import Cluster from "../pages/user-management/Cluster";
 import ExpensesSetup from "../pages/customer-management/ExpensesSetup";
 import OtherExpenses from "../pages/customer-registration/OtherExpenses";
 import OtherExpensesApproval from "../pages/approval/OtherExpensesApproval";
-import PriceModeCode from "../pages/setup/PriceModeCode";
+import PriceModeSetup from "../pages/setup/PriceModeSetup";
+import PriceModeManagement from "../pages/setup/PriceModeManagement";
 
 export const router = createBrowserRouter([
   {
@@ -115,10 +116,14 @@ export const router = createBrowserRouter([
             path: "uom",
             element: <UnitOfMeasurements />,
           },
-          // {
-          //   path: "price-mode-code",
-          //   element: <PriceModeCode />,
-          // },
+          {
+            path: "price-mode-setup",
+            element: <PriceModeSetup />,
+          },
+          {
+            path: "price-mode-management",
+            element: <PriceModeManagement />,
+          },
         ],
       },
       {

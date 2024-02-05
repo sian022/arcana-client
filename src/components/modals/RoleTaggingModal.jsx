@@ -168,6 +168,10 @@ function RoleTaggingModal({
           sx={{ display: "flex", justifyContent: "end", gap: "10px" }}
           className="roleTaggingModal__actions"
         >
+          <DangerButton onClick={onClose} disabled={isLoading}>
+            Close
+          </DangerButton>
+
           <SecondaryButton onClick={onSubmit} disabled={isLoading}>
             {isLoading ? (
               <CircularProgress size="20px" color="white" />
@@ -175,9 +179,6 @@ function RoleTaggingModal({
               "Save"
             )}
           </SecondaryButton>
-          <DangerButton onClick={onClose} disabled={isLoading}>
-            Close
-          </DangerButton>
         </Box>
       </Box>
     </CommonModal>

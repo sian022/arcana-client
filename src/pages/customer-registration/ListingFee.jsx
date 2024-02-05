@@ -99,35 +99,6 @@ function ListingFee() {
     },
   ];
 
-  const selectOptions = [
-    {
-      value: "all",
-      label: "All",
-    },
-    {
-      value: "prospecting",
-      label: "Prospect",
-    },
-    {
-      value: "direct",
-      label: "Direct",
-    },
-  ];
-
-  const excludeKeysDisplay = [
-    "listingItems",
-    "clientId",
-    // "listingFeeId",
-    "approvalId",
-    "status",
-    "cancellationReason",
-    "requestId",
-    "listingFeeApprovalHistories",
-    "registrationStatus",
-    "approvers",
-    "createdAt",
-  ];
-
   const tableHeads = [
     "Business Name",
     "Business Name",
@@ -181,18 +152,18 @@ function ListingFee() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Listing Fee");
-  // }, []);
-
-  useEffect(() => {
     if (listingFeeStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Listing Fee" });
     }
   }, [listingFeeStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>

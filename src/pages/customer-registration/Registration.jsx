@@ -214,18 +214,18 @@ function DirectRegistration() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Registration");
-  // }, []);
-
-  useEffect(() => {
     if (clientStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Clients" });
     }
   }, [clientStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>

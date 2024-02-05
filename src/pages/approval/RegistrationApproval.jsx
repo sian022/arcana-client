@@ -133,18 +133,18 @@ function RegistrationApproval() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Registration");
-  // }, []);
-
-  useEffect(() => {
     if (clientStatus === "Under review") {
       patchReadNotification({ Tab: "Pending Clients" });
     }
   }, [clientStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>

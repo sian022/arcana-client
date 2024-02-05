@@ -267,10 +267,11 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               right: "40px",
             }}
           >
-            <SuccessButton onClick={onApproveConfirmOpen}>
-              Approve{" "}
-            </SuccessButton>
             <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
+
+            <SuccessButton onClick={onApproveConfirmOpen}>
+              Approve
+            </SuccessButton>
           </Box>
         )}
       </CommonModal>

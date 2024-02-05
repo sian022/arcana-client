@@ -97,12 +97,18 @@ export const navigationData = [
         path: "/product-setup/uom",
         icon: "SquareFoot",
       },
-      // {
-      //   id: 6,
-      //   name: "Price Mode Code",
-      //   path: "/product-setup/price-mode-code",
-      //   icon: "AttachMoney",
-      // },
+      {
+        id: 6,
+        name: "Price Mode Setup",
+        path: "/product-setup/price-mode-setup",
+        icon: "Settings",
+      },
+      {
+        id: 7,
+        name: "Price Mode Management",
+        path: "/product-setup/price-mode-management",
+        icon: "Link",
+      },
     ],
   },
   {

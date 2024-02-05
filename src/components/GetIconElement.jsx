@@ -37,6 +37,9 @@ import {
   TrendingUp,
   MonetizationOn,
   AttachMoney,
+  Settings,
+  Tag,
+  Link,
 } from "@mui/icons-material";
 
 export const getIconElement = (iconName) => {
@@ -78,6 +81,8 @@ export const getIconElement = (iconName) => {
     Store: <Store />,
     TrendingUp: <TrendingUp />,
     AttachMoney: <AttachMoney />,
+    Settings: <Settings />,
+    Link: <Link />,
   };
 
   return iconMap[iconName] || <IcecreamOutlined />;

@@ -120,18 +120,18 @@ function ListingFeeApproval() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Listing Fee");
-  // }, []);
-
-  useEffect(() => {
     if (listingFeeStatus === "Under review") {
       patchReadNotification({ Tab: "Pending Listing Fee" });
     }
   }, [listingFeeStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>

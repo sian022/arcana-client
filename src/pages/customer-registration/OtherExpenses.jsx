@@ -146,18 +146,18 @@ function OtherExpenses() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Other Expenses");
-  // }, []);
-
-  useEffect(() => {
     if (expenseStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Expenses" });
     }
   }, [expenseStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>

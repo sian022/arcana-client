@@ -1,6 +1,7 @@
 import moment from "moment";
 import * as yup from "yup";
 
+//Login
 export const loginSchema = yup
   .object({
     username: yup.string().required("Username is required"),
@@ -38,7 +39,66 @@ export const initialChangePasswordSchema = {
   },
 };
 
-//Setup Schema
+//User Management Schemas
+export const userAccountSchema = {
+  schema: yup.object({
+    fullIdNo: yup.string().required("Full ID number is required"),
+    fullname: yup.string().required("Fullname is required"),
+    username: yup.string().required("Username is required"),
+    password: yup.string(),
+    userRoleId: yup.object().required("Role is required"),
+    clusterId: yup.object().nullable(),
+    // clusters: yup.array().of(yup.object()),
+  }),
+  // .required(),
+  defaultValues: {
+    fullIdNo: "",
+    fullname: "",
+    username: "",
+    password: "",
+    userRoleId: null,
+    clusterId: null,
+    // clusters: [],
+  },
+};
+
+export const userRoleSchema = {
+  schema: yup.object({
+    roleName: yup.string().required("Role name is required"),
+  }),
+  defaultValues: {
+    roleName: "",
+  },
+};
+
+export const companySchema = {
+  schema: yup.object({
+    companyName: yup.string().required("Company name is required"),
+  }),
+  defaultValues: {
+    companyName: "",
+  },
+};
+
+export const departmentSchema = {
+  schema: yup.object({
+    departmentName: yup.string().required("Department name is required"),
+  }),
+  defaultValues: {
+    departmentName: "",
+  },
+};
+
+export const locationSchema = {
+  schema: yup.object({
+    locationName: yup.string().required("Location name is required"),
+  }),
+  defaultValues: {
+    locationName: "",
+  },
+};
+
+//Product Setup Schema
 export const productSchema = {
   schema: yup.object({
     itemCode: yup.string().required("Item code is required"),
@@ -67,9 +127,6 @@ export const productEditSchema = {
     uomId: yup.object().required("UOM is required"),
     productSubCategoryId: yup.object().required("Subcategory is required"),
     meatTypeId: yup.object().required("Meat type is required"),
-    // price: yup.number().required("Price is required"),
-    // effectivityDate: yup.date().required("Effectivity date is required"),
-    // priceChange: yup.number().required("Price change is required"),
   }),
   defaultValues: {
     itemCode: "",
@@ -77,31 +134,8 @@ export const productEditSchema = {
     uomId: null,
     productSubCategoryId: null,
     meatTypeId: null,
-    // price: null,
-    // effectivityDate: null,
-    // priceChange: null,
   },
 };
-// export const productChangePriceSchema = {
-//   schema: yup.object({
-//     itemCode: yup.string().required("Item code is required"),
-//     itemDescription: yup.string().required("Item description is required"),
-//     uomId: yup.object().required("UOM is required"),
-//     productSubCategoryId: yup.object().required("Subcategory is required"),
-//     meatTypeId: yup.object().required("Meat type is required"),
-//     price: yup.number().required("Price is required"),
-//     effectivityDate: yup.date().required("Effectivity date is required"),
-//   }),
-//   defaultValues: {
-//     itemCode: "",
-//     itemDescription: "",
-//     uomId: null,
-//     productSubCategoryId: null,
-//     meatTypeId: null,
-//     price: null,
-//     effectivityDate: null,
-//   },
-// };
 
 export const productCategorySchema = {
   schema: yup.object({
@@ -145,6 +179,44 @@ export const uomSchema = {
   },
 };
 
+export const priceModeSetupSchema = {
+  schema: yup.object({
+    priceMode: yup.string().required("Price mode code is required"),
+    priceModeDescription: yup
+      .string()
+      .required("Price mode description is required"),
+  }),
+  defaultValues: {
+    priceMode: "",
+    priceModeDescription: "",
+  },
+};
+
+export const priceModeTaggingSchema = {
+  schema: yup.object({
+    priceModeId: yup.object().required("Price mode is required"),
+    items: yup
+      .array()
+      .of(
+        yup.object({
+          itemId: yup.object().required("Product is required"),
+          price: yup.number().required("Price is required"),
+        })
+      )
+      .min(1, "At least one product is required"),
+  }),
+  defaultValues: {
+    priceModeId: null,
+    items: [
+      {
+        itemId: null,
+        price: null,
+      },
+    ],
+  },
+};
+
+//Customer Management Setup
 export const storeTypeSchema = {
   schema: yup.object({
     storeTypeName: yup.string().required("Store type name is required"),
@@ -175,85 +247,6 @@ export const termDaysSchema = {
   }),
   defaultValues: {
     days: null,
-  },
-};
-
-//User Management Schemas
-export const userAccountSchema = {
-  schema: yup.object({
-    fullIdNo: yup.string().required("Full ID number is required"),
-    fullname: yup.string().required("Fullname is required"),
-    username: yup.string().required("Username is required"),
-    password: yup.string(),
-    userRoleId: yup.object().required("Role is required"),
-    clusterId: yup.object().nullable(),
-    // clusters: yup.array().of(yup.object()),
-  }),
-  // .required(),
-  defaultValues: {
-    fullIdNo: "",
-    fullname: "",
-    username: "",
-    password: "",
-    userRoleId: null,
-    clusterId: null,
-    // clusters: [],
-  },
-};
-
-// export const userAccountCdoSchema = {
-//   schema: yup.object({
-//     fullIdNo: yup.string().required("Full ID number is required"),
-//     fullname: yup.string().required("Fullname is required"),
-//     username: yup.string().required("Username is required"),
-//     password: yup.string(),
-//     userRoleId: yup.object().required("Role is required"),
-//     clusterId: yup.object().required("Cluster is required"),
-//   }),
-//   // .required(),
-//   defaultValues: {
-//     fullIdNo: "",
-//     fullname: "",
-//     username: "",
-//     password: "",
-//     userRoleId: null,
-//     clusterId: null,
-//   },
-// };
-
-export const userRoleSchema = {
-  schema: yup.object({
-    roleName: yup.string().required("Role name is required"),
-  }),
-  defaultValues: {
-    roleName: "",
-  },
-};
-
-export const companySchema = {
-  schema: yup.object({
-    companyName: yup.string().required("Company name is required"),
-  }),
-  defaultValues: {
-    companyName: "",
-  },
-};
-
-export const departmentSchema = {
-  schema: yup.object({
-    departmentName: yup.string().required("Department name is required"),
-  }),
-  defaultValues: {
-    departmentName: "",
-  },
-};
-
-export const locationSchema = {
-  schema: yup.object({
-    locationName: yup.string().required("Location name is required"),
-  }),
-  defaultValues: {
-    locationName: "",
   },
 };
 
