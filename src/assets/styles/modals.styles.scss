@@ -935,3 +935,29 @@
     gap: 10px;
   }
 }
+
+.priceModeManagementModal {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-direction: column;
+
+  &__header {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__items {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 10px;
+    height: 300px;
+    overflow-x: auto;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+}

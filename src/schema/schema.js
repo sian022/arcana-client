@@ -195,20 +195,21 @@ export const priceModeSetupSchema = {
 export const priceModeTaggingSchema = {
   schema: yup.object({
     priceModeId: yup.object().required("Price mode is required"),
-    items: yup
+    priceModeItems: yup
       .array()
       .of(
         yup.object({
-          itemId: yup.object().required("Product is required"),
-          price: yup.number().required("Price is required"),
+          priceModeId: yup.object().required("Price mode is required"),
+          itemId: yup.object().required("Product Code is required"),
+          price: yup.string().required("Price is required"),
         })
       )
       .min(1, "At least one product is required"),
   }),
   defaultValues: {
-    priceModeId: null,
-    items: [
+    priceModeItems: [
       {
+        priceModeId: null,
         itemId: null,
         price: null,
       },
@@ -375,6 +376,7 @@ export const regularRegisterSchema = {
     // .required("Representative position is required")
     // cluster: yup.number().required("Cluster is required").integer(),
     clusterId: yup.object().required("Cluster is required"),
+    priceModeId: yup.object().required("Price mode is required"),
     longitude: yup.string(),
     // .required("Longitude is required")
     latitude: yup.string(),
@@ -395,6 +397,7 @@ export const regularRegisterSchema = {
     authorizedRepresentativePosition: "",
     // cluster: null,
     clusterId: null,
+    priceModeId: null,
     longitude: "",
     latitude: "",
     birthDate: null,
@@ -426,6 +429,7 @@ export const directRegisterPersonalSchema = {
     emailAddress: yup.string(),
     // emailAddress: yup.string().required("Email address is required"),
     clusterId: yup.object().required("Cluster is required"),
+    priceModeId: yup.object().required("Price mode is required"),
     // cluster: yup.number().required("Cluster is required").integer(),
     latitude: yup.string().nullable(),
     longitude: yup.string().nullable(),
@@ -462,6 +466,7 @@ export const directRegisterPersonalSchema = {
     storeTypeId: null,
     emailAddress: "",
     clusterId: null,
+    priceModeId: null,
     // cluster: null,
     latitude: "",
     longitude: "",

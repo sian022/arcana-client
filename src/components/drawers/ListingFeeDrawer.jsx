@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   Box,
   IconButton,
@@ -404,6 +404,7 @@ function ListingFeeDrawer({
                 Product Information
               </Typography>
             </Box>
+
             {fields.map((item, index) => (
               <Box
                 key={item.id}
@@ -574,6 +575,7 @@ function ListingFeeDrawer({
                 <IconButton
                   sx={{ color: "error.main" }}
                   onClick={() => {
+                    console.log(index);
                     fields.length <= 1
                       ? handleListingFeeError()
                       : // : remove(fields[index]);
@@ -620,6 +622,7 @@ function ListingFeeDrawer({
           >
             Add Product
           </SecondaryButton>
+
           <Box
             sx={{
               display: "flex",

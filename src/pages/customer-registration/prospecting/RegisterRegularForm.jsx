@@ -56,6 +56,7 @@ import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
+import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeItemsApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -213,6 +214,8 @@ function RegisterRegularForm({ open, onClose }) {
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
+  const { data: priceModeData, isLoading: isPriceModeLoading } =
+    useGetAllPriceModeForClientsQuery();
 
   //Drawer Functions
   const onSubmit = async (data) => {
@@ -762,17 +765,30 @@ function RegisterRegularForm({ open, onClose }) {
                     );
                   }}
                 />
-                {/* <TextField
-                  label="TIN Number"
-                  size="small"
-                  type="number"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  {...register("tinNumber")}
-                  helperText={errors?.tinNumber?.message}
-                  error={errors?.tinNumber}
-                /> */}
+
+                <ControlledAutocomplete
+                  name="priceModeId"
+                  control={control}
+                  options={priceModeData || []}
+                  getOptionLabel={(option) =>
+                    option.priceModeCode?.toUpperCase()
+                  }
+                  disableClearable
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  loading={isPriceModeLoading}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Price Mode"
+                      required
+                      helperText={errors?.priceModeId?.message}
+                      error={errors?.priceModeId}
+                    />
+                  )}
+                />
               </Box>
             </Box>
             <Box className="register__secondRow">

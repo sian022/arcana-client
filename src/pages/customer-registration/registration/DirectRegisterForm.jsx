@@ -78,6 +78,7 @@ import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat, PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 import RegisterClientFormSkeleton from "../../../components/skeletons/RegisterClientFormSkeleton";
+import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeItemsApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -259,6 +260,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     triggerAttachments,
     { data: attachmentsData, isLoading: isAttachmentsDataLoading },
   ] = useLazyGetAttachmentsByClientIdQuery();
+
+  const { data: priceModeData, isLoading: isPriceModeLoading } =
+    useGetAllPriceModeForClientsQuery();
 
   //Drawer Functions
   const onSubmit = async (data) => {
@@ -1086,18 +1090,29 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       }}
                     />
 
-                    {/* <TextField
-                  label="TIN Number"
-                  type="number"
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  {...register("tinNumber")}
-                  helperText={errors?.tinNumber?.message}
-                  error={errors?.tinNumber}
-                  InputProps={{ inputProps: { step: "any" } }}
-                /> */}
+                    <ControlledAutocomplete
+                      name="priceModeId"
+                      control={control}
+                      options={priceModeData || []}
+                      getOptionLabel={(option) =>
+                        option.priceModeCode?.toUpperCase()
+                      }
+                      disableClearable
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      loading={isPriceModeLoading}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          label="Price Mode"
+                          required
+                          helperText={errors?.priceModeId?.message}
+                          error={errors?.priceModeId}
+                        />
+                      )}
+                    />
                   </Box>
                 </Box>
                 <Box className="register__secondRow">

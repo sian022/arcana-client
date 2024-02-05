@@ -1,4 +1,4 @@
-import { Autocomplete, Box, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
@@ -58,15 +58,6 @@ function PriceModeSetup() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-  ];
-
   const tableHeads = ["Price Mode Code", "Price Mode Description"];
 
   const customOrderKeys = ["priceModeCode", "priceModeDescription"];
@@ -190,6 +181,7 @@ function PriceModeSetup() {
         setSearch={setSearch}
         setStatus={setStatus}
       />
+
       {isFetching ? (
         <CommonTableSkeleton />
       ) : (
