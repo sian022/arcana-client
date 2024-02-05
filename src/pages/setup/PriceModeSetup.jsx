@@ -20,7 +20,7 @@ import {
   usePatchPriceModeStatusMutation,
 } from "../../features/setup/api/priceModeSetupApi";
 
-function UnitOfMeasurements() {
+function PriceModeSetup() {
   const [drawerMode, setDrawerMode] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
@@ -263,4 +263,4 @@ function UnitOfMeasurements() {
   );
 }
 
-export default UnitOfMeasurements;
+export default PriceModeSetup;
