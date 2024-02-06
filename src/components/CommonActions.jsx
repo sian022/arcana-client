@@ -46,6 +46,7 @@ function CommonActions({
   onTagUserInCluster,
   onViewCluster,
   onManageProducts,
+  onPriceChange,
   disableActions,
   item,
   status,
@@ -94,6 +95,8 @@ function CommonActions({
       onResetPassword();
     } else if (action === "manageProducts") {
       onManageProducts();
+    } else if (action === "priceChange") {
+      onPriceChange();
     }
 
     onClose();
@@ -212,6 +215,21 @@ function CommonActions({
           >
             <ShoppingCart />
             Manage Products
+          </MenuItem>
+        )}
+
+        {onPriceChange && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("priceChange");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("priceChange") : false
+            }
+          >
+            <MonetizationOn />
+            Price Change
           </MenuItem>
         )}
 

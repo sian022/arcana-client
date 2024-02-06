@@ -31,6 +31,7 @@ import {
   usePostItemsToPriceModeMutation,
 } from "../../features/setup/api/priceModeItemsApi";
 import ManageProductsSkeleton from "../../components/skeletons/ManageProductsSkeleton";
+import PriceChangeModal from "../../components/modals/PriceChangeModal";
 
 function PriceModeManagement() {
   const [search, setSearch] = useState("");
@@ -50,6 +51,12 @@ function PriceModeManagement() {
     isOpen: isModalFormOpen,
     onOpen: onModalFormOpen,
     onClose: onModalFormClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isPriceChangeOpen,
+    onOpen: onPriceChangeOpen,
+    onClose: onPriceChangeClose,
   } = useDisclosure();
 
   const {
@@ -115,19 +122,23 @@ function PriceModeManagement() {
 
   const customOrderKeys = ["priceModeCode", "priceModeDescription"];
 
+  const disableActions = ["priceChange"];
+
   //Functions
   const onSubmit = async (data) => {
-    const transformedData = data.priceModeItems.map((item) => ({
-      priceModeId: item.priceModeId,
-      itemId: item.itemId.id,
-      price: item.price,
-    }));
+    const transformedData = {
+      priceModeId: selectedRowData?.id,
+      priceModeItems: data.priceModeItems.map((item) => ({
+        itemId: item.itemId.id,
+        price: item.price,
+      })),
+    };
 
     try {
-      await postItemsToPriceMode({ priceModeItems: transformedData });
-      showSnackbar("Products successfully tagged to price mode", "success");
+      await postItemsToPriceMode(transformedData).unwrap();
       handleFormClose();
       onConfirmSubmitClose();
+      showSnackbar("Products successfully tagged to price mode", "success");
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -217,6 +228,10 @@ function PriceModeManagement() {
             mapData={data?.priceMode}
             editable
             onManageProducts={onModalFormOpen}
+            onPriceChange={onPriceChangeOpen}
+            // disableActions={
+            //   productsByIdData?.priceModeItems?.length === 0 && disableActions
+            // }
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
@@ -439,6 +454,8 @@ function PriceModeManagement() {
         )}
       </CommonModalForm>
 
+      <PriceChangeModal open={isPriceChangeOpen} onClose={onPriceChangeClose} />
+
       <CommonDialog
         open={isConfirmClearOpen}
         onClose={onConfirmClearClose}
@@ -461,6 +478,7 @@ function PriceModeManagement() {
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onSubmit)}
         isLoading={isTaggingLoading}
+        noIcon
       >
         Are you sure you want to tag products to price mode?
       </CommonDialog>

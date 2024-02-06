@@ -211,16 +211,19 @@ export const priceModePriceChangeSchema = {
   schema: yup.object({
     priceModeItemPriceChanges: yup.array().of(
       yup.object({
-        priceModeId: yup.number().required("Price mode is required"),
-        itemId: yup.object().required("Product Code is required"),
-        price: yup.object().required("Product Code is required"),
+        priceModeItemId: yup.object().required("Product Code is required"),
+        price: yup.number().required("Price is required"),
         effectivityDate: yup.date().required("Effectivity date is required"),
       })
     ),
   }),
   defaultValues: {
     priceModeItemPriceChanges: [
-      { priceModeId: null, itemId: null, price: null, effectivityDate: null },
+      {
+        priceModeItemId: null,
+        price: null,
+        effectivityDate: null,
+      },
     ],
   },
 };

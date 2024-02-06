@@ -49,6 +49,7 @@ function CommonTable({
   onResetPassword,
   onAttach,
   onManageProducts,
+  onPriceChange,
   page,
   setPage,
   rowsPerPage,
@@ -334,6 +335,7 @@ function CommonTable({
                         onCancel={onCancel && onCancel}
                         onResetPassword={onResetPassword && onResetPassword}
                         onManageProducts={onManageProducts && onManageProducts}
+                        onPriceChange={onPriceChange && onPriceChange}
                         item={item}
                         status={status}
                         disableActions={disableActions}
