@@ -611,14 +611,15 @@ function ListingFeeDrawer({
                 unitCost: null,
               });
             }}
-            disabled={
-              !watch("listingItems")[watch("listingItems")?.length - 1]
-                ?.itemId ||
-              watch("listingItems")[watch("listingItems")?.length - 1]
-                ?.unitCost == null ||
-              watch("listingItems")[watch("listingItems")?.length - 1]
-                ?.unitCost == undefined
-            }
+            // disabled={
+            //   !watch("listingItems")[watch("listingItems")?.length - 1]
+            //     ?.itemId ||
+            //   watch("listingItems")[watch("listingItems")?.length - 1]
+            //     ?.unitCost == null ||
+            //   watch("listingItems")[watch("listingItems")?.length - 1]
+            //     ?.unitCost == undefined
+            // }
+            disabled={!isValid}
           >
             Add Product
           </SecondaryButton>

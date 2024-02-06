@@ -141,6 +141,18 @@ function PersonalInfoTab() {
             </Typography>
           </Box>
 
+          <Box className="viewRegistrationModal__personalInfo__content__fields__item">
+            <Typography className="viewRegistrationModal__personalInfo__content__fields__item__label">
+              Price Mode:
+            </Typography>
+            <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
+              {selectedRowData?.priceModeCode
+                ? `${selectedRowData?.priceModeCode} - 
+              ${selectedRowData?.priceModeDescription}$`
+                : "N/A"}
+            </Typography>
+          </Box>
+
           {isRepresentativeRequirements && (
             <Box className="viewRegistrationModal__personalInfo__content__fields__itemWrapped">
               <Typography className="viewRegistrationModal__personalInfo__content__fields__itemWrapped__label">

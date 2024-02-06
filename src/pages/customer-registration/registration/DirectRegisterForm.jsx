@@ -276,6 +276,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
         storeTypeId: data?.storeTypeId?.id,
         clusterId: data?.clusterId?.id,
+        priceModeId: data?.priceModeId?.id,
         clientId: selectedRowData?.id,
       };
 

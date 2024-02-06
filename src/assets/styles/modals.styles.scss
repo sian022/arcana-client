@@ -947,17 +947,26 @@
     gap: 10px;
   }
 
+  &__noProducts {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+  }
+
   &__items {
     display: flex;
     flex-flow: column wrap;
-    gap: 10px;
+    // gap: 10px;
     height: 300px;
     overflow-x: auto;
+    column-gap: 50px;
 
     &__item {
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-top: 2px;
     }
   }
 }

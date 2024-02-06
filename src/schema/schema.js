@@ -194,26 +194,28 @@ export const priceModeSetupSchema = {
 
 export const priceModeTaggingSchema = {
   schema: yup.object({
-    priceModeId: yup.object().required("Price mode is required"),
+    // priceModeId: yup.object().required("Price mode is required"),
     priceModeItems: yup
       .array()
       .of(
         yup.object({
-          priceModeId: yup.object().required("Price mode is required"),
+          priceModeId: yup.number().required("Price mode is required"),
           itemId: yup.object().required("Product Code is required"),
-          price: yup.string().required("Price is required"),
+          price: yup.number().required("Price is required"),
         })
       )
       .min(1, "At least one product is required"),
   }),
+
   defaultValues: {
-    priceModeItems: [
-      {
-        priceModeId: null,
-        itemId: null,
-        price: null,
-      },
-    ],
+    // priceModeItems: [
+    //   {
+    //     priceModeId: null,
+    //     itemId: null,
+    //     price: null,
+    //   },
+    // ],
+    priceModeItems: [],
   },
 };
 

@@ -1,4 +1,11 @@
-import { Box, IconButton, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import { Cancel, Link } from "@mui/icons-material";
@@ -16,6 +23,11 @@ import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { NumericFormat } from "react-number-format";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import NoProducts from "../../assets/images/NoProductFound.svg";
+import CommonDialog from "../../components/CommonDialog";
+import { useLazyGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
+import ManageProductsSkeleton from "../../components/skeletons/ManageProductsSkeleton";
 
 function PriceModeManagement() {
   const [search, setSearch] = useState("");
@@ -24,6 +36,7 @@ function PriceModeManagement() {
   const [count, setCount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const [parent] = useAutoAnimate();
 
   const { showSnackbar } = useSnackbar();
 
@@ -34,10 +47,28 @@ function PriceModeManagement() {
     onClose: onModalFormClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isConfirmClearOpen,
+    onOpen: onConfirmClearOpen,
+    onClose: onConfirmClearClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isConfirmCloseOpen,
+    onOpen: onConfirmCloseOpen,
+    onClose: onConfirmCloseClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isConfirmSubmitOpen,
+    onOpen: onConfirmSubmitOpen,
+    onClose: onConfirmSubmitClose,
+  } = useDisclosure();
+
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     register,
     setValue,
     reset,
@@ -66,15 +97,40 @@ function PriceModeManagement() {
   const { data: productData, isLoading: isProductLoading } =
     useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
 
+  const [
+    triggerProductsById,
+    { data: productsByIdData, isFetching: isProductsByIdFetching },
+  ] = useLazyGetAllItemsByPriceModeIdQuery();
+
   // Constants
   const tableHeads = ["Price Mode Code", "Price Mode Description"];
 
   const customOrderKeys = ["priceModeCode", "priceModeDescription"];
 
   //Functions
+  const onSubmit = (data) => {
+    try {
+      handleFormClose();
+      onConfirmSubmitClose();
+      showSnackbar("Products successfully tagged to price mode", "success");
+    } catch (error) {
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error tagging products to price mode", "error");
+      }
+    }
+  };
+
   const handleFormClose = () => {
-    reset();
     onModalFormClose();
+    onConfirmCloseClose();
+    reset();
+  };
+
+  const handleClearAll = () => {
+    remove();
+    onConfirmClearClose();
   };
 
   //UseEffect
@@ -86,11 +142,42 @@ function PriceModeManagement() {
     setPage(0);
   }, [search, rowsPerPage]);
 
+  // useEffect(() => {
+  //   if (isModalFormOpen) {
+  //     setValue("priceModeItems[0].priceModeId", selectedRowData?.id);
+  //   }
+  // }, [isModalFormOpen]);
+
   useEffect(() => {
     if (isModalFormOpen) {
-      setValue("priceModeItems[0].priceModeId", selectedRowData?.id);
+      triggerProductsById(
+        {
+          id: selectedRowData?.id,
+          Status: true,
+          PageNumber: 1,
+          PageSize: 1000,
+        },
+        { preferCacheValue: true }
+      );
     }
   }, [isModalFormOpen]);
+
+  useEffect(() => {
+    if (isModalFormOpen && productsByIdData && !isProductsByIdFetching) {
+      setValue(
+        "priceModeItems",
+        productsByIdData?.priceModeItems?.map((item) => ({
+          priceModeId: selectedRowData?.id,
+          itemId: productData?.items?.find(
+            (product) => product.id === item.itemId
+          ),
+          itemDescription: item.itemDescription,
+          price: item.priceChangeHistories?.[0]?.price,
+          // ...item,
+        }))
+      );
+    }
+  }, [isModalFormOpen, productsByIdData]);
 
   return (
     <>
@@ -127,144 +214,209 @@ function PriceModeManagement() {
       <CommonModalForm
         title="Manage Products"
         open={isModalFormOpen}
-        onClose={handleFormClose}
-        width="1100px"
+        onClose={isDirty ? onConfirmCloseOpen : handleFormClose}
+        disableSubmit={!isValid || !isDirty}
+        onSubmit={onConfirmSubmitOpen}
+        width="1400px"
+        height="660px"
       >
-        <Box className="priceModeManagementModal">
-          <Typography fontSize="1.1rem" fontWeight="700">
-            Price Mode Info
-          </Typography>
+        {isProductsByIdFetching ? (
+          <ManageProductsSkeleton />
+        ) : (
+          <Box className="priceModeManagementModal">
+            <Typography fontSize="1.1rem" fontWeight="700">
+              Price Mode Info
+            </Typography>
 
-          <Box className="priceModeManagementModal__header">
-            <TextField
-              label="Price Mode"
-              size="small"
-              readOnly
-              value={selectedRowData?.priceModeCode}
-              sx={{ width: "100px", pointerEvents: "none" }}
-            />
+            <Box className="priceModeManagementModal__header">
+              <TextField
+                label="Price Mode"
+                size="small"
+                readOnly
+                value={selectedRowData?.priceModeCode}
+                sx={{ width: "140px", pointerEvents: "none" }}
+              />
 
-            <TextField
-              label="Price Mode Description"
-              size="small"
-              readOnly
-              value={selectedRowData?.priceModeDescription}
-              sx={{ width: "400px", pointerEvents: "none" }}
-            />
-          </Box>
+              <TextField
+                label="Price Mode Description"
+                size="small"
+                readOnly
+                value={selectedRowData?.priceModeDescription}
+                sx={{ width: "400px", pointerEvents: "none" }}
+              />
+            </Box>
 
-          <Typography fontSize="1.1rem" fontWeight="700">
-            Products List
-          </Typography>
+            <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <Typography fontSize="1.1rem" fontWeight="700">
+                Products List
+              </Typography>
 
-          <Box className="priceModeManagementModal__items">
-            {fields.map((item, index) => (
-              <Box
-                key={item.id}
-                className="priceModeManagementModal__items__item"
+              <Button
+                sx={{ color: "gray" }}
+                onClick={() => {
+                  if (isDirty) {
+                    onConfirmClearOpen();
+                  } else {
+                    remove();
+                  }
+                }}
               >
-                <ControlledAutocomplete
-                  name={`priceModeItems[${index}].itemId`}
-                  control={control}
-                  options={productData?.items || []}
-                  getOptionLabel={(option) => option.itemCode || ""}
-                  getOptionDisabled={(option) => {}}
-                  disableClearable
-                  loading={isProductLoading}
-                  disabled={!watch("clientId")}
-                  isOptionEqualToValue={(option, value) => true}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      label="Product Code"
-                      sx={{ width: "180px" }}
-                    />
-                  )}
-                  onChange={(_, value) => {
-                    setValue(
-                      `priceModeItems[${index}].itemDescription`,
-                      value?.itemDescription
-                    );
-                    return value;
-                  }}
-                />
+                Clear All
+              </Button>
+            </Box>
 
-                <Controller
-                  control={control}
-                  name={`priceModeItems[${index}].itemDescription`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="Item Description"
-                      size="small"
-                      autoComplete="off"
-                      disabled
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      value={value?.toUpperCase() || ""}
-                      ref={ref}
-                      sx={{ width: "400px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name={`priceModeItems[${index}].price`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <NumericFormat
-                      label="Price"
-                      type="text"
-                      size="small"
-                      customInput={TextField}
-                      autoComplete="off"
-                      onValueChange={(e) => {
-                        onChange(Number(e.value));
-                      }}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      // ref={ref}
-                      // required
-                      thousandSeparator=","
-                      allowNegative={false}
-                      allowLeadingZeros={false}
-                      prefix="₱"
-                    />
-                  )}
-                />
-
-                <IconButton
-                  sx={{ color: "error.main" }}
-                  onClick={() => {
-                    fields.length <= 1
-                      ? showSnackbar(
-                          "At least one product is required",
-                          "error"
-                        )
-                      : remove(index);
-                  }}
-                  tabIndex={-1}
-                >
-                  <Cancel sx={{ fontSize: "30px" }} />
-                </IconButton>
+            {fields?.length === 0 ? (
+              <Box className="priceModeManagementModal__noProducts">
+                <img src={NoProducts} alt="no-products" width="210px" />
               </Box>
-            ))}
-          </Box>
+            ) : (
+              <Box className="priceModeManagementModal__items" ref={parent}>
+                {fields.map((item, index) => (
+                  <Box
+                    key={item.id}
+                    className="priceModeManagementModal__items__item"
+                  >
+                    <ControlledAutocomplete
+                      name={`priceModeItems[${index}].itemId`}
+                      control={control}
+                      options={productData?.items || []}
+                      getOptionLabel={(option) => option.itemCode || ""}
+                      getOptionDisabled={(option) =>
+                        watch("priceModeItems")?.some(
+                          (item) => item?.itemId?.itemCode === option.itemCode
+                        )
+                      }
+                      disableClearable
+                      // filterSelectedOptions
+                      loading={isProductLoading}
+                      isOptionEqualToValue={(option, value) => true}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          label="Product Code"
+                          sx={{ width: "180px" }}
+                        />
+                      )}
+                      onChange={(_, value) => {
+                        setValue(
+                          `priceModeItems[${index}].itemDescription`,
+                          value?.itemDescription
+                        );
+                        return value;
+                      }}
+                    />
 
-          <SecondaryButton
-            sx={{ width: "150px" }}
-            onClick={() =>
-              append({
-                priceModeId: selectedRowData?.id,
-                itemId: null,
-                price: null,
-              })
-            }
-          >
-            Add Product
-          </SecondaryButton>
-        </Box>
+                    <Controller
+                      control={control}
+                      name={`priceModeItems[${index}].itemDescription`}
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <Tooltip
+                          title={value?.toUpperCase() || ""}
+                          placement="top"
+                        >
+                          <TextField
+                            label="Item Description"
+                            size="small"
+                            autoComplete="off"
+                            disabled
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            value={value?.toUpperCase() || ""}
+                            ref={ref}
+                            sx={{ width: "250px" }}
+                          />
+                        </Tooltip>
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name={`priceModeItems[${index}].price`}
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <NumericFormat
+                          label="Price"
+                          type="text"
+                          size="small"
+                          customInput={TextField}
+                          autoComplete="off"
+                          onValueChange={(e) => {
+                            onChange(Number(e.value));
+                          }}
+                          onBlur={onBlur}
+                          value={value || ""}
+                          // ref={ref}
+                          // required
+                          thousandSeparator=","
+                          allowNegative={false}
+                          allowLeadingZeros={false}
+                          prefix="₱"
+                          sx={{ width: "120px" }}
+                        />
+                      )}
+                    />
+
+                    <IconButton
+                      sx={{ color: "error.main" }}
+                      onClick={() => {
+                        // fields.length <= 1
+                        //   ? showSnackbar(
+                        //       "At least one product is required",
+                        //       "error"
+                        //     )
+                        //   : remove(index);
+                        remove(index);
+                      }}
+                      tabIndex={-1}
+                    >
+                      <Cancel sx={{ fontSize: "30px" }} />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )}
+
+            <SecondaryButton
+              sx={{ width: "150px" }}
+              onClick={() =>
+                append({
+                  priceModeId: selectedRowData?.id,
+                  itemId: null,
+                  price: null,
+                })
+              }
+              disabled={!isValid}
+            >
+              Add Product
+            </SecondaryButton>
+          </Box>
+        )}
       </CommonModalForm>
+
+      <CommonDialog
+        open={isConfirmClearOpen}
+        onClose={onConfirmClearClose}
+        onYes={handleClearAll}
+      >
+        Are you sure you want to clear all products?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isConfirmCloseOpen}
+        onClose={onConfirmCloseClose}
+        onYes={handleFormClose}
+      >
+        Are you sure you want to close the form? <br />
+        <span style={{ fontWeight: "bold" }}>(FIELDS WILL BE RESET)</span>
+      </CommonDialog>
+
+      <CommonDialog
+        open={isConfirmSubmitOpen}
+        onClose={onConfirmSubmitClose}
+        onYes={handleSubmit(onSubmit)}
+      >
+        Are you sure you want to tag products to price mode?
+      </CommonDialog>
     </>
   );
 }

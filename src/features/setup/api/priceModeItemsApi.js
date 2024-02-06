@@ -25,9 +25,9 @@ export const priceModeItemsApi = createApi({
     }),
 
     getAllItemsByPriceModeId: builder.query({
-      query: (params) => ({
+      query: ({ id, ...params }) => ({
         params: params,
-        url: "/price-mode-items",
+        url: `/price-mode-items/${id}`,
         method: "GET",
       }),
       providesTags: ["Price Mode Items"],

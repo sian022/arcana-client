@@ -224,6 +224,7 @@ function RegisterRegularForm({ open, onClose }) {
       // dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
       storeTypeId: data?.storeTypeId?.id,
       clusterId: data?.clusterId.id,
+      priceModeId: data?.priceModeId?.id,
     };
 
     try {
@@ -519,31 +520,6 @@ function RegisterRegularForm({ open, onClose }) {
       setValue("province", "", { shouldValidate: true });
     }
   };
-  // useEffect(() => {
-  //   if (sameAsOwnersAddress) {
-  //     setValue("houseNumber", selectedRowData?.ownersAddress?.houseNumber, {
-  //       shouldValidate: true,
-  //     });
-  //     setValue("streetName", selectedRowData?.ownersAddress?.streetName, {
-  //       shouldValidate: true,
-  //     });
-  //     setValue("barangayName", selectedRowData?.ownersAddress?.barangayName, {
-  //       shouldValidate: true,
-  //     });
-  //     setValue("city", selectedRowData?.ownersAddress?.city, {
-  //       shouldValidate: true,
-  //     });
-  //     setValue("province", selectedRowData?.ownersAddress?.province, {
-  //       shouldValidate: true,
-  //     });
-  //   } else {
-  //     setValue("houseNumber", "", { shouldValidate: true });
-  //     setValue("streetName", "", { shouldValidate: true });
-  //     setValue("barangayName", "");
-  //     setValue("city", "");
-  //     setValue("province", "");
-  //   }
-  // }, [sameAsOwnersAddress]);
 
   useEffect(() => {
     if (!!includeAuthorizedRepresentative) {
@@ -562,6 +538,15 @@ function RegisterRegularForm({ open, onClose }) {
       setValue("clusterId", clusterData?.cluster?.[0]);
     }
   }, [open]);
+
+  useEffect(() => {
+    if (priceModeData && open) {
+      setValue(
+        "priceModeId",
+        priceModeData?.find((item) => item.priceModeDescription === "Regular")
+      );
+    }
+  }, [open, priceModeData]);
 
   return (
     <>

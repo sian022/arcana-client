@@ -258,7 +258,7 @@ function FreebieFormDirect({
                   {...params}
                   size="small"
                   label="Product Code"
-                  required
+                  // required
                   helperText={errors?.itemId?.message}
                   error={errors?.itemId}
                   sx={{ width: "200px" }}
