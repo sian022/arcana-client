@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
-import { Cancel, Link } from "@mui/icons-material";
+import { Cancel, Help, Info, Link } from "@mui/icons-material";
 import CommonTable from "../../components/CommonTable";
 import { useGetAllPriceModeQuery } from "../../features/setup/api/priceModeSetupApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
@@ -26,7 +26,10 @@ import { NumericFormat } from "react-number-format";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import NoProducts from "../../assets/images/NoProductFound.svg";
 import CommonDialog from "../../components/CommonDialog";
-import { useLazyGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
+import {
+  useLazyGetAllItemsByPriceModeIdQuery,
+  usePostItemsToPriceModeMutation,
+} from "../../features/setup/api/priceModeItemsApi";
 import ManageProductsSkeleton from "../../components/skeletons/ManageProductsSkeleton";
 
 function PriceModeManagement() {
@@ -34,6 +37,8 @@ function PriceModeManagement() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+
+  const [initialProducts, setInitialProducts] = useState([]);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const [parent] = useAutoAnimate();
@@ -102,23 +107,34 @@ function PriceModeManagement() {
     { data: productsByIdData, isFetching: isProductsByIdFetching },
   ] = useLazyGetAllItemsByPriceModeIdQuery();
 
+  const [postItemsToPriceMode, { isLoading: isTaggingLoading }] =
+    usePostItemsToPriceModeMutation();
+
   // Constants
   const tableHeads = ["Price Mode Code", "Price Mode Description"];
 
   const customOrderKeys = ["priceModeCode", "priceModeDescription"];
 
   //Functions
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    const transformedData = data.priceModeItems.map((item) => ({
+      priceModeId: item.priceModeId,
+      itemId: item.itemId.id,
+      price: item.price,
+    }));
+
     try {
+      await postItemsToPriceMode({ priceModeItems: transformedData });
+      showSnackbar("Products successfully tagged to price mode", "success");
       handleFormClose();
       onConfirmSubmitClose();
-      showSnackbar("Products successfully tagged to price mode", "success");
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
       } else {
         showSnackbar("Error tagging products to price mode", "error");
       }
+      onConfirmSubmitClose();
     }
   };
 
@@ -164,18 +180,19 @@ function PriceModeManagement() {
 
   useEffect(() => {
     if (isModalFormOpen && productsByIdData && !isProductsByIdFetching) {
-      setValue(
-        "priceModeItems",
-        productsByIdData?.priceModeItems?.map((item) => ({
+      const transformedArray = productsByIdData?.priceModeItems?.map(
+        (item) => ({
           priceModeId: selectedRowData?.id,
           itemId: productData?.items?.find(
             (product) => product.id === item.itemId
           ),
           itemDescription: item.itemDescription,
           price: item.priceChangeHistories?.[0]?.price,
-          // ...item,
-        }))
+        })
       );
+
+      setInitialProducts(transformedArray);
+      setValue("priceModeItems", transformedArray);
     }
   }, [isModalFormOpen, productsByIdData]);
 
@@ -215,7 +232,9 @@ function PriceModeManagement() {
         title="Manage Products"
         open={isModalFormOpen}
         onClose={isDirty ? onConfirmCloseOpen : handleFormClose}
-        disableSubmit={!isValid || !isDirty}
+        disableSubmit={
+          watch("priceModeItems")?.length === 0 ? false : !isValid || !isDirty
+        }
         onSubmit={onConfirmSubmitOpen}
         width="1400px"
         height="660px"
@@ -263,6 +282,15 @@ function PriceModeManagement() {
               >
                 Clear All
               </Button>
+
+              {initialProducts?.length > 0 && (
+                <Tooltip
+                  title="To change prices, please go to the price change form."
+                  placement="top"
+                >
+                  <Info sx={{ color: "gray", fontSize: "20px" }} />
+                </Tooltip>
+              )}
             </Box>
 
             {fields?.length === 0 ? (
@@ -303,6 +331,19 @@ function PriceModeManagement() {
                           `priceModeItems[${index}].itemDescription`,
                           value?.itemDescription
                         );
+
+                        if (
+                          initialProducts?.some(
+                            (item) => item.itemId?.id === value?.id
+                          )
+                        ) {
+                          setValue(
+                            `priceModeItems[${index}].price`,
+                            initialProducts?.find(
+                              (item) => item.itemId?.id === value?.id
+                            )?.price
+                          );
+                        }
                         return value;
                       }}
                     />
@@ -352,6 +393,11 @@ function PriceModeManagement() {
                           allowLeadingZeros={false}
                           prefix="₱"
                           sx={{ width: "120px" }}
+                          disabled={initialProducts?.some(
+                            (item) =>
+                              item.itemId?.id ===
+                              watch(`priceModeItems[${index}].itemId.id`)
+                          )}
                         />
                       )}
                     />
@@ -414,6 +460,7 @@ function PriceModeManagement() {
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onSubmit)}
+        isLoading={isTaggingLoading}
       >
         Are you sure you want to tag products to price mode?
       </CommonDialog>

@@ -45,14 +45,14 @@ export const priceModeItemsApi = createApi({
       transformErrorResponse: (response) => response.value,
     }),
 
-    // putPriceMode: builder.mutation({
-    //   query: ({ id, ...body }) => ({
-    //     url: `/price-mode/${id}/information`,
-    //     method: "PUT",
-    //     body: body,
-    //   }),
-    //   invalidatesTags: ["Price Mode Items"],
-    // }),
+    postPriceChange: builder.mutation({
+      query: (body) => ({
+        url: "/PriceChange/AddNewPriceChange",
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Price Mode Items"],
+    }),
   }),
 });
 
@@ -60,4 +60,5 @@ export const {
   usePostItemsToPriceModeMutation,
   useLazyGetAllItemsByPriceModeIdQuery,
   useGetAllPriceModeForClientsQuery,
+  usePostPriceChangeMutation,
 } = priceModeItemsApi;
