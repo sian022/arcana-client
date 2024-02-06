@@ -34,27 +34,27 @@ function ManageProductsSkeleton() {
           Products List
         </Typography>
 
-        <Skeleton />
+        <Skeleton width="80px" height="30px" sx={{ transform: "none" }} />
       </Box>
 
       <Box
         className="priceModeManagementModal__items"
         sx={{ overflow: "hidden" }}
       >
-        {Array.from({ length: 10 }).map((item, index) => (
+        {Array.from({ length: 12 }).map((item, index) => (
           <Box key={index} className="priceModeManagementModal__items__item">
-            <Skeleton />
+            <Skeleton width="180px" height="45px" sx={{ transform: "none" }} />
 
-            <Skeleton />
+            <Skeleton width="250px" height="45px" sx={{ transform: "none" }} />
 
-            <Skeleton />
+            <Skeleton width="120px" height="45px" sx={{ transform: "none" }} />
 
-            <Skeleton />
+            <Skeleton width="45px" height="45px" sx={{ transform: "none" }} />
           </Box>
         ))}
       </Box>
 
-      <Skeleton />
+      <Skeleton width="150px" height="35px" sx={{ transform: "none" }} />
     </Box>
   );
 }
