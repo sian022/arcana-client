@@ -750,30 +750,6 @@ function RegisterRegularForm({ open, onClose }) {
                     );
                   }}
                 />
-
-                <ControlledAutocomplete
-                  name="priceModeId"
-                  control={control}
-                  options={priceModeData || []}
-                  getOptionLabel={(option) =>
-                    `${option.priceModeCode?.toUpperCase()} -  ${option.priceModeDescription?.toUpperCase()}`
-                  }
-                  disableClearable
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  loading={isPriceModeLoading}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      label="Price Mode"
-                      required
-                      helperText={errors?.priceModeId?.message}
-                      error={errors?.priceModeId}
-                    />
-                  )}
-                />
               </Box>
             </Box>
             <Box className="register__secondRow">
@@ -811,6 +787,7 @@ function RegisterRegularForm({ open, onClose }) {
                       value={selectedRowData?.ownersAddress?.barangayName ?? ""}
                     />
                   </Box>
+
                   <Box className="register__secondRow__content">
                     <TextField
                       label="Municipality/City"
@@ -830,18 +807,11 @@ function RegisterRegularForm({ open, onClose }) {
                       disabled
                       value={selectedRowData?.ownersAddress?.province ?? ""}
                     />
-                    {/* <TextField
-                label="Zip Code"
-                size="small"
-                autoComplete="off"
-                required
-                className="register__textField"
-                
-              /> */}
                   </Box>
                 </Box>
               </Box>
             </Box>
+
             <Box className="register__thirdRow">
               <Box className="register__thirdRow__column">
                 <Typography className="register__title">
@@ -859,42 +829,6 @@ function RegisterRegularForm({ open, onClose }) {
               </Box>
 
               <Box className="register__thirdRow__column">
-                <Typography className="register__title">Cluster</Typography>
-
-                <ControlledAutocomplete
-                  name={"clusterId"}
-                  control={control}
-                  options={clusterData?.cluster || []}
-                  getOptionLabel={(option) => option.cluster.toUpperCase()}
-                  disableClearable
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      label="Cluster"
-                      required
-                      helperText={errors?.clusterId?.message}
-                      error={errors?.clusterId}
-                    />
-                  )}
-                />
-                {/* <TextField
-                  label="Cluster Type"
-                  size="small"
-                  autoComplete="off"
-                  type="number"
-                  required
-                  className="register__textField"
-                  {...register("cluster")}
-                  helperText={errors?.cluster?.message}
-                  error={errors?.cluster}
-                /> */}
-              </Box>
-
-              <Box className="register__thirdRow__column">
                 <Typography className="register__title">
                   Business Type
                 </Typography>
@@ -904,7 +838,7 @@ function RegisterRegularForm({ open, onClose }) {
                   control={control}
                   options={storeTypeData?.storeTypes || []}
                   getOptionLabel={(option) =>
-                    option.storeTypeName.toUpperCase()
+                    option.storeTypeName?.toUpperCase()
                   }
                   disableClearable
                   // value={storeTypeData?.storeTypes?.find(
@@ -955,6 +889,7 @@ function RegisterRegularForm({ open, onClose }) {
                 /> */}
               </Box>
             </Box>
+
             <Box className="register__secondRow">
               <Box className="register__titleBox">
                 <Typography className="register__title">
@@ -1087,6 +1022,62 @@ function RegisterRegularForm({ open, onClose }) {
                 </SecondaryButton> */}
               </Box>
             </Box>
+
+            <Box className="register__thirdRow">
+              <Box className="register__thirdRow__column">
+                <Typography className="register__title">Cluster</Typography>
+
+                <ControlledAutocomplete
+                  name={"clusterId"}
+                  control={control}
+                  options={clusterData?.cluster || []}
+                  getOptionLabel={(option) => option.cluster.toUpperCase()}
+                  disableClearable
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Cluster"
+                      required
+                      helperText={errors?.clusterId?.message}
+                      error={errors?.clusterId}
+                    />
+                  )}
+                />
+              </Box>
+
+              <Box className="register__thirdRow__column">
+                <Typography className="register__title">Price Mode</Typography>
+
+                <ControlledAutocomplete
+                  name="priceModeId"
+                  control={control}
+                  options={priceModeData || []}
+                  getOptionLabel={(option) =>
+                    `${option.priceModeCode?.toUpperCase()} -  ${option.priceModeDescription?.toUpperCase()}`
+                  }
+                  disableClearable
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  loading={isPriceModeLoading}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Price Mode"
+                      required
+                      helperText={errors?.priceModeId?.message}
+                      error={errors?.priceModeId}
+                    />
+                  )}
+                />
+              </Box>
+            </Box>
+
             <Box className="register__secondRow">
               <Box className="register__titleBox">
                 <Typography className="register__title">

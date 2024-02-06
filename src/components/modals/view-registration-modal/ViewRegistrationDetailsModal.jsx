@@ -230,7 +230,8 @@ function ViewRegistrationDetailsModal({
       <CommonModal
         // width="800px"
         width={clientStatus === "Approved" ? "900px" : "800px"}
-        height="670px"
+        // height="670px"
+        height="700px"
         disablePadding
         ribbon
         customRibbonContent={customRibbonContent}

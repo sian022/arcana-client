@@ -1054,30 +1054,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                         );
                       }}
                     />
-
-                    <ControlledAutocomplete
-                      name="priceModeId"
-                      control={control}
-                      options={priceModeData || []}
-                      getOptionLabel={(option) =>
-                        `${option.priceModeCode?.toUpperCase()} -  ${option.priceModeDescription?.toUpperCase()}`
-                      }
-                      disableClearable
-                      isOptionEqualToValue={(option, value) =>
-                        option.id === value.id
-                      }
-                      loading={isPriceModeLoading}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          size="small"
-                          label="Price Mode"
-                          required
-                          helperText={errors?.priceModeId?.message}
-                          error={errors?.priceModeId}
-                        />
-                      )}
-                    />
                   </Box>
                 </Box>
                 <Box className="register__secondRow">
@@ -1255,6 +1231,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     </Box>
                   </Box>
                 </Box>
+
                 <Box className="register__thirdRow">
                   <Box className="register__thirdRow__column">
                     <Typography className="register__title">
@@ -1285,41 +1262,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   </Box>
 
                   <Box className="register__thirdRow__column">
-                    <Typography className="register__title">Cluster</Typography>
-                    <ControlledAutocomplete
-                      name={"clusterId"}
-                      control={control}
-                      options={clusterData?.cluster || []}
-                      getOptionLabel={(option) => option.cluster.toUpperCase()}
-                      disableClearable
-                      isOptionEqualToValue={(option, value) =>
-                        option.id === value.id
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          size="small"
-                          label="Cluster"
-                          required
-                          helperText={errors?.clusterId?.message}
-                          error={errors?.clusterId}
-                        />
-                      )}
-                    />
-                    {/* <TextField
-                  label="Cluster Type"
-                  size="small"
-                  autoComplete="off"
-                  type="number"
-                  required
-                  className="register__textField"
-                  {...register("cluster")}
-                  helperText={errors?.cluster?.message}
-                  error={errors?.cluster}
-                /> */}
-                  </Box>
-
-                  <Box className="register__thirdRow__column">
                     <Typography className="register__title">
                       Business Type
                     </Typography>
@@ -1328,7 +1270,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       control={control}
                       options={storeTypeData?.storeTypes || []}
                       getOptionLabel={(option) =>
-                        option.storeTypeName.toUpperCase()
+                        option.storeTypeName?.toUpperCase()
                       }
                       disableClearable
                       // value={storeTypeData?.storeTypes?.find(
@@ -1350,6 +1292,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     />
                   </Box>
                 </Box>
+
                 <Box className="register__secondRow">
                   <Box className="register__titleBox">
                     <Typography className="register__title">
@@ -1518,6 +1461,74 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 </SecondaryButton> */}
                   </Box>
                 </Box>
+
+                <Box className="register__thirdRow">
+                  <Box className="register__thirdRow__column">
+                    <Typography className="register__title">Cluster</Typography>
+                    <ControlledAutocomplete
+                      name={"clusterId"}
+                      control={control}
+                      options={clusterData?.cluster || []}
+                      getOptionLabel={(option) => option.cluster?.toUpperCase()}
+                      disableClearable
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          label="Cluster"
+                          required
+                          helperText={errors?.clusterId?.message}
+                          error={errors?.clusterId}
+                        />
+                      )}
+                    />
+                    {/* <TextField
+                  label="Cluster Type"
+                  size="small"
+                  autoComplete="off"
+                  type="number"
+                  required
+                  className="register__textField"
+                  {...register("cluster")}
+                  helperText={errors?.cluster?.message}
+                  error={errors?.cluster}
+                /> */}
+                  </Box>
+
+                  <Box className="register__thirdRow__column">
+                    <Typography className="register__title">
+                      Price Mode
+                    </Typography>
+
+                    <ControlledAutocomplete
+                      name="priceModeId"
+                      control={control}
+                      options={priceModeData || []}
+                      getOptionLabel={(option) =>
+                        `${option.priceModeCode?.toUpperCase()} -  ${option.priceModeDescription?.toUpperCase()}`
+                      }
+                      disableClearable
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      loading={isPriceModeLoading}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          label="Price Mode"
+                          required
+                          helperText={errors?.priceModeId?.message}
+                          error={errors?.priceModeId}
+                        />
+                      )}
+                    />
+                  </Box>
+                </Box>
+
                 <Box className="register__secondRow">
                   <Box className="register__titleBox">
                     <Typography className="register__title">
