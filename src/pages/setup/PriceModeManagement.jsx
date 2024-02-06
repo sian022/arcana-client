@@ -254,7 +254,7 @@ function PriceModeManagement() {
               <Button
                 sx={{ color: "gray" }}
                 onClick={() => {
-                  if (isDirty) {
+                  if (watch("priceModeItems").length > 0) {
                     onConfirmClearOpen();
                   } else {
                     remove();

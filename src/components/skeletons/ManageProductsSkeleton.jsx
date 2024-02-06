@@ -37,7 +37,10 @@ function ManageProductsSkeleton() {
         <Skeleton />
       </Box>
 
-      <Box className="priceModeManagementModal__items" ref={parent}>
+      <Box
+        className="priceModeManagementModal__items"
+        sx={{ overflow: "hidden" }}
+      >
         {Array.from({ length: 10 }).map((item, index) => (
           <Box key={index} className="priceModeManagementModal__items__item">
             <Skeleton />
