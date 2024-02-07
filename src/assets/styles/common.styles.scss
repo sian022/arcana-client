@@ -318,6 +318,9 @@
   align-items: center;
   justify-content: center;
   margin-top: 10px;
+  flex: 1;
+  position: relative;
+  bottom: 10%;
   // height: 70%;
 
   & img {
