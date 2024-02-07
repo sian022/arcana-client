@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-function CommonTableSkeleton({ compact, moreCompact, mt }) {
+function CommonTableSkeleton({ columnCount, compact, moreCompact, mt }) {
   return (
     <Box className="tableSuperContainer" sx={{ mt: mt && mt }}>
       <TableContainer
@@ -31,7 +31,7 @@ function CommonTableSkeleton({ compact, moreCompact, mt }) {
         <Table>
           <TableHead>
             <TableRow>
-              {Array.from({ length: 5 }, (_, index) => (
+              {Array.from({ length: columnCount ?? 5 }, (_, index) => (
                 <TableCell key={index}>
                   <Skeleton />
                 </TableCell>
@@ -41,7 +41,7 @@ function CommonTableSkeleton({ compact, moreCompact, mt }) {
           <TableBody>
             {Array.from({ length: 8 }, (row, rowIndex) => (
               <TableRow key={rowIndex}>
-                {Array.from({ length: 5 }, (cell, cellIndex) => (
+                {Array.from({ length: columnCount ?? 5 }, (cell, cellIndex) => (
                   <TableCell key={cellIndex}>
                     <Skeleton />
                   </TableCell>

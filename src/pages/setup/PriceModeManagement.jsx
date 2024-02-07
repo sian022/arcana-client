@@ -21,6 +21,7 @@ import { NumericFormat } from "react-number-format";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import CommonDialog from "../../components/CommonDialog";
 import {
+  useDeletePriceModeItemMutation,
   useGetAllItemsByPriceModeIdQuery,
   usePostItemsToPriceModeMutation,
   useUpdatePriceModeItemStatusMutation,
@@ -65,6 +66,12 @@ function PriceModeManagement() {
     onClose: onArchiveClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
+
   //React Hook Form
   const {
     handleSubmit,
@@ -92,6 +99,8 @@ function PriceModeManagement() {
     usePostItemsToPriceModeMutation();
   const [updatePriceModeItemStatus, { isLoading: isArchiveLoading }] =
     useUpdatePriceModeItemStatusMutation();
+  const [deletePriceModeItem, { isLoading: isDeleteLoading }] =
+    useDeletePriceModeItemMutation();
 
   const [
     triggerProducts,
@@ -168,6 +177,23 @@ function PriceModeManagement() {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deletePriceModeItem({
+        id: selectedRowData?.priceModeItemId,
+      }).unwrap();
+      showSnackbar("Item deleted successfully", "success");
+      onDeleteClose();
+    } catch (error) {
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error deleting item", "error");
+      }
+      onDeleteClose();
+    }
+  };
+
   const handleDrawerClose = () => {
     onDrawerClose();
     reset();
@@ -207,7 +233,8 @@ function PriceModeManagement() {
           }
           setSearch={setSearch}
           onOpen={onDrawerOpen}
-          setStatus={setStatus}
+          // setStatus={setStatus}
+          removeArchive
         />
 
         {isPriceModeItemsFetching ? (
@@ -216,7 +243,8 @@ function PriceModeManagement() {
           <CommonTable
             mapData={priceModeItemsData?.priceModeItems}
             editable
-            onArchive={onArchiveOpen}
+            // onArchive={onArchiveOpen}
+            onDelete={onDeleteOpen}
             onPriceChange={onPriceChangeOpen}
             onViewMoreConstant={onPriceDetailsOpen}
             status={status}
@@ -359,6 +387,16 @@ function PriceModeManagement() {
       />
 
       <CommonDialog
+        open={isDeleteOpen}
+        onClose={onDeleteClose}
+        noIcon={!status}
+        onYes={handleDelete}
+        isLoading={isDeleteLoading}
+      >
+        Are you sure you want to delete this item?
+      </CommonDialog>
+
+      {/* <CommonDialog
         open={isArchiveOpen}
         onClose={onArchiveClose}
         noIcon={!status}
@@ -366,7 +404,7 @@ function PriceModeManagement() {
         isLoading={isArchiveLoading}
       >
         Are you sure you want to {status ? "archive" : "restore"} this item?
-      </CommonDialog>
+      </CommonDialog> */}
     </>
   );
 }

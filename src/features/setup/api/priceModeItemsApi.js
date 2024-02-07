@@ -53,6 +53,14 @@ export const priceModeItemsApi = createApi({
       invalidatesTags: ["Price Mode Items"],
     }),
 
+    deletePriceModeItem: builder.mutation({
+      query: ({ id }) => ({
+        url: `/price-mode-items/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Price Mode Items"],
+    }),
+
     postPriceChange: builder.mutation({
       query: (body) => ({
         url: "/PriceChange/AddNewPriceChange",
@@ -98,6 +106,7 @@ export const {
   useLazyGetAllItemsByPriceModeIdQuery,
   useGetAllPriceModeForClientsQuery,
   useUpdatePriceModeItemStatusMutation,
+  useDeletePriceModeItemMutation,
   useLazyGetPriceChangeByPriceModeItemIdQuery,
   usePostPriceChangeMutation,
   usePostAddPriceChangeMutation,
