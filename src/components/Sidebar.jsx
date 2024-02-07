@@ -40,7 +40,7 @@ function Sidebar() {
     (state) => state.disclosure.sidebarSmallScreen
   );
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
 
   useEffect(() => {
     const handleResize = () => {
@@ -124,20 +124,21 @@ function Sidebar() {
                             (sum, notification) =>
                               sum + parseInt(notifications[notification]),
                             0
-                          ) > 0 && (
-                            <Box sx={{ width: "20px", height: "20px" }}>
-                              {item.notifications && (
-                                <Box className="notifications">
-                                  {item?.notifications?.reduce(
-                                    (sum, notification) =>
-                                      sum +
-                                      parseInt(notifications[notification]),
-                                    0
-                                  )}
-                                </Box>
-                              )}
-                            </Box>
-                          )}
+                          ) > 0 &&
+                            !isNotificationFetching && (
+                              <Box sx={{ width: "20px", height: "20px" }}>
+                                {item.notifications && (
+                                  <Box className="notifications">
+                                    {item?.notifications?.reduce(
+                                      (sum, notification) =>
+                                        sum +
+                                        parseInt(notifications[notification]),
+                                      0
+                                    )}
+                                  </Box>
+                                )}
+                              </Box>
+                            )}
 
                           {/* {sidebarToggled && (
                         <ListItemText>{item.name}</ListItemText>
@@ -198,31 +199,32 @@ function Sidebar() {
                                   0
                                 ) > 0 && (
                                   <Box sx={{ width: "20px", height: "20px" }}>
-                                    {subItem?.notifications && (
-                                      <Box
-                                        sx={{
-                                          bgcolor: "notification.main",
-                                          borderRadius: "50%",
-                                          // width: "12%",
-                                          width: "20px",
-                                          height: "20px",
-                                          // height: "20px",
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "center",
-                                          color: "white !important",
-                                        }}
-                                      >
-                                        {subItem?.notifications?.reduce(
-                                          (sum, notification) =>
-                                            sum +
-                                            parseInt(
-                                              notifications[notification]
-                                            ),
-                                          0
-                                        )}
-                                      </Box>
-                                    )}
+                                    {subItem?.notifications &&
+                                      !isNotificationFetching && (
+                                        <Box
+                                          sx={{
+                                            bgcolor: "notification.main",
+                                            borderRadius: "50%",
+                                            // width: "12%",
+                                            width: "20px",
+                                            height: "20px",
+                                            // height: "20px",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            color: "white !important",
+                                          }}
+                                        >
+                                          {subItem?.notifications?.reduce(
+                                            (sum, notification) =>
+                                              sum +
+                                              parseInt(
+                                                notifications[notification]
+                                              ),
+                                            0
+                                          )}
+                                        </Box>
+                                      )}
                                   </Box>
                                 )}
                               </ListItemButton>
