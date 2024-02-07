@@ -25,9 +25,9 @@ export const priceModeItemsApi = createApi({
     }),
 
     getAllItemsByPriceModeId: builder.query({
-      query: ({ id, ...params }) => ({
+      query: (params) => ({
         params: params,
-        url: `/price-mode-items/${id}`,
+        url: `/price-mode-items`,
         method: "GET",
       }),
       providesTags: ["Price Mode Items"],
@@ -58,6 +58,7 @@ export const priceModeItemsApi = createApi({
 
 export const {
   usePostItemsToPriceModeMutation,
+  useGetAllItemsByPriceModeIdQuery,
   useLazyGetAllItemsByPriceModeIdQuery,
   useGetAllPriceModeForClientsQuery,
   usePostPriceChangeMutation,

@@ -82,18 +82,6 @@ function Products() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "itemId",
-    "isActive",
-    "addedBy",
-    "modifiedBy",
-    "latestPriceChange",
-    // "priceChangeHistories",
-    "futurePriceChanges",
-    // "itemPriceChanges",
-  ];
-
   const tableHeads = [
     "Item Code",
     "Item Description",
@@ -101,7 +89,15 @@ function Products() {
     "Product Category",
     "Product Sub Category",
     "Meat Type",
-    "Price Details",
+  ];
+
+  const customOrderKeys = [
+    "itemCode",
+    "itemDescription",
+    "uom",
+    "productCategory",
+    "productSubCategoryName",
+    "meatType",
   ];
 
   //React Hook Form
@@ -316,7 +312,6 @@ function Products() {
       ) : (
         <CommonTable
           mapData={data?.items}
-          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -328,9 +323,10 @@ function Products() {
           count={count}
           status={status}
           tableHeads={tableHeads}
-          viewMoreKey={"priceChangeHistories"}
-          onViewMoreClick={onPriceOpen}
-          onAddPriceChange={onAddPriceOpen}
+          customOrderKeys={customOrderKeys}
+          // viewMoreKey={"priceChangeHistories"}
+          // onViewMoreClick={onPriceOpen}
+          // onAddPriceChange={onAddPriceOpen}
         />
       )}
 

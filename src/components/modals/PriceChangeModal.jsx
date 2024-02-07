@@ -5,7 +5,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { priceModePriceChangeSchema } from "../../schema/schema";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonDialog from "../CommonDialog";
-import { useLazyGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
+import {
+  useLazyGetAllItemsByPriceModeIdQuery,
+  usePostPriceChangeMutation,
+} from "../../features/setup/api/priceModeItemsApi";
 import {
   Box,
   Button,
@@ -67,16 +70,24 @@ function PriceChangeModal({ ...props }) {
     { data: productsByIdData, isFetching: isProductsByIdFetching },
   ] = useLazyGetAllItemsByPriceModeIdQuery();
 
+  const [postPriceChange, { isLoading: isPriceChangeLoading }] =
+    usePostPriceChangeMutation();
+
   //Functions
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const transformedData = data.priceModeItemPriceChanges.map((item) => ({
       priceModeItemId: item.priceModeItemId.priceModeItemId,
       price: item.price,
-      effectivityDate: item.effectivityDate,
+      effectivityDate: moment(item.effectivityDate).format(
+        "YYYY-MM-DDTHH:mm:ss"
+      ),
+      // effectivityDate: item.effectivityDate,
     }));
 
     try {
-      console.log(transformedData);
+      await postPriceChange({
+        priceModeItemPriceChanges: transformedData,
+      }).unwrap();
       onConfirmSubmitClose();
       handleFormClose();
       showSnackbar("Price change submitted successfully", "success");
@@ -207,7 +218,7 @@ function PriceChangeModal({ ...props }) {
                     );
                     setValue(
                       `priceModeItemPriceChanges[${index}].currentPrice`,
-                      value?.priceChangeHistories?.[0]?.price
+                      value?.currentPrice
                     );
 
                     return value;
@@ -264,7 +275,7 @@ function PriceChangeModal({ ...props }) {
                   name={`priceModeItemPriceChanges[${index}].price`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <NumericFormat
-                      label="Price"
+                      label="New Price"
                       type="text"
                       size="small"
                       customInput={TextField}
@@ -349,7 +360,7 @@ function PriceChangeModal({ ...props }) {
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onSubmit)}
         noIcon
-        // isLoading={isPriceChangeLoading}
+        isLoading={isPriceChangeLoading}
       >
         Are you sure you want to submit price changes for{" "}
         <span style={{ fontWeight: "bold" }}>

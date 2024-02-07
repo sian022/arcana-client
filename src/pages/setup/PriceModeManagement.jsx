@@ -16,7 +16,10 @@ import CommonModalForm from "../../components/CommonModalForm";
 import useDisclosure from "../../hooks/useDisclosure";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { priceModeTaggingSchema } from "../../schema/schema";
+import {
+  priceModeItemSchema,
+  priceModeTaggingSchema,
+} from "../../schema/schema";
 import { useSelector } from "react-redux";
 import SecondaryButton from "../../components/SecondaryButton";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
@@ -27,14 +30,17 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import NoProducts from "../../assets/images/NoProductFound.svg";
 import CommonDialog from "../../components/CommonDialog";
 import {
+  useGetAllItemsByPriceModeIdQuery,
   useLazyGetAllItemsByPriceModeIdQuery,
   usePostItemsToPriceModeMutation,
 } from "../../features/setup/api/priceModeItemsApi";
 import ManageProductsSkeleton from "../../components/skeletons/ManageProductsSkeleton";
 import PriceChangeModal from "../../components/modals/PriceChangeModal";
+import CommonDrawer from "../../components/CommonDrawer";
 
 function PriceModeManagement() {
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
@@ -47,6 +53,12 @@ function PriceModeManagement() {
   const { showSnackbar } = useSnackbar();
 
   //Disclosures
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
+
   const {
     isOpen: isModalFormOpen,
     onOpen: onModalFormOpen,
@@ -88,65 +100,134 @@ function PriceModeManagement() {
     control,
     watch,
   } = useForm({
-    resolver: yupResolver(priceModeTaggingSchema.schema),
+    resolver: yupResolver(priceModeItemSchema.schema),
     mode: "onChange",
-    defaultValues: priceModeTaggingSchema.defaultValues,
+    defaultValues: priceModeItemSchema.defaultValues,
   });
 
-  const { fields, remove, append } = useFieldArray({
-    control,
-    name: "priceModeItems",
-  });
+  // const {
+  //   handleSubmit,
+  //   formState: { errors, isValid, isDirty },
+  //   register,
+  //   setValue,
+  //   reset,
+  //   getValues,
+  //   control,
+  //   watch,
+  // } = useForm({
+  //   resolver: yupResolver(priceModeTaggingSchema.schema),
+  //   mode: "onChange",
+  //   defaultValues: priceModeTaggingSchema.defaultValues,
+  // });
+
+  // const { fields, remove, append } = useFieldArray({
+  //   control,
+  //   name: "priceModeItems",
+  // });
 
   //RTK Query
-  const { data, isFetching } = useGetAllPriceModeQuery({
-    Search: search,
-    Status: true,
-    PageNumber: page + 1,
-    PageSize: rowsPerPage,
-  });
+  const { data: priceModeData, isFetching: isPriceModeFetching } =
+    useGetAllPriceModeQuery({
+      Status: true,
+      PageNumber: 1,
+      PageSize: 1000,
+    });
 
   const { data: productData, isLoading: isProductLoading } =
-    useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
+    useGetAllProductsQuery({
+      priceModeId: watch("priceModeId") ? watch("priceModeId")?.id : "",
+      Status: true,
+      page: 1,
+      pageSize: 1000,
+    });
 
   const [
     triggerProductsById,
     { data: productsByIdData, isFetching: isProductsByIdFetching },
   ] = useLazyGetAllItemsByPriceModeIdQuery();
 
+  const { data: priceModeItemsData, isFetching: isPriceModeItemsFetching } =
+    useGetAllItemsByPriceModeIdQuery({
+      Search: search,
+      Status: status,
+      PageNumber: page + 1,
+      PageSize: rowsPerPage,
+    });
+
   const [postItemsToPriceMode, { isLoading: isTaggingLoading }] =
     usePostItemsToPriceModeMutation();
 
   // Constants
-  const tableHeads = ["Price Mode Code", "Price Mode Description"];
+  const tableHeads = [
+    // "ID",
+    "Product Code",
+    "Item Description",
+    "UOM",
+    "Price",
+    "Price Mode",
+  ];
 
-  const customOrderKeys = ["priceModeCode", "priceModeDescription"];
+  const customOrderKeys = [
+    // "priceModeItemId",
+    "itemCode",
+    "itemDescription",
+    "uom",
+    "currentPrice",
+    "priceModeCode",
+  ];
+
+  const pesoArray = ["currentPrice"];
 
   const disableActions = ["priceChange"];
 
   //Functions
   const onSubmit = async (data) => {
     const transformedData = {
-      priceModeId: selectedRowData?.id,
-      priceModeItems: data.priceModeItems.map((item) => ({
-        itemId: item.itemId.id,
-        price: item.price,
-      })),
+      priceModeId: data?.priceModeId?.id,
+      itemId: data?.itemId?.id,
+      price: data?.price,
     };
 
     try {
       await postItemsToPriceMode(transformedData).unwrap();
-      handleFormClose();
-      onConfirmSubmitClose();
-      showSnackbar("Products successfully tagged to price mode", "success");
+      handleDrawerClose();
+      showSnackbar("Product successfully tagged to price mode", "success");
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
       } else {
-        showSnackbar("Error tagging products to price mode", "error");
+        showSnackbar("Error tagging product to price mode", "error");
       }
-      onConfirmSubmitClose();
     }
+  };
+
+  // const onSubmit = async (data) => {
+  //   const transformedData = {
+  //     priceModeId: selectedRowData?.id,
+  //     priceModeItems: data.priceModeItems.map((item) => ({
+  //       itemId: item.itemId.id,
+  //       price: item.price,
+  //     })),
+  //   };
+
+  //   try {
+  //     await postItemsToPriceMode(transformedData).unwrap();
+  //     handleFormClose();
+  //     onConfirmSubmitClose();
+  //     showSnackbar("Products successfully tagged to price mode", "success");
+  //   } catch (error) {
+  //     if (error?.data?.error?.message) {
+  //       showSnackbar(error?.data?.error?.message, "error");
+  //     } else {
+  //       showSnackbar("Error tagging products to price mode", "error");
+  //     }
+  //     onConfirmSubmitClose();
+  //   }
+  // };
+
+  const handleDrawerClose = () => {
+    onDrawerClose();
+    reset();
   };
 
   const handleFormClose = () => {
@@ -160,10 +241,10 @@ function PriceModeManagement() {
     onConfirmClearClose();
   };
 
-  //UseEffect
+  // UseEffect;
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
+    setCount(priceModeItemsData?.totalCount);
+  }, [priceModeItemsData]);
 
   useEffect(() => {
     setPage(0);
@@ -198,7 +279,7 @@ function PriceModeManagement() {
             (product) => product.id === item.itemId
           ),
           itemDescription: item.itemDescription,
-          price: item.priceChangeHistories?.[0]?.price,
+          price: item.currentPrice,
         })
       );
 
@@ -217,15 +298,15 @@ function PriceModeManagement() {
             </>
           }
           setSearch={setSearch}
-          removeAdd
-          removeArchive
+          onOpen={onDrawerOpen}
+          setStatus={setStatus}
         />
 
-        {isFetching ? (
+        {isPriceModeItemsFetching ? (
           <CommonTableSkeleton />
         ) : (
           <CommonTable
-            mapData={data?.priceMode}
+            mapData={priceModeItemsData?.priceModeItems}
             editable
             onManageProducts={onModalFormOpen}
             onPriceChange={onPriceChangeOpen}
@@ -238,12 +319,132 @@ function PriceModeManagement() {
             setRowsPerPage={setRowsPerPage}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
+            pesoArray={pesoArray}
             count={count}
           />
         )}
       </Box>
 
-      <CommonModalForm
+      <CommonDrawer
+        drawerHeader="Add Product by Price Mode"
+        open={isDrawerOpen}
+        onClose={handleDrawerClose}
+        disableSubmit={!isValid || !isDirty}
+        onSubmit={handleSubmit(onSubmit)}
+        isLoading={isTaggingLoading}
+      >
+        <ControlledAutocomplete
+          name="priceModeId"
+          control={control}
+          options={priceModeData?.priceMode || []}
+          getOptionLabel={(option) => option.priceModeCode || ""}
+          // getOptionDisabled={(option) =>
+          //   watch("priceModeItems")?.some(
+          //     (item) => item?.itemId?.itemCode === option.itemCode
+          //   )
+          // }
+          disableClearable
+          loading={isPriceModeFetching}
+          isOptionEqualToValue={(option, value) => true}
+          renderInput={(params) => (
+            <TextField {...params} size="small" label="Price Mode" />
+          )}
+          onChange={(_, value) => {
+            setValue("itemId", null);
+            setValue("itemDescription", "");
+            setValue("uom", "");
+            setValue("price", null);
+            return value;
+          }}
+        />
+
+        <ControlledAutocomplete
+          name="itemId"
+          control={control}
+          options={productData?.items || []}
+          getOptionLabel={(option) => option.itemCode || ""}
+          disabled={!watch("priceModeId")}
+          // getOptionDisabled={(option) =>
+          //   watch("priceModeItems")?.some(
+          //     (item) => item?.itemId?.itemCode === option.itemCode
+          //   )
+          // }
+          disableClearable
+          loading={isProductLoading}
+          isOptionEqualToValue={(option, value) => true}
+          renderInput={(params) => (
+            <TextField {...params} size="small" label="Product Code" />
+          )}
+          onChange={(_, value) => {
+            setValue("itemDescription", value?.itemDescription);
+            setValue("uom", value?.uom);
+            return value;
+          }}
+        />
+
+        <Controller
+          control={control}
+          name="itemDescription"
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Tooltip title={value?.toUpperCase() || ""} placement="top">
+              <TextField
+                label="Item Description"
+                size="small"
+                autoComplete="off"
+                disabled
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value?.toUpperCase() || ""}
+                ref={ref}
+              />
+            </Tooltip>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="uom"
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <TextField
+              label="Unit of Measurement"
+              size="small"
+              autoComplete="off"
+              disabled
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value?.toUpperCase() || ""}
+              ref={ref}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="price"
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <NumericFormat
+              label="Price"
+              type="text"
+              size="small"
+              customInput={TextField}
+              autoComplete="off"
+              onValueChange={(e) => {
+                e.value !== "" && onChange(Number(e.value));
+              }}
+              onBlur={onBlur}
+              value={value || ""}
+              inputRef={ref}
+              // required
+              thousandSeparator=","
+              allowNegative={false}
+              allowLeadingZeros={false}
+              prefix="₱"
+            />
+          )}
+        />
+      </CommonDrawer>
+
+      {/* <CommonModalForm
         title="Manage Products"
         open={isModalFormOpen}
         onClose={isDirty ? onConfirmCloseOpen : handleFormClose}
@@ -452,7 +653,7 @@ function PriceModeManagement() {
             </SecondaryButton>
           </Box>
         )}
-      </CommonModalForm>
+      </CommonModalForm> */}
 
       <PriceChangeModal open={isPriceChangeOpen} onClose={onPriceChangeClose} />
 
