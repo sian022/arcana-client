@@ -65,6 +65,7 @@ function CommonTable({
   pesoArray,
   viewMoreKey,
   onViewMoreClick,
+  onViewMoreConstant,
   attachKey,
   highlightSelected,
   disableActions,
@@ -267,6 +268,39 @@ function CommonTable({
                         <TableCell key={k}>
                           {item[keys]?.toUpperCase()}
                         </TableCell>
+                      );
+                    }
+
+                    if (
+                      onViewMoreConstant &&
+                      k === (customOrderKeys || dataToMapKeys).length - 1
+                    ) {
+                      return (
+                        <React.Fragment key={k}>
+                          <TableCell>
+                            {/* Content of the last regular column */}
+                            {pesoArray && pesoArray.includes(keys) && "₱ "}
+                            {percentageArray && percentageArray.includes(keys)
+                              ? item[keys] * 100
+                              : pesoArray && pesoArray.includes(keys)
+                              ? item[keys]?.toLocaleString()
+                              : !item[keys]
+                              ? "N/A"
+                              : item[keys]}
+                            {percentageArray &&
+                              percentageArray.includes(keys) &&
+                              "%"}
+                          </TableCell>
+                          <TableCell>
+                            {/* Additional column for onViewMoreConstant */}
+                            <IconButton
+                              sx={{ color: "secondary.main" }}
+                              onClick={onViewMoreConstant}
+                            >
+                              <Visibility />
+                            </IconButton>
+                          </TableCell>
+                        </React.Fragment>
                       );
                     }
 

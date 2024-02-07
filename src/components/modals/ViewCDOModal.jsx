@@ -31,7 +31,6 @@ import moment from "moment";
 import TertiaryButton from "../TertiaryButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useDeletePriceChangeMutation } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import { useDeleteUntagUserInClusterMutation } from "../../features/setup/api/clusterApi";

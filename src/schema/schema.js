@@ -220,6 +220,19 @@ export const priceModeTaggingSchema = {
   },
 };
 
+export const priceChangeSchema = {
+  schema: yup.object({
+    // priceModeItemId: yup.object().required("Product Code is required"),
+    price: yup.number().required("Price is required"),
+    effectivityDate: yup.date().required("Effectivity date is required"),
+  }),
+  defaultValues: {
+    // priceModeItemid: null,
+    price: null,
+    effectivityDate: null,
+  },
+};
+
 export const priceModePriceChangeSchema = {
   schema: yup.object({
     priceModeItemPriceChanges: yup.array().of(
@@ -550,20 +563,6 @@ export const approversSchema = {
         level: 1,
       },
     ],
-  },
-};
-
-export const priceChangeSchema = {
-  schema: yup.object({
-    itemId: yup.number().required("Product is required"),
-    price: yup.number().required("Price is required"),
-    effectivityDate: yup.date(),
-    // .required("Effectivity date is required"),
-  }),
-  defaultValues: {
-    itemId: null,
-    price: null,
-    effectivityDate: null,
   },
 };
 

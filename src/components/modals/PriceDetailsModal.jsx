@@ -29,9 +29,9 @@ import moment from "moment";
 import TertiaryButton from "../TertiaryButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useDeletePriceChangeMutation } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
+import { useDeletePriceChangeMutation } from "../../features/setup/api/priceModeItemsApi";
 
 function PriceDetailsModal({ isFetching, data, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -45,6 +45,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
+  //RTK Query
   const [deletePriceChange, { isLoading: isDeleteLoading }] =
     useDeletePriceChangeMutation();
 

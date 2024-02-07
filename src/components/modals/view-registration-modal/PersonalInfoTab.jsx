@@ -32,7 +32,9 @@ function PersonalInfoTab() {
               Birthday:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              {moment(selectedRowData?.dateOfBirth).format("MMMM D, YYYY")}
+              {moment(selectedRowData?.dateOfBirth)
+                .format("MMMM D, YYYY")
+                ?.toUpperCase()}
             </Typography>
           </Box>
 
@@ -146,10 +148,11 @@ function PersonalInfoTab() {
               Price Mode:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              {selectedRowData?.priceModeCode
+              {selectedRowData?.priceModeName?.toUpperCase() || "N/A"}
+              {/* {selectedRowData?.priceModeCode
                 ? `${selectedRowData?.priceModeCode} - 
               ${selectedRowData?.priceModeDescription}$`
-                : "N/A"}
+                : "N/A"} */}
             </Typography>
           </Box>
 
