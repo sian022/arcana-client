@@ -45,6 +45,7 @@ function PageHeaderAdd({
             onChange={(e) => {
               debouncedSetSearch(e.target.value);
             }}
+            sx={{ minWidth: "200px" }}
             autoComplete="off"
           />
         </Box>

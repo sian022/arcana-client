@@ -754,10 +754,12 @@
   &__currentPrice {
     // flex: 1;
     // width: 80%;
-    display: flex;
+    // display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
-    justify-content: space-between;
-    margin-top: 20px;
+    // justify-content: space-between;
+    // margin-top: 20px;
 
     &__left {
       display: flex;

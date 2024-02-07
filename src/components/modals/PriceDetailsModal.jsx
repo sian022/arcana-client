@@ -31,10 +31,13 @@ import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import useSnackbar from "../../hooks/useSnackbar";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
-import { useDeletePriceChangeMutation } from "../../features/setup/api/priceModeItemsApi";
+import {
+  useDeletePriceChangeMutation,
+  useLazyGetPriceChangeByPriceModeItemIdQuery,
+} from "../../features/setup/api/priceModeItemsApi";
 
 function PriceDetailsModal({ isFetching, data, ...otherProps }) {
-  const { onClose, ...noOnCloseProps } = otherProps;
+  const { open, onClose } = otherProps;
 
   const dispatch = useDispatch();
 
@@ -48,6 +51,11 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
   //RTK Query
   const [deletePriceChange, { isLoading: isDeleteLoading }] =
     useDeletePriceChangeMutation();
+
+  const [
+    triggerPriceChange,
+    { data: priceChangeData, isFetching: isPriceChangeFetching },
+  ] = useLazyGetPriceChangeByPriceModeItemIdQuery();
 
   //Disclosures
   const {
@@ -65,7 +73,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
   const onArchiveSubmit = async () => {
     try {
       await deletePriceChange(
-        selectedRowData?.futurePriceChanges?.[futurePriceIndex]?.id
+        priceChangeData?.futurePriceChanges?.[futurePriceIndex]?.id
       ).unwrap();
 
       // dispatch(setSelectedRow());
@@ -95,6 +103,18 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
     }
   }, [isFetching]);
 
+  useEffect(() => {
+    if (open) {
+      triggerPriceChange(
+        {
+          PriceModeId: selectedRowData?.priceModeId,
+          ItemId: selectedRowData?.itemId,
+        },
+        { preferCacheValue: true }
+      );
+    }
+  }, [open]);
+
   return (
     <>
       <CommonModal
@@ -108,20 +128,51 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
             Price Details
           </Typography>
 
-          {/* <Box
-          sx={{
-            position: "absolute",
-            right: "20px",
-            top: "20px",
-          }}
-        >
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        </Box> */}
-
           <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
             <Box className="priceChangeModal__currentPrice">
+              <Box className="priceChangeModal__currentPrice__left">
+                <Box
+                  sx={{
+                    bgcolor: "secondary.main",
+                    padding: "10px",
+                    borderRadius: "5px",
+                    color: "white !important",
+                    width: "150px",
+                  }}
+                >
+                  Item Info
+                </Box>
+
+                <TextField
+                  size="small"
+                  value={selectedRowData?.itemCode?.toUpperCase() || ""}
+                  readOnly
+                  sx={{ pointerEvents: "none", width: "100%" }}
+                />
+              </Box>
+
+              <Box className="priceChangeModal__currentPrice__right">
+                <Box
+                  sx={{
+                    bgcolor: "secondary.main",
+                    padding: "10px",
+                    borderRadius: "5px",
+                    color: "white !important",
+                    width: "150px",
+                  }}
+                >
+                  Price Mode
+                </Box>
+
+                <TextField
+                  size="small"
+                  readOnly
+                  value={selectedRowData?.priceModeCode?.toUpperCase() || ""}
+                  sx={{ pointerEvents: "none", width: "100%" }}
+                />
+              </Box>
+            </Box>
+            {/* <Box className="priceChangeModal__currentPrice">
               <Box className="priceChangeModal__currentPrice__left">
                 <Box
                   sx={{
@@ -137,9 +188,9 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                   <TextField
                     size="small"
                     value={
-                      // selectedRowData?.latestPriceChange?.price?.toLocaleString() ||
+                      // priceChangeData?.latestPriceChange?.price?.toLocaleString() ||
                       // ""
-                      selectedRowData?.priceChangeHistories?.[0]?.price?.toLocaleString() ||
+                      priceChangeData?.priceChangeHistories?.[0]?.price?.toLocaleString() ||
                       ""
                     }
                     readOnly
@@ -170,11 +221,11 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                     readOnly
                     value={
                       // moment(
-                      //   selectedRowData?.latestPriceChange?.effectivityDate
+                      //   priceChangeData?.latestPriceChange?.effectivityDate
                       // ).format("MMMM D") || ""
 
                       moment(
-                        selectedRowData?.priceChangeHistories?.[0]
+                        priceChangeData?.priceChangeHistories?.[0]
                           ?.effectivityDate
                       ).format("MMMM D, hh:mm a") || ""
                     }
@@ -182,7 +233,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                   />
                 </Box>
               </Box>
-            </Box>
+            </Box> */}
 
             <Box className="priceChangeModal__content">
               <Box className="priceChangeModal__content__left">
@@ -195,16 +246,16 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                   <TertiaryButton
                     sx={{ maxHeight: "25px" }}
                     onClick={() => setManageMode((prev) => !prev)}
-                    disabled={selectedRowData?.futurePriceChanges?.length === 0}
+                    disabled={priceChangeData?.futurePriceChanges?.length === 0}
                   >
                     {manageMode ? "Done" : "Manage"}
                   </TertiaryButton>
                 </Box>
 
                 <Box className="priceChangeModal__content__left__body">
-                  {selectedRowData?.futurePriceChanges?.length > 0 ? (
+                  {priceChangeData?.futurePriceChanges?.length > 0 ? (
                     <Stepper orientation="vertical">
-                      {selectedRowData?.futurePriceChanges?.map(
+                      {priceChangeData?.futurePriceChanges?.map(
                         (item, index) => (
                           <Step expanded>
                             <StepLabel sx={{ position: "relative" }}>
@@ -251,13 +302,14 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                 <Typography className="priceChangeModal__content__right__title">
                   Price History
                 </Typography>
+
                 <Box className="priceChangeModal__content__right__body">
-                  {selectedRowData?.priceChangeHistories?.length > 0 ? (
+                  {priceChangeData?.priceChangeHistories?.length > 0 ? (
                     <Stepper
                       orientation="vertical"
                       // activeStep={null}
                     >
-                      {selectedRowData?.priceChangeHistories?.map(
+                      {priceChangeData?.priceChangeHistories?.map(
                         (item, index) => (
                           <Step active expanded>
                             <StepLabel

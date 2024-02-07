@@ -35,6 +35,7 @@ import CommonDialog from "../../components/CommonDialog";
 import {
   useGetAllItemsByPriceModeIdQuery,
   useLazyGetAllItemsByPriceModeIdQuery,
+  useLazyGetPriceChangeByPriceModeItemIdQuery,
   usePostItemsToPriceModeMutation,
 } from "../../features/setup/api/priceModeItemsApi";
 import ManageProductsSkeleton from "../../components/skeletons/ManageProductsSkeleton";
@@ -207,7 +208,8 @@ function PriceModeManagement() {
           <CommonTable
             mapData={priceModeItemsData?.priceModeItems}
             editable
-            onArchive={true}
+            // onEdit={true}
+            // onArchive={true}
             onPriceChange={onPriceChangeOpen}
             onViewMoreConstant={onPriceDetailsOpen}
             status={status}
