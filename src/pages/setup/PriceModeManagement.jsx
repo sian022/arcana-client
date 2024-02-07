@@ -23,7 +23,10 @@ import {
 import { useSelector } from "react-redux";
 import SecondaryButton from "../../components/SecondaryButton";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
-import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
+import {
+  useGetAllProductsQuery,
+  useLazyGetAllProductsQuery,
+} from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { NumericFormat } from "react-number-format";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -97,13 +100,10 @@ function PriceModeManagement() {
       PageSize: 1000,
     });
 
-  const { data: productData, isLoading: isProductLoading } =
-    useGetAllProductsQuery({
-      priceModeId: watch("priceModeId") ? watch("priceModeId")?.id : "",
-      Status: true,
-      page: 1,
-      pageSize: 1000,
-    });
+  const [
+    triggerProducts,
+    { data: productData, isFetching: isProductFetching },
+  ] = useLazyGetAllProductsQuery();
 
   const { data: priceModeItemsData, isFetching: isPriceModeItemsFetching } =
     useGetAllItemsByPriceModeIdQuery({
@@ -166,6 +166,20 @@ function PriceModeManagement() {
 
   // UseEffect;
   useEffect(() => {
+    if (watch("priceModeId")) {
+      triggerProducts(
+        {
+          priceModeId: watch("priceModeId")?.id,
+          Status: true,
+          page: 1,
+          pageSize: 1000,
+        },
+        { preferCacheValue: true }
+      );
+    }
+  }, [watch("priceModeId")]);
+
+  useEffect(() => {
     setCount(priceModeItemsData?.totalCount);
   }, [priceModeItemsData]);
 
@@ -210,7 +224,7 @@ function PriceModeManagement() {
       </Box>
 
       <CommonDrawer
-        drawerHeader="Add Product by Price Mode"
+        drawerHeader="Tag Product to Price Mode"
         open={isDrawerOpen}
         onClose={handleDrawerClose}
         disableSubmit={!isValid || !isDirty}
@@ -245,16 +259,11 @@ function PriceModeManagement() {
         <ControlledAutocomplete
           name="itemId"
           control={control}
-          options={productData?.items || []}
+          options={isProductFetching ? [] : productData?.items || []}
           getOptionLabel={(option) => option.itemCode || ""}
           disabled={!watch("priceModeId")}
-          // getOptionDisabled={(option) =>
-          //   watch("priceModeItems")?.some(
-          //     (item) => item?.itemId?.itemCode === option.itemCode
-          //   )
-          // }
           disableClearable
-          loading={isProductLoading}
+          loading={isProductFetching}
           isOptionEqualToValue={(option, value) => true}
           renderInput={(params) => (
             <TextField {...params} size="small" label="Product Code" />

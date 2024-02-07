@@ -54,6 +54,7 @@ export const productsApi = createApi({
 export const {
   usePostProductMutation,
   useGetAllProductsQuery,
+  useLazyGetAllProductsQuery,
   usePutProductMutation,
   usePatchProductStatusMutation,
 } = productsApi;
