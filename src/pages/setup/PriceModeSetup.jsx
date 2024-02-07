@@ -218,6 +218,7 @@ function PriceModeSetup() {
           helperText={errors?.priceMode?.message}
           error={errors?.priceMode}
         />
+
         <TextField
           label="Price Mode Description"
           size="small"

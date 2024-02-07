@@ -229,17 +229,27 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         }
                         sx={{ position: "relative" }}
                       >
-                        <span
-                          style={{
+                        <Box
+                          sx={{
                             position: "absolute",
                             left: "-170px",
-                            fontWeight: "600",
                           }}
                         >
-                          {moment(
-                            history?.createdAt || history?.updatedAt
-                          ).format("MMMM D H:mm a")}
-                        </span>
+                          <span
+                            style={{ fontWeight: "600", marginRight: "5px" }}
+                          >
+                            {moment(
+                              history?.createdAt || history?.updatedAt
+                            ).format("H:mm a")}
+                          </span>
+
+                          <span>
+                            {moment(
+                              history?.createdAt || history?.updatedAt
+                            ).format("H:mm a")}
+                          </span>
+                        </Box>
+
                         <span
                           style={{
                             fontWeight: "700",
@@ -321,17 +331,27 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         }
                         sx={{ position: "relative" }}
                       >
-                        <span
-                          style={{
+                        <Box
+                          sx={{
                             position: "absolute",
                             left: "-170px",
-                            fontWeight: "600",
                           }}
                         >
-                          {moment(
-                            history?.createdAt || history?.updatedAt
-                          ).format("MMMM D H:mm a")}
-                        </span>
+                          <span
+                            style={{ fontWeight: "600", marginRight: "5px" }}
+                          >
+                            {moment(
+                              history?.createdAt || history?.updatedAt
+                            ).format("MMMM D")}
+                          </span>
+
+                          <span>
+                            {moment(
+                              history?.createdAt || history?.updatedAt
+                            ).format("H:mm a")}
+                          </span>
+                        </Box>
+
                         <span
                           style={{
                             fontWeight: "700",
@@ -394,17 +414,27 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         }
                         sx={{ position: "relative" }}
                       >
-                        <span
+                        <Box
                           style={{
                             position: "absolute",
                             left: "-170px",
-                            fontWeight: "600",
                           }}
                         >
-                          {moment(
-                            history?.createdAt || history?.updatedAt
-                          ).format("MMMM D H:mm a")}
-                        </span>
+                          <span
+                            style={{ fontWeight: "600", marginRight: "5px" }}
+                          >
+                            {moment(
+                              history?.createdAt || history?.updatedAt
+                            ).format("MMMM D")}
+                          </span>
+
+                          <span>
+                            {moment(
+                              history?.createdAt || history?.updatedAt
+                            ).format("H:mm a")}
+                          </span>
+                        </Box>
+
                         <span
                           style={{
                             fontWeight: "700",
@@ -458,17 +488,20 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     )}
                     sx={{ position: "relative" }}
                   >
-                    <span
-                      style={{
+                    <Box
+                      sx={{
                         position: "absolute",
                         left: "-170px",
-                        fontWeight: "600",
                       }}
                     >
-                      {moment(selectedRowData?.createdAt).format(
-                        "MMMM D H:mm a"
-                      )}
-                    </span>
+                      <span style={{ fontWeight: "600", marginRight: "5px" }}>
+                        {moment(selectedRowData?.createdAt).format("MMMM D")}
+                      </span>
+
+                      <span>
+                        {moment(selectedRowData?.createdAt).format("H:mm a")}
+                      </span>
+                    </Box>
 
                     <span
                       style={{

@@ -45,6 +45,14 @@ export const priceModeItemsApi = createApi({
       transformErrorResponse: (response) => response.value,
     }),
 
+    updatePriceModeItemStatus: builder.mutation({
+      query: ({ id }) => ({
+        url: `/price-change-items/${id}/archive`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Price Mode Items"],
+    }),
+
     postPriceChange: builder.mutation({
       query: (body) => ({
         url: "/PriceChange/AddNewPriceChange",
@@ -60,7 +68,7 @@ export const priceModeItemsApi = createApi({
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["Price Mode Items"],
+      invalidatesTags: ["Price Change"],
     }),
 
     getPriceChangeByPriceModeItemId: builder.query({
@@ -75,11 +83,11 @@ export const priceModeItemsApi = createApi({
     }),
 
     deletePriceChange: builder.mutation({
-      query: (id) => ({
+      query: ({ id }) => ({
         url: `/PriceChange/DeletePriceChange/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Price Mode Items"],
+      invalidatesTags: ["Price Change"],
     }),
   }),
 });
@@ -89,6 +97,7 @@ export const {
   useGetAllItemsByPriceModeIdQuery,
   useLazyGetAllItemsByPriceModeIdQuery,
   useGetAllPriceModeForClientsQuery,
+  useUpdatePriceModeItemStatusMutation,
   useLazyGetPriceChangeByPriceModeItemIdQuery,
   usePostPriceChangeMutation,
   usePostAddPriceChangeMutation,

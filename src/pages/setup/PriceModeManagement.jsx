@@ -1,45 +1,30 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, TextField, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
-import { Cancel, Help, Info, Link } from "@mui/icons-material";
+import { Link } from "@mui/icons-material";
 import CommonTable from "../../components/CommonTable";
 import { useGetAllPriceModeQuery } from "../../features/setup/api/priceModeSetupApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import CommonModalForm from "../../components/CommonModalForm";
 import useDisclosure from "../../hooks/useDisclosure";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  priceModeItemSchema,
-  priceModeTaggingSchema,
-} from "../../schema/schema";
-import { useSelector } from "react-redux";
+import { priceModeItemSchema } from "../../schema/schema";
+import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../../components/SecondaryButton";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import {
-  useGetAllProductsQuery,
+  productsApi,
   useLazyGetAllProductsQuery,
 } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { NumericFormat } from "react-number-format";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import NoProducts from "../../assets/images/NoProductFound.svg";
 import CommonDialog from "../../components/CommonDialog";
 import {
   useGetAllItemsByPriceModeIdQuery,
-  useLazyGetAllItemsByPriceModeIdQuery,
-  useLazyGetPriceChangeByPriceModeItemIdQuery,
   usePostItemsToPriceModeMutation,
+  useUpdatePriceModeItemStatusMutation,
 } from "../../features/setup/api/priceModeItemsApi";
-import ManageProductsSkeleton from "../../components/skeletons/ManageProductsSkeleton";
-import PriceChangeModal from "../../components/modals/PriceChangeModal";
 import CommonDrawer from "../../components/CommonDrawer";
 import PriceChangeDrawer from "../../components/drawers/PriceChangeDrawer";
 import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
@@ -51,11 +36,8 @@ function PriceModeManagement() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
-  const [initialProducts, setInitialProducts] = useState([]);
-
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const [parent] = useAutoAnimate();
-
+  const dispatch = useDispatch();
   const { showSnackbar } = useSnackbar();
 
   //Disclosures
@@ -75,6 +57,12 @@ function PriceModeManagement() {
     isOpen: isPriceDetailsOpen,
     onOpen: onPriceDetailsOpen,
     onClose: onPriceDetailsClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isArchiveOpen,
+    onOpen: onArchiveOpen,
+    onClose: onArchiveClose,
   } = useDisclosure();
 
   //React Hook Form
@@ -100,6 +88,10 @@ function PriceModeManagement() {
       PageNumber: 1,
       PageSize: 1000,
     });
+  const [postItemsToPriceMode, { isLoading: isTaggingLoading }] =
+    usePostItemsToPriceModeMutation();
+  const [updatePriceModeItemStatus, { isLoading: isArchiveLoading }] =
+    useUpdatePriceModeItemStatusMutation();
 
   const [
     triggerProducts,
@@ -113,9 +105,6 @@ function PriceModeManagement() {
       PageNumber: page + 1,
       PageSize: rowsPerPage,
     });
-
-  const [postItemsToPriceMode, { isLoading: isTaggingLoading }] =
-    usePostItemsToPriceModeMutation();
 
   // Constants
   const tableHeads = [
@@ -149,6 +138,8 @@ function PriceModeManagement() {
 
     try {
       await postItemsToPriceMode(transformedData).unwrap();
+      dispatch(productsApi.util.resetApiState());
+
       handleDrawerClose();
       showSnackbar("Product successfully tagged to price mode", "success");
     } catch (error) {
@@ -157,6 +148,23 @@ function PriceModeManagement() {
       } else {
         showSnackbar("Error tagging product to price mode", "error");
       }
+    }
+  };
+
+  const handleArchive = async () => {
+    try {
+      await updatePriceModeItemStatus({
+        id: selectedRowData?.priceModeItemId,
+      }).unwrap();
+      showSnackbar("Item archived successfully", "success");
+      onArchiveClose();
+    } catch (error) {
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error archiving item", "error");
+      }
+      onArchiveClose();
     }
   };
 
@@ -208,8 +216,7 @@ function PriceModeManagement() {
           <CommonTable
             mapData={priceModeItemsData?.priceModeItems}
             editable
-            // onEdit={true}
-            // onArchive={true}
+            onArchive={onArchiveOpen}
             onPriceChange={onPriceChangeOpen}
             onViewMoreConstant={onPriceDetailsOpen}
             status={status}
@@ -350,6 +357,16 @@ function PriceModeManagement() {
         open={isPriceDetailsOpen}
         onClose={onPriceDetailsClose}
       />
+
+      <CommonDialog
+        open={isArchiveOpen}
+        onClose={onArchiveClose}
+        noIcon={!status}
+        onYes={handleArchive}
+        isLoading={isArchiveLoading}
+      >
+        Are you sure you want to {status ? "archive" : "restore"} this item?
+      </CommonDialog>
     </>
   );
 }
