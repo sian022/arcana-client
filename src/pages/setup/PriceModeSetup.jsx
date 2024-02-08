@@ -219,6 +219,7 @@ function PriceModeSetup() {
           {...register("priceMode")}
           helperText={errors?.priceMode?.message}
           error={errors?.priceMode}
+          disabled={drawerMode === "edit"}
         />
 
         <TextField

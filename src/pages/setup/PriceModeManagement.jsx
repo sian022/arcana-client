@@ -245,7 +245,7 @@ function PriceModeManagement() {
             mapData={priceModeItemsData?.priceModeItems}
             editable
             // onArchive={onArchiveOpen}
-            onDelete={onDeleteOpen}
+            onRemove={onDeleteOpen}
             onPriceChange={onPriceChangeOpen}
             onViewMoreConstant={onPriceDetailsOpen}
             status={status}
@@ -394,7 +394,7 @@ function PriceModeManagement() {
         onYes={handleDelete}
         isLoading={isDeleteLoading}
       >
-        Are you sure you want to delete this item?
+        Are you sure you want to remove this item?
       </CommonDialog>
 
       {/* <CommonDialog

@@ -60,12 +60,13 @@ function ViewProductsByPriceModeModal({ ...props }) {
         <Box className="viewProductsByPriceModal__filtersAndLabel">
           <Box className="viewProductsByPriceModal__filtersAndLabel__priceMode">
             <Box className="viewProductsByPriceModal__filtersAndLabel__priceMode__code">
-              {selectedRowData?.priceModeCode}
-            </Box>
-
-            <Box className="viewProductsByPriceModal__filtersAndLabel__priceMode__description">
+              {selectedRowData?.priceModeCode} -{" "}
               {selectedRowData?.priceModeDescription}
             </Box>
+
+            {/* <Box className="viewProductsByPriceModal__filtersAndLabel__priceMode__description">
+              {selectedRowData?.priceModeDescription}
+            </Box> */}
 
             <Typography className="viewProductsByPriceModal__filtersAndLabel__priceMode__value"></Typography>
           </Box>
@@ -82,7 +83,10 @@ function ViewProductsByPriceModeModal({ ...props }) {
           />
         </Box>
 
-        <TableContainer sx={{ height: "400px" }}>
+        <TableContainer
+          className="viewProductsByPriceModal__tableContainer"
+          sx={{ height: "400px" }}
+        >
           <Table>
             <TableHead sx={{ bgcolor: "white !important" }}>
               <TableRow>

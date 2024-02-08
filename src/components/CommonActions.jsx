@@ -17,6 +17,7 @@ import {
   PeopleAlt,
   PersonAdd,
   Print,
+  Remove,
   RemoveCircle,
   RequestPage,
   Restore,
@@ -49,6 +50,7 @@ function CommonActions({
   onManageProducts,
   onPriceChange,
   onAttach,
+  onRemove,
   disableActions,
   item,
   status,
@@ -101,6 +103,8 @@ function CommonActions({
       onPriceChange();
     } else if (action === "attach") {
       onAttach();
+    } else if (action === "remove") {
+      onRemove();
     }
 
     onClose();
@@ -447,6 +451,21 @@ function CommonActions({
           >
             <Delete />
             Delete
+          </MenuItem>
+        )}
+
+        {onRemove && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("remove");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("remove") : false
+            }
+          >
+            <RemoveCircle />
+            Remove
           </MenuItem>
         )}
 

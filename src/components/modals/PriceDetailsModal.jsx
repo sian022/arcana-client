@@ -65,7 +65,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         id: priceChangeData?.futurePriceChanges?.[futurePriceIndex]?.id,
       }).unwrap();
 
-      showSnackbar("Price change successfully deleted!", "success");
+      showSnackbar("Price change successfully removed!", "success");
 
       onArchiveClose();
     } catch (error) {
@@ -187,7 +187,11 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                             <Step expanded>
                               <StepLabel sx={{ position: "relative" }}>
                                 <span style={{ fontWeight: "600" }}>
-                                  ₱ {item.price?.toLocaleString()}
+                                  ₱{" "}
+                                  {item.price?.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}
                                 </span>
                                 {manageMode && (
                                   <IconButton
@@ -244,7 +248,11 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                                 StepIconProps={{ icon: "" }}
                               >
                                 <span style={{ fontWeight: "600" }}>
-                                  ₱ {item.price?.toLocaleString()}
+                                  ₱{" "}
+                                  {item.price?.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}
                                 </span>
                               </StepLabel>
                               <StepContent>
@@ -279,12 +287,15 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         isLoading={isDeleteLoading}
         // noIcon={!status}
       >
-        Are you sure you want to delete price change of <br />
+        Are you sure you want to remove price change of <br />
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
           ₱{" "}
           {priceChangeData?.futurePriceChanges?.[
             futurePriceIndex
-          ]?.price?.toLocaleString()}
+          ]?.price?.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </span>
         ?
       </CommonDialog>

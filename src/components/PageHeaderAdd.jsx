@@ -11,6 +11,7 @@ function PageHeaderAdd({
   setSearch,
   removeAdd,
   removeArchive,
+  searchPlaceholder,
 }) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
@@ -41,7 +42,7 @@ function PageHeaderAdd({
           <TextField
             type="search"
             size="small"
-            label="Search"
+            label={searchPlaceholder ? searchPlaceholder : "Search"}
             onChange={(e) => {
               debouncedSetSearch(e.target.value);
             }}

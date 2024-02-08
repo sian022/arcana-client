@@ -50,6 +50,7 @@ function CommonTable({
   onAttach,
   onManageProducts,
   onPriceChange,
+  onRemove,
   page,
   setPage,
   rowsPerPage,
@@ -281,10 +282,14 @@ function CommonTable({
                           <TableCell>
                             {/* Content of the last regular column */}
                             {pesoArray && pesoArray.includes(keys) && "₱ "}
+
                             {percentageArray && percentageArray.includes(keys)
                               ? item[keys] * 100
                               : pesoArray && pesoArray.includes(keys)
-                              ? item[keys]?.toLocaleString()
+                              ? item[keys]?.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })
                               : !item[keys]
                               ? "N/A"
                               : item[keys]}
@@ -309,13 +314,16 @@ function CommonTable({
 
                     return (
                       <TableCell key={k}>
-                        {pesoArray && pesoArray.includes(keys) && "₱ "}
+                        {pesoArray && pesoArray.includes(keys) && "₱"}
                         {/* {keys === "phoneNumber" && "+63"} */}
 
                         {percentageArray && percentageArray.includes(keys)
                           ? item[keys] * 100
                           : pesoArray && pesoArray.includes(keys)
-                          ? item[keys]?.toLocaleString()
+                          ? item[keys]?.toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
                           : !item[keys]
                           ? "N/A"
                           : item[keys]}
@@ -363,6 +371,7 @@ function CommonTable({
                         onManageProducts={onManageProducts && onManageProducts}
                         onPriceChange={onPriceChange && onPriceChange}
                         onAttach={onAttach && onAttach}
+                        onRemove={onRemove && onRemove}
                         item={item}
                         status={status}
                         disableActions={disableActions}
