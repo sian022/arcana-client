@@ -364,7 +364,7 @@ function PriceModeManagement() {
               onBlur={onBlur}
               value={value || ""}
               inputRef={ref}
-              // required
+              disabled={!watch("itemId")}
               thousandSeparator=","
               allowNegative={false}
               allowLeadingZeros={false}

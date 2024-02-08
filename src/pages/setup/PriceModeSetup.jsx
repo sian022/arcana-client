@@ -19,6 +19,8 @@ import {
   usePostPriceModeMutation,
   usePatchPriceModeStatusMutation,
 } from "../../features/setup/api/priceModeSetupApi";
+import ViewProductsByPriceModeModal from "../../components/modals/ViewProductsByPriceModeModal";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function PriceModeSetup() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -28,7 +30,8 @@ function PriceModeSetup() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const { showSnackbar } = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -46,19 +49,17 @@ function PriceModeSetup() {
   } = useDisclosure();
 
   const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
+    isOpen: isViewProductsByPriceModeModalOpen,
+    onOpen: onViewProductsByPriceModeModalOpen,
+    onClose: onViewProductsByPriceModeModalClose,
   } = useDisclosure();
 
   // Constants
-  const tableHeads = ["Price Mode Code", "Price Mode Description"];
+  const tableHeads = [
+    "Price Mode Code",
+    "Price Mode Description",
+    "Tagged Products",
+  ];
 
   const customOrderKeys = ["priceModeCode", "priceModeDescription"];
 
@@ -95,25 +96,23 @@ function PriceModeSetup() {
     try {
       if (drawerMode === "add") {
         await postPriceMode(data).unwrap();
-        setSnackbarMessage("Price Mode added successfully");
+        showSnackbar("Price Mode added successfully", "success");
       } else if (drawerMode === "edit") {
         await putPriceMode({ id: selectedRowData?.id, ...data }).unwrap();
-        setSnackbarMessage("Price Mode updated successfully");
+        showSnackbar("Price Mode updated successfully", "success");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
     } catch (error) {
       if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
+        showSnackbar(error?.data?.error?.message, "error");
       } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} Price Mode`
+        showSnackbar(
+          `Error ${drawerMode === "add" ? "adding" : "updating"} Price Mode`,
+          "error"
         );
       }
-
-      onErrorOpen();
     }
   };
 
@@ -121,18 +120,16 @@ function PriceModeSetup() {
     try {
       await patchPrideModeStatus(selectedId).unwrap();
       onArchiveClose();
-      setSnackbarMessage(
-        `Price Mode ${status ? "archived" : "restored"} successfully`
+      showSnackbar(
+        `Price Mode ${status ? "archived" : "restored"} successfully`,
+        "success"
       );
-      onSuccessOpen();
     } catch (error) {
       if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
+        showSnackbar(error?.data?.error?.message, "error");
       } else {
-        setSnackbarMessage("Error archiving Price Mode");
+        showSnackbar("Error archiving Price Mode", "error");
       }
-
-      onErrorOpen();
     }
   };
 
@@ -191,6 +188,7 @@ function PriceModeSetup() {
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
+          onViewMoreConstant={onViewProductsByPriceModeModalOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -229,6 +227,11 @@ function PriceModeSetup() {
         />
       </CommonDrawer>
 
+      <ViewProductsByPriceModeModal
+        open={isViewProductsByPriceModeModalOpen}
+        onClose={onViewProductsByPriceModeModalClose}
+      />
+
       <CommonDialog
         open={isArchiveOpen}
         onClose={onArchiveClose}
@@ -242,16 +245,6 @@ function PriceModeSetup() {
         </span>
         ?
       </CommonDialog>
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }

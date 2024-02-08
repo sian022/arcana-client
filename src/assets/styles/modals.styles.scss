@@ -988,3 +988,42 @@
     }
   }
 }
+
+.viewProductsByPriceModal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  & &__title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &__priceMode {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    &__code {
+      background-color: $secondary;
+      padding: 10px;
+      border-radius: 5px;
+      color: white !important;
+    }
+
+    &__description {
+      background-color: $primary;
+      padding: 10px;
+      border-radius: 5px;
+      color: white !important;
+    }
+  }
+
+  &__noProductsFound {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+  }
+}
