@@ -184,6 +184,7 @@ function PriceModeManagement() {
       }).unwrap();
       showSnackbar("Item deleted successfully", "success");
       onDeleteClose();
+      dispatch(productsApi.util.resetApiState());
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
