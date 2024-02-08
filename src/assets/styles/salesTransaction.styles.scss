@@ -14,6 +14,10 @@
     align-items: center;
     gap: 10px;
     justify-content: space-between;
+
+    &__transactionsButton:hover {
+      background-color: darken(#fff, 5%);
+    }
   }
 
   &__body {
@@ -90,6 +94,10 @@
             0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important;
           border: 1px solid #dee2e6 !important;
           background-color: white !important;
+
+          &:hover {
+            background-color: darken(#fff, 3%) !important;
+          }
 
           &__labels {
             display: flex;

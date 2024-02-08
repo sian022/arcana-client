@@ -236,7 +236,7 @@ function SpecialDiscount() {
               name={"specialDiscount"}
               render={({ field: { onChange, onBlur, value, ref } }) => (
                 <NumericFormat
-                  label="Special Discount (%)"
+                  label="Special Discount"
                   type="text"
                   size="small"
                   customInput={TextField}
@@ -270,6 +270,7 @@ function SpecialDiscount() {
                     }
                     return true;
                   }}
+                  suffix="%"
                   // disabled={!watch("clientId")}
                 />
               )}

@@ -45,7 +45,7 @@ function Approval() {
             </Box>
           </Box>
 
-          {/* <Box
+          <Box
             className="pageIndex__navigators__item"
             onClick={() => navigate("sp-discount-approval")}
           >
@@ -70,7 +70,7 @@ function Approval() {
               )}
               <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
             </Box>
-          </Box> */}
+          </Box>
 
           <Box
             className="pageIndex__navigators__item"

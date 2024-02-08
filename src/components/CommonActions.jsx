@@ -4,6 +4,7 @@ import useDisclosure from "../hooks/useDisclosure";
 import {
   Archive,
   ArrowForward,
+  Attachment,
   Block,
   Cancel,
   Delete,
@@ -47,6 +48,7 @@ function CommonActions({
   onViewCluster,
   onManageProducts,
   onPriceChange,
+  onAttach,
   disableActions,
   item,
   status,
@@ -97,6 +99,8 @@ function CommonActions({
       onManageProducts();
     } else if (action === "priceChange") {
       onPriceChange();
+    } else if (action === "attach") {
+      onAttach();
     }
 
     onClose();
@@ -387,6 +391,37 @@ function CommonActions({
           </MenuItem>
         )}
 
+        {onAttach && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("attach");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("printFreebies") : false
+            }
+          >
+            <Attachment />
+            Attach CI
+          </MenuItem>
+        )}
+
+        {onResetPassword && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("resetPassword");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("resetPassword") : false
+            }
+          >
+            <Password />
+            Reset Password
+          </MenuItem>
+        )}
+
+        {/* Negative */}
         {onVoid && (
           <MenuItem
             className="actionsMenuItem"
@@ -427,21 +462,6 @@ function CommonActions({
           >
             <Cancel />
             Cancel
-          </MenuItem>
-        )}
-
-        {onResetPassword && (
-          <MenuItem
-            className="actionsMenuItem"
-            onClick={() => {
-              handleAction("resetPassword");
-            }}
-            disabled={
-              disableActions ? disableActions?.includes("resetPassword") : false
-            }
-          >
-            <Password />
-            Reset Password
           </MenuItem>
         )}
       </Menu>

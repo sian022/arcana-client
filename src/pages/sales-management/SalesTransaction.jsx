@@ -40,7 +40,7 @@ function SalesTransaction() {
     sessionStorage.getItem("transactionsMode") || false
   );
   const [currentTime, setCurrentTime] = useState(
-    moment().format("M/DD/YY h:mm a")
+    moment().format("M/D/YY h:m a")
   );
 
   const fullName = useSelector((state) => state.login.fullname);
@@ -109,7 +109,7 @@ function SalesTransaction() {
     let total = 0;
 
     watch("items").forEach((item) => {
-      total += item.itemId?.priceChangeHistories?.[0]?.price * item.quantity;
+      total += item.itemId?.currentPrice * item.quantity;
     });
 
     return total;
@@ -140,13 +140,14 @@ function SalesTransaction() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setCurrentTime(moment().format("M/DD/YY h:mm a"));
+      setCurrentTime(moment().format("M/D/YY h:m a"));
     }, 1000); // Update every second
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []); // Empty dependency array to run effect only once on mount
 
+  console.log(productData);
   return (
     <>
       <Box className="commonPageLayout">
@@ -155,14 +156,6 @@ function SalesTransaction() {
         ) : (
           <Box className="salesTransaction">
             <Box className="salesTransaction__header">
-              {/* <Typography color="white !important">Transaction No:</Typography>
-          <Typography
-            color="white !important"
-            fontSize="1.4rem"
-            fontWeight="700"
-          >
-            62291
-          </Typography> */}
               <Typography
                 color="white !important"
                 fontSize="1.4rem"
@@ -174,6 +167,7 @@ function SalesTransaction() {
               <Button
                 color="white"
                 variant="contained"
+                className="salesTransaction__header__transactionsButton"
                 onClick={() => {
                   setTransactionsMode(true);
                   sessionStorage.setItem("transactionsMode", true);
@@ -321,13 +315,10 @@ function SalesTransaction() {
                             >
                               <span style={{ whiteSpace: "nowrap" }}>
                                 ₱{" "}
-                                {item.priceChangeHistories?.[0]?.price?.toLocaleString(
-                                  undefined,
-                                  {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                  }
-                                )}
+                                {item.currentPrice?.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}
                               </span>
                             </Typography>
                           </Box>

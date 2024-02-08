@@ -1033,3 +1033,14 @@
     height: 300px;
   }
 }
+
+.viewTransactionSlipModal {
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

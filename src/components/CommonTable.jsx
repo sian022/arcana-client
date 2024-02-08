@@ -327,17 +327,6 @@ function CommonTable({
                     );
                   })}
 
-                  {onAttach && (
-                    <TableCell key={j}>
-                      <IconButton
-                        sx={{ color: "secondary.main" }}
-                        onClick={onAttach}
-                      >
-                        <Attachment />
-                      </IconButton>
-                    </TableCell>
-                  )}
-
                   {(editable || archivable) && (
                     <TableCell
                       sx={{
@@ -373,6 +362,7 @@ function CommonTable({
                         onResetPassword={onResetPassword && onResetPassword}
                         onManageProducts={onManageProducts && onManageProducts}
                         onPriceChange={onPriceChange && onPriceChange}
+                        onAttach={onAttach && onAttach}
                         item={item}
                         status={status}
                         disableActions={disableActions}

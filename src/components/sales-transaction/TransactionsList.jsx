@@ -17,7 +17,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import SecondaryButton from "../SecondaryButton";
 import useDisclosure from "../../hooks/useDisclosure";
-import SelectTransactionModal from "../modals/sales-management/SelectTransactionModal";
+import ViewTransactionModal from "../modals/sales-management/ViewTransactionModal";
 import ViewAttachmentModal from "../modals/sales-management/ViewAttachmentModal";
 import { debounce } from "../../utils/CustomFunctions";
 
@@ -32,9 +32,9 @@ function TransactionsList({ setTransactionsMode }) {
 
   //Disclosures
   const {
-    isOpen: isSelectOpen,
-    onOpen: onSelectOpen,
-    onClose: onSelectClose,
+    isOpen: isViewOpen,
+    onOpen: onViewOpen,
+    onClose: onViewClose,
   } = useDisclosure();
 
   const {
@@ -51,7 +51,7 @@ function TransactionsList({ setTransactionsMode }) {
     "Payment Type",
     "Business Name",
     "CI No.",
-    "",
+    "CI Status",
     // "Attach CI",
   ];
   const pesoArray = ["amount"];
@@ -85,51 +85,6 @@ function TransactionsList({ setTransactionsMode }) {
               Transactions List
             </Typography>
           </Box>
-
-          <Box className="transactionsList__header__center"></Box>
-
-          {/* <Box className="transactionsList__header__right">
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <DatePicker
-                label="Date From"
-                value={dateFromTemp}
-                onChange={setDateFromTemp}
-                slotProps={{
-                  textField: {
-                    size: "small",
-                    InputLabelProps: { style: { paddingTop: "2px" } },
-                  },
-                }}
-                sx={{ width: "200px" }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <DatePicker
-                label="Date To"
-                value={dateToTemp}
-                onChange={setDateToTemp}
-                slotProps={{
-                  textField: {
-                    size: "small",
-                    InputLabelProps: { style: { paddingTop: "2px" } },
-                  },
-                }}
-                sx={{ width: "200px" }}
-                minDate={dateFromTemp}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-
-            <SecondaryButton
-              size="medium"
-              onClick={handleSubmitDate}
-              sx={{ ml: "10px" }}
-            >
-              <Search />
-            </SecondaryButton>
-          </Box> */}
         </Box>
 
         <Divider />
@@ -154,7 +109,6 @@ function TransactionsList({ setTransactionsMode }) {
                 slotProps={{
                   textField: {
                     size: "small",
-                    // InputLabelProps: { style: { paddingTop: "2px" } },
                   },
                 }}
                 sx={{ width: "200px" }}
@@ -170,7 +124,6 @@ function TransactionsList({ setTransactionsMode }) {
                 slotProps={{
                   textField: {
                     size: "small",
-                    // InputLabelProps: { style: { paddingTop: "2px" } },
                   },
                 }}
                 sx={{ width: "200px" }}
@@ -193,14 +146,15 @@ function TransactionsList({ setTransactionsMode }) {
           tableHeads={tableHeads}
           mapData={dummyTransactionsData}
           pesoArray={pesoArray}
+          editable
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={dummyTransactionsData.length}
-          highlightSelected
           attachKey="attachmentStatus"
-          // onAttach={true}
+          onView={onViewOpen}
+          onAttach={onAttachmentOpen}
           // expanded
           lessCompact
         />
@@ -221,14 +175,14 @@ function TransactionsList({ setTransactionsMode }) {
               View Attachment
             </TertiaryButton>
 
-            <SecondaryButton size="medium" onClick={onSelectOpen}>
-              Select
+            <SecondaryButton size="medium" onClick={onViewOpen}>
+              View
             </SecondaryButton>
           </Box>
         </Box> */}
       </Box>
 
-      <SelectTransactionModal open={isSelectOpen} onClose={onSelectClose} />
+      <ViewTransactionModal open={isViewOpen} onClose={onViewClose} />
 
       <ViewAttachmentModal
         open={isAttachmentOpen}
