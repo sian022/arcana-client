@@ -35,16 +35,6 @@ export const priceModeItemsApi = createApi({
       transformErrorResponse: (response) => response.value,
     }),
 
-    getAllPriceModeForClients: builder.query({
-      query: () => ({
-        url: "/price-mode",
-        method: "GET",
-      }),
-      providesTags: ["Price Mode Items"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-
     updatePriceModeItemStatus: builder.mutation({
       query: ({ id }) => ({
         url: `/price-change-items/${id}/archive`,
@@ -104,7 +94,6 @@ export const {
   usePostItemsToPriceModeMutation,
   useGetAllItemsByPriceModeIdQuery,
   useLazyGetAllItemsByPriceModeIdQuery,
-  useGetAllPriceModeForClientsQuery,
   useUpdatePriceModeItemStatusMutation,
   useDeletePriceModeItemMutation,
   useLazyGetPriceChangeByPriceModeItemIdQuery,

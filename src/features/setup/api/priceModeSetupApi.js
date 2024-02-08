@@ -35,6 +35,16 @@ export const priceModeSetupApi = createApi({
       transformErrorResponse: (response) => response.value,
     }),
 
+    getAllPriceModeForClients: builder.query({
+      query: () => ({
+        url: "/price-mode",
+        method: "GET",
+      }),
+      providesTags: ["Price Mode Setup"],
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
+
     putPriceMode: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `/price-mode/${id}/information`,
@@ -57,6 +67,7 @@ export const priceModeSetupApi = createApi({
 export const {
   usePostPriceModeMutation,
   useGetAllPriceModeQuery,
+  useGetAllPriceModeForClientsQuery,
   usePutPriceModeMutation,
   usePatchPriceModeStatusMutation,
 } = priceModeSetupApi;

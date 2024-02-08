@@ -56,7 +56,7 @@ import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
-import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeItemsApi";
+import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();

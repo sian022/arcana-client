@@ -11,7 +11,7 @@ import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { priceModeSetupSchema } from "../../schema/schema";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Settings } from "@mui/icons-material";
 import {
   usePutPriceModeMutation,
@@ -21,6 +21,7 @@ import {
 } from "../../features/setup/api/priceModeSetupApi";
 import ViewProductsByPriceModeModal from "../../components/modals/ViewProductsByPriceModeModal";
 import useSnackbar from "../../hooks/useSnackbar";
+import { priceModeItemsApi } from "../../features/setup/api/priceModeItemsApi";
 
 function PriceModeSetup() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -34,6 +35,7 @@ function PriceModeSetup() {
   const { showSnackbar } = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const dispatch = useDispatch();
 
   // Drawer Disclosures
   const {
@@ -124,6 +126,7 @@ function PriceModeSetup() {
         `Price Mode ${status ? "archived" : "restored"} successfully`,
         "success"
       );
+      dispatch(priceModeItemsApi.util.invalidateTags(["Price Mode Items"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -189,6 +192,7 @@ function PriceModeSetup() {
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           onViewMoreConstant={onViewProductsByPriceModeModalOpen}
+          onViewMoreConstantDisabled={!status}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}

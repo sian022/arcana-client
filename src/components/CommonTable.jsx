@@ -66,6 +66,7 @@ function CommonTable({
   viewMoreKey,
   onViewMoreClick,
   onViewMoreConstant,
+  onViewMoreConstantDisabled,
   attachKey,
   highlightSelected,
   disableActions,
@@ -291,11 +292,13 @@ function CommonTable({
                               percentageArray.includes(keys) &&
                               "%"}
                           </TableCell>
+
                           <TableCell>
                             {/* Additional column for onViewMoreConstant */}
                             <IconButton
                               sx={{ color: "secondary.main" }}
                               onClick={onViewMoreConstant}
+                              disabled={onViewMoreConstantDisabled}
                             >
                               <Visibility />
                             </IconButton>

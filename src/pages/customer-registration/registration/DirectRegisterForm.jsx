@@ -78,7 +78,7 @@ import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat, PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 import RegisterClientFormSkeleton from "../../../components/skeletons/RegisterClientFormSkeleton";
-import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeItemsApi";
+import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
