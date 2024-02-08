@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -8,15 +8,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useLazyGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
 import NoProductFound from "../../assets/images/NoProductFound.svg";
 import TaggedProductsTableSkeleton from "../skeletons/TaggedProductsTableSkeleton";
+import { debounce } from "../../utils/CustomFunctions";
 
 function ViewProductsByPriceModeModal({ ...props }) {
   const { open } = props;
+
+  const [search, setSearch] = useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -24,17 +28,27 @@ function ViewProductsByPriceModeModal({ ...props }) {
   const [triggerProducts, { data, isSuccess, isFetching }] =
     useLazyGetAllItemsByPriceModeIdQuery();
 
+  //Functions
+  const debouncedSetSearch = debounce((value) => {
+    setSearch(value);
+  }, 200);
+
   //UseEffects
   useEffect(() => {
     if (!!open) {
       triggerProducts(
         {
-          priceModeId: selectedRowData?.id,
+          PriceModeId: selectedRowData?.id,
+          Search: search,
         },
         { preferCacheValue: true }
       );
     }
-  }, [open]);
+
+    if (!open) {
+      setSearch("");
+    }
+  }, [open, search]);
 
   return (
     <CommonModal width="800px" closeTopRight {...props}>
@@ -43,16 +57,29 @@ function ViewProductsByPriceModeModal({ ...props }) {
           Products List
         </Typography>
 
-        <Box className="viewProductsByPriceModal__priceMode">
-          <Box className="viewProductsByPriceModal__priceMode__code">
-            {selectedRowData?.priceModeCode}
+        <Box className="viewProductsByPriceModal__filtersAndLabel">
+          <Box className="viewProductsByPriceModal__filtersAndLabel__priceMode">
+            <Box className="viewProductsByPriceModal__filtersAndLabel__priceMode__code">
+              {selectedRowData?.priceModeCode}
+            </Box>
+
+            <Box className="viewProductsByPriceModal__filtersAndLabel__priceMode__description">
+              {selectedRowData?.priceModeDescription}
+            </Box>
+
+            <Typography className="viewProductsByPriceModal__filtersAndLabel__priceMode__value"></Typography>
           </Box>
 
-          <Box className="viewProductsByPriceModal__priceMode__description">
-            {selectedRowData?.priceModeDescription}
-          </Box>
-
-          <Typography className="viewProductsByPriceModal__priceMode__value"></Typography>
+          <TextField
+            type="search"
+            size="small"
+            label="Search"
+            onChange={(e) => {
+              debouncedSetSearch(e.target.value);
+            }}
+            sx={{ minWidth: "200px" }}
+            autoComplete="off"
+          />
         </Box>
 
         <TableContainer sx={{ height: "400px" }}>
