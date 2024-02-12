@@ -447,6 +447,23 @@
       align-items: center;
       gap: 15px;
 
+      &__termsCod {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        height: 400px;
+        width: 400px;
+        gap: 10px;
+        position: relative;
+        bottom: 10%;
+
+        & &__text {
+          font-size: 1.1rem;
+          font-weight: 400;
+        }
+      }
+
       &__titleGroup {
         display: flex;
         flex-direction: column;

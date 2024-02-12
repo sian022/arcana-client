@@ -718,15 +718,15 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             termsData?.bookingCoverage.substring(1),
             10
           ),
-          // terms: termsData?.terms?.termId,
+          // terms: termsData?.termId,
           terms: termsData?.termId,
           termDaysId: termDaysData?.termDays?.find(
-            (day) => day.id === termsData?.terms?.termDaysId
+            (day) => day.id === termsData?.termDaysId
           ),
           modeOfPayments: termsData?.modeofPayments?.map((payment) => ({
             modeOfPaymentId: payment.id,
           })),
-          creditLimit: termsData?.terms?.creditLimit,
+          creditLimit: termsData?.creditLimit,
           variableDiscount: !termsData?.variableDiscount
             ? false
             : termsData?.variableDiscount,

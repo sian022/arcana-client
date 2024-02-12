@@ -240,7 +240,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           >
                             {moment(
                               history?.createdAt || history?.updatedAt
-                            ).format("H:mm a")}
+                            ).format("MMMM D")}
                           </span>
 
                           <span>
