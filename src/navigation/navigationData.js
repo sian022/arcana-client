@@ -190,38 +190,38 @@ export const navigationData = [
     ],
   },
 
-  {
-    id: 8,
-    path: "/sales-management",
-    name: "Sales Management",
-    icon: "TrendingUp",
-    sub: [
-      {
-        id: 1,
-        path: "/sales-management/sales-transaction",
-        name: "Sales Transaction",
-        icon: "MonetizationOn",
-      },
-      {
-        id: 2,
-        path: "/sales-management/payment-transaction",
-        name: "Payment Transaction",
-        icon: "Payment",
-      },
-      {
-        id: 3,
-        path: "/sales-management/special-discount",
-        name: "Special Discount",
-        icon: "Discount",
-      },
-      {
-        id: 4,
-        path: "/sales-management/advance-payment",
-        name: "Advance Payment",
-        icon: "FastForward",
-      },
-    ],
-  },
+  // {
+  //   id: 8,
+  //   path: "/sales-management",
+  //   name: "Sales Management",
+  //   icon: "TrendingUp",
+  //   sub: [
+  //     {
+  //       id: 1,
+  //       path: "/sales-management/sales-transaction",
+  //       name: "Sales Transaction",
+  //       icon: "MonetizationOn",
+  //     },
+  //     {
+  //       id: 2,
+  //       path: "/sales-management/payment-transaction",
+  //       name: "Payment Transaction",
+  //       icon: "Payment",
+  //     },
+  //     {
+  //       id: 3,
+  //       path: "/sales-management/special-discount",
+  //       name: "Special Discount",
+  //       icon: "Discount",
+  //     },
+  //     {
+  //       id: 4,
+  //       path: "/sales-management/advance-payment",
+  //       name: "Advance Payment",
+  //       icon: "FastForward",
+  //     },
+  //   ],
+  // },
 
   // {
   //   id: 8,
@@ -243,13 +243,13 @@ export const navigationData = [
         icon: "HowToReg",
         notifications: ["pendingClient"],
       },
-      {
-        id: 2,
-        name: "Sp. Discount Approval",
-        path: "/approval/sp-discount-approval",
-        icon: "LocalOffer",
-        // notifications: "pendingSpDiscount",
-      },
+      // {
+      //   id: 2,
+      //   name: "Sp. Discount Approval",
+      //   path: "/approval/sp-discount-approval",
+      //   icon: "LocalOffer",
+      //   // notifications: "pendingSpDiscount",
+      // },
       {
         id: 3,
         name: "Listing Fee Approval",
