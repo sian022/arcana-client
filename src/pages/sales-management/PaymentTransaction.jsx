@@ -2,7 +2,7 @@ import { Box, TextField } from "@mui/material";
 import React, { useContext, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
-import { dummyTableData } from "../../utils/DummyData";
+import { dummyPaymentData, dummyTableData } from "../../utils/DummyData";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import TabsMixin from "../../components/mixins/TabsMixin";
@@ -58,6 +58,19 @@ function PaymentTransaction() {
 
   const isFetching = false;
 
+  //Constants
+  const tableHeads = [
+    "Date",
+    "Tx No.",
+    "Business Name",
+    "Owner's Name",
+    "CI No.",
+    "Amount",
+    "Balance",
+  ];
+
+  const pesoArray = ["amount", "amountBalance"];
+
   //Functions
   // const handleAddOpen = () => {
   //   setDrawerMode("add");
@@ -105,10 +118,10 @@ function PaymentTransaction() {
         <CommonTableSkeleton />
       ) : (
         <CommonTable
-          mapData={dummyTableData}
+          mapData={dummyPaymentData}
           moreCompact
-          // excludeKeysDisplay={excludeKeysDisplay}
-          // tableHeads={tableHeads}
+          tableHeads={tableHeads}
+          pesoArray={pesoArray}
           editable
           archivable
           // onEdit={handleEditOpen}

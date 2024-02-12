@@ -7,6 +7,7 @@ import {
   CircularProgress,
   IconButton,
   InputAdornment,
+  Skeleton,
   TextField,
   Typography,
 } from "@mui/material";
@@ -30,6 +31,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
+  useGetAttachmentsByClientIdQuery,
+  useGetTermsByClientIdQuery,
+  useLazyGetAttachmentsByClientIdQuery,
+  useLazyGetTermsByClientIdQuery,
   usePostDirectRegistrationMutation,
   usePostValidateClientMutation,
   usePutAddAttachmentsForDirectMutation,
@@ -61,7 +66,6 @@ import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import DangerButton from "../../../components/DangerButton";
-import ListingFeeModal from "../../../components/modals/ListingFeeModal";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
@@ -73,6 +77,8 @@ import { notificationApi } from "../../../features/notification/api/notification
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat, PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
+import RegisterClientFormSkeleton from "../../../components/skeletons/RegisterClientFormSkeleton";
+import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -144,7 +150,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     getValues,
     control,
     watch,
-    trigger,
     clearErrors,
   } = useForm({
     resolver: yupResolver(directRegisterPersonalSchema.schema),
@@ -174,7 +179,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           key === "fixedDiscount" &&
           (termsAndConditions[key].discountPercentage === null ||
             termsAndConditions[key].discountPercentage === "" ||
-            termsAndConditions[key].discountPercentage === NaN ||
             termsAndConditions[key].discountPercentage === undefined) &&
           termsAndConditions["variableDiscount"] === false
         ) {
@@ -248,6 +252,18 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
 
+  //Fetch Terms and Attachments
+  const [triggerTerms, { data: termsData, isLoading: isTermsDataLoading }] =
+    useLazyGetTermsByClientIdQuery();
+
+  const [
+    triggerAttachments,
+    { data: attachmentsData, isLoading: isAttachmentsDataLoading },
+  ] = useLazyGetAttachmentsByClientIdQuery();
+
+  const { data: priceModeData, isLoading: isPriceModeLoading } =
+    useGetAllPriceModeForClientsQuery();
+
   //Drawer Functions
   const onSubmit = async (data) => {
     try {
@@ -260,6 +276,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
         storeTypeId: data?.storeTypeId?.id,
         clusterId: data?.clusterId?.id,
+        priceModeId: data?.priceModeId?.id,
         clientId: selectedRowData?.id,
       };
 
@@ -492,34 +509,38 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const customRibbonContent = (
     <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
       <Box className="register__headers">
-        {navigators.map((item, i) => (
-          <Button
-            key={i}
-            disabled={item.disabled}
-            className={
-              "register__headers__item" +
-              (activeTab === item.label ? " active" : "")
-            }
-            onClick={() => {
-              setActiveTab(item.label);
-            }}
-            // sx={{ bgcolor: item.disabled && "#a9a7c1" }}
-          >
-            {item.isValid && (
-              <Check
-                sx={{
-                  color: "white !important",
-                  stroke: "white",
-                  strokeWidth: 1,
-                }}
-              />
-            )}
-            <Typography className="register__headers__item__label">
-              {item.label}
-            </Typography>
-            <span className="register__headers__item__icon">{item.icon}</span>
-          </Button>
-        ))}
+        {navigators.map((item, i) => {
+          return isTermsDataLoading || isAttachmentsDataLoading ? (
+            <Skeleton sx={{ transform: "none" }} />
+          ) : (
+            <Button
+              key={i}
+              disabled={item.disabled}
+              className={
+                "register__headers__item" +
+                (activeTab === item.label ? " active" : "")
+              }
+              onClick={() => {
+                setActiveTab(item.label);
+              }}
+              // sx={{ bgcolor: item.disabled && "#a9a7c1" }}
+            >
+              {item.isValid && (
+                <Check
+                  sx={{
+                    color: "white !important",
+                    stroke: "white",
+                    strokeWidth: 1,
+                  }}
+                />
+              )}
+              <Typography className="register__headers__item__label">
+                {item.label}
+              </Typography>
+              <span className="register__headers__item__icon">{item.icon}</span>
+            </Button>
+          );
+        })}
       </Box>
       <IconButton
         sx={{ color: "white !important" }}
@@ -641,18 +662,22 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setValue("ownersAddress", selectedRowData?.ownersAddress);
       setValue("businessName", selectedRowData?.businessName);
       setValue(
-        "clusterId",
-        clusterData?.cluster?.find(
-          (item) => item.id === selectedRowData?.cluster
-        )
-      );
-      setValue(
         "storeTypeId",
         storeTypeData?.storeTypes?.find(
           (item) => item.storeTypeName === selectedRowData?.storeType
         )
       );
       setValue("businessAddress", selectedRowData?.businessAddress);
+      setValue(
+        "clusterId",
+        clusterData?.cluster?.find(
+          (item) => selectedRowData?.clusterId === item.id
+        )
+      );
+      setValue(
+        "priceModeId",
+        priceModeData.find((item) => selectedRowData?.priceModeId === item.id)
+      );
       setValue(
         "authorizedRepresentative",
         selectedRowData?.authorizedRepresentative
@@ -679,56 +704,58 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       // Terms and Conditions
       dispatch(
         setWholeTermsAndConditions({
-          freezer: selectedRowData?.freezer,
-          typeOfCustomer: selectedRowData?.typeOfCustomer,
-          directDelivery: selectedRowData?.directDelivery,
+          freezer: termsData?.freezer,
+          typeOfCustomer: termsData?.typeOfCustomer,
+          directDelivery: termsData?.directDelivery,
           bookingCoverageId: parseInt(
-            selectedRowData?.bookingCoverage.substring(1),
+            termsData?.bookingCoverage.substring(1),
             10
           ),
-          terms: selectedRowData?.terms?.termId,
+          // terms: termsData?.terms?.termId,
+          terms: termsData?.termId,
           termDaysId: termDaysData?.termDays?.find(
-            (day) => day.id === selectedRowData?.terms?.termDaysId
+            (day) => day.id === termsData?.terms?.termDaysId
           ),
-          modeOfPayments: selectedRowData?.modeOfPayments?.map((payment) => ({
+          modeOfPayments: termsData?.modeofPayments?.map((payment) => ({
             modeOfPaymentId: payment.id,
           })),
-          creditLimit: selectedRowData?.terms?.creditLimit,
-          variableDiscount: !selectedRowData?.variableDiscount
+          creditLimit: termsData?.terms?.creditLimit,
+          variableDiscount: !termsData?.variableDiscount
             ? false
-            : selectedRowData?.variableDiscount,
+            : termsData?.variableDiscount,
           fixedDiscount:
-            selectedRowData?.fixedDiscount === null
+            termsData?.fixedDiscount === null
               ? {
                   discountPercentage: null,
                 }
               : {
                   discountPercentage:
-                    selectedRowData?.fixedDiscount?.discountPercentage * 100,
+                    termsData?.fixedDiscount?.discountPercentage * 100,
                 },
         })
       );
 
       // Attachments
-      if (selectedRowData?.attachments?.length > 4) {
+      // API Version
+      if (attachmentsData?.attachments?.length > 4) {
         setRequirementsMode("representative");
         setRepresentativeRequirements({
-          signature: selectedRowData?.attachments?.find(
+          signature: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Signature"
           )?.documentLink,
-          storePhoto: selectedRowData?.attachments?.find(
+          storePhoto: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Store Photo"
           )?.documentLink,
-          businessPermit: selectedRowData?.attachments?.find(
+          businessPermit: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Business Permit"
           )?.documentLink,
-          photoIdOwner: selectedRowData?.attachments?.find(
+          photoIdOwner: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Photo ID Owner"
           )?.documentLink,
-          photoIdRepresentative: selectedRowData?.attachments?.find(
+          photoIdRepresentative: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Photo ID Representative"
           )?.documentLink,
-          authorizationLetter: selectedRowData?.attachments?.find(
+          authorizationLetter: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Authorization Letter"
           )?.documentLink,
         });
@@ -740,19 +767,19 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           photoIdRepresentative: true,
           authorizationLetter: true,
         });
-      } else if (selectedRowData?.attachments?.length <= 4) {
+      } else if (attachmentsData?.attachments?.length <= 4) {
         setRequirementsMode("owner");
         setOwnersRequirements({
-          signature: selectedRowData?.attachments?.find(
+          signature: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Signature"
           )?.documentLink,
-          storePhoto: selectedRowData?.attachments?.find(
+          storePhoto: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Store Photo"
           )?.documentLink,
-          businessPermit: selectedRowData?.attachments?.find(
+          businessPermit: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Business Permit"
           )?.documentLink,
-          photoIdOwner: selectedRowData?.attachments?.find(
+          photoIdOwner: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Photo ID Owner"
           )?.documentLink,
         });
@@ -764,7 +791,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         });
       }
     }
-  }, [open, termDaysData]);
+  }, [open, termDaysData, termsData, attachmentsData]);
 
   useEffect(() => {
     if (!!includeAuthorizedRepresentative) {
@@ -777,10 +804,30 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   }, [includeAuthorizedRepresentative]);
 
   useEffect(() => {
-    if (clusterData && open) {
+    if (!editMode && clusterData && open) {
       setValue("clusterId", clusterData?.cluster?.[0]);
     }
   }, [open, clusterData]);
+
+  useEffect(() => {
+    if (!editMode && priceModeData && open) {
+      setValue(
+        "priceModeId",
+        priceModeData?.find((item) => item.priceModeDescription === "Regular")
+      );
+    }
+  }, [open, priceModeData]);
+
+  useEffect(() => {
+    if (editMode) {
+      //Triggers
+      triggerTerms({ id: selectedRowData?.id }, { preferCacheValue: true });
+      triggerAttachments(
+        { id: selectedRowData?.id },
+        { preferCacheValue: true }
+      );
+    }
+  }, [open]);
 
   return (
     <>
@@ -803,47 +850,55 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         onSubmit={onConfirmOpen}
         zIndex={editMode && "1300"}
       >
-        {activeTab === "Personal Info" && (
-          <Box className="register">
-            <Box className="register__firstRow">
-              <Box className="register__firstRow__customerInformation">
-                <Typography className="register__title">
-                  Customer's Information
-                </Typography>
-                <Box className="register__firstRow__customerInformation__row">
-                  <Controller
-                    control={control}
-                    name="ownersName"
-                    render={({ field: { onChange, onBlur, value, ref } }) => (
+        {isTermsDataLoading || isAttachmentsDataLoading ? (
+          <RegisterClientFormSkeleton />
+        ) : (
+          <>
+            {activeTab === "Personal Info" && (
+              <Box className="register">
+                <Box className="register__firstRow">
+                  <Box className="register__firstRow__customerInformation">
+                    <Typography className="register__title">
+                      Customer's Information
+                    </Typography>
+                    <Box className="register__firstRow__customerInformation__row">
+                      <Controller
+                        control={control}
+                        name="ownersName"
+                        render={({
+                          field: { onChange, onBlur, value, ref },
+                        }) => (
+                          <TextField
+                            label="Owner's Name"
+                            size="small"
+                            autoComplete="off"
+                            required
+                            className="register__textField"
+                            onChange={(e) =>
+                              onChange(e.target.value.toUpperCase())
+                            }
+                            onBlur={onBlur}
+                            value={value}
+                            inputRef={ref}
+                            helperText={errors?.ownersName?.message}
+                            error={errors?.ownersName}
+                          />
+                        )}
+                      />
+
                       <TextField
-                        label="Owner's Name"
+                        label="Email Address"
                         size="small"
                         autoComplete="off"
-                        required
+                        // required
                         className="register__textField"
-                        onChange={(e) => onChange(e.target.value.toUpperCase())}
-                        onBlur={onBlur}
-                        value={value}
-                        inputRef={ref}
-                        helperText={errors?.ownersName?.message}
-                        error={errors?.ownersName}
+                        {...register("emailAddress")}
+                        helperText={errors?.emailAddress?.message}
+                        error={errors?.emailAddress}
                       />
-                    )}
-                  />
-
-                  <TextField
-                    label="Email Address"
-                    size="small"
-                    autoComplete="off"
-                    // required
-                    className="register__textField"
-                    {...register("emailAddress")}
-                    helperText={errors?.emailAddress?.message}
-                    error={errors?.emailAddress}
-                  />
-                </Box>
-                <Box className="register__firstRow__customerInformation__row">
-                  {/* <TextField
+                    </Box>
+                    <Box className="register__firstRow__customerInformation__row">
+                      {/* <TextField
                     label="Date of Birth"
                     size="small"
                     autoComplete="off"
@@ -858,78 +913,80 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     }}
                   /> */}
 
-                  <Controller
-                    name="dateOfBirth"
-                    control={control}
-                    render={({ field }) => (
-                      <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DatePicker
-                          {...field}
-                          className="register__textField"
-                          label="Date of Birth"
-                          slotProps={{
-                            textField: { size: "small", required: true },
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              helperText={errors?.birthDate?.message}
-                              error={errors?.birthDate}
+                      <Controller
+                        name="dateOfBirth"
+                        control={control}
+                        render={({ field }) => (
+                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <DatePicker
+                              {...field}
+                              className="register__textField"
+                              label="Date of Birth"
+                              slotProps={{
+                                textField: { size: "small", required: true },
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  helperText={errors?.birthDate?.message}
+                                  error={errors?.birthDate}
+                                />
+                              )}
+                              minDate={moment().subtract(117, "years")}
+                              maxDate={moment().subtract(18, "years")}
                             />
-                          )}
-                          minDate={moment().subtract(117, "years")}
-                          maxDate={moment().subtract(18, "years")}
-                        />
-                      </LocalizationProvider>
-                    )}
-                  />
+                          </LocalizationProvider>
+                        )}
+                      />
 
-                  <Controller
-                    control={control}
-                    name={"phoneNumber"}
-                    render={({ field: { onChange, onBlur, value, ref } }) => {
-                      const formattedValue = value.replace(/-/g, "");
-                      let format = "###-###-####";
+                      <Controller
+                        control={control}
+                        name={"phoneNumber"}
+                        render={({
+                          field: { onChange, onBlur, value, ref },
+                        }) => {
+                          const formattedValue = value.replace(/-/g, "");
+                          let format = "###-###-####";
 
-                      if (formattedValue.length <= 3) {
-                        format = "####";
-                      } else if (formattedValue.length <= 6) {
-                        format = "###-####";
-                      } else if (formattedValue.length <= 10) {
-                        format = "###-###-####";
-                      }
+                          if (formattedValue.length <= 3) {
+                            format = "####";
+                          } else if (formattedValue.length <= 6) {
+                            format = "###-####";
+                          } else if (formattedValue.length <= 10) {
+                            format = "###-###-####";
+                          }
 
-                      return (
-                        <PatternFormat
-                          format={format}
-                          label="Phone Number"
-                          type="text"
-                          size="small"
-                          customInput={TextField}
-                          autoComplete="off"
-                          allowNegative={false}
-                          decimalScale={0}
-                          onValueChange={(e) => {
-                            onChange(e.value);
-                          }}
-                          onBlur={onBlur}
-                          value={value || ""}
-                          required
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                +63
-                              </InputAdornment>
-                            ),
-                          }}
-                          className="register__textField"
-                          helperText={errors?.phoneNumber?.message}
-                          error={!!errors?.phoneNumber}
-                        />
-                      );
-                    }}
-                  />
-                  {/* <TextField
+                          return (
+                            <PatternFormat
+                              format={format}
+                              label="Phone Number"
+                              type="text"
+                              size="small"
+                              customInput={TextField}
+                              autoComplete="off"
+                              allowNegative={false}
+                              decimalScale={0}
+                              onValueChange={(e) => {
+                                onChange(e.value);
+                              }}
+                              onBlur={onBlur}
+                              value={value || ""}
+                              required
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    +63
+                                  </InputAdornment>
+                                ),
+                              }}
+                              className="register__textField"
+                              helperText={errors?.phoneNumber?.message}
+                              error={!!errors?.phoneNumber}
+                            />
+                          );
+                        }}
+                      />
+                      {/* <TextField
                     label="Phone Number"
                     type="number"
                     size="small"
@@ -951,94 +1008,83 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     //   shrink: isPhoneNumberShrinked,
                     // }}
                   /> */}
-                </Box>
-              </Box>
-              <Box className="register__firstRow__tinNumber">
-                <Typography className="register__title">TIN Number</Typography>
+                    </Box>
+                  </Box>
+                  <Box className="register__firstRow__tinNumber">
+                    <Typography className="register__title">
+                      TIN Number
+                    </Typography>
 
-                <Controller
-                  control={control}
-                  name={"tinNumber"}
-                  render={({ field: { onChange, onBlur, value, ref } }) => {
-                    const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
-                    // let format = "###-###-###-###";
-                    let format = "###-###-###";
-
-                    if (formattedValue.length <= 3) {
-                      format = "####";
-                    } else if (formattedValue.length <= 6) {
-                      format = "###-####";
-                    }
-                    //  else if (formattedValue.length <= 9) {
-                    //   format = "###-###-####";
-                    // }
-
-                    return (
-                      <PatternFormat
-                        format={format}
-                        label="TIN Number"
-                        type="text"
-                        size="small"
-                        customInput={TextField}
-                        autoComplete="off"
-                        allowNegative={false}
-                        decimalScale={0}
-                        onValueChange={(e) => {
-                          onChange(e.value);
-                        }}
-                        onBlur={onBlur}
-                        value={value || ""}
-                        // required
-                        helperText={errors?.tinNumber?.message}
-                        error={!!errors?.tinNumber}
-                      />
-                    );
-                  }}
-                />
-
-                {/* <TextField
-                  label="TIN Number"
-                  type="number"
-                  size="small"
-                  autoComplete="off"
-                  required
-                  className="register__textField"
-                  {...register("tinNumber")}
-                  helperText={errors?.tinNumber?.message}
-                  error={errors?.tinNumber}
-                  InputProps={{ inputProps: { step: "any" } }}
-                /> */}
-              </Box>
-            </Box>
-            <Box className="register__secondRow">
-              <Box className="register__secondRow">
-                <Typography className="register__title">
-                  Owner's Address
-                </Typography>
-                <Box className="register__secondRow">
-                  <Box className="register__secondRow__content">
                     <Controller
-                      name="ownersAddress.houseNumber"
                       control={control}
-                      defaultValue=""
-                      render={({ field }) => (
-                        <TextField
-                          label="Unit No."
-                          size="small"
-                          autoComplete="off"
-                          className="register__textField"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.value.toUpperCase())
-                          }
-                          helperText={
-                            errors?.ownersAddress?.houseNumber?.message
-                          }
-                          error={errors?.ownersAddress?.houseNumber}
-                        />
-                      )}
+                      name={"tinNumber"}
+                      render={({ field: { onChange, onBlur, value, ref } }) => {
+                        const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
+                        // let format = "###-###-###-###";
+                        let format = "###-###-###";
+
+                        if (formattedValue.length <= 3) {
+                          format = "####";
+                        } else if (formattedValue.length <= 6) {
+                          format = "###-####";
+                        }
+                        //  else if (formattedValue.length <= 9) {
+                        //   format = "###-###-####";
+                        // }
+
+                        return (
+                          <PatternFormat
+                            format={format}
+                            label="TIN Number"
+                            type="text"
+                            size="small"
+                            customInput={TextField}
+                            autoComplete="off"
+                            allowNegative={false}
+                            decimalScale={0}
+                            onValueChange={(e) => {
+                              onChange(e.value);
+                            }}
+                            onBlur={onBlur}
+                            value={value || ""}
+                            // required
+                            helperText={errors?.tinNumber?.message}
+                            error={!!errors?.tinNumber}
+                          />
+                        );
+                      }}
                     />
-                    {/* <TextField
+                  </Box>
+                </Box>
+                <Box className="register__secondRow">
+                  <Box className="register__secondRow">
+                    <Typography className="register__title">
+                      Owner's Address
+                    </Typography>
+                    <Box className="register__secondRow">
+                      <Box className="register__secondRow__content">
+                        <Controller
+                          name="ownersAddress.houseNumber"
+                          control={control}
+                          defaultValue=""
+                          render={({ field }) => (
+                            <TextField
+                              label="Unit No."
+                              size="small"
+                              autoComplete="off"
+                              className="register__textField"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(e.target.value.toUpperCase())
+                              }
+                              helperText={
+                                errors?.ownersAddress?.houseNumber?.message
+                              }
+                              error={errors?.ownersAddress?.houseNumber}
+                            />
+                          )}
+                        />
+                        {/* <TextField
                       label="Unit No."
                       size="small"
                       autoComplete="off"
@@ -1049,28 +1095,28 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       error={errors?.ownersAddress?.houseNumber}
                     /> */}
 
-                    <Controller
-                      name="ownersAddress.streetName"
-                      control={control}
-                      defaultValue="" // Set your default value here if needed
-                      render={({ field }) => (
-                        <TextField
-                          label="Street Name"
-                          size="small"
-                          autoComplete="off"
-                          className="register__textField"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.value.toUpperCase())
-                          }
-                          helperText={
-                            errors?.ownersAddress?.streetName?.message
-                          }
-                          error={errors?.ownersAddress?.streetName}
+                        <Controller
+                          name="ownersAddress.streetName"
+                          control={control}
+                          defaultValue="" // Set your default value here if needed
+                          render={({ field }) => (
+                            <TextField
+                              label="Street Name"
+                              size="small"
+                              autoComplete="off"
+                              className="register__textField"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(e.target.value.toUpperCase())
+                              }
+                              helperText={
+                                errors?.ownersAddress?.streetName?.message
+                              }
+                              error={errors?.ownersAddress?.streetName}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    {/* <TextField
+                        {/* <TextField
                       label="Street Name"
                       size="small"
                       autoComplete="off"
@@ -1081,30 +1127,30 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       error={errors?.ownersAddress?.streetName}
                     /> */}
 
-                    <Controller
-                      name="ownersAddress.barangayName"
-                      control={control}
-                      defaultValue="" // Set your default value here if needed
-                      rules={{ required: "Barangay is required" }} // Add your validation rules here
-                      render={({ field }) => (
-                        <TextField
-                          label="Barangay"
-                          size="small"
-                          autoComplete="off"
-                          required
-                          className="register__textField"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.value.toUpperCase())
-                          }
-                          helperText={
-                            errors?.ownersAddress?.barangayName?.message
-                          }
-                          error={errors?.ownersAddress?.barangayName}
+                        <Controller
+                          name="ownersAddress.barangayName"
+                          control={control}
+                          defaultValue="" // Set your default value here if needed
+                          rules={{ required: "Barangay is required" }} // Add your validation rules here
+                          render={({ field }) => (
+                            <TextField
+                              label="Barangay"
+                              size="small"
+                              autoComplete="off"
+                              required
+                              className="register__textField"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(e.target.value.toUpperCase())
+                              }
+                              helperText={
+                                errors?.ownersAddress?.barangayName?.message
+                              }
+                              error={errors?.ownersAddress?.barangayName}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    {/* <TextField
+                        {/* <TextField
                       label="Barangay"
                       size="small"
                       autoComplete="off"
@@ -1114,30 +1160,30 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       helperText={errors?.ownersAddress?.barangayName?.message}
                       error={errors?.ownersAddress?.barangayName}
                     /> */}
-                  </Box>
-                  <Box className="register__secondRow__content">
-                    <Controller
-                      name="ownersAddress.city"
-                      control={control}
-                      defaultValue="" // Set your default value here if needed
-                      rules={{ required: "Municipality/City is required" }} // Add your validation rules here
-                      render={({ field }) => (
-                        <TextField
-                          label="Municipality/City"
-                          size="small"
-                          autoComplete="off"
-                          required
-                          className="register__textField"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.value.toUpperCase())
-                          }
-                          helperText={errors?.ownersAddress?.city?.message}
-                          error={errors?.ownersAddress?.city}
+                      </Box>
+                      <Box className="register__secondRow__content">
+                        <Controller
+                          name="ownersAddress.city"
+                          control={control}
+                          defaultValue="" // Set your default value here if needed
+                          rules={{ required: "Municipality/City is required" }} // Add your validation rules here
+                          render={({ field }) => (
+                            <TextField
+                              label="Municipality/City"
+                              size="small"
+                              autoComplete="off"
+                              required
+                              className="register__textField"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(e.target.value.toUpperCase())
+                              }
+                              helperText={errors?.ownersAddress?.city?.message}
+                              error={errors?.ownersAddress?.city}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    {/* <TextField
+                        {/* <TextField
                       label="Municipality/City"
                       size="small"
                       autoComplete="off"
@@ -1148,28 +1194,30 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       error={errors?.ownersAddress?.city}
                     /> */}
 
-                    <Controller
-                      name="ownersAddress.province"
-                      control={control}
-                      defaultValue="" // Set your default value here if needed
-                      rules={{ required: "Province is required" }} // Add your validation rules here
-                      render={({ field }) => (
-                        <TextField
-                          label="Province"
-                          size="small"
-                          autoComplete="off"
-                          required
-                          className="register__textField"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.value.toUpperCase())
-                          }
-                          helperText={errors?.ownersAddress?.province?.message}
-                          error={errors?.ownersAddress?.province}
+                        <Controller
+                          name="ownersAddress.province"
+                          control={control}
+                          defaultValue="" // Set your default value here if needed
+                          rules={{ required: "Province is required" }} // Add your validation rules here
+                          render={({ field }) => (
+                            <TextField
+                              label="Province"
+                              size="small"
+                              autoComplete="off"
+                              required
+                              className="register__textField"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(e.target.value.toUpperCase())
+                              }
+                              helperText={
+                                errors?.ownersAddress?.province?.message
+                              }
+                              error={errors?.ownersAddress?.province}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    {/* <TextField
+                        {/* <TextField
                       label="Province"
                       size="small"
                       autoComplete="off"
@@ -1179,60 +1227,265 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       helperText={errors?.ownersAddress?.province?.message}
                       error={errors?.ownersAddress?.province}
                     /> */}
+                      </Box>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-            </Box>
-            <Box className="register__thirdRow">
-              <Box className="register__thirdRow__column">
-                <Typography className="register__title">
-                  Business Name
-                </Typography>
 
-                <Controller
-                  control={control}
-                  name="businessName"
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="Business Name"
-                      size="small"
-                      autoComplete="off"
-                      required
-                      className="register__textField"
-                      onChange={(e) => onChange(e.target.value.toUpperCase())}
-                      onBlur={onBlur}
-                      value={value}
-                      inputRef={ref}
-                      helperText={errors?.businessName?.message}
-                      error={errors?.businessName}
-                    />
-                  )}
-                />
-              </Box>
+                <Box className="register__thirdRow">
+                  <Box className="register__thirdRow__column">
+                    <Typography className="register__title">
+                      Business Name
+                    </Typography>
 
-              <Box className="register__thirdRow__column">
-                <Typography className="register__title">Cluster</Typography>
-                <ControlledAutocomplete
-                  name={"clusterId"}
-                  control={control}
-                  options={clusterData?.cluster || []}
-                  getOptionLabel={(option) => option.cluster.toUpperCase()}
-                  disableClearable
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      label="Cluster"
-                      required
-                      helperText={errors?.clusterId?.message}
-                      error={errors?.clusterId}
+                    <Controller
+                      control={control}
+                      name="businessName"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <TextField
+                          label="Business Name"
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          onChange={(e) =>
+                            onChange(e.target.value.toUpperCase())
+                          }
+                          onBlur={onBlur}
+                          value={value}
+                          inputRef={ref}
+                          helperText={errors?.businessName?.message}
+                          error={errors?.businessName}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {/* <TextField
+                  </Box>
+
+                  <Box className="register__thirdRow__column">
+                    <Typography className="register__title">
+                      Business Type
+                    </Typography>
+                    <ControlledAutocomplete
+                      name={"storeTypeId"}
+                      control={control}
+                      options={storeTypeData?.storeTypes || []}
+                      getOptionLabel={(option) =>
+                        option.storeTypeName?.toUpperCase()
+                      }
+                      disableClearable
+                      // value={storeTypeData?.storeTypes?.find(
+                      //   (store) => store.storeTypeName === selectedStoreType
+                      // )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          label="Business Type"
+                          required
+                          helperText={errors?.storeTypeId?.message}
+                          error={errors?.storeTypeId}
+                        />
+                      )}
+                    />
+                  </Box>
+                </Box>
+
+                <Box className="register__secondRow">
+                  <Box className="register__titleBox">
+                    <Typography className="register__title">
+                      Business Address
+                    </Typography>
+                    <Checkbox
+                      sx={{ ml: "10px" }}
+                      checked={sameAsOwnersAddress}
+                      onChange={() => {
+                        // setSameAsOwnersAddress((prev) => !prev);
+                        handleSameAsOwnersAddress();
+                      }}
+                      // disabled={Object.values(watch("ownersAddress")).some(
+                      //   (value) => !value
+                      // )}
+                      disabled={Object.entries(watch("ownersAddress")).some(
+                        ([key, value]) =>
+                          key !== "houseNumber" &&
+                          key !== "streetName" &&
+                          !value
+                      )}
+                      title={
+                        !Object.values(watch("ownersAddress")).some(
+                          (value) => !value
+                        )
+                          ? "Fill up owner's address first"
+                          : ""
+                      }
+                    />
+                    <Typography variant="subtitle2">
+                      Same as owner's address
+                    </Typography>
+                  </Box>
+
+                  <Box className="register__secondRow__content">
+                    <Controller
+                      control={control}
+                      name="businessAddress.houseNumber"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <TextField
+                          disabled={sameAsOwnersAddress}
+                          label="Unit No."
+                          size="small"
+                          autoComplete="off"
+                          // required
+                          className="register__textField"
+                          onChange={(e) =>
+                            onChange(e.target.value.toUpperCase())
+                          }
+                          onBlur={onBlur}
+                          value={value}
+                          inputRef={ref}
+                          helperText={
+                            errors?.businessAddress?.houseNumber?.message
+                          }
+                          error={errors?.businessAddress?.houseNumber}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="businessAddress.streetName"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <TextField
+                          disabled={sameAsOwnersAddress}
+                          label="Street Name"
+                          size="small"
+                          autoComplete="off"
+                          // required
+                          className="register__textField"
+                          helperText={
+                            errors?.businessAddress?.streetName?.message
+                          }
+                          error={errors?.businessAddress?.streetName}
+                          onChange={(e) =>
+                            onChange(e.target.value.toUpperCase())
+                          }
+                          onBlur={onBlur}
+                          value={value}
+                          inputRef={ref}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="businessAddress.barangayName"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <TextField
+                          disabled={sameAsOwnersAddress}
+                          label="Barangay"
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          helperText={
+                            errors?.businessAddress?.barangayName?.message
+                          }
+                          error={errors?.businessAddress?.barangayName}
+                          onChange={(e) =>
+                            onChange(e.target.value.toUpperCase())
+                          }
+                          onBlur={onBlur}
+                          value={value}
+                          inputRef={ref}
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  <Box className="register__secondRow__content">
+                    <Controller
+                      control={control}
+                      name="businessAddress.city"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <TextField
+                          disabled={sameAsOwnersAddress}
+                          label="Municipality/City"
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          helperText={errors?.businessAddress?.city?.message}
+                          error={errors?.businessAddress?.city}
+                          onChange={(e) =>
+                            onChange(e.target.value.toUpperCase())
+                          }
+                          onBlur={onBlur}
+                          value={value}
+                          inputRef={ref}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="businessAddress.province"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <TextField
+                          disabled={sameAsOwnersAddress}
+                          label="Province"
+                          size="small"
+                          autoComplete="off"
+                          required
+                          className="register__textField"
+                          helperText={
+                            errors?.businessAddress?.province?.message
+                          }
+                          error={errors?.businessAddress?.province}
+                          onChange={(e) =>
+                            onChange(e.target.value.toUpperCase())
+                          }
+                          onBlur={onBlur}
+                          value={value}
+                          inputRef={ref}
+                        />
+                      )}
+                    />
+
+                    {/* <SecondaryButton
+                  sx={{ maxHeight: "40px" }}
+                  onClick={onPinLocationOpen}
+                >
+                  Pin Location &nbsp; <PushPin />
+                </SecondaryButton> */}
+                  </Box>
+                </Box>
+
+                <Box className="register__thirdRow">
+                  <Box className="register__thirdRow__column">
+                    <Typography className="register__title">Cluster</Typography>
+                    <ControlledAutocomplete
+                      name={"clusterId"}
+                      control={control}
+                      options={clusterData?.cluster || []}
+                      getOptionLabel={(option) => option.cluster?.toUpperCase()}
+                      disableClearable
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          label="Cluster"
+                          required
+                          helperText={errors?.clusterId?.message}
+                          error={errors?.clusterId}
+                        />
+                      )}
+                    />
+                    {/* <TextField
                   label="Cluster Type"
                   size="small"
                   autoComplete="off"
@@ -1243,252 +1496,112 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   helperText={errors?.cluster?.message}
                   error={errors?.cluster}
                 /> */}
-              </Box>
+                  </Box>
 
-              <Box className="register__thirdRow__column">
-                <Typography className="register__title">
-                  Business Type
-                </Typography>
-                <ControlledAutocomplete
-                  name={"storeTypeId"}
-                  control={control}
-                  options={storeTypeData?.storeTypes || []}
-                  getOptionLabel={(option) =>
-                    option.storeTypeName.toUpperCase()
-                  }
-                  disableClearable
-                  // value={storeTypeData?.storeTypes?.find(
-                  //   (store) => store.storeTypeName === selectedStoreType
-                  // )}
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      label="Business Type"
-                      required
-                      helperText={errors?.storeTypeId?.message}
-                      error={errors?.storeTypeId}
-                    />
-                  )}
-                />
-              </Box>
-            </Box>
-            <Box className="register__secondRow">
-              <Box className="register__titleBox">
-                <Typography className="register__title">
-                  Business Address
-                </Typography>
-                <Checkbox
-                  sx={{ ml: "10px" }}
-                  checked={sameAsOwnersAddress}
-                  onChange={() => {
-                    // setSameAsOwnersAddress((prev) => !prev);
-                    handleSameAsOwnersAddress();
-                  }}
-                  // disabled={Object.values(watch("ownersAddress")).some(
-                  //   (value) => !value
-                  // )}
-                  disabled={Object.entries(watch("ownersAddress")).some(
-                    ([key, value]) =>
-                      key !== "houseNumber" && key !== "streetName" && !value
-                  )}
-                  title={
-                    !Object.values(watch("ownersAddress")).some(
-                      (value) => !value
-                    )
-                      ? "Fill up owner's address first"
-                      : ""
-                  }
-                />
-                <Typography variant="subtitle2">
-                  Same as owner's address
-                </Typography>
-              </Box>
+                  <Box className="register__thirdRow__column">
+                    <Typography className="register__title">
+                      Price Mode
+                    </Typography>
 
-              <Box className="register__secondRow__content">
-                <Controller
-                  control={control}
-                  name="businessAddress.houseNumber"
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      disabled={sameAsOwnersAddress}
-                      label="Unit No."
-                      size="small"
-                      autoComplete="off"
-                      // required
-                      className="register__textField"
-                      onChange={(e) => onChange(e.target.value.toUpperCase())}
-                      onBlur={onBlur}
-                      value={value}
-                      inputRef={ref}
-                      helperText={errors?.businessAddress?.houseNumber?.message}
-                      error={errors?.businessAddress?.houseNumber}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name="businessAddress.streetName"
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      disabled={sameAsOwnersAddress}
-                      label="Street Name"
-                      size="small"
-                      autoComplete="off"
-                      // required
-                      className="register__textField"
-                      helperText={errors?.businessAddress?.streetName?.message}
-                      error={errors?.businessAddress?.streetName}
-                      onChange={(e) => onChange(e.target.value.toUpperCase())}
-                      onBlur={onBlur}
-                      value={value}
-                      inputRef={ref}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name="businessAddress.barangayName"
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      disabled={sameAsOwnersAddress}
-                      label="Barangay"
-                      size="small"
-                      autoComplete="off"
-                      required
-                      className="register__textField"
-                      helperText={
-                        errors?.businessAddress?.barangayName?.message
+                    <ControlledAutocomplete
+                      name="priceModeId"
+                      control={control}
+                      options={priceModeData || []}
+                      getOptionLabel={(option) =>
+                        `${option.priceModeCode?.toUpperCase()} -  ${option.priceModeDescription?.toUpperCase()}`
                       }
-                      error={errors?.businessAddress?.barangayName}
-                      onChange={(e) => onChange(e.target.value.toUpperCase())}
-                      onBlur={onBlur}
-                      value={value}
-                      inputRef={ref}
+                      disableClearable
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      loading={isPriceModeLoading}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          label="Price Mode"
+                          required
+                          helperText={errors?.priceModeId?.message}
+                          error={errors?.priceModeId}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </Box>
+                  </Box>
+                </Box>
 
-              <Box className="register__secondRow__content">
-                <Controller
-                  control={control}
-                  name="businessAddress.city"
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      disabled={sameAsOwnersAddress}
-                      label="Municipality/City"
-                      size="small"
-                      autoComplete="off"
-                      required
-                      className="register__textField"
-                      helperText={errors?.businessAddress?.city?.message}
-                      error={errors?.businessAddress?.city}
-                      onChange={(e) => onChange(e.target.value.toUpperCase())}
-                      onBlur={onBlur}
-                      value={value}
-                      inputRef={ref}
+                <Box className="register__secondRow">
+                  <Box className="register__titleBox">
+                    <Typography className="register__title">
+                      Authorized Representative Details
+                    </Typography>
+                    <Checkbox
+                      sx={{ ml: "10px" }}
+                      checked={includeAuthorizedRepresentative}
+                      onChange={(e) => {
+                        setIncludeAuthorizedRepresentative((prev) => !prev);
+                      }}
                     />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name="businessAddress.province"
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      disabled={sameAsOwnersAddress}
-                      label="Province"
-                      size="small"
-                      autoComplete="off"
-                      required
-                      className="register__textField"
-                      helperText={errors?.businessAddress?.province?.message}
-                      error={errors?.businessAddress?.province}
-                      onChange={(e) => onChange(e.target.value.toUpperCase())}
-                      onBlur={onBlur}
-                      value={value}
-                      inputRef={ref}
-                    />
-                  )}
-                />
-
-                {/* <SecondaryButton
-                  sx={{ maxHeight: "40px" }}
-                  onClick={onPinLocationOpen}
-                >
-                  Pin Location &nbsp; <PushPin />
-                </SecondaryButton> */}
-              </Box>
-            </Box>
-            <Box className="register__secondRow">
-              <Box className="register__titleBox">
-                <Typography className="register__title">
-                  Authorized Representative Details
-                </Typography>
-                <Checkbox
-                  sx={{ ml: "10px" }}
-                  checked={includeAuthorizedRepresentative}
-                  onChange={(e) => {
-                    setIncludeAuthorizedRepresentative((prev) => !prev);
-                  }}
-                />
-                <Typography variant="subtitle2">
-                  Include authorized representative
-                </Typography>
-              </Box>
-              <Box className="register__secondRow">
-                <Box className="register__secondRow__content">
-                  <Controller
-                    control={control}
-                    name="authorizedRepresentative"
-                    render={({ field: { onChange, onBlur, value, ref } }) => (
-                      <TextField
-                        label="Full Name"
-                        size="small"
-                        autoComplete="off"
-                        required={includeAuthorizedRepresentative}
-                        disabled={!includeAuthorizedRepresentative}
-                        className="register__textField"
-                        onChange={(e) => onChange(e.target.value.toUpperCase())}
-                        onBlur={onBlur}
-                        value={value}
-                        inputRef={ref}
-                        helperText={errors?.authorizedRepresentative?.message}
-                        error={errors?.authorizedRepresentative}
+                    <Typography variant="subtitle2">
+                      Include authorized representative
+                    </Typography>
+                  </Box>
+                  <Box className="register__secondRow">
+                    <Box className="register__secondRow__content">
+                      <Controller
+                        control={control}
+                        name="authorizedRepresentative"
+                        render={({
+                          field: { onChange, onBlur, value, ref },
+                        }) => (
+                          <TextField
+                            label="Full Name"
+                            size="small"
+                            autoComplete="off"
+                            required={includeAuthorizedRepresentative}
+                            disabled={!includeAuthorizedRepresentative}
+                            className="register__textField"
+                            onChange={(e) =>
+                              onChange(e.target.value.toUpperCase())
+                            }
+                            onBlur={onBlur}
+                            value={value}
+                            inputRef={ref}
+                            helperText={
+                              errors?.authorizedRepresentative?.message
+                            }
+                            error={errors?.authorizedRepresentative}
+                          />
+                        )}
                       />
-                    )}
-                  />
 
-                  <Controller
-                    control={control}
-                    name="authorizedRepresentativePosition"
-                    render={({ field: { onChange, onBlur, value, ref } }) => (
-                      <TextField
-                        label="Position"
-                        size="small"
-                        autoComplete="off"
-                        required={includeAuthorizedRepresentative}
-                        disabled={!includeAuthorizedRepresentative}
-                        className="register__textField"
-                        onChange={(e) => onChange(e.target.value.toUpperCase())}
-                        onBlur={onBlur}
-                        value={value}
-                        inputRef={ref}
-                        helperText={
-                          errors?.authorizedRepresentativePosition?.message
-                        }
-                        error={errors?.authorizedRepresentativePosition}
+                      <Controller
+                        control={control}
+                        name="authorizedRepresentativePosition"
+                        render={({
+                          field: { onChange, onBlur, value, ref },
+                        }) => (
+                          <TextField
+                            label="Position"
+                            size="small"
+                            autoComplete="off"
+                            required={includeAuthorizedRepresentative}
+                            disabled={!includeAuthorizedRepresentative}
+                            className="register__textField"
+                            onChange={(e) =>
+                              onChange(e.target.value.toUpperCase())
+                            }
+                            onBlur={onBlur}
+                            value={value}
+                            inputRef={ref}
+                            helperText={
+                              errors?.authorizedRepresentativePosition?.message
+                            }
+                            error={errors?.authorizedRepresentativePosition}
+                          />
+                        )}
                       />
-                    )}
-                  />
 
-                  {/* <TextField
+                      {/* <TextField
                     label="Full Name"
                     size="small"
                     autoComplete="off"
@@ -1512,52 +1625,57 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     }
                     error={errors?.authorizedRepresentativePosition}
                   /> */}
+                    </Box>
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-          </Box>
-        )}
+            )}
 
-        {activeTab === "Terms and Conditions" && (
-          <TermsAndConditions
-            direct
-            editMode={editMode}
-            storeType={watch("storeTypeId")?.storeTypeName}
-          />
-        )}
+            {activeTab === "Terms and Conditions" && (
+              <TermsAndConditions
+                direct
+                editMode={editMode}
+                storeType={watch("storeTypeId")?.storeTypeName}
+              />
+            )}
 
-        {activeTab === "Attachments" && <Attachments />}
+            {activeTab === "Attachments" && <Attachments />}
 
-        <Box
-          className={
-            activeTab === "Personal Info"
-              ? "commonDrawer__actionsNoMarginBottom"
-              : "commonDrawer__actionsSpread"
-          }
-        >
-          {activeTab !== "Personal Info" && (
-            <DangerButton onClick={handleBack}>Back</DangerButton>
-          )}
-          {activeTab !== "Attachments" && (
-            <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
-              {isValidateClientLoading ? (
-                <>
-                  <CircularProgress size="20px" color="white" />
-                </>
-              ) : (
-                "Next"
-              )}
-            </SuccessButton>
-          )}
-          {activeTab === "Attachments" && (
-            <SuccessButton
-              onClick={onConfirmOpen}
-              disabled={navigators.some((obj) => obj.isValid === false)}
+            <Box
+              className={
+                activeTab === "Personal Info"
+                  ? "commonDrawer__actionsNoMarginBottom"
+                  : "commonDrawer__actionsSpread"
+              }
             >
-              {editMode ? "Update" : "Register"}
-            </SuccessButton>
-          )}
-        </Box>
+              {activeTab !== "Personal Info" && (
+                <DangerButton onClick={handleBack}>Back</DangerButton>
+              )}
+              {activeTab !== "Attachments" && (
+                <SuccessButton
+                  onClick={handleNext}
+                  disabled={handleDisableNext()}
+                >
+                  {isValidateClientLoading ? (
+                    <>
+                      <CircularProgress size="20px" color="white" />
+                    </>
+                  ) : (
+                    "Next"
+                  )}
+                </SuccessButton>
+              )}
+              {activeTab === "Attachments" && (
+                <SuccessButton
+                  onClick={onConfirmOpen}
+                  disabled={navigators.some((obj) => obj.isValid === false)}
+                >
+                  {editMode ? "Update" : "Register"}
+                </SuccessButton>
+              )}
+            </Box>
+          </>
+        )}
       </CommonDrawer>
 
       {/* <PinLocationModal

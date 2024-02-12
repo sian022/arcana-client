@@ -32,6 +32,8 @@ import { phLocationsApi } from "../features/location/api/phLocationsApi";
 import { clusterApi } from "../features/setup/api/clusterApi";
 import { otherExpensesApi } from "../features/setup/api/otherExpensesApi";
 import { otherExpensesRegApi } from "../features/otherExpenses/api/otherExpensesRegApi";
+import { priceModeSetupApi } from "../features/setup/api/priceModeSetupApi";
+import { priceModeItemsApi } from "../features/setup/api/priceModeItemsApi";
 
 export const store = configureStore({
   reducer: {
@@ -67,6 +69,8 @@ export const store = configureStore({
     [clusterApi.reducerPath]: clusterApi.reducer,
     [otherExpensesApi.reducerPath]: otherExpensesApi.reducer,
     [otherExpensesRegApi.reducerPath]: otherExpensesRegApi.reducer,
+    [priceModeSetupApi.reducerPath]: priceModeSetupApi.reducer,
+    [priceModeItemsApi.reducerPath]: priceModeItemsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -96,6 +100,8 @@ export const store = configureStore({
       clusterApi.middleware,
       otherExpensesApi.middleware,
       otherExpensesRegApi.middleware,
+      priceModeSetupApi.middleware,
+      priceModeItemsApi.middleware,
     ]),
 });
 

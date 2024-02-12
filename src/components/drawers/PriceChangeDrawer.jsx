@@ -6,66 +6,27 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
-import ControlledAutocomplete from "../ControlledAutocomplete";
-import { Add, Cancel, Search } from "@mui/icons-material";
-import {
-  useGetAllProductsQuery,
-  usePostAddPriceChangeMutation,
-} from "../../features/setup/api/productsApi";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
-import ErrorSnackbar from "../ErrorSnackbar";
 import useDisclosure from "../../hooks/useDisclosure";
-import SuccessSnackbar from "../SuccessSnackbar";
 import CommonDialog from "../CommonDialog";
 import { priceChangeSchema } from "../../schema/schema";
-import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import useSnackbar from "../../hooks/useSnackbar";
 import { NumericFormat } from "react-number-format";
-import {
-  DatePicker,
-  DateTimePicker,
-  LocalizationProvider,
-  TimePicker,
-} from "@mui/x-date-pickers";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
+import { usePostAddPriceChangeMutation } from "../../features/setup/api/priceModeItemsApi";
 
 function PriceChangeDrawer({ editMode, open, onClose }) {
   const { showSnackbar } = useSnackbar();
 
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-
-  //Disclosures
-  const {
-    isOpen: isConfirmSubmitOpen,
-    onOpen: onConfirmSubmitOpen,
-    onClose: onConfirmSubmitClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isConfirmCancelOpen,
-    onOpen: onConfirmCancelOpen,
-    onClose: onConfirmCancelClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
-  } = useDisclosure();
 
   //React Hook Form
   const {
@@ -84,26 +45,18 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
   });
 
   //RTK Query
-
-  //Drawer Functions
   const [postAddPriceChange, { isLoading: isAddPriceChangeLoading }] =
     usePostAddPriceChangeMutation();
 
+  //Drawer Functions
   const onPriceChangeSubmit = async (data) => {
-    const { effectivityDate, ...noDate } = data;
-    // const transformedDate = effectivityDate;
-    // const transformedDate = moment(effectivityDate).format("YYYY-MM-DD");
-    // let transformedDate = moment(effectivityDate).format("YYYY-MM-DD HH:mm:ss");
-    let transformedDate = moment(effectivityDate).format("YYYY-MM-DDTHH:mm:ss");
-    // const currentTime = moment().format("HH:mm:ss");
-
-    // transformedDate = transformedDate.replace(/ 00:00:00/, `T${currentTime}`);
-
     try {
-      // await postAddPriceChange(data).unwrap();
       await postAddPriceChange({
-        effectivityDate: transformedDate,
-        ...noDate,
+        priceModeItemId: selectedRowData?.priceModeItemId,
+        effectivityDate: moment(data?.effectivityDate).format(
+          "YYYY-MM-DDTHH:mm:ss"
+        ),
+        price: data?.price,
       }).unwrap();
       showSnackbar("Price Change added successfully", "success");
       onClose();
@@ -116,8 +69,6 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
         showSnackbar("Error adding Price Change", "error");
       }
     }
-
-    onConfirmSubmitClose();
   };
 
   const handleDrawerClose = () => {
@@ -125,36 +76,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
     reset();
   };
 
-  //Misc Functions
-
   //UseEffects
-  // useEffect(() => {
-  //   setValue("clientId", clientId);
-  //   const freebiesLength = selectedRowData?.freebies?.length;
-
-  //   if (updateListingFee && isListingFeeOpen) {
-  //     const originalFreebies =
-  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieItems || [];
-
-  //     const transformedFreebies = originalFreebies.map((item) => ({
-  //       itemId: item,
-  //       itemDescription: item.itemDescription,
-  //       uom: item.uom,
-  //     }));
-
-  //     setValue("freebies", transformedFreebies);
-  //     setValue(
-  //       "freebieRequestId",
-  //       selectedRowData?.freebies?.[freebiesLength - 1]?.freebieRequestId ||
-  //         null
-  //     );
-  //   }
-
-  //   return () => {
-  //     setValue("clientId", null);
-  //   };
-  // }, [isListingFeeOpen]);
-
   useEffect(() => {
     if (open) {
       setValue("itemId", selectedRowData?.id);
@@ -167,28 +89,49 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
         drawerHeader={"Add Price Change"}
         open={open}
         onClose={handleDrawerClose}
-        disableSubmit={
-          !isValid || watch("price") <= 0
-          // ||
-          // watch("price") === selectedRowData?.priceChangeHistories?.[0]?.price
-        }
-        onSubmit={onConfirmSubmitOpen}
-        // zIndex={editMode && 1300}
+        disableSubmit={!isValid || watch("price") <= 0}
+        isLoading={isAddPriceChangeLoading}
+        onSubmit={handleSubmit(onPriceChangeSubmit)}
       >
         <TextField
-          label="Item Code"
+          label="Price Mode"
+          size="small"
+          disabled
+          // value={`${selectedRowData?.priceModeCode} - ${selectedRowData?.priceModeDescription}`}
+          value={selectedRowData?.priceModeCode}
+        />
+
+        <TextField
+          label="Product Code"
           size="small"
           disabled
           value={selectedRowData?.itemCode}
         />
 
-        <NumericFormat
-          customInput={TextField}
-          label="Current Price (₱)"
+        <Tooltip placement="top" title={selectedRowData?.itemDescription}>
+          <TextField
+            label="Item Description"
+            size="small"
+            disabled
+            value={selectedRowData?.itemDescription}
+          />
+        </Tooltip>
+
+        <TextField
+          label="Unit of Measurement"
           size="small"
           disabled
-          value={selectedRowData?.priceChangeHistories?.[0]?.price}
+          value={selectedRowData?.uom}
+        />
+
+        <NumericFormat
+          customInput={TextField}
+          label="Current Price"
+          size="small"
+          disabled
+          value={selectedRowData?.currentPrice}
           thousandSeparator=","
+          prefix="₱"
         />
 
         <Controller
@@ -237,7 +180,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
           name={"price"}
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <NumericFormat
-              label="Price Change (₱)"
+              label="New Price"
               type="text"
               size="small"
               customInput={TextField}
@@ -250,53 +193,13 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
               ref={ref}
               // required
               thousandSeparator=","
+              prefix="₱"
               helperText={errors?.price?.message}
               error={errors?.price}
             />
           )}
         />
       </CommonDrawer>
-
-      <CommonDialog
-        open={isConfirmSubmitOpen}
-        onClose={onConfirmSubmitClose}
-        onYes={handleSubmit(onPriceChangeSubmit)}
-        isLoading={isAddPriceChangeLoading}
-        noIcon
-      >
-        Confirm adding of price change for{" "}
-        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData?.itemCode || "item"}
-        </span>
-        ?
-      </CommonDialog>
-
-      <CommonDialog
-        open={isConfirmCancelOpen}
-        onClose={onConfirmCancelClose}
-        onYes={handleDrawerClose}
-      >
-        Are you sure you want to cancel {editMode ? "update" : "adding"} of
-        listing fee for{" "}
-        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {watch("clientId.businessName")
-            ? watch("clientId.businessName")
-            : "client"}
-        </span>
-        ?
-      </CommonDialog>
-
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </>
   );
 }

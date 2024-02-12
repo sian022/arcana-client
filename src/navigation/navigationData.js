@@ -97,12 +97,18 @@ export const navigationData = [
         path: "/product-setup/uom",
         icon: "SquareFoot",
       },
-      // {
-      //   id: 6,
-      //   name: "Business Type",
-      //   path: "/product-setup/business-type",
-      //   icon: "StoreMallDirectory",
-      // },
+      {
+        id: 6,
+        name: "Price Mode Setup",
+        path: "/product-setup/price-mode-setup",
+        icon: "Settings",
+      },
+      {
+        id: 7,
+        name: "Price Mode Management",
+        path: "/product-setup/price-mode-management",
+        icon: "Link",
+      },
     ],
   },
   {
@@ -140,20 +146,7 @@ export const navigationData = [
       },
     ],
   },
-  // {
-  //   id: 6,
-  //   path: "/terms",
-  //   name: "Terms",
-  //   icon: "AlignVerticalCenter",
-  //   sub: [
-  //     {
-  //       id: 1,
-  //       name: "Term Days",
-  //       path: "/terms/term-days",
-  //       icon: "CalendarToday",
-  //     },
-  //   ],
-  // },
+
   {
     id: 7,
     path: "/customer-registration",
@@ -255,7 +248,7 @@ export const navigationData = [
       //   name: "Sp. Discount Approval",
       //   path: "/approval/sp-discount-approval",
       //   icon: "LocalOffer",
-      //   // notifications: "approvedgClient",
+      //   // notifications: "pendingSpDiscount",
       // },
       {
         id: 3,

@@ -114,7 +114,6 @@ function OtherExpensesDrawer({
   const [putUpdateExpenses, { isLoading: isUpdateLoading }] =
     usePutUpdateExpensesMutation();
 
-  console.log(getValues());
   //Drawer Functions
   const onExpensesSubmit = async (data) => {
     // if (hasDuplicateItemCodes(watch("expenses"))) {
@@ -323,7 +322,7 @@ function OtherExpensesDrawer({
                   {...params}
                   size="small"
                   label="Business Name - Owner's Name"
-                  required
+                  // required
                   helperText={errors?.clientId?.message}
                   error={errors?.clientId}
                   // sx={{ width: "300px" }}
@@ -412,7 +411,7 @@ function OtherExpensesDrawer({
                       {...params}
                       size="small"
                       label="Expense Type"
-                      required
+                      // required
                       helperText={errors?.otherExpenseId?.message}
                       error={errors?.otherExpenseId}
                       sx={{ width: "300px" }}
@@ -437,7 +436,7 @@ function OtherExpensesDrawer({
                       onBlur={onBlur}
                       value={value || ""}
                       // ref={ref}
-                      required
+                      // required
                       thousandSeparator=","
                       allowNegative={false}
                       allowLeadingZeros={false}
@@ -480,14 +479,15 @@ function OtherExpensesDrawer({
                 amount: null,
               });
             }}
-            disabled={
-              !watch("expenses")[watch("expenses")?.length - 1]
-                ?.otherExpenseId ||
-              watch("expenses")[watch("expenses")?.length - 1]?.amount ==
-                null ||
-              watch("expenses")[watch("expenses")?.length - 1]?.amount ==
-                undefined
-            }
+            // disabled={
+            //   !watch("expenses")[watch("expenses")?.length - 1]
+            //     ?.otherExpenseId ||
+            //   watch("expenses")[watch("expenses")?.length - 1]?.amount ==
+            //     null ||
+            //   watch("expenses")[watch("expenses")?.length - 1]?.amount ==
+            //     undefined
+            // }
+            disabled={!isValid}
           >
             Add Expense
           </SecondaryButton>
@@ -495,7 +495,6 @@ function OtherExpensesDrawer({
           <Box
             sx={{
               display: "flex",
-              gap: "10px",
               mr: "50px",
               position: "absolute",
               left: "180px",

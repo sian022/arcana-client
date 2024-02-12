@@ -6,8 +6,10 @@ import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonTable from "../../components/CommonTable";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import { dummyTableData } from "../../utils/DummyData";
-import CommonDrawer from "../../components/CommonDrawer";
+import {
+  dummySpecialDiscountData,
+  dummyTableData,
+} from "../../utils/DummyData";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import { specialDiscountSchema } from "../../schema/schema";
@@ -15,6 +17,8 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CommonModalForm from "../../components/CommonModalForm";
 import { NumericFormat } from "react-number-format";
+import useSnackbar from "../../hooks/useSnackbar";
+import CommonDialog from "../../components/CommonDialog";
 
 function SpecialDiscount() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -26,9 +30,8 @@ function SpecialDiscount() {
   const [count, setCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
 
-  const [isOneTimeUse, setIsOneTimeUse] = useState(false);
-
   const { notifications } = useContext(AppContext);
+  const { showSnackbar } = useSnackbar();
 
   //React Hook Form
   const {
@@ -38,6 +41,7 @@ function SpecialDiscount() {
     reset,
     control,
     watch,
+    getValues,
   } = useForm({
     resolver: yupResolver(specialDiscountSchema.schema),
     mode: "onChange",
@@ -47,15 +51,15 @@ function SpecialDiscount() {
   //Disclosures
 
   const {
-    isOpen: isDrawerOpen,
-    onOpen: onDrawerOpen,
-    onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isFormOpen,
     onOpen: onFormOpen,
     onClose: onFormClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose,
   } = useDisclosure();
 
   //Constants
@@ -88,16 +92,35 @@ function SpecialDiscount() {
 
   const isFetching = false;
 
-  //Functions
-  const handleAddOpen = () => {
-    setDrawerMode("add");
-    onDrawerOpen();
-  };
+  //Constants
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Special Discount",
+    "Created At",
+  ];
 
-  const handleDrawerClose = () => {
-    // reset();
-    onDrawerClose();
-    setSelectedId("");
+  //Functions
+  const onSubmit = (data) => {
+    const transformedData = {
+      ...data,
+      clientId: data.clientId?.id,
+    };
+
+    try {
+      console.log(transformedData);
+      handleFormClose();
+      onConfirmClose();
+      showSnackbar("Special discount added successfully", "success");
+    } catch (error) {
+      console.log(error);
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error adding special discount", "error");
+      }
+      onConfirmClose();
+    }
   };
 
   const handleFormClose = () => {
@@ -127,7 +150,8 @@ function SpecialDiscount() {
           <CommonTableSkeleton moreCompact />
         ) : (
           <CommonTable
-            mapData={dummyTableData}
+            mapData={dummySpecialDiscountData}
+            tableHeads={tableHeads}
             moreCompact
             // excludeKeysDisplay={excludeKeysDisplay}
             count={count}
@@ -150,8 +174,10 @@ function SpecialDiscount() {
         title="Special Discount"
         open={isFormOpen}
         onClose={handleFormClose}
-        onSubmit={handleFormClose}
+        onSubmit={onConfirmOpen}
+        // onSubmit={handleSubmit(onSubmit)}
         width="600px"
+        disableSubmit={!isValid || !isDirty || watch("specialDiscount") === 0}
         // height="520px"
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -177,7 +203,6 @@ function SpecialDiscount() {
               }
               disableClearable
               loading={isClientLoading}
-              disabled={drawerMode === "edit"}
               isOptionEqualToValue={(option, value) => true}
               renderInput={(params) => (
                 <TextField
@@ -208,7 +233,7 @@ function SpecialDiscount() {
 
             <Controller
               control={control}
-              name={"spDiscount"}
+              name={"specialDiscount"}
               render={({ field: { onChange, onBlur, value, ref } }) => (
                 <NumericFormat
                   label="Special Discount"
@@ -217,20 +242,35 @@ function SpecialDiscount() {
                   customInput={TextField}
                   autoComplete="off"
                   onValueChange={(e) => {
-                    onChange(Number(e.value));
+                    const newValue = e.value === "" ? null : Number(e.value);
+                    onChange(newValue);
+
+                    // Check if the entered value is more than 10 and show an alert
+                    if (newValue != null && newValue > 10) {
+                      alert("Special Discount cannot be more than 10%");
+                      // You may replace the alert with your preferred way of notifying the user
+                    }
                   }}
                   onBlur={onBlur}
                   value={value || ""}
-                  // InputProps={{
-                  //   startAdornment: (
-                  //     <InputAdornment position="start">₱</InputAdornment>
-                  //   ),
-                  // }}
-                  // ref={ref}
-                  // required
                   thousandSeparator=","
                   allowNegative={false}
                   allowLeadingZeros={false}
+                  decimalScale={2}
+                  inputRef={ref}
+                  isAllowed={(values) => {
+                    const { floatValue } = values;
+                    // Check if the floatValue is greater than 10 and show a snackbar
+                    if (floatValue != null && floatValue > 10) {
+                      showSnackbar(
+                        "Value should be between 1% and 10%",
+                        "error"
+                      );
+                      return false; // Prevent updating the value
+                    }
+                    return true;
+                  }}
+                  suffix="%"
                   // disabled={!watch("clientId")}
                 />
               )}
@@ -238,96 +278,31 @@ function SpecialDiscount() {
           </Box>
 
           <Box sx={{ display: "flex", gap: "5px", justifyContent: "end" }}>
-            <Checkbox
-              onChange={(e) => setIsOneTimeUse(e.target.checked)}
-              checked={isOneTimeUse}
+            <Controller
+              control={control}
+              name="isOneTime"
+              render={({ field }) => (
+                <Checkbox
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.checked)}
+                  checked={field.value}
+                />
+              )}
             />
+
             <Typography>One time use only</Typography>
           </Box>
         </Box>
       </CommonModalForm>
 
-      <CommonDrawer
-        open={isDrawerOpen}
-        onClose={handleDrawerClose}
-        width={"400px"}
-        drawerHeader={
-          (drawerMode === "add" ? "Add" : "Edit") + " Special Discount"
-        }
-        // onSubmit={handleSubmit(onDrawerSubmit)}
-        // disableSubmit={!isValid}
-        // isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
+      <CommonDialog
+        open={isConfirmOpen}
+        onClose={onConfirmClose}
+        onYes={handleSubmit(onSubmit)}
+        noIcon
       >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-          <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-            Customer Name
-          </Typography>
-
-          <ControlledAutocomplete
-            name={`clientId`}
-            control={control}
-            options={clientData?.regularClient || []}
-            getOptionLabel={(option) =>
-              option.businessName + " - " + option.ownersName || ""
-            }
-            disableClearable
-            loading={isClientLoading}
-            disabled={editMode}
-            // value={clientData?.regularClient?.find(
-            //   (item) => item.businessName === selectedRowData?.businessName
-            // )}
-            // isOptionEqualToValue={(option, value) => option.id === value.id}
-            isOptionEqualToValue={(option, value) => true}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                size="small"
-                label="Business Name - Owner's Name"
-                // required
-                helperText={errors?.itemId?.message}
-                error={errors?.itemId}
-                // sx={{ width: "400px" }}
-              />
-            )}
-          />
-        </Box>
-
-        {/* <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-          <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-            Customer Name
-          </Typography>
-          <TextField
-            label="Customer Name"
-            size="small"
-            autoComplete="off"
-            // {...register("storeTypeName")}
-            // helperText={errors?.storeTypeName?.message}
-            // error={errors?.storeTypeName}
-          />
-        </Box> */}
-
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-          <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-            Special Discount
-          </Typography>
-
-          <TextField
-            label="Special Discount"
-            size="small"
-            autoComplete="off"
-            type="number"
-            // required
-            // {...register("storeTypeName")}
-            // helperText={errors?.storeTypeName?.message}
-            // error={errors?.storeTypeName}
-          />
-        </Box>
-
-        <Box sx={{ display: "flex", gap: "5px" }}>
-          <Checkbox />
-          <Typography>One time use only</Typography>
-        </Box>
-      </CommonDrawer>
+        Confirm adding of special discount?
+      </CommonDialog>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   Box,
   IconButton,
@@ -363,7 +363,7 @@ function ListingFeeDrawer({
                   {...params}
                   size="small"
                   label="Business Name - Owner's Name"
-                  required
+                  // required
                   helperText={errors?.clientId?.message}
                   error={errors?.clientId}
                   // sx={{ width: "300px" }}
@@ -404,6 +404,7 @@ function ListingFeeDrawer({
                 Product Information
               </Typography>
             </Box>
+
             {fields.map((item, index) => (
               <Box
                 key={item.id}
@@ -472,7 +473,7 @@ function ListingFeeDrawer({
                       {...params}
                       size="small"
                       label="Product Code"
-                      required
+                      // required
                       helperText={errors?.itemId?.message}
                       error={errors?.itemId}
                       sx={{ width: "180px" }}
@@ -561,10 +562,11 @@ function ListingFeeDrawer({
                       onBlur={onBlur}
                       value={value || ""}
                       // ref={ref}
-                      required
+                      // required
                       thousandSeparator=","
                       allowNegative={false}
                       allowLeadingZeros={false}
+                      prefix="₱"
                       disabled={!watch("clientId")}
                     />
                   )}
@@ -573,6 +575,7 @@ function ListingFeeDrawer({
                 <IconButton
                   sx={{ color: "error.main" }}
                   onClick={() => {
+                    console.log(index);
                     fields.length <= 1
                       ? handleListingFeeError()
                       : // : remove(fields[index]);
@@ -608,25 +611,27 @@ function ListingFeeDrawer({
                 unitCost: null,
               });
             }}
-            disabled={
-              !watch("listingItems")[watch("listingItems")?.length - 1]
-                ?.itemId ||
-              watch("listingItems")[watch("listingItems")?.length - 1]
-                ?.unitCost == null ||
-              watch("listingItems")[watch("listingItems")?.length - 1]
-                ?.unitCost == undefined
-            }
+            // disabled={
+            //   !watch("listingItems")[watch("listingItems")?.length - 1]
+            //     ?.itemId ||
+            //   watch("listingItems")[watch("listingItems")?.length - 1]
+            //     ?.unitCost == null ||
+            //   watch("listingItems")[watch("listingItems")?.length - 1]
+            //     ?.unitCost == undefined
+            // }
+            disabled={!isValid}
           >
             Add Product
           </SecondaryButton>
+
           <Box
             sx={{
               display: "flex",
-              gap: "10px",
               mr: "50px",
               position: "absolute",
               left: "600px",
-              gap: "23px",
+              // gap: "23px",
+              gap: "16px",
             }}
           >
             <Typography
@@ -638,8 +643,9 @@ function ListingFeeDrawer({
             >
               Total Amount
             </Typography>
+
             <Typography sx={{ fontSize: "1rem" }}>
-              {totalAmount?.toLocaleString() || 0}
+              ₱{totalAmount?.toLocaleString() || 0}
             </Typography>
           </Box>
         </Box>

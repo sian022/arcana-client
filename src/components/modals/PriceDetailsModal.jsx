@@ -1,40 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
   IconButton,
-  InputAdornment,
   Step,
-  StepButton,
   StepContent,
-  StepIcon,
   StepLabel,
   Stepper,
   TextField,
   Typography,
 } from "@mui/material";
-import SecondaryButton from "../SecondaryButton";
-import {
-  Cancel,
-  Check,
-  CheckCircle,
-  Circle,
-  Close,
-  Delete,
-  EventNote,
-  HowToReg,
-} from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import TertiaryButton from "../TertiaryButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useDeletePriceChangeMutation } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
+import {
+  useDeletePriceChangeMutation,
+  useLazyGetPriceChangeByPriceModeItemIdQuery,
+} from "../../features/setup/api/priceModeItemsApi";
+import PriceDetailsSkeleton from "../skeletons/PriceDetailsSkeleton";
 
 function PriceDetailsModal({ isFetching, data, ...otherProps }) {
-  const { onClose, ...noOnCloseProps } = otherProps;
+  const { open, onClose } = otherProps;
+  const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -45,8 +37,14 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
+  //RTK Query
   const [deletePriceChange, { isLoading: isDeleteLoading }] =
     useDeletePriceChangeMutation();
+
+  const [
+    triggerPriceChange,
+    { data: priceChangeData, isFetching: isPriceChangeFetching },
+  ] = useLazyGetPriceChangeByPriceModeItemIdQuery();
 
   //Disclosures
   const {
@@ -63,18 +61,11 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
 
   const onArchiveSubmit = async () => {
     try {
-      await deletePriceChange(
-        selectedRowData?.futurePriceChanges?.[futurePriceIndex]?.id
-      ).unwrap();
+      await deletePriceChange({
+        id: priceChangeData?.futurePriceChanges?.[futurePriceIndex]?.id,
+      }).unwrap();
 
-      // dispatch(setSelectedRow());
-      showSnackbar("Price change successfully deleted!", "success");
-
-      // if (!isFetching) {
-      //   dispatch(
-      //     setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
-      //   );
-      // }
+      showSnackbar("Price change successfully removed!", "success");
 
       onArchiveClose();
     } catch (error) {
@@ -94,6 +85,20 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
     }
   }, [isFetching]);
 
+  useEffect(() => {
+    if (open) {
+      setIsLoading(true);
+
+      triggerPriceChange(
+        {
+          PriceModeId: selectedRowData?.priceModeId,
+          ItemId: selectedRowData?.itemId,
+        },
+        { preferCacheValue: true }
+      ).then(() => setIsLoading(false));
+    }
+  }, [open]);
+
   return (
     <>
       <CommonModal
@@ -107,18 +112,6 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
             Price Details
           </Typography>
 
-          {/* <Box
-          sx={{
-            position: "absolute",
-            right: "20px",
-            top: "20px",
-          }}
-        >
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        </Box> */}
-
           <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
             <Box className="priceChangeModal__currentPrice">
               <Box className="priceChangeModal__currentPrice__left">
@@ -128,28 +121,18 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                     padding: "10px",
                     borderRadius: "5px",
                     color: "white !important",
+                    width: "150px",
                   }}
                 >
-                  Current Price
+                  Item Code
                 </Box>
-                <Box>
-                  <TextField
-                    size="small"
-                    value={
-                      // selectedRowData?.latestPriceChange?.price?.toLocaleString() ||
-                      // ""
-                      selectedRowData?.priceChangeHistories?.[0]?.price?.toLocaleString() ||
-                      ""
-                    }
-                    readOnly
-                    sx={{ pointerEvents: "none" }}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">₱</InputAdornment>
-                      ),
-                    }}
-                  />
-                </Box>
+
+                <TextField
+                  size="small"
+                  value={selectedRowData?.itemCode?.toUpperCase() || ""}
+                  readOnly
+                  sx={{ pointerEvents: "none", width: "100%" }}
+                />
               </Box>
 
               <Box className="priceChangeModal__currentPrice__right">
@@ -159,134 +142,140 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                     padding: "10px",
                     borderRadius: "5px",
                     color: "white !important",
+                    width: "150px",
                   }}
                 >
-                  Last Updated
+                  Price Mode
                 </Box>
-                <Box>
-                  <TextField
-                    size="small"
-                    readOnly
-                    value={
-                      // moment(
-                      //   selectedRowData?.latestPriceChange?.effectivityDate
-                      // ).format("MMMM D") || ""
 
-                      moment(
-                        selectedRowData?.priceChangeHistories?.[0]
-                          ?.effectivityDate
-                      ).format("MMMM D, hh:mm a") || ""
-                    }
-                    sx={{ pointerEvents: "none" }}
-                  />
-                </Box>
+                <TextField
+                  size="small"
+                  readOnly
+                  value={selectedRowData?.priceModeCode?.toUpperCase() || ""}
+                  sx={{ pointerEvents: "none", width: "100%" }}
+                />
               </Box>
             </Box>
 
-            <Box className="priceChangeModal__content">
-              <Box className="priceChangeModal__content__left">
-                <Box
-                  sx={{ display: "flex", gap: "20px", alignItems: "center" }}
-                >
-                  <Typography className="priceChangeModal__content__left__title">
-                    Future Prices
-                  </Typography>
-                  <TertiaryButton
-                    sx={{ maxHeight: "25px" }}
-                    onClick={() => setManageMode((prev) => !prev)}
-                    disabled={selectedRowData?.futurePriceChanges?.length === 0}
+            {isLoading || isPriceChangeFetching ? (
+              <PriceDetailsSkeleton />
+            ) : (
+              <Box className="priceChangeModal__content">
+                <Box className="priceChangeModal__content__left">
+                  <Box
+                    sx={{ display: "flex", gap: "20px", alignItems: "center" }}
                   >
-                    {manageMode ? "Done" : "Manage"}
-                  </TertiaryButton>
-                </Box>
-
-                <Box className="priceChangeModal__content__left__body">
-                  {selectedRowData?.futurePriceChanges?.length > 0 ? (
-                    <Stepper orientation="vertical">
-                      {selectedRowData?.futurePriceChanges?.map(
-                        (item, index) => (
-                          <Step expanded>
-                            <StepLabel sx={{ position: "relative" }}>
-                              <span style={{ fontWeight: "600" }}>
-                                ₱ {item.price?.toLocaleString()}
-                              </span>
-                              {manageMode && (
-                                <IconButton
-                                  sx={{
-                                    position: "absolute",
-                                    right: 0,
-                                    top: 0,
-                                  }}
-                                  color="error"
-                                  onClick={() => {
-                                    onArchiveOpen();
-                                    setFuturePriceIndex(index);
-                                  }}
-                                >
-                                  <Delete />
-                                </IconButton>
-                              )}
-                            </StepLabel>
-                            <StepContent>
-                              <Typography fontSize="14px">
-                                Effectivity Date:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {moment(item.effectivityDate).format(
-                                    "MMMM D, hh:mm a"
-                                  )}
-                                </span>
-                              </Typography>
-                            </StepContent>
-                          </Step>
-                        )
-                      )}
-                    </Stepper>
-                  ) : (
-                    <div>No future prices</div>
-                  )}
-                </Box>
-              </Box>
-              <Box className="priceChangeModal__content__right">
-                <Typography className="priceChangeModal__content__right__title">
-                  Price History
-                </Typography>
-                <Box className="priceChangeModal__content__right__body">
-                  {selectedRowData?.priceChangeHistories?.length > 0 ? (
-                    <Stepper
-                      orientation="vertical"
-                      // activeStep={null}
+                    <Typography className="priceChangeModal__content__left__title">
+                      Future Prices
+                    </Typography>
+                    <TertiaryButton
+                      sx={{ maxHeight: "25px" }}
+                      onClick={() => setManageMode((prev) => !prev)}
+                      disabled={
+                        priceChangeData?.futurePriceChanges?.length === 0
+                      }
                     >
-                      {selectedRowData?.priceChangeHistories?.map(
-                        (item, index) => (
-                          <Step active expanded>
-                            <StepLabel
-                              sx={{ position: "relative" }}
-                              StepIconProps={{ icon: "" }}
-                            >
-                              <span style={{ fontWeight: "600" }}>
-                                ₱ {item.price?.toLocaleString()}
-                              </span>
-                            </StepLabel>
-                            <StepContent>
-                              <Typography fontSize="14px">
-                                Effectivity Date:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {moment(item.effectivityDate).format(
-                                    "MMMM D, hh:mm a"
-                                  )}
+                      {manageMode ? "Done" : "Manage"}
+                    </TertiaryButton>
+                  </Box>
+
+                  <Box className="priceChangeModal__content__left__body">
+                    {priceChangeData?.futurePriceChanges?.length > 0 ? (
+                      <Stepper orientation="vertical">
+                        {priceChangeData?.futurePriceChanges?.map(
+                          (item, index) => (
+                            <Step expanded>
+                              <StepLabel sx={{ position: "relative" }}>
+                                <span style={{ fontWeight: "600" }}>
+                                  ₱{" "}
+                                  {item.price?.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}
                                 </span>
-                              </Typography>
-                            </StepContent>
-                          </Step>
-                        )
-                      )}
-                    </Stepper>
-                  ) : (
-                    <div>No price history</div>
-                  )}
+                                {manageMode && (
+                                  <IconButton
+                                    sx={{
+                                      position: "absolute",
+                                      right: 0,
+                                      top: 0,
+                                    }}
+                                    color="error"
+                                    onClick={() => {
+                                      onArchiveOpen();
+                                      setFuturePriceIndex(index);
+                                    }}
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                )}
+                              </StepLabel>
+                              <StepContent>
+                                <Typography fontSize="14px">
+                                  Effectivity Date:{" "}
+                                  <span style={{ fontWeight: "500" }}>
+                                    {moment(item.effectivityDate).format(
+                                      "MMMM D, hh:mm a"
+                                    )}
+                                  </span>
+                                </Typography>
+                              </StepContent>
+                            </Step>
+                          )
+                        )}
+                      </Stepper>
+                    ) : (
+                      <div>No future prices</div>
+                    )}
+                  </Box>
+                </Box>
+                <Box className="priceChangeModal__content__right">
+                  <Typography className="priceChangeModal__content__right__title">
+                    Price History
+                  </Typography>
+
+                  <Box className="priceChangeModal__content__right__body">
+                    {priceChangeData?.priceChangeHistories?.length > 0 ? (
+                      <Stepper
+                        orientation="vertical"
+                        // activeStep={null}
+                      >
+                        {priceChangeData?.priceChangeHistories?.map(
+                          (item, index) => (
+                            <Step active expanded>
+                              <StepLabel
+                                sx={{ position: "relative" }}
+                                StepIconProps={{ icon: "" }}
+                              >
+                                <span style={{ fontWeight: "600" }}>
+                                  ₱{" "}
+                                  {item.price?.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}
+                                </span>
+                              </StepLabel>
+                              <StepContent>
+                                <Typography fontSize="14px">
+                                  Effectivity Date:{" "}
+                                  <span style={{ fontWeight: "500" }}>
+                                    {moment(item.effectivityDate).format(
+                                      "MMMM D, hh:mm a"
+                                    )}
+                                  </span>
+                                </Typography>
+                              </StepContent>
+                            </Step>
+                          )
+                        )}
+                      </Stepper>
+                    ) : (
+                      <div>No price history</div>
+                    )}
+                  </Box>
                 </Box>
               </Box>
-            </Box>
+            )}
           </Box>
         </Box>
       </CommonModal>
@@ -298,12 +287,15 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         isLoading={isDeleteLoading}
         // noIcon={!status}
       >
-        Are you sure you want to delete price change of <br />
+        Are you sure you want to remove price change of <br />
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
           ₱{" "}
-          {selectedRowData?.futurePriceChanges?.[
+          {priceChangeData?.futurePriceChanges?.[
             futurePriceIndex
-          ]?.price?.toLocaleString()}
+          ]?.price?.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </span>
         ?
       </CommonDialog>

@@ -67,8 +67,9 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
     <>
       <Box className="viewExpensesModal__headers">
         <Typography className="viewExpensesModal__headers__title">
-          Other Expenses Form
+          Other Expenses
         </Typography>
+
         <IconButton
           sx={{
             color: "white !important",
@@ -266,10 +267,11 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               right: "40px",
             }}
           >
-            <SuccessButton onClick={onApproveConfirmOpen}>
-              Approve{" "}
-            </SuccessButton>
             <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
+
+            <SuccessButton onClick={onApproveConfirmOpen}>
+              Approve
+            </SuccessButton>
           </Box>
         )}
       </CommonModal>

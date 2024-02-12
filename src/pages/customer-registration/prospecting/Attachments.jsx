@@ -540,7 +540,6 @@ function Attachments() {
             }));
           }}
         /> */}
-
         <Input
           type="file"
           sx={{ display: "none" }}
@@ -557,7 +556,6 @@ function Attachments() {
             }));
           }}
         />
-
         <Input
           type="file"
           sx={{ display: "none" }}
@@ -574,7 +572,6 @@ function Attachments() {
             }));
           }}
         />
-
         <Input
           type="file"
           sx={{ display: "none" }}
@@ -605,7 +602,6 @@ function Attachments() {
             }));
           }}
         /> */}
-
         <Input
           type="file"
           sx={{ display: "none" }}
@@ -622,7 +618,6 @@ function Attachments() {
             }));
           }}
         />
-
         <Input
           type="file"
           sx={{ display: "none" }}
@@ -639,7 +634,6 @@ function Attachments() {
             }));
           }}
         />
-
         <Input
           type="file"
           sx={{ display: "none" }}
@@ -656,7 +650,6 @@ function Attachments() {
             }));
           }}
         />
-
         <Input
           type="file"
           sx={{ display: "none" }}
@@ -673,7 +666,6 @@ function Attachments() {
             }));
           }}
         />
-
         <Input
           type="file"
           sx={{ display: "none" }}

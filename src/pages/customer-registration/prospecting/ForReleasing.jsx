@@ -130,29 +130,19 @@ function ForReleasing() {
   } = useDisclosure();
 
   //Constants
-  // const excludeKeys = [
-  //
-  //   "freebies",
-  // ];
-
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "isActive",
-    "origin",
-    "addedBy",
-    "status",
-    "freebies",
-    "ownersAddress",
-    "registrationStatus",
-  ];
 
   const tableHeads = [
-    "Owner's Name",
-    "Mobile Number",
-    "Email Address",
     "Business Name",
+    "Owner's Name",
     "Business Type",
+    "Contact Number",
+  ];
+
+  const customOrderKeys = [
+    "businessName",
+    "ownersName",
+    "storeType",
+    "phoneNumber",
   ];
 
   //React Hook Form
@@ -328,18 +318,12 @@ function ForReleasing() {
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
-            // excludeKeys={excludeKeys}
-            excludeKeysDisplay={excludeKeysDisplay}
             tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             editable
-            // archivable
-            // onEdit={handleEditOpen}
             onView={handleEditOpen}
             onCancelFreebies={onFreebieCancelOpen}
-            // onUpdateFreebies={onFreebieUpdateOpen}
             onUpdateFreebies={onFreebieFormOpen}
-            // onArchive={handleArchiveOpen}
-            // onFreebie={onFreebieFormOpen}
             onReleaseFreebie={onFreebieReleaseOpen}
             page={page}
             setPage={setPage}

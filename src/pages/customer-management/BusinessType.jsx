@@ -155,8 +155,6 @@ function BusinessType() {
     Object.keys(editData).forEach((key) => {
       setValue(key, editData[key]);
     });
-
-    console.log(editData);
   };
 
   const handleArchiveOpen = (id) => {

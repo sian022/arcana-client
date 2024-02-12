@@ -9,6 +9,7 @@ import {
 import React from "react";
 import SuccessButton from "./SuccessButton";
 import DangerButton from "./DangerButton";
+import SecondaryButton from "./SecondaryButton";
 
 function CommonModalForm({
   disableSubmit,
@@ -50,9 +51,9 @@ function CommonModalForm({
 
         <Box className="commonModalForm__actions">
           <DangerButton onClick={onClose}>Close</DangerButton>
-          <SuccessButton type="submit" disabled={disableSubmit}>
+          <SecondaryButton type="submit" disabled={disableSubmit}>
             {isLoading ? <CircularProgress size="20px" /> : "Submit"}
-          </SuccessButton>
+          </SecondaryButton>
         </Box>
       </Box>
     </Modal>

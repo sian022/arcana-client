@@ -4,6 +4,7 @@ import useDisclosure from "../hooks/useDisclosure";
 import {
   Archive,
   ArrowForward,
+  Attachment,
   Block,
   Cancel,
   Delete,
@@ -16,9 +17,11 @@ import {
   PeopleAlt,
   PersonAdd,
   Print,
+  Remove,
   RemoveCircle,
   RequestPage,
   Restore,
+  ShoppingCart,
   Tag,
   Update,
   Visibility,
@@ -44,6 +47,10 @@ function CommonActions({
   onResetPassword,
   onTagUserInCluster,
   onViewCluster,
+  onManageProducts,
+  onPriceChange,
+  onAttach,
+  onRemove,
   disableActions,
   item,
   status,
@@ -90,6 +97,14 @@ function CommonActions({
       onCancel();
     } else if (action === "resetPassword") {
       onResetPassword();
+    } else if (action === "manageProducts") {
+      onManageProducts();
+    } else if (action === "priceChange") {
+      onPriceChange();
+    } else if (action === "attach") {
+      onAttach();
+    } else if (action === "remove") {
+      onRemove();
     }
 
     onClose();
@@ -191,6 +206,38 @@ function CommonActions({
           >
             {status ? <Archive /> : <Restore />}
             {status ? "Archive" : "Restore"}
+          </MenuItem>
+        )}
+
+        {onManageProducts && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("manageProducts");
+            }}
+            disabled={
+              disableActions
+                ? disableActions?.includes("manageProducts")
+                : false
+            }
+          >
+            <ShoppingCart />
+            Manage Products
+          </MenuItem>
+        )}
+
+        {onPriceChange && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("priceChange");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("priceChange") : false
+            }
+          >
+            <MonetizationOn />
+            Price Change
           </MenuItem>
         )}
 
@@ -348,6 +395,37 @@ function CommonActions({
           </MenuItem>
         )}
 
+        {onAttach && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("attach");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("printFreebies") : false
+            }
+          >
+            <Attachment />
+            Attach CI
+          </MenuItem>
+        )}
+
+        {onResetPassword && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("resetPassword");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("resetPassword") : false
+            }
+          >
+            <Password />
+            Reset Password
+          </MenuItem>
+        )}
+
+        {/* Negative */}
         {onVoid && (
           <MenuItem
             className="actionsMenuItem"
@@ -376,6 +454,21 @@ function CommonActions({
           </MenuItem>
         )}
 
+        {onRemove && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("remove");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("remove") : false
+            }
+          >
+            <RemoveCircle />
+            Remove
+          </MenuItem>
+        )}
+
         {onCancel && (
           <MenuItem
             className="actionsMenuItem"
@@ -388,21 +481,6 @@ function CommonActions({
           >
             <Cancel />
             Cancel
-          </MenuItem>
-        )}
-
-        {onResetPassword && (
-          <MenuItem
-            className="actionsMenuItem"
-            onClick={() => {
-              handleAction("resetPassword");
-            }}
-            disabled={
-              disableActions ? disableActions?.includes("resetPassword") : false
-            }
-          >
-            <Password />
-            Reset Password
           </MenuItem>
         )}
       </Menu>

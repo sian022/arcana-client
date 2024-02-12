@@ -105,49 +105,21 @@ function RegistrationApproval() {
   ];
 
   const tableHeads = [
+    "Business Name",
     "Owner's Name",
     "Contact Number",
-    "Email Address",
-    "Business Name",
-    // "Origin",
     "Business Type",
     "Requested By",
+    "Origin",
   ];
 
-  const excludeKeysDisplay = [
-    "id",
-    "requestId",
-    "businessAddress",
-    "fixedDiscount",
-    "ownersAddress",
-    "attachments",
-    "terms",
-    "tinNumber",
-    "authorizedRepresentative",
-    "authorizedRepresentativePosition",
-    "cluster",
-    "freezer",
-    "typeOfCustomer",
-    "directDelivery",
-    "bookingCoverage",
-    "modeOfPayment",
-    "variableDiscount",
-    "longitude",
-    "latitude",
-    // "storeType",
-    "dateOfBirth",
-    "clientApprovalHistories",
-    "freebies",
-    "modeOfPayments",
-    "updateHistories",
-    "listingFees",
-    "createdAt",
+  const customOrderKeys = [
+    "businessName",
+    "ownersName",
+    "phoneNumber",
+    "storeType",
+    "requestedBy",
     "origin",
-    "approvers",
-    "registrationStatus",
-    "expenses",
-    "clusterId",
-    "clusterName",
   ];
 
   //Misc Functions
@@ -161,18 +133,18 @@ function RegistrationApproval() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Registration");
-  // }, []);
-
-  useEffect(() => {
     if (clientStatus === "Under review") {
       patchReadNotification({ Tab: "Pending Clients" });
     }
   }, [clientStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>
@@ -194,8 +166,8 @@ function RegistrationApproval() {
         ) : (
           <CommonTable
             mapData={data?.regularClient}
-            excludeKeysDisplay={excludeKeysDisplay}
-            // tableHeads={tableHeads}
+            tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             moreCompact
             editable
             onView={onViewOpen}

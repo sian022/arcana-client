@@ -106,6 +106,36 @@ export const shallowEqual = (objA, objB) => {
   return true;
 };
 
+export const shallowEqualArray = (arrA, arrB) => {
+  if (arrA === arrB) {
+    return true;
+  }
+
+  if (
+    !Array.isArray(arrA) ||
+    !Array.isArray(arrB) ||
+    arrA === null ||
+    arrB === null
+  ) {
+    return false;
+  }
+
+  const lengthA = arrA.length;
+  const lengthB = arrB.length;
+
+  if (lengthA !== lengthB) {
+    return false;
+  }
+
+  for (let i = 0; i < lengthA; i++) {
+    if (arrA[i] !== arrB[i]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 export const formatOrdinalPrefix = (number) => {
   const lastDigit = number % 10;
   const twoDigits = number % 100;

@@ -79,6 +79,10 @@ function CommonDrawer({
           </Box>
           {!removeButtons && (
             <Box className="commonDrawer__actions">
+              <DangerButton onClick={onClose} disabled={isLoading}>
+                Close
+              </DangerButton>
+
               <SuccessButton
                 onClick={onSubmit}
                 disabled={disableSubmit || isLoading}
@@ -89,9 +93,6 @@ function CommonDrawer({
                   <>{submitLabel || "Submit"}</>
                 )}
               </SuccessButton>
-              <DangerButton onClick={onClose} disabled={isLoading}>
-                Close
-              </DangerButton>
             </Box>
           )}
         </Box>

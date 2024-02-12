@@ -6,10 +6,11 @@ import {
   Typography,
   TextField,
   CircularProgress,
+  Checkbox,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../assets/styles/login.styles.scss";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Lock, Person, Visibility, VisibilityOff } from "@mui/icons-material";
 import { usePostLoginMutation } from "../features/authentication/api/loginApi";
 import { loginSchema } from "../schema/schema";
 import { useForm } from "react-hook-form";
@@ -31,14 +32,15 @@ import SystemLogoName from "../assets/images/SystemLogoName.png";
 import useSnackbar from "../hooks/useSnackbar";
 import SecondaryButton from "../components/SecondaryButton";
 import { AppContext } from "../context/AppContext";
-import ChangePasswordModal from "../components/modals/ChangePasswordModal";
 import useDisclosure from "../hooks/useDisclosure";
 import InitialChangePasswordModal from "../components/modals/InitialChangePasswordModal";
+import Cookies from "js-cookie";
 
 function LoginPage() {
   const { showSnackbar } = useSnackbar();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { refetchNotifications } = useContext(AppContext);
 
@@ -51,6 +53,8 @@ function LoginPage() {
     register,
     formState: { errors, isValid },
     reset,
+    setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(loginSchema),
     mode: "onSubmit",
@@ -82,6 +86,13 @@ function LoginPage() {
         return;
       }
 
+      if (rememberMe) {
+        Cookies.set("rememberMeUsername", watch("username"), { expires: 30 }); // Expires in 30 days
+      } else {
+        // If not selected, remove the "Remember Me" cookie
+        Cookies.remove("rememberMeUsername");
+      }
+
       dispatch(setUserDetails(res?.value));
       dispatch(setFullname(res?.value?.fullname));
       dispatch(setToken(res?.value?.token));
@@ -101,6 +112,15 @@ function LoginPage() {
     }
   };
 
+  useEffect(() => {
+    // Check if "Remember Me" cookie exists on mount
+    const rememberMeUsername = Cookies.get("rememberMeUsername");
+    if (rememberMeUsername) {
+      setValue("username", rememberMeUsername);
+      setRememberMe(true);
+    }
+  }, []);
+
   return (
     <>
       <Box className="login__page">
@@ -112,6 +132,7 @@ function LoginPage() {
               className="login__logoWrapper__logo"
             />
           </Box>
+
           <Box className="login__formWrapper">
             <Box
               component="form"
@@ -124,16 +145,19 @@ function LoginPage() {
                 size="small"
                 type="text"
                 autoComplete="off"
+                // variant="standard"
                 sx={{ width: "230px" }}
                 {...register("username")}
                 helperText={errors && errors.username?.message}
               />
+
               <TextField
                 label="Password"
                 error={errors && errors.password}
                 size="small"
                 type={showPassword ? "text" : "password"}
                 autoComplete="off"
+                // variant="standard"
                 sx={{ width: "230px" }}
                 InputProps={{
                   endAdornment: (
@@ -151,6 +175,29 @@ function LoginPage() {
                 {...register("password")}
                 helperText={errors && errors.password?.message}
               />
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Checkbox
+                  onChange={(e) => {
+                    setRememberMe(e.target.checked);
+                    if (!e.target.checked) {
+                      // If unchecked, remove the "Remember Me" cookie
+                      Cookies.remove("rememberMeUsername");
+                    }
+                  }}
+                  checked={rememberMe}
+                />
+
+                <Typography>Remember me</Typography>
+              </Box>
+
               <SecondaryButton
                 className="login__formWrapper__form__signIn"
                 type="submit"
@@ -163,6 +210,7 @@ function LoginPage() {
                   "Sign In"
                 )}
               </SecondaryButton>
+
               <Box className="login__footer">
                 <img src={MisLogo} alt="mis-logo" />
                 <Typography>© 2023 Powered by</Typography>

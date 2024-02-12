@@ -9,7 +9,7 @@ function Approval() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
 
   if (location.pathname === "/approval") {
     return (
@@ -60,7 +60,8 @@ function Approval() {
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
               {!!notifications?.pendingSpDiscount &&
-              !notifications?.pendingSpDiscount !== 0 ? (
+              !notifications?.pendingSpDiscount !== 0 &&
+              !isNotificationFetching ? (
                 <Box className="notificationsLarge">
                   {notifications?.pendingSpDiscount}
                 </Box>
@@ -86,7 +87,8 @@ function Approval() {
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
               {!!notifications?.pendingListingFee &&
-              !notifications?.pendingListingFee !== 0 ? (
+              !notifications?.pendingListingFee !== 0 &&
+              !isNotificationFetching ? (
                 <Box className="notificationsLarge">
                   {notifications?.pendingListingFee}
                 </Box>
@@ -112,7 +114,8 @@ function Approval() {
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
               {!!notifications?.pendingExpenses &&
-              !notifications?.pendingExpenses !== 0 ? (
+              !notifications?.pendingExpenses !== 0 &&
+              !isNotificationFetching ? (
                 <Box className="notificationsLarge">
                   {notifications?.pendingExpenses}
                 </Box>

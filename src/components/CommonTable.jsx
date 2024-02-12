@@ -15,18 +15,18 @@ import React, { useEffect, useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/no-data.jpg";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
-import { Visibility } from "@mui/icons-material";
+import { Attachment, Visibility } from "@mui/icons-material";
 import { formatPhoneNumber } from "../utils/CustomFunctions";
 import moment from "moment";
 
 function CommonTable({
   mt,
   mapData,
-  excludeKeys,
   excludeKeysDisplay,
   tableHeads,
+  customOrderKeys,
   editable,
   archivable,
   onEdit,
@@ -47,12 +47,18 @@ function CommonTable({
   onTagUserInCluster,
   onViewCluster,
   onResetPassword,
+  onAttach,
+  onManageProducts,
+  onPriceChange,
+  onRemove,
   page,
   setPage,
   rowsPerPage,
   setRowsPerPage,
   count = 0,
   status,
+  expanded,
+  lessCompact,
   compact,
   moreCompact,
   midCompact,
@@ -60,9 +66,15 @@ function CommonTable({
   pesoArray,
   viewMoreKey,
   onViewMoreClick,
+  onViewMoreConstant,
+  onViewMoreConstantDisabled,
+  attachKey,
+  highlightSelected,
   disableActions,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   useEffect(() => {
     const image = new Image();
@@ -78,7 +90,11 @@ function CommonTable({
       <Box
         className="noData"
         sx={{
-          height: compact
+          height: expanded
+            ? "calc(100vh - 220px)"
+            : lessCompact
+            ? "calc(100vh - 290px)"
+            : compact
             ? // ? "calc(100vh - 370px)"
               "calc(100vh - 330px)"
             : moreCompact
@@ -86,7 +102,7 @@ function CommonTable({
               "calc(100vh - 330px)"
             : midCompact
             ? "calc(100vh - 280px)"
-            : "calc(100vh - 270px)",
+            : null,
         }}
       >
         {imageLoaded && (
@@ -104,21 +120,12 @@ function CommonTable({
   var dataToMap = mapData;
   var tableHeadsList;
 
-  if (excludeKeys) {
-    const filteredData = mapData?.map((obj) => {
-      const filteredObj = Object.fromEntries(
-        Object.entries(obj).filter(([key, value]) => !excludeKeys.includes(key))
-      );
-      return filteredObj;
-    });
-    dataToMap = filteredData;
-  }
-
   const dataToMapKeys = Object.keys(dataToMap[0]);
+
   if (tableHeads) {
     tableHeadsList = tableHeads;
   } else {
-    tableHeadsList = dataToMapKeys
+    tableHeadsList = (customOrderKeys || dataToMapKeys)
       .filter(
         (key) =>
           // key !== "id"
@@ -139,7 +146,11 @@ function CommonTable({
         component={Paper}
         className="tableSuperContainer__tableContainer"
         sx={{
-          height: compact
+          height: expanded
+            ? "calc(100vh - 220px)"
+            : lessCompact
+            ? "calc(100vh - 290px)"
+            : compact
             ? // ? "calc(100vh - 370px)"
               "calc(100vh - 330px)"
             : moreCompact
@@ -154,10 +165,20 @@ function CommonTable({
           <TableHead>
             <TableRow>
               {tableHeadsList.map((item, i) => (
-                <TableCell key={i}>{item}</TableCell>
+                <TableCell
+                  sx={{
+                    position: item === "Actions" && "sticky",
+                    right: item === "Actions" && 0,
+                    bgcolor: item === "Actions" && "primary.main",
+                  }}
+                  key={i}
+                >
+                  {item}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {dataToMap.map((item, j) => {
               return (
@@ -166,13 +187,34 @@ function CommonTable({
                   onClick={() => {
                     dispatch(setSelectedRow(item));
                   }}
+                  sx={{
+                    cursor: highlightSelected && "pointer",
+                    bgcolor:
+                      highlightSelected &&
+                      shallowEqual(selectedRowData, item) &&
+                      "#f3f3f3",
+                  }}
                 >
-                  {dataToMapKeys.map((keys, k) => {
+                  {(customOrderKeys || dataToMapKeys).map((keys, k) => {
                     if (
                       // keys === "id"
                       excludeKeysDisplay?.includes(keys)
                     ) {
                       return null;
+                    }
+
+                    if (keys === attachKey) {
+                      return (
+                        <TableCell key={k}>
+                          <Attachment
+                            sx={{
+                              color: !item[keys]
+                                ? "error.main"
+                                : "success.main",
+                            }}
+                          />
+                        </TableCell>
+                      );
                     }
 
                     let total = 0;
@@ -203,6 +245,16 @@ function CommonTable({
                       );
                     }
 
+                    if (keys === "origin") {
+                      return (
+                        <TableCell key={k}>
+                          {item[keys] === "Prospecting"
+                            ? "Prospect"
+                            : item[keys]}
+                        </TableCell>
+                      );
+                    }
+
                     if (keys === "createdAt" || keys === "updatedAt") {
                       return (
                         <TableCell key={k}>
@@ -221,15 +273,57 @@ function CommonTable({
                       );
                     }
 
+                    if (
+                      onViewMoreConstant &&
+                      k === (customOrderKeys || dataToMapKeys).length - 1
+                    ) {
+                      return (
+                        <React.Fragment key={k}>
+                          <TableCell>
+                            {/* Content of the last regular column */}
+                            {pesoArray && pesoArray.includes(keys) && "₱ "}
+
+                            {percentageArray && percentageArray.includes(keys)
+                              ? item[keys] * 100
+                              : pesoArray && pesoArray.includes(keys)
+                              ? item[keys]?.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })
+                              : !item[keys]
+                              ? "N/A"
+                              : item[keys]}
+                            {percentageArray &&
+                              percentageArray.includes(keys) &&
+                              "%"}
+                          </TableCell>
+
+                          <TableCell>
+                            {/* Additional column for onViewMoreConstant */}
+                            <IconButton
+                              sx={{ color: "secondary.main" }}
+                              onClick={onViewMoreConstant}
+                              disabled={onViewMoreConstantDisabled}
+                            >
+                              <Visibility />
+                            </IconButton>
+                          </TableCell>
+                        </React.Fragment>
+                      );
+                    }
+
                     return (
                       <TableCell key={k}>
-                        {pesoArray && pesoArray.includes(keys) && "₱ "}
+                        {pesoArray && pesoArray.includes(keys) && "₱"}
                         {/* {keys === "phoneNumber" && "+63"} */}
 
                         {percentageArray && percentageArray.includes(keys)
                           ? item[keys] * 100
                           : pesoArray && pesoArray.includes(keys)
-                          ? item[keys].toLocaleString()
+                          ? item[keys]?.toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
                           : !item[keys]
                           ? "N/A"
                           : item[keys]}
@@ -240,8 +334,15 @@ function CommonTable({
                       </TableCell>
                     );
                   })}
+
                   {(editable || archivable) && (
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        right: 0,
+                        bgcolor: "white !important",
+                      }}
+                    >
                       <CommonActions
                         onEdit={onEdit}
                         onArchive={onArchive}
@@ -267,6 +368,10 @@ function CommonTable({
                         onViewCluster={onViewCluster && onViewCluster}
                         onCancel={onCancel && onCancel}
                         onResetPassword={onResetPassword && onResetPassword}
+                        onManageProducts={onManageProducts && onManageProducts}
+                        onPriceChange={onPriceChange && onPriceChange}
+                        onAttach={onAttach && onAttach}
+                        onRemove={onRemove && onRemove}
                         item={item}
                         status={status}
                         disableActions={disableActions}

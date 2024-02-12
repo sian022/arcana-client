@@ -270,6 +270,7 @@
 .attachmentsContainer {
   flex: 1;
 }
+
 .attachments {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -418,19 +419,7 @@
   }
 }
 
-// ul {
-//   background-color: white !important;
-//   color: $secondary !important;
-// }
-
-// .buttonActive {
-//   background-color: $secondary !important;
-
-//   & svg {
-//     color: white !important;
-//     z-index: 0;
-//   }
-// }
+//Others
 
 //Wild Cards
 .overlay {

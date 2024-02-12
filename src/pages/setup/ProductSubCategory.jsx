@@ -69,7 +69,9 @@ function ProductSubCategory() {
     "isActive",
   ];
 
-  const tableHeads = ["Product Category", "Product Sub Category"];
+  const tableHeads = ["Product Sub Category", "Product Category"];
+
+  const customOrderKeys = ["productSubCategoryName", "productCategoryName"];
 
   //React Hook Form
   const {
@@ -218,7 +220,6 @@ function ProductSubCategory() {
       ) : (
         <CommonTable
           mapData={data?.productSubCategories}
-          excludeKeysDisplay={excludeKeysDisplay}
           editable
           archivable
           onEdit={handleEditOpen}
@@ -230,6 +231,7 @@ function ProductSubCategory() {
           count={count}
           status={status}
           tableHeads={tableHeads}
+          customOrderKeys={customOrderKeys}
         />
       )}
 

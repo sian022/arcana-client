@@ -86,8 +86,6 @@ function ViewPhotoModal({
                 alt="File preview"
                 style={{
                   borderRadius: "12px",
-                  // width: "800px",
-                  // height: "auto",
                   maxWidth: "100%",
                   maxHeight: "100%",
                 }}

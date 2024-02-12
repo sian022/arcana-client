@@ -80,6 +80,15 @@ export const otherExpensesRegApi = createApi({
       }),
       invalidatesTags: ["Expenses"],
     }),
+
+    getExpensesApprovalHistoryById: builder.query({
+      query: ({ id }) => ({
+        url: `/other-expenses/${id}/approval-history`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
   }),
 });
 
@@ -90,4 +99,7 @@ export const {
   usePutRejectExpensesMutation,
   usePutUpdateExpensesMutation,
   usePatchVoidExpenseRequestMutation,
+
+  //Approval History
+  useLazyGetExpensesApprovalHistoryByIdQuery,
 } = otherExpensesRegApi;

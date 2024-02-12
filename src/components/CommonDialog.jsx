@@ -24,10 +24,19 @@ function CommonDialog({
   disableYes,
   ...otherProps
 }) {
+  const handleYes = (e) => {
+    e.preventDefault();
+    onYes();
+  };
+
   return (
     <Dialog {...otherProps}>
       <Box className="commonDialog__roof" />
-      <Box className="commonDialog__content">
+      <Box
+        className="commonDialog__content"
+        component="form"
+        onSubmit={handleYes}
+      >
         {/* {!noIcon && (
           <Box className="commonDialog__imageWrapper">
             <img
@@ -59,12 +68,13 @@ function CommonDialog({
 
         <DialogTitle className="commonDialog__title">{children}</DialogTitle>
         <DialogActions>
-          <SecondaryButton onClick={onYes} disabled={isLoading || disableYes}>
-            {isLoading ? <CircularProgress size="20px" color="white" /> : "Yes"}
-          </SecondaryButton>
           <DangerButton onClick={onClose} disabled={isLoading}>
             No
           </DangerButton>
+
+          <SecondaryButton type="submit" disabled={isLoading || disableYes}>
+            {isLoading ? <CircularProgress size="20px" color="white" /> : "Yes"}
+          </SecondaryButton>
         </DialogActions>
       </Box>
     </Dialog>

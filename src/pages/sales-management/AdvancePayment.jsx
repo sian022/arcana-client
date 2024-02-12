@@ -9,8 +9,7 @@ import React, { useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonTable from "../../components/CommonTable";
-import { dummyTableData } from "../../utils/DummyData";
-import CommonDrawer from "../../components/CommonDrawer";
+import { dummyAdvancePaymentData, dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonDialog from "../../components/CommonDialog";
 import { useSelector } from "react-redux";
@@ -21,9 +20,10 @@ import { advancePaymentSchema } from "../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
-import { paymentTypes } from "../../utils/Constants";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { paymentTypesAdvPayment } from "../../utils/Constants";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function AdvancePayment() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -31,9 +31,10 @@ function AdvancePayment() {
   const [status, setStatus] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [count, setCount] = useState(null);
+  const [count, setCount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const { showSnackbar } = useSnackbar();
 
   //React Hook Form
   const {
@@ -51,12 +52,7 @@ function AdvancePayment() {
     defaultValues: advancePaymentSchema.defaultValues,
   });
 
-  // Drawer Disclosures
-  const {
-    isOpen: isDrawerOpen,
-    onOpen: onDrawerOpen,
-    onClose: onDrawerClose,
-  } = useDisclosure();
+  //Disclosures
 
   const {
     isOpen: isArchiveOpen,
@@ -68,6 +64,12 @@ function AdvancePayment() {
     isOpen: isFormOpen,
     onOpen: onFormOpen,
     onClose: onFormClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose,
   } = useDisclosure();
 
   //RTK Query
@@ -84,22 +86,74 @@ function AdvancePayment() {
 
   const isFetching = false;
 
+  //Constants
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Amount",
+    "Payment Type",
+    "Created At",
+  ];
+
+  const pesoArray = ["amount"];
+
+  //Functions
+  const onSubmit = (data) => {
+    let transformedData;
+
+    if (data.paymentType.label === "Cheque") {
+      transformedData = {
+        clientId: data.clientId?.id,
+        paymentType: data.paymentType?.value,
+        amount: data.amount,
+        payee: data.payee,
+        chequeDate: data.chequeDate,
+        bankName: data.bankName,
+        chequeNumber: data.chequeNumber,
+        dateReceived: data.dateReceived,
+        chequeAmount: Number(data.chequeAmount),
+      };
+    } else if (data.paymentType.label === "Online") {
+      transformedData = {
+        clientId: data.clientId?.id,
+        paymentType: data.paymentType?.value,
+        amount: data.amount,
+        accountName: data.accountName,
+        accountNumber: data.accountNumber,
+      };
+    } else {
+      transformedData = {
+        clientId: data.clientId?.id,
+        paymentType: data.paymentType?.value,
+        amount: data.amount,
+      };
+    }
+
+    try {
+      console.log(transformedData);
+      showSnackbar("Advance Payment added successfully!", "success");
+      handleFormClose();
+      onConfirmClose();
+    } catch (error) {
+      console.log(error);
+      if (error?.data?.error?.message) {
+        showSnackbar(error?.data?.error?.message, "error");
+      } else {
+        showSnackbar("Error adding Advance Payment", "error");
+      }
+      onConfirmClose();
+    }
+  };
+
   const handleAddOpen = () => {
     setDrawerMode("add");
     // onDrawerOpen();
     onFormOpen();
   };
 
-  const handleDrawerClose = () => {
-    // reset();
-    onDrawerClose();
-    setSelectedId("");
-  };
-
   const handleFormClose = () => {
     reset();
     onFormClose();
-    setSelectedId("");
   };
 
   return (
@@ -114,9 +168,9 @@ function AdvancePayment() {
         <CommonTableSkeleton />
       ) : (
         <CommonTable
-          mapData={dummyTableData}
-          // excludeKeysDisplay={excludeKeysDisplay}
-          // tableHeads={tableHeads}
+          mapData={dummyAdvancePaymentData}
+          tableHeads={tableHeads}
+          pesoArray={pesoArray}
           editable
           archivable
           // onEdit={handleEditOpen}
@@ -135,7 +189,9 @@ function AdvancePayment() {
         title="Advance Payment"
         open={isFormOpen}
         onClose={handleFormClose}
-        onSubmit={handleFormClose}
+        // onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onConfirmOpen}
+        disableSubmit={!isValid || !isDirty}
         width="800px"
         height="520px"
       >
@@ -201,7 +257,7 @@ function AdvancePayment() {
               <ControlledAutocomplete
                 name="paymentType"
                 control={control}
-                options={paymentTypes}
+                options={paymentTypesAdvPayment}
                 getOptionLabel={(option) => option.label.toUpperCase()}
                 disableClearable
                 // disabled={!watch("clientId")}
@@ -216,6 +272,20 @@ function AdvancePayment() {
                     error={errors?.paymentType}
                   />
                 )}
+                onChange={(_, value) => {
+                  if (value?.label !== "Cheque") {
+                    setValue("payee", "");
+                    setValue("chequeDate", null);
+                    setValue("bankName", "");
+                    setValue("chequeNumber", "");
+                    setValue("dateReceived", null);
+                    setValue("chequeAmount", "");
+                  } else if (value?.label !== "Online") {
+                    setValue("accountName", "");
+                    setValue("accountNumber", "");
+                  }
+                  return value;
+                }}
               />
             </Box>
 
@@ -235,20 +305,15 @@ function AdvancePayment() {
                     customInput={TextField}
                     autoComplete="off"
                     onValueChange={(e) => {
-                      onChange(Number(e.value));
+                      onChange(e.value === "" ? null : Number(e.value));
                     }}
                     onBlur={onBlur}
                     value={value || ""}
-                    // InputProps={{
-                    //   startAdornment: (
-                    //     <InputAdornment position="start">₱</InputAdornment>
-                    //   ),
-                    // }}
-                    // ref={ref}
-                    // required
                     thousandSeparator=","
                     allowNegative={false}
                     allowLeadingZeros={false}
+                    prefix="₱"
+                    decimalScale={2}
                     // disabled={!watch("clientId")}
                   />
                 )}
@@ -327,7 +392,7 @@ function AdvancePayment() {
               />
 
               <Controller
-                name="chequeNo"
+                name="chequeNumber"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
@@ -336,8 +401,8 @@ function AdvancePayment() {
                     size="small"
                     autoComplete="off"
                     {...field}
-                    helperText={errors?.chequeNo?.message}
-                    error={errors?.chequeNo}
+                    helperText={errors?.chequeNumber?.message}
+                    error={errors?.chequeNumber}
                     type="number"
                   />
                 )}
@@ -368,7 +433,7 @@ function AdvancePayment() {
 
               <Controller
                 control={control}
-                name={"chequeAmount"}
+                name="chequeAmount"
                 render={({ field: { onChange, onBlur, value, ref } }) => (
                   <NumericFormat
                     label="Cheque Amount"
@@ -377,18 +442,62 @@ function AdvancePayment() {
                     customInput={TextField}
                     autoComplete="off"
                     onValueChange={(e) => {
-                      onChange(Number(e.value));
+                      onChange(e.value === "" ? null : Number(e.value));
                     }}
                     onBlur={onBlur}
                     value={value || ""}
-                    // InputProps={{
-                    //   startAdornment: (
-                    //     <InputAdornment position="start">₱</InputAdornment>
-                    //   ),
-                    // }}
                     thousandSeparator=","
                     allowNegative={false}
                     allowLeadingZeros={false}
+                    prefix="₱"
+                    decimalScale={2}
+                  />
+                )}
+              />
+            </Box>
+          )}
+
+          {watch("paymentType")?.label === "Online" && (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "20px",
+                mt: "20px",
+              }}
+            >
+              <Controller
+                name="accountName"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    label="Account Name"
+                    size="small"
+                    autoComplete="off"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                    helperText={errors?.accountName?.message}
+                    error={errors?.accountName}
+                  />
+                )}
+              />
+
+              <Controller
+                name="accountNumber"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    label="Account No."
+                    size="small"
+                    autoComplete="off"
+                    {...field}
+                    helperText={errors?.accountNumber?.message}
+                    error={errors?.accountNumber}
+                    type="number"
                   />
                 )}
               />
@@ -409,6 +518,14 @@ function AdvancePayment() {
           {selectedRowData?.storeTypeName}
         </span>
         ?
+      </CommonDialog>
+
+      <CommonDialog
+        open={isConfirmOpen}
+        onClose={onConfirmClose}
+        onYes={handleSubmit(onSubmit)}
+      >
+        Confirm adding of advance payment?
       </CommonDialog>
     </Box>
   );

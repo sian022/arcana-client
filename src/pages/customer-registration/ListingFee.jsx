@@ -99,40 +99,20 @@ function ListingFee() {
     },
   ];
 
-  const selectOptions = [
-    {
-      value: "all",
-      label: "All",
-    },
-    {
-      value: "prospecting",
-      label: "Prospect",
-    },
-    {
-      value: "direct",
-      label: "Direct",
-    },
-  ];
-
-  const excludeKeysDisplay = [
-    "listingItems",
-    "clientId",
-    "listingFeeId",
-    "approvalId",
-    "status",
-    "cancellationReason",
-    "requestId",
-    "listingFeeApprovalHistories",
-    "registrationStatus",
-    "approvers",
-  ];
-
   const tableHeads = [
-    "Owner's Name",
     "Business Name",
-    "Requested By",
+    "Business Name",
+    "Transaction Number",
     "Total Amount",
-    "Created At",
+    "Requested By",
+  ];
+
+  const customOrderKeys = [
+    "businessName",
+    "clientName",
+    "listingFeeId",
+    "total",
+    "requestedBy",
   ];
 
   const pesoArray = ["total"];
@@ -172,18 +152,18 @@ function ListingFee() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Listing Fee");
-  // }, []);
-
-  useEffect(() => {
     if (listingFeeStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Listing Fee" });
     }
   }, [listingFeeStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>
@@ -215,7 +195,9 @@ function ListingFee() {
           <CommonTable
             mapData={data?.listingFees}
             moreCompact
-            excludeKeysDisplay={excludeKeysDisplay}
+            tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
+            pesoArray={pesoArray}
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
@@ -223,8 +205,6 @@ function ListingFee() {
             setPage={setPage}
             editable
             onView={onViewOpen}
-            tableHeads={tableHeads}
-            pesoArray={pesoArray}
             onEdit={listingFeeStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
             onCancel={listingFeeStatus === "Rejected" && onDeleteOpen}
@@ -233,7 +213,6 @@ function ListingFee() {
         )}
       </Box>
 
-      {/* <ListingFeeModal open={isListingFeeOpen} onClose={onListingFeeClose} /> */}
       <ListingFeeDrawer
         isListingFeeOpen={isListingFeeOpen}
         onListingFeeClose={onListingFeeClose}

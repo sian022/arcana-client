@@ -118,93 +118,96 @@ function InitialChangePasswordModal({ ...otherProps }) {
   return (
     <>
       <CommonModal {...otherProps} width="350px">
-        <Box className="changePasswordModal">
-          <Box>
-            <Typography className="changePasswordModal__title">
-              Change User Password
-            </Typography>
-            <Typography
-              sx={{
-                textAlign: "center",
-                mt: "2px",
-                fontSize: "14px",
-                // fontStyle: "italic",
-              }}
-            >
-              Password change required for initial login
-            </Typography>
-          </Box>
-
-          <Box className="changePasswordModal__form">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box className="changePasswordModal">
             <Box>
-              <TextField
-                type={viewNewPassword ? "string" : "password"}
-                size="small"
-                label="Password"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => {
-                          setViewNewPassword(!viewNewPassword);
-                        }}
-                        tabIndex={-1}
-                      >
-                        {viewNewPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+              <Typography className="changePasswordModal__title">
+                Change User Password
+              </Typography>
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  mt: "2px",
+                  fontSize: "14px",
+                  // fontStyle: "italic",
                 }}
-                {...register("newPassword")}
-              />
+              >
+                Password change required for initial login
+              </Typography>
             </Box>
 
-            <Box>
-              <TextField
-                type={viewConfirmNewPassword ? "string" : "password"}
-                size="small"
-                label="Confirm Password"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => {
-                          setViewConfirmNewPassword(!viewConfirmNewPassword);
-                        }}
-                        tabIndex={-1}
-                      >
-                        {viewConfirmNewPassword ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                {...register("confirmNewPassword")}
-              />
+            <Box className="changePasswordModal__form">
+              <Box>
+                <TextField
+                  type={viewNewPassword ? "string" : "password"}
+                  size="small"
+                  label="Password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => {
+                            setViewNewPassword(!viewNewPassword);
+                          }}
+                          tabIndex={-1}
+                        >
+                          {viewNewPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  {...register("newPassword")}
+                />
+              </Box>
+
+              <Box>
+                <TextField
+                  type={viewConfirmNewPassword ? "string" : "password"}
+                  size="small"
+                  label="Confirm Password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => {
+                            setViewConfirmNewPassword(!viewConfirmNewPassword);
+                          }}
+                          tabIndex={-1}
+                        >
+                          {viewConfirmNewPassword ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  {...register("confirmNewPassword")}
+                />
+              </Box>
             </Box>
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "end",
-            gap: "10px",
-            marginTop: "20px",
-          }}
-          className="roleTaggingModal__actions"
-        >
-          <SecondaryButton
-            // onClick={onConfirmOpen}
-            onClick={handleSubmit(onSubmit)}
-            disabled={!watch("newPassword") || !watch("confirmNewPassword")}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              gap: "10px",
+              marginTop: "20px",
+            }}
+            className="roleTaggingModal__actions"
           >
-            {isLoading ? <CircularProgress size="20px" /> : "Save"}
-          </SecondaryButton>
-          <DangerButton onClick={handleCloseModal}>Close</DangerButton>
-        </Box>
+            <SecondaryButton
+              // onClick={onConfirmOpen}
+              // onClick={handleSubmit(onSubmit)}
+              type="submit"
+              disabled={!watch("newPassword") || !watch("confirmNewPassword")}
+            >
+              {isLoading ? <CircularProgress size="20px" /> : "Save"}
+            </SecondaryButton>
+            <DangerButton onClick={handleCloseModal}>Close</DangerButton>
+          </Box>
+        </form>
       </CommonModal>
 
       {/* <CommonDialog

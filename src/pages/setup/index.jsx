@@ -112,6 +112,44 @@ function Setup() {
               <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
             </Box>
           </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("price-mode-setup")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Price Mode Setup
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Manage and create price modes
+              </Typography>
+            </Box>
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
+          </Box>
+
+          <Box
+            className="pageIndex__navigators__item"
+            onClick={() => navigate("price-mode-management")}
+          >
+            <Box className="pageIndex__navigators__item__text">
+              <Typography className="pageIndex__navigators__item__text__title">
+                Price Mode Management
+              </Typography>
+              <Typography className="pageIndex__navigators__item__text__subTitle">
+                Tagging of items and price change for each price mode
+              </Typography>
+            </Box>
+
+            <Box className="pageIndex__navigators__item__notifAndArrow">
+              <Box></Box>
+              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+            </Box>
+          </Box>
         </Box>
       </Box>
     );

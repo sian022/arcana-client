@@ -149,50 +149,22 @@ function DirectRegistration() {
     },
   ];
 
-  const excludeKeysDisplay = [
-    "id",
-    "requestId",
-    "businessAddress",
-    "fixedDiscount",
-    "ownersAddress",
-    "attachments",
-    "terms",
-    "tinNumber",
-    "authorizedRepresentative",
-    "authorizedRepresentativePosition",
-    "cluster",
-    "freezer",
-    "typeOfCustomer",
-    "directDelivery",
-    "bookingCoverage",
-    "modeOfPayment",
-    "variableDiscount",
-    "longitude",
-    "latitude",
-    // "storeType",
-    "dateOfBirth",
-    "clientApprovalHistories",
-    "freebies",
-    "modeOfPayments",
-    "updateHistories",
-    "listingFees",
-    "createdAt",
-    "origin",
-    "approvers",
-    "registrationStatus",
-    "expenses",
-    "clusterId",
-    "clusterName",
-  ];
-
   const tableHeads = [
+    "Business Name",
     "Owner's Name",
     "Contact Number",
-    "Email Address",
-    "Business Name",
-    // "Origin",
     "Business Type",
     "Requested By",
+    "Origin",
+  ];
+
+  const customOrderKeys = [
+    "businessName",
+    "ownersName",
+    "phoneNumber",
+    "storeType",
+    "requestedBy",
+    "origin",
   ];
 
   const disableActions = ["printFreebies"];
@@ -242,18 +214,18 @@ function DirectRegistration() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Registration");
-  // }, []);
-
-  useEffect(() => {
     if (clientStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Clients" });
     }
   }, [clientStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>
@@ -285,7 +257,6 @@ function DirectRegistration() {
         ) : (
           <CommonTable
             mapData={data?.regularClient}
-            excludeKeysDisplay={excludeKeysDisplay}
             moreCompact
             count={count}
             rowsPerPage={rowsPerPage}
@@ -293,6 +264,7 @@ function DirectRegistration() {
             page={page}
             setPage={setPage}
             tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             editable
             onView={onViewOpen}
             onHistory={onHistoryOpen}

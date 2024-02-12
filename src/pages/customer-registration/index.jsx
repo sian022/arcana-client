@@ -9,7 +9,7 @@ function CustomerRegistration() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
 
   if (location.pathname === "/customer-registration") {
     return (
@@ -35,7 +35,9 @@ function CustomerRegistration() {
             </Box>
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.prospect && !notifications?.prospect !== 0 ? (
+              {!!notifications?.prospect &&
+              !notifications?.prospect !== 0 &&
+              !isNotificationFetching ? (
                 <Box className="notificationsLarge">
                   {notifications?.prospect}
                 </Box>
@@ -61,7 +63,8 @@ function CustomerRegistration() {
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
               {!!notifications?.rejectedClient &&
-              !notifications?.rejectedClient !== 0 ? (
+              !notifications?.rejectedClient !== 0 &&
+              !isNotificationFetching ? (
                 <Box className="notificationsLarge">
                   {notifications?.rejectedClient}
                 </Box>
@@ -87,7 +90,8 @@ function CustomerRegistration() {
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
               {!!notifications?.rejectedListingFee &&
-              !notifications?.rejectedListingFee !== 0 ? (
+              !notifications?.rejectedListingFee !== 0 &&
+              !isNotificationFetching ? (
                 <Box className="notificationsLarge">
                   {notifications?.rejectedListingFee}
                 </Box>
@@ -113,7 +117,8 @@ function CustomerRegistration() {
 
             <Box className="pageIndex__navigators__item__notifAndArrow">
               {!!notifications?.rejectedExpenses &&
-              !notifications?.rejectedExpenses !== 0 ? (
+              !notifications?.rejectedExpenses !== 0 &&
+              !isNotificationFetching ? (
                 <Box className="notificationsLarge">
                   {notifications?.rejectedExpenses}
                 </Box>

@@ -121,9 +121,9 @@ function Header() {
     dispatch(notificationApi.util.resetApiState());
     dispatch(clusterApi.util.resetApiState());
 
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("fullname");
-    // localStorage.removeItem("permissions");
+    // sessionStorage.removeItem("token");
+    // sessionStorage.removeItem("fullname");
+    // sessionStorage.removeItem("permissions");
     navigate("/login");
   };
 
@@ -131,7 +131,8 @@ function Header() {
     if (action === "changePassword") {
       onChangePasswordOpen();
     } else if (action === "logout") {
-      onLogoutOpen();
+      // onLogoutOpen();
+      handleLogout();
     }
 
     onMenuClose();
@@ -258,14 +259,14 @@ function Header() {
         onClose={onChangePasswordClose}
       />
 
-      <CommonDialog
+      {/* <CommonDialog
         onClose={onLogoutClose}
         open={isLogoutOpen}
         onYes={handleLogout}
       >
         Are you sure you want to{" "}
         <span style={{ fontWeight: "bold" }}>LOGOUT</span>?
-      </CommonDialog>
+      </CommonDialog> */}
     </>
   );
 }

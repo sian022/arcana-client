@@ -84,7 +84,7 @@ function Cluster() {
   ];
 
   // const tableHeads = ["Cluster", "CDO Details"];
-  const tableHeads = ["Cluster", "User Tagged", "User Role"];
+  const tableHeads = ["Cluster", "Users Tagged"];
 
   //React Hook Form
   const {

@@ -69,15 +69,20 @@ function OtherExpensesApproval() {
     },
   ];
 
-  const excludeKeysDisplay = [
-    "status",
-    "requestId",
-    "approvalHistories",
-    "updateHistories",
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Transaction Number",
+    "Total Amount",
+    "Requested By",
+  ];
+
+  const customOrderKeys = [
+    "businessName",
+    "ownersName",
     "id",
-    "expenses",
-    "clientId",
-    "approvers",
+    "totalAmount",
+    "requestedBy",
   ];
 
   const pesoArray = ["total"];
@@ -95,18 +100,18 @@ function OtherExpensesApproval() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Other Expenses");
-  // }, []);
-
-  useEffect(() => {
     if (expenseStatus === "Under review") {
       patchReadNotification({ Tab: "Pending Expenses" });
     }
   }, [expenseStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>
@@ -137,7 +142,6 @@ function OtherExpensesApproval() {
           <CommonTable
             mapData={data?.expenses}
             moreCompact
-            excludeKeysDisplay={excludeKeysDisplay}
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
@@ -145,7 +149,8 @@ function OtherExpensesApproval() {
             setPage={setPage}
             editable
             onView={onViewOpen}
-            // tableHeads={tableHeads}
+            tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             pesoArray={pesoArray}
             onHistory={onHistoryOpen}
           />

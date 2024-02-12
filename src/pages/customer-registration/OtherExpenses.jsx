@@ -98,34 +98,23 @@ function OtherExpenses() {
     },
   ];
 
-  const selectOptions = [
-    {
-      value: "all",
-      label: "All",
-    },
-    {
-      value: "prospecting",
-      label: "Prospect",
-    },
-    {
-      value: "direct",
-      label: "Direct",
-    },
+  const tableHeads = [
+    "Business Name",
+    "Owner's Name",
+    "Transaction Number",
+    "Total Amount",
+    "Requested By",
   ];
 
-  const excludeKeysDisplay = [
+  const customOrderKeys = [
+    "businessName",
+    "ownersName",
     "id",
-    "status",
-    "requestId",
-    "registrationStatus",
-    "approvalHistories",
-    "updateHistories",
-    "expenses",
-    "clientId",
-    "approvers",
+    "totalAmount",
+    "requestedBy",
   ];
 
-  const pesoArray = ["amount"];
+  const pesoArray = ["totalAmount"];
 
   //Misc Functions
   const handleOpenEdit = () => {
@@ -157,18 +146,18 @@ function OtherExpenses() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Other Expenses");
-  // }, []);
-
-  useEffect(() => {
     if (expenseStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Expenses" });
     }
   }, [expenseStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>
@@ -201,7 +190,6 @@ function OtherExpenses() {
           <CommonTable
             mapData={data?.expenses}
             moreCompact
-            excludeKeysDisplay={excludeKeysDisplay}
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
@@ -209,7 +197,8 @@ function OtherExpenses() {
             setPage={setPage}
             editable
             onView={onViewOpen}
-            // tableHeads={tableHeads}
+            tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             pesoArray={pesoArray}
             onEdit={expenseStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}

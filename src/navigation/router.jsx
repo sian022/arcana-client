@@ -38,6 +38,8 @@ import Cluster from "../pages/user-management/Cluster";
 import ExpensesSetup from "../pages/customer-management/ExpensesSetup";
 import OtherExpenses from "../pages/customer-registration/OtherExpenses";
 import OtherExpensesApproval from "../pages/approval/OtherExpensesApproval";
+import PriceModeSetup from "../pages/setup/PriceModeSetup";
+import PriceModeManagement from "../pages/setup/PriceModeManagement";
 
 export const router = createBrowserRouter([
   {
@@ -114,10 +116,14 @@ export const router = createBrowserRouter([
             path: "uom",
             element: <UnitOfMeasurements />,
           },
-          // {
-          //   path: "business-type",
-          //   element: <StoreType />,
-          // },
+          {
+            path: "price-mode-setup",
+            element: <PriceModeSetup />,
+          },
+          {
+            path: "price-mode-management",
+            element: <PriceModeManagement />,
+          },
         ],
       },
       {
@@ -142,16 +148,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // {
-      //   path: "terms",
-      //   element: <Terms />,
-      //   children: [
-      //     {
-      //       path: "term-days",
-      //       element: <TermDays />,
-      //     },
-      //   ],
-      // },
+
       {
         path: "customer-registration",
         element: (
@@ -183,28 +180,28 @@ export const router = createBrowserRouter([
         ],
       },
 
-      {
-        path: "sales-management",
-        element: <SalesManagement />,
-        children: [
-          {
-            path: "sales-transaction",
-            element: <SalesTransaction />,
-          },
-          {
-            path: "payment-transaction",
-            element: <PaymentTransaction />,
-          },
-          {
-            path: "special-discount",
-            element: <SpecialDiscount />,
-          },
-          {
-            path: "advance-payment",
-            element: <AdvancePayment />,
-          },
-        ],
-      },
+      // {
+      //   path: "sales-management",
+      //   element: <SalesManagement />,
+      //   children: [
+      //     {
+      //       path: "sales-transaction",
+      //       element: <SalesTransaction />,
+      //     },
+      //     {
+      //       path: "payment-transaction",
+      //       element: <PaymentTransaction />,
+      //     },
+      //     {
+      //       path: "special-discount",
+      //       element: <SpecialDiscount />,
+      //     },
+      //     {
+      //       path: "advance-payment",
+      //       element: <AdvancePayment />,
+      //     },
+      //   ],
+      // },
 
       {
         path: "approval",
@@ -214,10 +211,10 @@ export const router = createBrowserRouter([
             path: "registration-approval",
             element: <RegistrationApproval />,
           },
-          {
-            path: "sp-discount-approval",
-            element: <SpecialDiscountApproval />,
-          },
+          // {
+          //   path: "sp-discount-approval",
+          //   element: <SpecialDiscountApproval />,
+          // },
           {
             path: "listing-fee-approval",
             element: <ListingFeeApproval />,

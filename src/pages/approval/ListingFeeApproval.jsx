@@ -5,7 +5,6 @@ import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
 import { dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
-import ListingFeeModal from "../../components/modals/ListingFeeModal";
 import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
@@ -90,25 +89,20 @@ function ListingFeeApproval() {
     },
   ];
 
-  const excludeKeysDisplay = [
-    "listingItems",
-    "clientId",
-    "listingFeeId",
-    "approvalId",
-    "status",
-    "cancellationReason",
-    "requestId",
-    "listingFeeApprovalHistories",
-    "registrationStatus",
-    "approvers",
+  const tableHeads = [
+    "Business Name",
+    "Business Name",
+    "Transaction Number",
+    "Total Amount",
+    "Requested By",
   ];
 
-  const tableHeads = [
-    "Owner's Name",
-    "Business Name",
-    "Requested By",
-    "Total Amount",
-    "Created At",
+  const customOrderKeys = [
+    "businessName",
+    "clientName",
+    "listingFeeId",
+    "total",
+    "requestedBy",
   ];
 
   const pesoArray = ["total"];
@@ -126,18 +120,18 @@ function ListingFeeApproval() {
   }, [tabViewing]);
 
   useEffect(() => {
-    setCount(data?.totalCount);
-  }, [data]);
-
-  // useEffect(() => {
-  //   setModuleName("Listing Fee");
-  // }, []);
-
-  useEffect(() => {
     if (listingFeeStatus === "Under review") {
       patchReadNotification({ Tab: "Pending Listing Fee" });
     }
   }, [listingFeeStatus]);
+
+  useEffect(() => {
+    setCount(data?.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tabViewing, search, status, rowsPerPage]);
 
   return (
     <>
@@ -168,7 +162,6 @@ function ListingFeeApproval() {
           <CommonTable
             mapData={data?.listingFees}
             moreCompact
-            excludeKeysDisplay={excludeKeysDisplay}
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
@@ -177,6 +170,7 @@ function ListingFeeApproval() {
             editable
             onView={onViewOpen}
             tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
             pesoArray={pesoArray}
             onHistory={onHistoryOpen}
           />

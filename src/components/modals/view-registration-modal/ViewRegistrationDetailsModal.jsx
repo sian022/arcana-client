@@ -230,7 +230,8 @@ function ViewRegistrationDetailsModal({
       <CommonModal
         // width="800px"
         width={clientStatus === "Approved" ? "900px" : "800px"}
-        height="670px"
+        height="680px"
+        // height="700px"
         disablePadding
         ribbon
         customRibbonContent={customRibbonContent}
@@ -303,12 +304,13 @@ function ViewRegistrationDetailsModal({
                         gap: "10px",
                       }}
                     >
+                      <DangerButton contained onClick={onRejectConfirmOpen}>
+                        Reject
+                      </DangerButton>
+
                       <SuccessButton onClick={onApproveConfirmOpen}>
                         Approve
                       </SuccessButton>
-                      <DangerButton onClick={onRejectConfirmOpen}>
-                        Reject
-                      </DangerButton>
                     </Box>
                   </>
                 )}

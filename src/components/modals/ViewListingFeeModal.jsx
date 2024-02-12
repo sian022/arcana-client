@@ -73,8 +73,9 @@ function ViewListingFeeModal({
     <>
       <Box className="viewListingFeeModal__headers">
         <Typography className="viewListingFeeModal__headers__title">
-          Listing Fee Form
+          Listing Fee
         </Typography>
+
         <IconButton
           sx={{
             color: "white !important",
@@ -271,10 +272,11 @@ function ViewListingFeeModal({
               right: "40px",
             }}
           >
-            <SuccessButton onClick={onApproveConfirmOpen}>
-              Approve{" "}
-            </SuccessButton>
             <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
+
+            <SuccessButton onClick={onApproveConfirmOpen}>
+              Approve
+            </SuccessButton>
           </Box>
         )}
         {/* {!approval && (

@@ -49,7 +49,11 @@ export const theme = createTheme({
       styleOverrides: {
         root: ({ ownerState }) => ({
           color: colorSchemes.light.secondary,
-          backgroundColor: !!ownerState?.formControl?.required && "lightyellow",
+          backgroundColor: !!ownerState?.formControl?.required
+            ? "#f3f1ff"
+            : ownerState?.formControl?.disabled
+            ? "#f1f1f1"
+            : "null",
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: colorSchemes.light.primary,
           },
