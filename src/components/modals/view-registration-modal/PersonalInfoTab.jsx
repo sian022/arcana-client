@@ -10,9 +10,13 @@ function PersonalInfoTab() {
 
   return (
     <Box className="viewRegistrationModal__personalInfo">
-      <Typography className="viewRegistrationModal__personalInfo__header">
-        Requested by: {selectedRowData?.requestedBy}
-      </Typography>
+      <Box className="viewRegistrationModal__personalInfo__header">
+        <Typography className="viewRegistrationModal__personalInfo__header__label">
+          Requested by:{" "}
+        </Typography>
+        <Typography>{selectedRowData?.requestedBy}</Typography>
+      </Box>
+
       <Box className="viewRegistrationModal__personalInfo__content">
         <Typography className="viewRegistrationModal__personalInfo__content__title">
           Customer's Information

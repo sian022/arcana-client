@@ -7,6 +7,13 @@
   gap: 10px;
   flex: 1;
 
+  &__headersTwoTabs {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
   &__headers {
     flex: 1;
     display: grid;

@@ -172,6 +172,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       icon: <Person />,
       disabled: false,
     },
+
     {
       label: "Terms and Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
@@ -204,27 +205,28 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       icon: <Gavel />,
       disabled: false,
     },
-    {
+
+    termsAndConditions["terms"] !== 1 && {
       label: "Attachments",
       isValid:
         requirementsMode === "owner"
-          ? !Object.values(ownersRequirements).some((value) => value === null)
+          ? !Object.values(ownersRequirements).some(
+              (value) => value === null || value !== undefined
+            )
           : requirementsMode === "representative"
           ? !Object.values(representativeRequirements).some(
-              (value) => value === null
+              (value) => value === null || value !== undefined
             )
           : false,
       icon: <Attachment />,
-      // disabled: !navigators[0].isValid || !navigators[1].isValid,
       disabled: false,
     },
-  ];
-  // navigators[1].disabled = !navigators[0].isValid;
+  ].filter(Boolean);
+
   navigators[1].disabled = !editMode && activeTab === "Personal Info";
-  navigators[2].disabled =
-    !navigators[0].isValid ||
-    !navigators[1].isValid ||
-    termsAndConditions["terms"] === 1;
+  if (navigators?.length > 2) {
+    navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
+  }
 
   //RTK Query
 
@@ -515,7 +517,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const customRibbonContent = (
     <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
-      <Box className="register__headers">
+      <Box
+        className={
+          termsAndConditions["terms"] === 1
+            ? "register__headersTwoTabs"
+            : "register__headers"
+        }
+      >
         {navigators.map((item, i) => {
           return isTermsDataLoading || isAttachmentsDataLoading ? (
             <Skeleton sx={{ transform: "none" }} />
@@ -549,6 +557,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           );
         })}
       </Box>
+
       <IconButton
         sx={{ color: "white !important" }}
         onClick={isDirty ? onCancelConfirmOpen : handleDrawerClose}
@@ -855,7 +864,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         customRibbonContent={customRibbonContent}
         removeButtons
         submitLabel={"Register"}
-        disableSubmit={navigators.some((obj) => obj.isValid === false)}
+        disableSubmit={
+          termsAndConditions["terms"] === 1
+            ? navigators.some(
+                (obj) => obj.isValid === false && obj.label !== ""
+              )
+            : navigators.some((obj) => obj.isValid === false)
+        }
         onSubmit={onConfirmOpen}
         zIndex={editMode && "1300"}
       >
@@ -1651,8 +1666,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   disabled={
                     termsAndConditions["terms"] === 1
                       ? navigators.some(
-                          (obj) =>
-                            obj.isValid === false && obj.label !== "Attachments"
+                          (obj) => obj.isValid === false && obj.label !== ""
                         )
                       : navigators.some((obj) => obj.isValid === false)
                   }

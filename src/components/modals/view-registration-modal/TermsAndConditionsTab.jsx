@@ -14,9 +14,12 @@ function TermsAndConditionsTab() {
 
   return (
     <Box className="viewRegistrationModal__termsAndConditions">
-      <Typography className="viewRegistrationModal__termsAndConditions__header">
-        Requested by: {selectedRowData?.requestedBy}
-      </Typography>
+      <Box className="viewRegistrationModal__termsAndConditions__header">
+        <Typography className="viewRegistrationModal__termsAndConditions__header__label">
+          Requested by:{" "}
+        </Typography>
+        <Typography>{selectedRowData?.requestedBy}</Typography>
+      </Box>
 
       {isLoading ? (
         <TermsAndConditionsTabSkeleton />

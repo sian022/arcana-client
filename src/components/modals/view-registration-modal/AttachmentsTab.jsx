@@ -52,9 +52,12 @@ function AttachmentsTab() {
   return (
     <>
       <Box className="viewRegistrationModal__attachments">
-        <Typography className="viewRegistrationModal__attachments__header">
-          Requested by: {selectedRowData?.requestedBy}
-        </Typography>
+        <Box className="viewRegistrationModal__attachments__header">
+          <Typography className="viewRegistrationModal__attachments__header__label">
+            Requested by:{" "}
+          </Typography>
+          <Typography>{selectedRowData?.requestedBy}</Typography>
+        </Box>
 
         {isLoading ? (
           <AttachmentsTabSkeleton />

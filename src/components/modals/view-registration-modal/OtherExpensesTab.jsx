@@ -39,9 +39,12 @@ function OtherExpensesTab() {
   return (
     <>
       <Box className="viewRegistrationModal__listingFee">
-        <Typography className="viewRegistrationModal__listingFee__header">
-          Requested by: {selectedRowData?.requestedBy}
-        </Typography>
+        <Box className="viewRegistrationModal__listingFee__header">
+          <Typography className="viewRegistrationModal__listingFee__header__label">
+            Requested by:{" "}
+          </Typography>
+          <Typography>{selectedRowData?.requestedBy}</Typography>
+        </Box>
 
         {isLoading ? (
           <OtherExpensesTabSkeleton />

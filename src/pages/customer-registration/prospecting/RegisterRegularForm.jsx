@@ -149,6 +149,7 @@ function RegisterRegularForm({ open, onClose }) {
       icon: <Person />,
       disabled: false,
     },
+
     {
       label: "Terms and Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
@@ -181,22 +182,28 @@ function RegisterRegularForm({ open, onClose }) {
       icon: <Gavel />,
       disabled: false,
     },
-    {
+
+    termsAndConditions["terms"] !== 1 && {
       label: "Attachments",
       isValid:
         requirementsMode === "owner"
-          ? !Object.values(ownersRequirements).some((value) => value === null)
+          ? !Object.values(ownersRequirements).some(
+              (value) => value === null || value !== undefined
+            )
           : requirementsMode === "representative"
           ? !Object.values(representativeRequirements).some(
-              (value) => value === null
+              (value) => value === null || value !== undefined
             )
           : false,
       icon: <Attachment />,
       disabled: false,
     },
-  ];
+  ].filter(Boolean);
+
   navigators[1].disabled = !navigators[0].isValid;
-  navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
+  if (navigators?.length > 2) {
+    navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
+  }
 
   //RTK Query
   const [putRegisterClient, { isLoading: isRegisterLoading }] =
@@ -238,7 +245,7 @@ function RegisterRegularForm({ open, onClose }) {
       // await putRegisterClient(data).unwrap();
       await putRegisterClient(transformedData).unwrap();
       await addTermsAndConditions();
-      await addAttachmentsSubmit();
+      termsAndConditions["terms"] !== 1 && (await addAttachmentsSubmit());
       setIsAllApiLoading(false);
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
@@ -448,7 +455,13 @@ function RegisterRegularForm({ open, onClose }) {
   //Constant JSX
   const customRibbonContent = (
     <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
-      <Box className="register__headers">
+      <Box
+        className={
+          termsAndConditions["terms"] === 1
+            ? "register__headersTwoTabs"
+            : "register__headers"
+        }
+      >
         {navigators.map((item, i) => (
           <Button
             key={i}
@@ -1179,11 +1192,15 @@ function RegisterRegularForm({ open, onClose }) {
               ? "commonDrawer__actionsNoMarginBottom"
               : "commonDrawer__actionsSpread"
           }
+          Register
         >
           {activeTab !== "Personal Info" && (
             <DangerButton onClick={handleBack}>Back</DangerButton>
           )}
-          {activeTab !== "Attachments" && (
+
+          {(activeTab === "Personal Info" ||
+            (activeTab === "Terms and Conditions" &&
+              termsAndConditions["terms"] !== 1)) && (
             <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
               {isValidateClientLoading ? (
                 <>
@@ -1194,10 +1211,19 @@ function RegisterRegularForm({ open, onClose }) {
               )}
             </SuccessButton>
           )}
-          {activeTab === "Attachments" && (
+
+          {((termsAndConditions["terms"] === 1 &&
+            activeTab === "Terms and Conditions") ||
+            activeTab === "Attachments") && (
             <SuccessButton
               onClick={onConfirmOpen}
-              disabled={navigators.some((obj) => obj.isValid === false)}
+              disabled={
+                termsAndConditions["terms"] === 1
+                  ? navigators.some(
+                      (obj) => obj.isValid === false && obj.label !== ""
+                    )
+                  : navigators.some((obj) => obj.isValid === false)
+              }
             >
               Register
             </SuccessButton>
