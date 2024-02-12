@@ -153,8 +153,8 @@ function DirectRegistration() {
     "Business Name",
     "Owner's Name",
     "Contact Number",
-    "Cluster",
     "Business Type",
+    "Cluster",
     "Requested By",
     "Origin",
   ];
@@ -163,8 +163,8 @@ function DirectRegistration() {
     "businessName",
     "ownersName",
     "phoneNumber",
-    "clusterName",
     "storeType",
+    "clusterName",
     "requestedBy",
     "origin",
   ];

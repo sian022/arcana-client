@@ -108,8 +108,8 @@ function RegistrationApproval() {
     "Business Name",
     "Owner's Name",
     "Contact Number",
-    "Cluster",
     "Business Type",
+    "Cluster",
     "Requested By",
     "Origin",
   ];
@@ -118,8 +118,8 @@ function RegistrationApproval() {
     "businessName",
     "ownersName",
     "phoneNumber",
-    "clusterName",
     "storeType",
+    "clusterName",
     "requestedBy",
     "origin",
   ];

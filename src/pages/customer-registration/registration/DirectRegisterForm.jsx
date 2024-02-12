@@ -221,7 +221,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   ];
   // navigators[1].disabled = !navigators[0].isValid;
   navigators[1].disabled = !editMode && activeTab === "Personal Info";
-  navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
+  navigators[2].disabled =
+    !navigators[0].isValid ||
+    !navigators[1].isValid ||
+    termsAndConditions["terms"] === 1;
 
   //RTK Query
 
@@ -305,7 +308,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             : {}),
         }).unwrap();
 
-        await addAttachmentsSubmit(response?.value?.id);
+        termsAndConditions["terms"] !== 1 &&
+          (await addAttachmentsSubmit(response?.value?.id));
       } else {
         response = await postDirectRegistration({
           ...transformedData,
@@ -340,7 +344,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           dispatch(resetFreebies());
         }
 
-        await addAttachmentsSubmit(response?.value?.id);
+        termsAndConditions["terms"] !== 1 &&
+          (await addAttachmentsSubmit(response?.value?.id));
       }
 
       setIsAllApiLoading(false);
@@ -902,21 +907,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       />
                     </Box>
                     <Box className="register__firstRow__customerInformation__row">
-                      {/* <TextField
-                    label="Date of Birth"
-                    size="small"
-                    autoComplete="off"
-                    required
-                    type="date"
-                    className="register__textField"
-                    {...register("dateOfBirth")}
-                    helperText={errors?.birthDate?.message}
-                    error={errors?.birthDate}
-                    InputLabelProps={{
-                      shrink: true, // This will make the label always appear on top.
-                    }}
-                  /> */}
-
                       <Controller
                         name="dateOfBirth"
                         control={control}
@@ -991,28 +981,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                           );
                         }}
                       />
-                      {/* <TextField
-                    label="Phone Number"
-                    type="number"
-                    size="small"
-                    autoComplete="off"
-                    required
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">+63</InputAdornment>
-                      ),
-                      onInput: handlePhoneNumberInput,
-                    }}
-                    className="register__textField"
-                    {...register("phoneNumber")}
-                    helperText={errors?.phoneNumber?.message}
-                    error={errors?.phoneNumber}
-                    // onFocus={() => setIsPhoneNumberShrinked(true)}
-                    // onBlur={(e) => setIsPhoneNumberShrinked(!!e.target.value)}
-                    // InputLabelProps={{
-                    //   shrink: isPhoneNumberShrinked,
-                    // }}
-                  /> */}
                     </Box>
                   </Box>
                   <Box className="register__firstRow__tinNumber">
@@ -1657,7 +1625,10 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               {activeTab !== "Personal Info" && (
                 <DangerButton onClick={handleBack}>Back</DangerButton>
               )}
-              {activeTab !== "Attachments" && (
+
+              {(activeTab === "Personal Info" ||
+                (activeTab === "Terms and Conditions" &&
+                  termsAndConditions["terms"] !== 1)) && (
                 <SuccessButton
                   onClick={handleNext}
                   disabled={handleDisableNext()}
@@ -1671,10 +1642,20 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   )}
                 </SuccessButton>
               )}
-              {activeTab === "Attachments" && (
+
+              {((termsAndConditions["terms"] === 1 &&
+                activeTab === "Terms and Conditions") ||
+                activeTab === "Attachments") && (
                 <SuccessButton
                   onClick={onConfirmOpen}
-                  disabled={navigators.some((obj) => obj.isValid === false)}
+                  disabled={
+                    termsAndConditions["terms"] === 1
+                      ? navigators.some(
+                          (obj) =>
+                            obj.isValid === false && obj.label !== "Attachments"
+                        )
+                      : navigators.some((obj) => obj.isValid === false)
+                  }
                 >
                   {editMode ? "Update" : "Register"}
                 </SuccessButton>
