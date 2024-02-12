@@ -3,6 +3,7 @@ import CommonModal from "../CommonModal";
 import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { AttachmentsContext } from "../../context/AttachmentsContext";
+import BlankCanvas from "../../assets/images/blank-canvas.svg";
 
 function ViewPhotoModal({
   currentViewPhotoLabel,
@@ -100,9 +101,14 @@ function ViewPhotoModal({
             justifyContent: "center",
             alignItems: "center",
             height: "400px",
+            flexDirection: "column",
+            gap: "10px",
           }}
         >
-          <CircularProgress />
+          <img src={BlankCanvas} alt="Blank canvas" width="200px" />
+          <Typography fontSize="1.1rem" fontWeight="500">
+            No photo to display
+          </Typography>
         </Box>
       )}
     </CommonModal>
