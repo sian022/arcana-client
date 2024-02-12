@@ -155,28 +155,30 @@ function Sidebar() {
                       timeout="auto"
                       unmountOnExit
                     >
-                      {item.sub.map((subItem) => (
-                        <NavLink to={subItem.path} key={subItem.id}>
-                          {({ isActive }) => (
-                            <ListItem disablePadding sx={{ px: 2 }}>
-                              <ListItemButton
-                                className={`sidebar__navigation__subButton  ${
-                                  isActive ? "active" : ""
-                                }`}
-                              >
-                                <ListItemIcon
-                                  className={`sidebar__navigation__subButton__icon  ${
+                      {item.sub
+                        ?.filter((sub) => permissions?.includes(sub.name))
+                        .map((subItem) => (
+                          <NavLink to={subItem.path} key={subItem.id}>
+                            {({ isActive }) => (
+                              <ListItem disablePadding sx={{ px: 2 }}>
+                                <ListItemButton
+                                  className={`sidebar__navigation__subButton  ${
                                     isActive ? "active" : ""
                                   }`}
                                 >
-                                  {getIconElement(subItem.icon)}
-                                </ListItemIcon>
+                                  <ListItemIcon
+                                    className={`sidebar__navigation__subButton__icon  ${
+                                      isActive ? "active" : ""
+                                    }`}
+                                  >
+                                    {getIconElement(subItem.icon)}
+                                  </ListItemIcon>
 
-                                {/* {sidebarToggled && (
+                                  {/* {sidebarToggled && (
                               <ListItemText>{subItem.name}</ListItemText>
                             )} */}
-                                <ListItemText>{subItem.name}</ListItemText>
-                                {/* {subItem.notification && (
+                                  <ListItemText>{subItem.name}</ListItemText>
+                                  {/* {subItem.notification && (
                                   <Box
                                     sx={{
                                       bgcolor: "notification.main",
@@ -193,45 +195,46 @@ function Sidebar() {
                                       notifications[subItem.notification]}
                                   </Box>
                                 )} */}
-                                {subItem?.notifications?.reduce(
-                                  (sum, notification) =>
-                                    sum + parseInt(notifications[notification]),
-                                  0
-                                ) > 0 && (
-                                  <Box sx={{ width: "20px", height: "20px" }}>
-                                    {subItem?.notifications &&
-                                      !isNotificationFetching && (
-                                        <Box
-                                          sx={{
-                                            bgcolor: "notification.main",
-                                            borderRadius: "50%",
-                                            // width: "12%",
-                                            width: "20px",
-                                            height: "20px",
-                                            // height: "20px",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            color: "white !important",
-                                          }}
-                                        >
-                                          {subItem?.notifications?.reduce(
-                                            (sum, notification) =>
-                                              sum +
-                                              parseInt(
-                                                notifications[notification]
-                                              ),
-                                            0
-                                          )}
-                                        </Box>
-                                      )}
-                                  </Box>
-                                )}
-                              </ListItemButton>
-                            </ListItem>
-                          )}
-                        </NavLink>
-                      ))}
+                                  {subItem?.notifications?.reduce(
+                                    (sum, notification) =>
+                                      sum +
+                                      parseInt(notifications[notification]),
+                                    0
+                                  ) > 0 && (
+                                    <Box sx={{ width: "20px", height: "20px" }}>
+                                      {subItem?.notifications &&
+                                        !isNotificationFetching && (
+                                          <Box
+                                            sx={{
+                                              bgcolor: "notification.main",
+                                              borderRadius: "50%",
+                                              // width: "12%",
+                                              width: "20px",
+                                              height: "20px",
+                                              // height: "20px",
+                                              display: "flex",
+                                              justifyContent: "center",
+                                              alignItems: "center",
+                                              color: "white !important",
+                                            }}
+                                          >
+                                            {subItem?.notifications?.reduce(
+                                              (sum, notification) =>
+                                                sum +
+                                                parseInt(
+                                                  notifications[notification]
+                                                ),
+                                              0
+                                            )}
+                                          </Box>
+                                        )}
+                                    </Box>
+                                  )}
+                                </ListItemButton>
+                              </ListItem>
+                            )}
+                          </NavLink>
+                        ))}
                     </Collapse>
                   )}
                 </React.Fragment>
