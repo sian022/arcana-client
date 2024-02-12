@@ -970,6 +970,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                               autoComplete="off"
                               allowNegative={false}
                               decimalScale={0}
+                              valueIsNumericString
                               onValueChange={(e) => {
                                 onChange(e.value);
                               }}
@@ -1045,6 +1046,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                             customInput={TextField}
                             autoComplete="off"
                             allowNegative={false}
+                            valueIsNumericString
                             decimalScale={0}
                             onValueChange={(e) => {
                               onChange(e.value);

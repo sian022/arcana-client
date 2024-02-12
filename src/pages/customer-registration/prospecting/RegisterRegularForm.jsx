@@ -671,6 +671,7 @@ function RegisterRegularForm({ open, onClose }) {
                           customInput={TextField}
                           autoComplete="off"
                           allowNegative={false}
+                          valueIsNumericString
                           decimalScale={0}
                           onValueChange={(e) => {
                             onChange(e.value);
@@ -745,6 +746,7 @@ function RegisterRegularForm({ open, onClose }) {
                         customInput={TextField}
                         autoComplete="off"
                         allowNegative={false}
+                        valueIsNumericString
                         decimalScale={0}
                         onValueChange={(e) => {
                           onChange(e.value);
