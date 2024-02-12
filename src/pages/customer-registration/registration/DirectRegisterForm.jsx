@@ -217,12 +217,14 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     usePutUpdateClientInformationMutation();
 
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
-    useGetAllStoreTypesQuery({ Status: true });
+    useGetAllStoreTypesQuery({ Status: true, Page: 1, PageSize: 1000 });
   const { data: termDaysData, isLoading: isTermDaysLoading } =
-    useGetAllTermDaysQuery({ Status: true });
+    useGetAllTermDaysQuery({ Status: true, Page: 1, PageSize: 1000 });
   const { data: clusterData } = useGetAllClustersQuery({
     Status: true,
     ModuleName: "Registration",
+    Page: 1,
+    PageSize: 1000,
   });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =

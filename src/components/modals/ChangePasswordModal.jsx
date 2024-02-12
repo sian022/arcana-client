@@ -184,10 +184,11 @@ function ChangePasswordModal({ ...otherProps }) {
           }}
           className="roleTaggingModal__actions"
         >
+          <DangerButton onClick={handleCloseModal}>Close</DangerButton>
+
           <SecondaryButton onClick={onConfirmOpen} disabled={!isValid}>
             Save
           </SecondaryButton>
-          <DangerButton onClick={handleCloseModal}>Close</DangerButton>
         </Box>
       </CommonModal>
 

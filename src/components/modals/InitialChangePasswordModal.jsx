@@ -197,6 +197,8 @@ function InitialChangePasswordModal({ ...otherProps }) {
             }}
             className="roleTaggingModal__actions"
           >
+            <DangerButton onClick={handleCloseModal}>Close</DangerButton>
+
             <SecondaryButton
               // onClick={onConfirmOpen}
               // onClick={handleSubmit(onSubmit)}
@@ -205,7 +207,6 @@ function InitialChangePasswordModal({ ...otherProps }) {
             >
               {isLoading ? <CircularProgress size="20px" /> : "Save"}
             </SecondaryButton>
-            <DangerButton onClick={handleCloseModal}>Close</DangerButton>
           </Box>
         </form>
       </CommonModal>
