@@ -204,41 +204,17 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       icon: <Gavel />,
       disabled: false,
     },
-    {
-      label: "Attachments",
-      isValid:
-        requirementsMode === "owner"
-          ? !Object.values(ownersRequirements).some((value) => value === null)
-          : requirementsMode === "representative"
-          ? !Object.values(representativeRequirements).some(
-              (value) => value === null
-            )
-          : false,
-      icon: <Attachment />,
-      // disabled: !navigators[0].isValid || !navigators[1].isValid,
-      disabled: false,
-    },
   ];
   // navigators[1].disabled = !navigators[0].isValid;
   navigators[1].disabled = !editMode && activeTab === "Personal Info";
-  navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
 
   //RTK Query
 
   const [postDirectRegistration, { isLoading: isRegisterLoading }] =
     usePostDirectRegistrationMutation();
-  const [putAddAttachmentsForDirect, { isLoading: isAttachmentsLoading }] =
-    usePutAddAttachmentsForDirectMutation();
 
   const [putUpdateClientInformation, { isLoading: isUpdateClientLoading }] =
     usePutUpdateClientInformationMutation();
-  const [
-    putUpdateClientAttachments,
-    { isLoading, isUpdateAttachmentsLoading },
-  ] = usePutUpdateClientAttachmentsMutation();
-
-  const [putReleaseFreebies, { isLoading: isReleaseFreebiesLoading }] =
-    usePutReleaseFreebiesMutation();
 
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
     useGetAllStoreTypesQuery({ Status: true });
@@ -302,43 +278,11 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               }
             : {}),
         }).unwrap();
-
-        await addAttachmentsSubmit(response?.value?.id);
       } else {
         response = await postDirectRegistration({
           ...transformedData,
           ...transformedTermsAndConditions,
-          ...(freebiesDirect?.length > 0
-            ? {
-                freebies: freebiesDirect.map((freebie) => ({
-                  itemId: freebie.itemId.id,
-                })),
-              }
-            : {}),
         }).unwrap();
-
-        if (freebiesDirect && signatureDirect && photoProofDirect) {
-          const signatureFile = new File(
-            [base64ToBlob(signatureDirect)],
-            `signature_${Date.now()}.jpg`,
-            { type: "image/jpeg" }
-          );
-
-          const formData = new FormData();
-          formData.append("PhotoProof", photoProofDirect);
-          formData.append("ESignature", signatureFile);
-
-          await putReleaseFreebies({
-            id: response?.value?.id,
-            body: formData,
-          }).unwrap();
-
-          setPhotoProofDirect(null);
-          setSignatureDirect(null);
-          dispatch(resetFreebies());
-        }
-
-        await addAttachmentsSubmit(response?.value?.id);
       }
 
       setIsAllApiLoading(false);
@@ -355,13 +299,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
-      // showSnackbar(error.data.messages[0], "error");
       setIsAllApiLoading(false);
-
-      //Reset Direct Freebies
-      setPhotoProofDirect(null);
-      setSignatureDirect(null);
-      dispatch(resetFreebies());
 
       if (error?.data?.error?.message) {
         showSnackbar(error?.data?.error?.message, "error");
@@ -372,87 +310,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         );
       }
       console.log(error);
-    }
-  };
-
-  const addAttachmentsSubmit = async (clientId) => {
-    const formData = new FormData();
-    let attachmentsObject = null;
-
-    if (
-      requirementsMode === "owner" &&
-      ownersRequirements["signature"] &&
-      !(ownersRequirements["signature"] instanceof Blob)
-    ) {
-      let convertedSignature;
-      if (ownersRequirements["signature"]?.includes("data:")) {
-        convertedSignature = new File(
-          [base64ToBlob(ownersRequirements["signature"])],
-          `signature_${Date.now()}.jpg`,
-          { type: "image/jpeg" }
-        );
-      } else {
-        convertedSignature = ownersRequirements["signature"];
-      }
-
-      setOwnersRequirements((prevOwnersRequirements) => ({
-        ...prevOwnersRequirements,
-        signature: convertedSignature,
-      }));
-      attachmentsObject = {
-        ...ownersRequirements,
-        signature: convertedSignature,
-      };
-    } else if (
-      requirementsMode === "representative" &&
-      representativeRequirements["signature"] &&
-      !(representativeRequirements["signature"] instanceof Blob)
-    ) {
-      let convertedSignature;
-      if (representativeRequirements["signature"]?.includes("data:")) {
-        convertedSignature = new File(
-          [base64ToBlob(representativeRequirements["signature"])],
-          `signature_${Date.now()}.jpg`,
-          { type: "image/jpeg" }
-        );
-      } else {
-        convertedSignature = representativeRequirements["signature"];
-      }
-
-      setRepresentativeRequirements((prevRepresentativeRequirements) => ({
-        ...prevRepresentativeRequirements,
-        signature: convertedSignature,
-      }));
-      attachmentsObject = {
-        ...representativeRequirements,
-        signature: convertedSignature,
-      };
-    }
-
-    if (attachmentsObject) {
-      Object.keys(attachmentsObject).forEach((key, index) => {
-        const attachment = attachmentsObject[key];
-
-        formData.append(`Attachments[${index}].Attachment`, attachment);
-        formData.append(
-          `Attachments[${index}].DocumentType`,
-          convertToTitleCase(key)
-        );
-      });
-    }
-
-    if (editMode) {
-      await putUpdateClientAttachments({
-        id: selectedRowData?.id,
-        // id: clientId,
-        formData,
-      }).unwrap();
-    } else {
-      await putAddAttachmentsForDirect({
-        // id: selectedRowData?.id,
-        id: clientId,
-        formData,
-      }).unwrap();
     }
   };
 
@@ -470,38 +327,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     setSameAsOwnersAddress(false);
     setIncludeAuthorizedRepresentative(false);
 
-    setOwnersRequirements({
-      signature: null,
-      storePhoto: null,
-      businessPermit: null,
-      photoIdOwner: null,
-    });
-    setOwnersRequirementsIsLink({
-      signature: false,
-      storePhoto: false,
-      businessPermit: false,
-      photoIdOwner: false,
-    });
-    setRepresentativeRequirements({
-      signature: null,
-      storePhoto: null,
-      businessPermit: null,
-      photoIdOwner: null,
-      photoIdRepresentative: null,
-      authorizationLetter: null,
-    });
-    setRepresentativeRequirementsIsLink({
-      signature: false,
-      storePhoto: false,
-      businessPermit: false,
-      photoIdOwner: false,
-      photoIdRepresentative: false,
-      authorizationLetter: false,
-    });
-
-    setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
-    dispatch(resetFreebies());
     setEditMode(false);
     setActiveTab("Personal Info");
   };
@@ -510,7 +336,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
       <Box className="register__headers">
         {navigators.map((item, i) => {
-          return isTermsDataLoading || isAttachmentsDataLoading ? (
+          return isTermsDataLoading ? (
             <Skeleton sx={{ transform: "none" }} />
           ) : (
             <Button
@@ -542,6 +368,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           );
         })}
       </Box>
+
       <IconButton
         sx={{ color: "white !important" }}
         onClick={isDirty ? onCancelConfirmOpen : handleDrawerClose}
@@ -582,8 +409,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           dateOfBirth: getValues().dateOfBirth.format("YYYY-MM-DD"),
         })
       );
-    } else if (activeTab === "Terms and Conditions") {
-      setActiveTab("Attachments");
     }
   };
 
@@ -606,11 +431,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       ) {
         return true;
       }
-    } else if (
-      activeTab === "Terms and Conditions" &&
-      navigators[1].isValid === false
-    ) {
-      return true;
     }
 
     return false;
@@ -734,64 +554,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 },
         })
       );
-
-      // Attachments
-      // API Version
-      if (attachmentsData?.attachments?.length > 4) {
-        setRequirementsMode("representative");
-        setRepresentativeRequirements({
-          signature: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Signature"
-          )?.documentLink,
-          storePhoto: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Store Photo"
-          )?.documentLink,
-          businessPermit: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Business Permit"
-          )?.documentLink,
-          photoIdOwner: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Photo ID Owner"
-          )?.documentLink,
-          photoIdRepresentative: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Photo ID Representative"
-          )?.documentLink,
-          authorizationLetter: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Authorization Letter"
-          )?.documentLink,
-        });
-        setRepresentativeRequirementsIsLink({
-          signature: true,
-          storePhoto: true,
-          businessPermit: true,
-          photoIdOwner: true,
-          photoIdRepresentative: true,
-          authorizationLetter: true,
-        });
-      } else if (attachmentsData?.attachments?.length <= 4) {
-        setRequirementsMode("owner");
-        setOwnersRequirements({
-          signature: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Signature"
-          )?.documentLink,
-          storePhoto: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Store Photo"
-          )?.documentLink,
-          businessPermit: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Business Permit"
-          )?.documentLink,
-          photoIdOwner: attachmentsData?.attachments?.find(
-            (item) => item.documentType === "Photo ID Owner"
-          )?.documentLink,
-        });
-        setOwnersRequirementsIsLink({
-          signature: true,
-          storePhoto: true,
-          businessPermit: true,
-          photoIdOwner: true,
-        });
-      }
     }
-  }, [open, termDaysData, termsData, attachmentsData]);
+  }, [open, termDaysData, termsData]);
 
   useEffect(() => {
     if (!!includeAuthorizedRepresentative) {
@@ -822,10 +586,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     if (editMode) {
       //Triggers
       triggerTerms({ id: selectedRowData?.id }, { preferCacheValue: true });
-      triggerAttachments(
-        { id: selectedRowData?.id },
-        { preferCacheValue: true }
-      );
     }
   }, [open]);
 
@@ -1651,7 +1411,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               {activeTab !== "Personal Info" && (
                 <DangerButton onClick={handleBack}>Back</DangerButton>
               )}
-              {activeTab !== "Attachments" && (
+              {activeTab !== "Terms and Conditions" && (
                 <SuccessButton
                   onClick={handleNext}
                   disabled={handleDisableNext()}
@@ -1665,7 +1425,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                   )}
                 </SuccessButton>
               )}
-              {activeTab === "Attachments" && (
+              {activeTab === "Terms and Conditions" && (
                 <SuccessButton
                   onClick={onConfirmOpen}
                   disabled={navigators.some((obj) => obj.isValid === false)}
@@ -1677,15 +1437,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           </>
         )}
       </CommonDrawer>
-
-      {/* <PinLocationModal
-        latitude={latitude}
-        setLatitude={setLatitude}
-        longitude={longitude}
-        setLongitude={setLongitude}
-        open={isPinLocationOpen}
-        onClose={onPinLocationClose}
-      /> */}
 
       <CommonDialog
         open={isConfirmOpen}

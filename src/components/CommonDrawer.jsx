@@ -30,6 +30,7 @@ function CommonDrawer({
   className,
   responsiveBreakpoint,
   enableAutoAnimate,
+  smallMarginTop,
   ...otherProps
 }) {
   const [parent] = useAutoAnimate();
@@ -54,7 +55,10 @@ function CommonDrawer({
           }}
         >
           {!noRibbon && !customRibbonContent && (
-            <Box className="commonDrawer__ribbon">
+            <Box
+              className="commonDrawer__ribbon"
+              sx={{ mt: smallMarginTop && "5px" }}
+            >
               <Typography className="commonDrawer__ribbon__title">
                 {drawerHeader}
               </Typography>

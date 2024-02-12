@@ -10,7 +10,7 @@
   &__headers {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
 
     &__item {
@@ -425,6 +425,7 @@
 .overlay {
   // position: absolute;
   // top: 0;
+
   // left: 0;
   // width: 100%;
   // height: 100%;
