@@ -188,11 +188,11 @@ function RegisterRegularForm({ open, onClose }) {
       isValid:
         requirementsMode === "owner"
           ? !Object.values(ownersRequirements).some(
-              (value) => value === null || value !== undefined
+              (value) => value === null || value === undefined
             )
           : requirementsMode === "representative"
           ? !Object.values(representativeRequirements).some(
-              (value) => value === null || value !== undefined
+              (value) => value === null || value === undefined
             )
           : false,
       icon: <Attachment />,

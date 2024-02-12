@@ -92,7 +92,6 @@ function ViewRegistrationDetailsModal({
   }
 
   // if(selectedRowData?.terms)
-  console.log(selectedRowData);
 
   //RTK Query
   const [putApproveClient, { isLoading: isApproveLoading }] =
