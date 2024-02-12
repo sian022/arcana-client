@@ -91,6 +91,10 @@ function ViewRegistrationDetailsModal({
     }
   }
 
+  if (selectedRowData?.terms === "COD") {
+    navigators.splice(2, 1);
+  }
+
   // if(selectedRowData?.terms)
 
   //RTK Query
@@ -116,8 +120,12 @@ function ViewRegistrationDetailsModal({
     <Box sx={{ display: "flex", flex: 1, gap: "10px", alignItems: "center" }}>
       <Box
         className={
-          clientStatus !== "Approved"
+          clientStatus !== "Approved" && selectedRowData?.terms === "COD"
+            ? "viewRegistrationModal__headersTwo"
+            : clientStatus !== "Approved" && selectedRowData?.terms !== "COD"
             ? "viewRegistrationModal__headersThree"
+            : clientStatus === "Approved" && selectedRowData?.terms === "COD"
+            ? "viewRegistrationModal__headersFive"
             : "viewRegistrationModal__headers"
         }
       >

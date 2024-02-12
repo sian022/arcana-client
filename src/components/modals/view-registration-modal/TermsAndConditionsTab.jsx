@@ -77,7 +77,12 @@ function TermsAndConditionsTab() {
                   data?.modeofPayments?.some((item) => item.id === 2) &&
                   "&"}{" "}
                 {data?.modeofPayments?.some((item) => item.id === 2) &&
-                  "Online / Check"}
+                  "Cheque"}{" "}
+                {data?.modeofPayments?.some((item) => item.id === 2) &&
+                  data?.modeofPayments?.some((item) => item.id === 3) &&
+                  "&"}{" "}
+                {data?.modeofPayments?.some((item) => item.id === 3) &&
+                  "Online"}
               </Typography>
             </Box>
 

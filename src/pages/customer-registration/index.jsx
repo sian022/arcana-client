@@ -4,12 +4,25 @@ import CommonPageIndex from "../../components/CommonPageIndex";
 import { Box, Typography } from "@mui/material";
 import { ArrowCircleRight } from "@mui/icons-material";
 import { AppContext } from "../../context/AppContext";
+import { useSelector } from "react-redux";
+import { navigationData } from "../../navigation/navigationData";
 
 function CustomerRegistration() {
   const location = useLocation();
   const navigate = useNavigate();
 
   const { notifications, isNotificationFetching } = useContext(AppContext);
+
+  const permissions = useSelector((state) => state.permissions?.permissions);
+  const permittedNavigators = navigationData
+    .find(
+      (item) =>
+        item.name === "Customer Registration" &&
+        item.sub &&
+        Array.isArray(item.sub)
+    )
+    .sub?.filter((sub) => permissions?.includes(sub.name))
+    ?.map((sub) => sub);
 
   if (location.pathname === "/customer-registration") {
     return (
@@ -21,113 +34,36 @@ function CustomerRegistration() {
         </Box>
 
         <Box className="pageIndex__navigators">
-          <Box
-            className="pageIndex__navigators__item"
-            onClick={() => navigate("prospect")}
-          >
-            <Box className="pageIndex__navigators__item__text">
-              <Typography className="pageIndex__navigators__item__text__title">
-                Prospect
-              </Typography>
-              <Typography className="pageIndex__navigators__item__text__subTitle">
-                Prospecting of potential clients through freebies
-              </Typography>
-            </Box>
+          {permittedNavigators.map((navigator) => (
+            <Box
+              className="pageIndex__navigators__item"
+              onClick={() => navigate(navigator.path)}
+            >
+              <Box className="pageIndex__navigators__item__text">
+                <Typography className="pageIndex__navigators__item__text__title">
+                  {navigator.name}
+                </Typography>
+                <Typography className="pageIndex__navigators__item__text__subTitle">
+                  {navigator.description}
+                </Typography>
+              </Box>
 
-            <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.prospect &&
-              !notifications?.prospect !== 0 &&
-              !isNotificationFetching ? (
-                <Box className="notificationsLarge">
-                  {notifications?.prospect}
+              <Box className="pageIndex__navigators__item__notifAndArrow">
+                <Box>
+                  {!!notifications[navigator.notifications] &&
+                  !notifications[navigator.notifications] !== 0 &&
+                  !isNotificationFetching ? (
+                    <Box className="notificationsLarge">
+                      {notifications[navigator.notifications]}
+                    </Box>
+                  ) : (
+                    <Box></Box>
+                  )}
                 </Box>
-              ) : (
-                <Box></Box>
-              )}
-              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+                <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+              </Box>
             </Box>
-          </Box>
-
-          <Box
-            className="pageIndex__navigators__item"
-            onClick={() => navigate("registration")}
-          >
-            <Box className="pageIndex__navigators__item__text">
-              <Typography className="pageIndex__navigators__item__text__title">
-                Registration
-              </Typography>
-              <Typography className="pageIndex__navigators__item__text__subTitle">
-                Directly register clients and track their approval
-              </Typography>
-            </Box>
-
-            <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.rejectedClient &&
-              !notifications?.rejectedClient !== 0 &&
-              !isNotificationFetching ? (
-                <Box className="notificationsLarge">
-                  {notifications?.rejectedClient}
-                </Box>
-              ) : (
-                <Box></Box>
-              )}
-              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
-            </Box>
-          </Box>
-
-          <Box
-            className="pageIndex__navigators__item"
-            onClick={() => navigate("listing-fee")}
-          >
-            <Box className="pageIndex__navigators__item__text">
-              <Typography className="pageIndex__navigators__item__text__title">
-                Listing Fee
-              </Typography>
-              <Typography className="pageIndex__navigators__item__text__subTitle">
-                Requesting and tracking of listing fees for desired items
-              </Typography>
-            </Box>
-
-            <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.rejectedListingFee &&
-              !notifications?.rejectedListingFee !== 0 &&
-              !isNotificationFetching ? (
-                <Box className="notificationsLarge">
-                  {notifications?.rejectedListingFee}
-                </Box>
-              ) : (
-                <Box></Box>
-              )}
-              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
-            </Box>
-          </Box>
-
-          <Box
-            className="pageIndex__navigators__item"
-            onClick={() => navigate("other-expenses")}
-          >
-            <Box className="pageIndex__navigators__item__text">
-              <Typography className="pageIndex__navigators__item__text__title">
-                Other Expenses
-              </Typography>
-              <Typography className="pageIndex__navigators__item__text__subTitle">
-                Requesting and tracking of other expenses
-              </Typography>
-            </Box>
-
-            <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.rejectedExpenses &&
-              !notifications?.rejectedExpenses !== 0 &&
-              !isNotificationFetching ? (
-                <Box className="notificationsLarge">
-                  {notifications?.rejectedExpenses}
-                </Box>
-              ) : (
-                <Box></Box>
-              )}
-              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
-            </Box>
-          </Box>
+          ))}
         </Box>
       </Box>
     );

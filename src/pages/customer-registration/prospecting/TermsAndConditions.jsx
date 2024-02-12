@@ -557,15 +557,28 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                 handleCheckboxChange(1);
               }}
             />
+
             <FormControlLabel
               value={2}
               control={<Checkbox sx={{ marginRight: "10px" }} />}
-              label="Online/Check"
+              label="Cheque"
               checked={termsAndConditions["modeOfPayments"]?.some(
                 (item) => item.modeOfPaymentId === 2
               )}
               onChange={() => {
                 handleCheckboxChange(2);
+              }}
+            />
+
+            <FormControlLabel
+              control={<Checkbox sx={{ marginRight: "10px" }} />}
+              value={3}
+              label="Online"
+              checked={termsAndConditions["modeOfPayments"]?.some(
+                (item) => item.modeOfPaymentId === 3
+              )}
+              onChange={() => {
+                handleCheckboxChange(3);
               }}
             />
           </FormGroup>

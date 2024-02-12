@@ -4,12 +4,22 @@ import CommonPageIndex from "../../components/CommonPageIndex";
 import { ArrowCircleRight } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { AppContext } from "../../context/AppContext";
+import { useSelector } from "react-redux";
+import { navigationData } from "../../navigation/navigationData";
 
 function Approval() {
   const location = useLocation();
   const navigate = useNavigate();
 
   const { notifications, isNotificationFetching } = useContext(AppContext);
+
+  const permissions = useSelector((state) => state.permissions?.permissions);
+  const permittedNavigators = navigationData
+    .find(
+      (item) => item.name === "Approval" && item.sub && Array.isArray(item.sub)
+    )
+    .sub?.filter((sub) => permissions?.includes(sub.name))
+    ?.map((sub) => sub);
 
   if (location.pathname === "/approval") {
     return (
@@ -19,112 +29,36 @@ function Approval() {
         </Box>
 
         <Box className="pageIndex__navigators">
-          <Box
-            className="pageIndex__navigators__item"
-            onClick={() => navigate("registration-approval")}
-          >
-            <Box className="pageIndex__navigators__item__text">
-              <Typography className="pageIndex__navigators__item__text__title">
-                Registration Approval
-              </Typography>
-              <Typography className="pageIndex__navigators__item__text__subTitle">
-                Approval and rejection of client registration requests
-              </Typography>
-            </Box>
+          {permittedNavigators.map((navigator) => (
+            <Box
+              className="pageIndex__navigators__item"
+              onClick={() => navigate(navigator.path)}
+            >
+              <Box className="pageIndex__navigators__item__text">
+                <Typography className="pageIndex__navigators__item__text__title">
+                  {navigator.name}
+                </Typography>
+                <Typography className="pageIndex__navigators__item__text__subTitle">
+                  {navigator.description}
+                </Typography>
+              </Box>
 
-            <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.pendingClient &&
-              !notifications?.pendingClient !== 0 ? (
-                <Box className="notificationsLarge">
-                  {notifications?.pendingClient}
+              <Box className="pageIndex__navigators__item__notifAndArrow">
+                <Box>
+                  {!!notifications[navigator.notifications] &&
+                  !notifications[navigator.notifications] !== 0 &&
+                  !isNotificationFetching ? (
+                    <Box className="notificationsLarge">
+                      {notifications[navigator.notifications]}
+                    </Box>
+                  ) : (
+                    <Box></Box>
+                  )}
                 </Box>
-              ) : (
-                <Box></Box>
-              )}
-              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+                <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
+              </Box>
             </Box>
-          </Box>
-
-          <Box
-            className="pageIndex__navigators__item"
-            onClick={() => navigate("sp-discount-approval")}
-          >
-            <Box className="pageIndex__navigators__item__text">
-              <Typography className="pageIndex__navigators__item__text__title">
-                Sp. Discount Approval
-              </Typography>
-              <Typography className="pageIndex__navigators__item__text__subTitle">
-                Approval and rejection of sp. discount requests
-              </Typography>
-            </Box>
-
-            <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.pendingSpDiscount &&
-              !notifications?.pendingSpDiscount !== 0 &&
-              !isNotificationFetching ? (
-                <Box className="notificationsLarge">
-                  {notifications?.pendingSpDiscount}
-                </Box>
-              ) : (
-                <Box></Box>
-              )}
-              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
-            </Box>
-          </Box>
-
-          <Box
-            className="pageIndex__navigators__item"
-            onClick={() => navigate("listing-fee-approval")}
-          >
-            <Box className="pageIndex__navigators__item__text">
-              <Typography className="pageIndex__navigators__item__text__title">
-                Listing Fee Approval
-              </Typography>
-              <Typography className="pageIndex__navigators__item__text__subTitle">
-                Approval and rejection of listing fee requests
-              </Typography>
-            </Box>
-
-            <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.pendingListingFee &&
-              !notifications?.pendingListingFee !== 0 &&
-              !isNotificationFetching ? (
-                <Box className="notificationsLarge">
-                  {notifications?.pendingListingFee}
-                </Box>
-              ) : (
-                <Box></Box>
-              )}
-              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
-            </Box>
-          </Box>
-
-          <Box
-            className="pageIndex__navigators__item"
-            onClick={() => navigate("other-expenses-approval")}
-          >
-            <Box className="pageIndex__navigators__item__text">
-              <Typography className="pageIndex__navigators__item__text__title">
-                Other Expenses Approval
-              </Typography>
-              <Typography className="pageIndex__navigators__item__text__subTitle">
-                Approval and rejection of other expenses requests
-              </Typography>
-            </Box>
-
-            <Box className="pageIndex__navigators__item__notifAndArrow">
-              {!!notifications?.pendingExpenses &&
-              !notifications?.pendingExpenses !== 0 &&
-              !isNotificationFetching ? (
-                <Box className="notificationsLarge">
-                  {notifications?.pendingExpenses}
-                </Box>
-              ) : (
-                <Box></Box>
-              )}
-              <ArrowCircleRight className="pageIndex__navigators__item__notifAndArrow__arrow" />
-            </Box>
-          </Box>
+          ))}
         </Box>
       </Box>
     );

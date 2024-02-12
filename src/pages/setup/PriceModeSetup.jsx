@@ -133,6 +133,7 @@ function PriceModeSetup() {
       } else {
         showSnackbar("Error archiving Price Mode", "error");
       }
+      onArchiveClose();
     }
   };
 
