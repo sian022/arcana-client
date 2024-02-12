@@ -815,7 +815,9 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     if (!editMode && priceModeData && open) {
       setValue(
         "priceModeId",
-        priceModeData?.find((item) => item.priceModeDescription === "Regular")
+        priceModeData?.find(
+          (item) => item.priceModeDescription?.toLowerCase() === "regular"
+        )
       );
     }
   }, [open, priceModeData]);

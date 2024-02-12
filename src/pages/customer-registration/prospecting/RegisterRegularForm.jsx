@@ -549,7 +549,9 @@ function RegisterRegularForm({ open, onClose }) {
     if (priceModeData && open) {
       setValue(
         "priceModeId",
-        priceModeData?.find((item) => item.priceModeDescription === "Regular")
+        priceModeData?.find(
+          (item) => item.priceModeDescription?.toLowerCase() === "regular"
+        )
       );
     }
   }, [open, priceModeData]);
