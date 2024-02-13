@@ -204,7 +204,7 @@ function InitialChangePasswordModal({ ...otherProps }) {
               type="submit"
               disabled={!watch("newPassword") || !watch("confirmNewPassword")}
             >
-              {isLoading ? <CircularProgress size="20px" /> : "Save"}
+              {isLoading ? <CircularProgress size="20px" /> : "Submit"}
             </SecondaryButton>
           </Box>
         </form>

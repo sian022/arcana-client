@@ -186,7 +186,7 @@ function ChangePasswordModal({ ...otherProps }) {
         >
           <DangerButton onClick={handleCloseModal}>Close</DangerButton>
           <SecondaryButton onClick={onConfirmOpen} disabled={!isValid}>
-            Save
+            Submit
           </SecondaryButton>
         </Box>
       </CommonModal>
