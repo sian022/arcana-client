@@ -124,6 +124,7 @@ export const theme = createTheme({
         },
         body: {
           color: colorSchemes.light.secondary,
+          fontWeight: "500",
         },
       },
     },
