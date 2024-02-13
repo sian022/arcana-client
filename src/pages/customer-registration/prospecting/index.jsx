@@ -68,7 +68,7 @@ function Prospect() {
           setTabViewing={setTabViewing}
         />
       ) : (
-        <Typography fontWeight="700" fontSize="1.8rem">
+        <Typography fontWeight="700" fontSize="1.8rem" color="secondary">
           Prospect
         </Typography>
       )}

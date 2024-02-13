@@ -4,7 +4,7 @@
   display: flex;
   gap: 30px;
 
-  &__mainButton {
+  & &__mainButton {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,7 +26,7 @@
     }
   }
 
-  &__storeTypeButtons {
+  & &__storeTypeButtons {
     flex: 1;
     height: 500px;
     margin: auto;
