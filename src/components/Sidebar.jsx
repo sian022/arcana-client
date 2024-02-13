@@ -70,9 +70,9 @@ function Sidebar() {
         sx={{
           width: (isWideScreen ? sidebarToggled : sidebarSmallScreenToggled)
             ? "315px"
-            : "80px",
-
-          // whiteSpace: !sidebarToggled && "nowrap",
+            : isWideScreen
+            ? "80px"
+            : "0px",
         }}
       >
         <Box className="sidebar">
@@ -83,7 +83,7 @@ function Sidebar() {
               // src={isWideScreen ? SystemLogoName : SystemLogo}
               src={!sidebarToggled ? SystemLogo : SystemLogoName}
               alt="arcana-logo"
-              className={!sidebarToggled && "small"}
+              className={!sidebarToggled ? "small" : ""}
             />
 
             <IconButton
@@ -105,7 +105,19 @@ function Sidebar() {
                     title={
                       (isWideScreen ? !sidebarToggled : false) ? item.name : ""
                     }
-                    // placement="left"
+                    placement="right"
+                    PopperProps={{
+                      popperOptions: {
+                        modifiers: [
+                          {
+                            name: "offset",
+                            options: {
+                              offset: [-2, -250],
+                            },
+                          },
+                        ],
+                      },
+                    }}
                   >
                     <NavLink to={item.path}>
                       {({ isActive }) => (
@@ -113,7 +125,13 @@ function Sidebar() {
                           disablePadding
                           sx={{
                             px: 2,
-                            width: !sidebarToggled ? "88px" : "315px",
+                            width: isWideScreen
+                              ? !sidebarToggled
+                                ? "88px"
+                                : "315px"
+                              : !sidebarSmallScreenToggled
+                              ? "0px"
+                              : "315px",
                             // whiteSpace: !sidebarToggled ? "nowrap" : null
                             whiteSpace: "nowrap",
                             transition: "width 0.4s",
@@ -269,10 +287,6 @@ function Sidebar() {
           </Box>
         </Box>
       </Box>
-      {/* <Box
-        className="overlaySidebar"
-        // sx={{ display: sidebarSmallScreenToggled && "block" }}
-      ></Box> */}
     </>
   );
 }

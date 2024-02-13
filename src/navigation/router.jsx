@@ -211,10 +211,10 @@ export const router = createBrowserRouter([
             path: "registration-approval",
             element: <RegistrationApproval />,
           },
-          // {
-          //   path: "sp-discount-approval",
-          //   element: <SpecialDiscountApproval />,
-          // },
+          {
+            path: "sp-discount-approval",
+            element: <SpecialDiscountApproval />,
+          },
           {
             path: "listing-fee-approval",
             element: <ListingFeeApproval />,

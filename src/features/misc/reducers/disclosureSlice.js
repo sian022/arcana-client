@@ -3,11 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 export const disclosureSlice = createSlice({
   name: "disclosure",
   initialState: {
-    sidebar: true,
+    sidebar: JSON.parse(localStorage.getItem("sidebarToggled")) ?? true,
     sidebarSmallScreen: false,
   },
   reducers: {
     toggleSidebar: (state) => {
+      localStorage.setItem("sidebarToggled", !state.sidebar);
       state.sidebar = !state.sidebar;
     },
     toggleSidebarSmallScreen: (state) => {

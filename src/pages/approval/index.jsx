@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import CommonPageIndex from "../../components/CommonPageIndex";
 import { ArrowCircleRight } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { AppContext } from "../../context/AppContext";
 import { useSelector } from "react-redux";
 import { navigationData } from "../../navigation/navigationData";
+import { getIconElement } from "../../components/GetIconElement";
 
 function Approval() {
   const location = useLocation();
@@ -35,9 +35,15 @@ function Approval() {
               onClick={() => navigate(navigator.path)}
             >
               <Box className="pageIndex__navigators__item__text">
-                <Typography className="pageIndex__navigators__item__text__title">
-                  {navigator.name}
-                </Typography>
+                <Box className="pageIndex__navigators__item__text__titleAndIcon">
+                  <Typography className="pageIndex__navigators__item__text__titleAndIcon__title">
+                    {navigator.name}
+                  </Typography>
+
+                  <Box className="pageIndex__navigators__item__text__titleAndIcon__icon">
+                    {getIconElement(navigator.icon, "white")}
+                  </Box>
+                </Box>
                 <Typography className="pageIndex__navigators__item__text__subTitle">
                   {navigator.description}
                 </Typography>

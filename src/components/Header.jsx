@@ -86,12 +86,6 @@ function Header() {
   } = useDisclosure();
 
   const {
-    isOpen: isLogoutOpen,
-    onOpen: onLogoutOpen,
-    onClose: onLogoutClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isChangePasswordOpen,
     onOpen: onChangePasswordOpen,
     onClose: onChangePasswordClose,
@@ -157,9 +151,11 @@ function Header() {
           <IconButton
             sx={{ color: "secondary.main" }}
             onClick={() => {
-              window.innerWidth > 1024
-                ? dispatch(toggleSidebar())
-                : dispatch(toggleSidebarSmallScreen());
+              if (window.innerWidth > 1024) {
+                dispatch(toggleSidebar());
+              } else {
+                dispatch(toggleSidebarSmallScreen());
+              }
             }}
           >
             <MenuIcon />

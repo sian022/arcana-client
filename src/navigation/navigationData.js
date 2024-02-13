@@ -270,14 +270,14 @@ export const navigationData = [
         description: "Approval and rejection of client registration requests",
         notifications: ["pendingClient"],
       },
-      // {
-      //   id: 2,
-      //   name: "Sp. Discount Approval",
-      //   path: "/approval/sp-discount-approval",
-      //   icon: "LocalOffer",
-      //   description: "Approval and rejection of sp. discount requests",
-      //   // notifications: "pendingSpDiscount",
-      // },
+      {
+        id: 2,
+        name: "Sp. Discount Approval",
+        path: "/approval/sp-discount-approval",
+        icon: "LocalOffer",
+        description: "Approval and rejection of sp. discount requests",
+        // notifications: "pendingSpDiscount",
+      },
       {
         id: 3,
         name: "Listing Fee Approval",

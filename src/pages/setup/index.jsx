@@ -5,6 +5,7 @@ import { ArrowCircleRight } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { navigationData } from "../../navigation/navigationData";
+import { getIconElement } from "../../components/GetIconElement";
 
 function Setup() {
   const location = useLocation();
@@ -35,9 +36,15 @@ function Setup() {
               onClick={() => navigate(navigator.path)}
             >
               <Box className="pageIndex__navigators__item__text">
-                <Typography className="pageIndex__navigators__item__text__title">
-                  {navigator.name}
-                </Typography>
+                <Box className="pageIndex__navigators__item__text__titleAndIcon">
+                  <Typography className="pageIndex__navigators__item__text__titleAndIcon__title">
+                    {navigator.name}
+                  </Typography>
+
+                  <Box className="pageIndex__navigators__item__text__titleAndIcon__icon">
+                    {getIconElement(navigator.icon, "white")}
+                  </Box>
+                </Box>
                 <Typography className="pageIndex__navigators__item__text__subTitle">
                   {navigator.description}
                 </Typography>

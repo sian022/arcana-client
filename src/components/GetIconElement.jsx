@@ -42,48 +42,74 @@ import {
   Link,
 } from "@mui/icons-material";
 
-export const getIconElement = (iconName) => {
+export const getIconElement = (iconName, color) => {
   const iconMap = {
-    Dashboard: <Dashboard />,
-    AccountCircle: <AccountCircle />,
-    AccountBox: <AccountBox />,
-    Dataset: <Dataset />,
-    Inventory: <Inventory />,
-    AddBusiness: <AddBusiness />,
-    PostAdd: <PostAdd />,
-    Discount: <Discount />,
-    AlignVerticalCenter: <AlignVerticalCenter />,
-    Approval: <Approval />,
-    Person: <Person />,
-    SupervisorAccount: <SupervisorAccount />,
-    Business: <Business />,
-    BusinessCenter: <BusinessCenter />,
-    LocationOn: <LocationOn />,
-    LocalMall: <LocalMall />,
-    Category: <Category />,
-    SubdirectoryArrowRight: <SubdirectoryArrowRight />,
-    RestaurantMenu: <RestaurantMenu />,
-    SquareFoot: <SquareFoot />,
-    StoreMallDirectory: <StoreMallDirectory />,
-    Label: <Label />,
-    CalendarToday: <CalendarToday />,
-    Redeem: <Redeem />,
-    PersonAdd: <PersonAdd />,
-    Payment: <Payment />,
-    HowToReg: <HowToReg />,
-    LocalOffer: <LocalOffer />,
-    SupervisedUserCircle: <SupervisedUserCircle />,
-    HowToVote: <HowToVote />,
-    CardGiftCard: <CardGiftcard />,
-    PinDrop: <PinDrop />,
-    MonetizationOn: <MonetizationOn />,
-    FastForward: <FastForward />,
-    Store: <Store />,
-    TrendingUp: <TrendingUp />,
-    AttachMoney: <AttachMoney />,
-    Settings: <Settings />,
-    Link: <Link />,
+    Dashboard: <Dashboard sx={{ color: color && `${color} !important` }} />,
+    AccountCircle: (
+      <AccountCircle sx={{ color: color && `${color} !important` }} />
+    ),
+    AccountBox: <AccountBox sx={{ color: color && `${color} !important` }} />,
+    Dataset: <Dataset sx={{ color: color && `${color} !important` }} />,
+    Inventory: <Inventory sx={{ color: color && `${color} !important` }} />,
+    AddBusiness: <AddBusiness sx={{ color: color && `${color} !important` }} />,
+    PostAdd: <PostAdd sx={{ color: color && `${color} !important` }} />,
+    Discount: <Discount sx={{ color: color && `${color} !important` }} />,
+    AlignVerticalCenter: (
+      <AlignVerticalCenter sx={{ color: color && `${color} !important` }} />
+    ),
+    Approval: <Approval sx={{ color: color && `${color} !important` }} />,
+    Person: <Person sx={{ color: color && `${color} !important` }} />,
+    SupervisorAccount: (
+      <SupervisorAccount sx={{ color: color && `${color} !important` }} />
+    ),
+    Business: <Business sx={{ color: color && `${color} !important` }} />,
+    BusinessCenter: (
+      <BusinessCenter sx={{ color: color && `${color} !important` }} />
+    ),
+    LocationOn: <LocationOn sx={{ color: color && `${color} !important` }} />,
+    LocalMall: <LocalMall sx={{ color: color && `${color} !important` }} />,
+    Category: <Category sx={{ color: color && `${color} !important` }} />,
+    SubdirectoryArrowRight: (
+      <SubdirectoryArrowRight sx={{ color: color && `${color} !important` }} />
+    ),
+    RestaurantMenu: (
+      <RestaurantMenu sx={{ color: color && `${color} !important` }} />
+    ),
+    SquareFoot: <SquareFoot sx={{ color: color && `${color} !important` }} />,
+    StoreMallDirectory: (
+      <StoreMallDirectory sx={{ color: color && `${color} !important` }} />
+    ),
+    Label: <Label sx={{ color: color && `${color} !important` }} />,
+    CalendarToday: (
+      <CalendarToday sx={{ color: color && `${color} !important` }} />
+    ),
+    Redeem: <Redeem sx={{ color: color && `${color} !important` }} />,
+    PersonAdd: <PersonAdd sx={{ color: color && `${color} !important` }} />,
+    Payment: <Payment sx={{ color: color && `${color} !important` }} />,
+    HowToReg: <HowToReg sx={{ color: color && `${color} !important` }} />,
+    LocalOffer: <LocalOffer sx={{ color: color && `${color} !important` }} />,
+    SupervisedUserCircle: (
+      <SupervisedUserCircle sx={{ color: color && `${color} !important` }} />
+    ),
+    HowToVote: <HowToVote sx={{ color: color && `${color} !important` }} />,
+    CardGiftCard: (
+      <CardGiftcard sx={{ color: color && `${color} !important` }} />
+    ),
+    PinDrop: <PinDrop sx={{ color: color && `${color} !important` }} />,
+    MonetizationOn: (
+      <MonetizationOn sx={{ color: color && `${color} !important` }} />
+    ),
+    FastForward: <FastForward sx={{ color: color && `${color} !important` }} />,
+    Store: <Store sx={{ color: color && `${color} !important` }} />,
+    TrendingUp: <TrendingUp sx={{ color: color && `${color} !important` }} />,
+    AttachMoney: <AttachMoney sx={{ color: color && `${color} !important` }} />,
+    Settings: <Settings sx={{ color: color && `${color} !important` }} />,
+    Link: <Link sx={{ color: color && `${color} !important` }} />,
   };
 
-  return iconMap[iconName] || <IcecreamOutlined />;
+  return (
+    iconMap[iconName] || (
+      <IcecreamOutlined sx={{ color: color && `${color} !important` }} />
+    )
+  );
 };
