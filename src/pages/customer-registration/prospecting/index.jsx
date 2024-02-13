@@ -27,7 +27,11 @@ function Prospect() {
   );
   const dispatch = useDispatch();
 
-  const { data, isLoading } = useGetAllStoreTypesQuery({ Status: true });
+  const { data, isLoading } = useGetAllStoreTypesQuery({
+    Status: true,
+    Page: 1,
+    PageSize: 1000,
+  });
 
   // const { data: forFreebiesData, isLoading: isForFreebiesLoading } =
   //   useGetAllApprovedProspectsQuery({
