@@ -201,10 +201,19 @@ function ViewListingFeeModal({
             </Box>
           </Box>
 
+          <Box className="viewListingFeeModal__transactionNumber">
+            <Typography className="viewListingFeeModal__transactionNumber__label">
+              Transaction Number:
+            </Typography>
+            <Typography className="viewListingFeeModal__transactionNumber__value">
+              {selectedRowData?.listingFeeId}
+            </Typography>
+          </Box>
+
           <Box className="viewListingFeeModal__table">
             <TableContainer
               sx={{
-                maxHeight: "330px",
+                maxHeight: "290px",
                 overflow: "auto",
                 width: "815px",
                 borderRadius: "10px",

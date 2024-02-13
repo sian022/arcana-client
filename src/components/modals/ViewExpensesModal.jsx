@@ -194,10 +194,20 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               </Box>
             </Box>
           </Box>
+
+          <Box className="viewExpensesModal__transactionNumber">
+            <Typography className="viewExpensesModal__transactionNumber__label">
+              Transaction Number:
+            </Typography>
+            <Typography className="viewExpensesModal__transactionNumber__value">
+              {selectedRowData?.id}
+            </Typography>
+          </Box>
+
           <Box className="viewExpensesModal__table">
             <TableContainer
               sx={{
-                maxHeight: "330px",
+                maxHeight: "290px",
                 overflow: "auto",
                 width: "815px",
                 borderRadius: "10px",
