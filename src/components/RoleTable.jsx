@@ -47,7 +47,7 @@ function RoleTable({
           src={NoData}
           alt="no-data-img"
           className="noData__image"
-          style={{ position: "relative", bottom: "10%" }}
+          // style={{ position: "relative", bottom: "10%" }}
         />
       </Box>
     );

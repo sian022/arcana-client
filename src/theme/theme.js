@@ -121,6 +121,7 @@ export const theme = createTheme({
       styleOverrides: {
         head: {
           color: "white",
+          fontWeight: "600",
         },
         body: {
           color: colorSchemes.light.secondary,

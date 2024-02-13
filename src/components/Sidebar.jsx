@@ -10,6 +10,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import "../assets/styles/sidebar.styles.scss";
 import { NavLink, useLocation } from "react-router-dom";
@@ -68,19 +69,23 @@ function Sidebar() {
         className="sidebarWrapper"
         sx={{
           width: (isWideScreen ? sidebarToggled : sidebarSmallScreenToggled)
-            ? "300px"
-            : 0,
+            ? "315px"
+            : "80px",
 
           // whiteSpace: !sidebarToggled && "nowrap",
         }}
       >
         <Box className="sidebar">
-          <Box className="sidebar__logo">
+          <Box
+            className={"sidebar__logo" + (!sidebarToggled ? " untoggled" : "")}
+          >
             <img
               // src={isWideScreen ? SystemLogoName : SystemLogo}
-              src={SystemLogoName}
+              src={!sidebarToggled ? SystemLogo : SystemLogoName}
               alt="arcana-logo"
+              className={!sidebarToggled && "small"}
             />
+
             <IconButton
               className="sidebar__toggleRemove"
               onClick={() => {
@@ -90,68 +95,89 @@ function Sidebar() {
               <KeyboardDoubleArrowLeft />
             </IconButton>
           </Box>
+
           <Box className="sidebar__navigation">
             {permittedSidebar.map(
               // {navigationData.map(
               (item) => (
                 <React.Fragment key={item.id}>
-                  <NavLink to={item.path}>
-                    {({ isActive }) => (
-                      <ListItem disablePadding sx={{ px: 2 }}>
-                        <ListItemButton
-                          className={`sidebar__navigation__button  ${
-                            isActive ? "active" : ""
-                          }`}
-                          onClick={() => {
-                            // sessionStorage.setItem("activeModule", item.name);
-                            setActiveModule(
-                              // activeModule === item.path ? "" : item.path
-                              activeModule?.includes(item.path) ? "" : item.path
-                            );
+                  <Tooltip
+                    title={
+                      (isWideScreen ? !sidebarToggled : false) ? item.name : ""
+                    }
+                    // placement="left"
+                  >
+                    <NavLink to={item.path}>
+                      {({ isActive }) => (
+                        <ListItem
+                          disablePadding
+                          sx={{
+                            px: 2,
+                            width: !sidebarToggled ? "88px" : "315px",
+                            // whiteSpace: !sidebarToggled ? "nowrap" : null
+                            whiteSpace: "nowrap",
+                            transition: "width 0.4s",
                           }}
                         >
-                          <ListItemIcon
-                            className={`sidebar__navigation__button__icon  ${
+                          <ListItemButton
+                            className={`sidebar__navigation__button  ${
                               isActive ? "active" : ""
                             }`}
+                            onClick={() => {
+                              setActiveModule(
+                                activeModule?.includes(item.path)
+                                  ? ""
+                                  : item.path
+                              );
+                            }}
                           >
-                            {getIconElement(item.icon)}
-                          </ListItemIcon>
+                            <ListItemIcon
+                              className={`sidebar__navigation__button__icon  ${
+                                isActive ? "active" : ""
+                              }`}
+                            >
+                              {getIconElement(item.icon)}
+                            </ListItemIcon>
 
-                          <ListItemText>{item.name}</ListItemText>
+                            {<ListItemText>{item.name}</ListItemText>}
 
-                          {item?.notifications?.reduce(
-                            (sum, notification) =>
-                              sum + parseInt(notifications[notification]),
-                            0
-                          ) > 0 &&
-                            !isNotificationFetching && (
-                              <Box sx={{ width: "20px", height: "20px" }}>
-                                {item.notifications && (
-                                  <Box className="notifications">
-                                    {item?.notifications?.reduce(
-                                      (sum, notification) =>
-                                        sum +
-                                        parseInt(notifications[notification]),
-                                      0
-                                    )}
-                                  </Box>
-                                )}
-                              </Box>
-                            )}
+                            {item?.notifications?.reduce(
+                              (sum, notification) =>
+                                sum + parseInt(notifications[notification]),
+                              0
+                            ) > 0 &&
+                              !isNotificationFetching && (
+                                <Box sx={{ width: "20px", height: "20px" }}>
+                                  {item.notifications && (
+                                    <Box className="notifications">
+                                      {item?.notifications?.reduce(
+                                        (sum, notification) =>
+                                          sum +
+                                          parseInt(notifications[notification]),
+                                        0
+                                      )}
+                                    </Box>
+                                  )}
+                                </Box>
+                              )}
 
-                          {/* {sidebarToggled && (
+                            {/* {sidebarToggled && (
                         <ListItemText>{item.name}</ListItemText>
                       )} */}
-                        </ListItemButton>
-                      </ListItem>
-                    )}
-                  </NavLink>
+                          </ListItemButton>
+                        </ListItem>
+                      )}
+                    </NavLink>
+                  </Tooltip>
 
                   {item.sub && (
                     <Collapse
-                      // in={activeModule === item.path}
-                      in={activeModule?.includes(item.path)}
+                      in={
+                        isWideScreen
+                          ? sidebarToggled && activeModule?.includes(item.path)
+                          : activeModule?.includes(item.path)
+                      }
+                      // in={activeModule?.includes(item.path)}
                       timeout="auto"
                       unmountOnExit
                     >

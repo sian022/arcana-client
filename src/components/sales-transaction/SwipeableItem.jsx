@@ -101,13 +101,13 @@ function SwipeableItem({
           sx={{ cursor: "default" }}
         >
           ₱{" "}
-          {(
-            orderItem.itemId?.priceChangeHistories?.[0]?.price *
-            orderItem.quantity
-          ).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {(orderItem.itemId?.currentPrice * orderItem.quantity).toLocaleString(
+            undefined,
+            {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }
+          )}
         </Typography>
       </Box>
 

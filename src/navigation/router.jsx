@@ -180,28 +180,28 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // {
-      //   path: "sales-management",
-      //   element: <SalesManagement />,
-      //   children: [
-      //     {
-      //       path: "sales-transaction",
-      //       element: <SalesTransaction />,
-      //     },
-      //     {
-      //       path: "payment-transaction",
-      //       element: <PaymentTransaction />,
-      //     },
-      //     {
-      //       path: "special-discount",
-      //       element: <SpecialDiscount />,
-      //     },
-      //     {
-      //       path: "advance-payment",
-      //       element: <AdvancePayment />,
-      //     },
-      //   ],
-      // },
+      {
+        path: "sales-management",
+        element: <SalesManagement />,
+        children: [
+          {
+            path: "sales-transaction",
+            element: <SalesTransaction />,
+          },
+          {
+            path: "payment-transaction",
+            element: <PaymentTransaction />,
+          },
+          {
+            path: "special-discount",
+            element: <SpecialDiscount />,
+          },
+          {
+            path: "advance-payment",
+            element: <AdvancePayment />,
+          },
+        ],
+      },
 
       {
         path: "approval",

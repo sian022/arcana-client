@@ -19,7 +19,7 @@ function PageHeaderAdd({
 
   return (
     <Box sx={{ padding: "1px" }}>
-      <Box component={Paper} className="pageHeader">
+      <Box component={Paper} className="pageHeader" elevation={1}>
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
           {!removeAdd && (

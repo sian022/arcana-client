@@ -1,7 +1,7 @@
 @import "./index.styles.scss";
 
 .sidebarWrapper {
-  width: 300px;
+  width: 321px;
   transition: 0.3s all ease-in-out;
   box-shadow: 7px 7px 100px #dedede, -7px -7px 100px #e2e2e2;
   background: white;
@@ -19,11 +19,12 @@
 }
 
 .sidebar {
-  width: 300px;
+  width: 321px;
   text-align: center;
   display: flex;
   flex-direction: column;
   height: 100%;
+
   // overflow: hidden;
   // position: relative;
   // background: white;
@@ -60,13 +61,27 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
+    height: 180px;
+
+    &.left {
+      justify-content: flex-start;
+    }
 
     & img {
       // @media (max-width: 1024px) {
       //   width: 100px;
       // }
-
+      transition: transform 0.4s, right 0.4s, left 0.4s;
       width: 150px;
+      position: absolute;
+      // right: 65px;
+      left: 90px;
+
+      &.small {
+        transform: scale(0.5);
+        right: -40px;
+        left: -30px;
+      }
     }
   }
 

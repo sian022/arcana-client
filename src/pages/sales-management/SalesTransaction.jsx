@@ -31,6 +31,8 @@ import SwipeableItem from "../../components/sales-transaction/SwipeableItem";
 import CashoutModal from "../../components/modals/sales-management/CashoutModal";
 import TransactionsList from "../../components/sales-transaction/TransactionsList";
 import UnderConstruction from "../../assets/images/under-construction.svg";
+import { useGetAllClientsForPOSQuery } from "../../features/sales-transaction/api/salesTransactionApi";
+import { useGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
@@ -81,23 +83,16 @@ function SalesTransaction() {
   });
 
   //RTK Query
-  const {
-    data: clientData,
-    isLoading: isClientLoading,
-    refetch: refetchClients,
-  } = useGetAllClientsForListingFeeQuery({
-    Status: true,
-    PageNumber: 1,
-    PageSize: 1000,
-    // IncludeRejected: drawerMode === "edit" ? true : "",
-  });
+  const { data: clientData, isLoading: isClientLoading } =
+    useGetAllClientsForPOSQuery();
 
   const { data: productData, isFetching: isProductFetching } =
-    useGetAllProductsQuery({
+    useGetAllItemsByPriceModeIdQuery({
       Status: true,
       Page: 1,
       PageSize: 1000,
       Search: search,
+      PriceModeId: watch("clientId") ? watch("clientId").priceModeId : -1,
     });
 
   //Functions
@@ -147,7 +142,6 @@ function SalesTransaction() {
     return () => clearInterval(intervalId);
   }, []); // Empty dependency array to run effect only once on mount
 
-  console.log(productData);
   return (
     <>
       <Box className="commonPageLayout">
@@ -182,7 +176,7 @@ function SalesTransaction() {
                 <ControlledAutocomplete
                   name={`clientId`}
                   control={control}
-                  options={clientData?.regularClient || []}
+                  options={clientData || []}
                   getOptionLabel={(option) =>
                     option.businessName?.toUpperCase() +
                       " - " +
@@ -271,7 +265,7 @@ function SalesTransaction() {
                         />
                       ))}
                     </Box>
-                  ) : productData?.items?.length === 0 ? (
+                  ) : productData?.priceModeItems?.length === 0 ? (
                     <Box className="salesTransaction__body__itemsForm__itemsList__noProductFound">
                       <img
                         width="200px"
@@ -280,7 +274,7 @@ function SalesTransaction() {
                       />
                     </Box>
                   ) : (
-                    productData?.items?.map((item) => (
+                    productData?.priceModeItems?.map((item) => (
                       <Button
                         className="salesTransaction__body__itemsForm__itemsList__itemCard"
                         key={item.id}
