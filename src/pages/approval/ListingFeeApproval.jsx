@@ -173,6 +173,7 @@ function ListingFeeApproval() {
             customOrderKeys={customOrderKeys}
             pesoArray={pesoArray}
             onHistory={onHistoryOpen}
+            moveNoDataUp
           />
         )}
       </Box>

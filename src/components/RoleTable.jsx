@@ -19,7 +19,7 @@ import React, { useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import useDisclosure from "../hooks/useDisclosure";
 import CommonActions from "./CommonActions";
-import NoData from "../assets/images/no-data.jpg";
+import NoData from "../assets/images/NoRecordsFound.svg";
 import RoleTaggingModal from "./modals/RoleTaggingModal";
 import { useDispatch } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
@@ -41,11 +41,14 @@ function RoleTable({
   status,
 }) {
   if (!mapData || mapData.length === 0) {
-    // Return some message or UI element indicating that there is no data.
     return (
       <Box className="noData">
-        <img src={NoData} alt="no-data-img" className="noData__image" />
-        <Typography>No data found</Typography>
+        <img
+          src={NoData}
+          alt="no-data-img"
+          className="noData__image"
+          style={{ position: "relative", bottom: "10%" }}
+        />
       </Box>
     );
   }

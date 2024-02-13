@@ -6,6 +6,7 @@ function TertiaryButton({ sx, children, ...otherProps }) {
     <Button
       variant="contained"
       color="tertiary"
+      size="small"
       sx={{ color: "white !important", ...sx }}
       {...otherProps}
     >

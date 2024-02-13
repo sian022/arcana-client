@@ -260,6 +260,7 @@ function DirectRegistration() {
           <CommonTable
             mapData={data?.regularClient}
             moreCompact
+            moveNoDataUp
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}

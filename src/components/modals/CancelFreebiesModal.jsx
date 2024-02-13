@@ -112,11 +112,16 @@ function CancelFreebiesModal({ ...otherProps }) {
                 </Typography>
                 <Typography>
                   <span>Address: </span>
-                  {`#${address?.houseNumber || ""} ${
-                    address?.streetName || ""
-                  } ${address?.barangayName || ""}, ${address?.city || ""}, ${
-                    address?.province || ""
-                  }`}
+                  {`${address?.houseNumber ? `#${address.houseNumber}` : ""}${
+                    address?.houseNumber &&
+                    (address?.streetName || address?.barangayName)
+                      ? ", "
+                      : ""
+                  }${address?.streetName ? `${address.streetName}` : ""}${
+                    address?.streetName && address?.barangayName ? ", " : ""
+                  }${address?.barangayName ? `${address.barangayName}` : ""}${
+                    address?.city ? `, ${address.city}` : ""
+                  }${address?.province ? `, ${address.province}` : ""}`}
                 </Typography>
               </Box>
               <Box>
@@ -182,6 +187,7 @@ function CancelFreebiesModal({ ...otherProps }) {
           </AccentButton> */}
           <DangerButton
             onClick={onCancelConfirmOpen}
+            contained
             // disabled={!reason || /^\s*$/.test(reason)}
           >
             Cancel Freebies

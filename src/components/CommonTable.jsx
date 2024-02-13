@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import CommonActions from "./CommonActions";
-import NoData from "../assets/images/no-data.jpg";
+import NoData from "../assets/images/NoRecordsFound.svg";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
 import { Attachment, Visibility } from "@mui/icons-material";
@@ -71,6 +71,7 @@ function CommonTable({
   attachKey,
   highlightSelected,
   disableActions,
+  moveNoDataUp,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -107,8 +108,15 @@ function CommonTable({
       >
         {imageLoaded && (
           <>
-            <img src={NoData} alt="no-data-img" className="noData__image" />
-            <Typography>No data found</Typography>
+            <img
+              src={NoData}
+              alt="no-data-img"
+              className="noData__image"
+              style={{
+                position: moveNoDataUp && "relative",
+                bottom: moveNoDataUp && "10%",
+              }}
+            />
           </>
         )}
       </Box>

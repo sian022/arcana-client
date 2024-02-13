@@ -233,6 +233,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                 <Typography>
                   <span>Customer:</span> {selectedRowData?.businessName || ""}
                 </Typography>
+
                 <Typography>
                   <span>Address: </span>
                   {`${address?.houseNumber ? `#${address.houseNumber}` : ""}${
@@ -430,6 +431,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
                   )} */}
                 </Box>
               </Box>
+
               <Box className="releaseFreebieModal__footer__attachments__photo">
                 <Input
                   type="file"
@@ -443,19 +445,9 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
 
                 {!direct && photoProof && (
                   <IconButton
-                    className="attachments__column__content__item__viewOwner"
+                    className="releaseFreebieModal__footer__attachments__photo__preview"
                     onClick={() => {
                       onViewPhotoOpen();
-                    }}
-                    sx={{
-                      color: "secondary.main",
-                      border: "none !important",
-                      bgcolor: "white !important",
-                      position: "absolute",
-                      // right: "305px",
-                      right: "330px",
-                      // right: signature ? "330px" : "305px",
-                      bottom: "83px",
                     }}
                   >
                     <Visibility />
@@ -464,18 +456,9 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
 
                 {direct && photoProofDirect && (
                   <IconButton
-                    className="attachments__column__content__item__viewOwner"
+                    className="releaseFreebieModal__footer__attachments__photo__preview"
                     onClick={() => {
                       onViewPhotoOpen();
-                    }}
-                    sx={{
-                      color: "secondary.main",
-                      border: "none !important",
-                      bgcolor: "white !important",
-                      position: "absolute",
-                      right: "305px",
-                      // right: signature ? "330px" : "305px",
-                      bottom: "83px",
                     }}
                   >
                     <Visibility />
@@ -509,7 +492,13 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
           </Box>
         </Box>
         <Box className="releaseFreebieModal__actionsEnd">
-          {/* <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton> */}
+          <DangerButton
+            onClick={
+              signature || photoProof ? onCancelConfirmOpen : handleCancel
+            }
+          >
+            Close
+          </DangerButton>
           <SuccessButton
             onClick={onConfirmOpen}
             disabled={

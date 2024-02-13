@@ -176,7 +176,7 @@ function RoleTaggingModal({
             {isLoading ? (
               <CircularProgress size="20px" color="white" />
             ) : (
-              "Save"
+              "Submit"
             )}
           </SecondaryButton>
         </Box>

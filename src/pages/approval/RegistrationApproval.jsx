@@ -171,6 +171,7 @@ function RegistrationApproval() {
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
             moreCompact
+            moveNoDataUp
             editable
             onView={onViewOpen}
             onHistory={onHistoryOpen}

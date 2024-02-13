@@ -193,6 +193,7 @@ function ListingFee() {
           <CommonTableSkeleton moreCompact mt={"-20px"} />
         ) : (
           <CommonTable
+            moveNoDataUp
             mapData={data?.listingFees}
             moreCompact
             tableHeads={tableHeads}

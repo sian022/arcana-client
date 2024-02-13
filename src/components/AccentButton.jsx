@@ -3,7 +3,7 @@ import React from "react";
 
 function AccentButton({ children, ...otherProps }) {
   return (
-    <Button variant="contained" color="accent" {...otherProps}>
+    <Button variant="contained" color="accent" size="small" {...otherProps}>
       {children}
     </Button>
   );

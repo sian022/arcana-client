@@ -3,7 +3,7 @@ import CommonModal from "../CommonModal";
 import { Box, Typography } from "@mui/material";
 import DangerButton from "../DangerButton";
 import SecondaryButton from "../SecondaryButton";
-import AccentButton from "../AccentButton";
+import TertiaryButton from "../TertiaryButton";
 import ReactSignatureCanvas from "react-signature-canvas";
 
 function SignatureCanvasModal({ signature, setSignature, ...otherProps }) {
@@ -45,12 +45,12 @@ function SignatureCanvasModal({ signature, setSignature, ...otherProps }) {
         <Box className="signatureCanvasModal__actions">
           <DangerButton onClick={handleCancel}>Cancel</DangerButton>
           <Box className="signatureCanvasModal__actions__right">
-            <AccentButton
+            <TertiaryButton
               onClick={handleClearSign}
               sx={{ color: "white !important" }}
             >
               Clear
-            </AccentButton>
+            </TertiaryButton>
             <SecondaryButton onClick={handleConfirm}>Confirm</SecondaryButton>
           </Box>
         </Box>

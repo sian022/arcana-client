@@ -204,6 +204,7 @@ function OtherExpenses() {
             onHistory={onHistoryOpen}
             onCancel={expenseStatus === "Rejected" && onDeleteOpen}
             mt={"-20px"}
+            moveNoDataUp
           />
         )}
       </Box>

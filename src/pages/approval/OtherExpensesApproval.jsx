@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box, Button, TextField, debounce } from "@mui/material";
+import { Box, TextField, debounce } from "@mui/material";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
-import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
@@ -142,6 +141,7 @@ function OtherExpensesApproval() {
           <CommonTable
             mapData={data?.expenses}
             moreCompact
+            moveNoDataUp
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}

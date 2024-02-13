@@ -148,7 +148,7 @@ function Prospect() {
                   backgroundColor: "secondary.main",
                   color: "white !important",
                   " &:hover": {
-                    bgcolor: "accent.main",
+                    bgcolor: "tertiary.main",
                   },
                 }}
                 onClick={() => {
@@ -190,7 +190,7 @@ function Prospect() {
                       // bgcolor: "gray",
                       color: "white !important",
                       " &:hover": {
-                        bgcolor: "accent.main",
+                        bgcolor: "tertiary.main",
                       },
                       maxHeight: "200px",
                     }}

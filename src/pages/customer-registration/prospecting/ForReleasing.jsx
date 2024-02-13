@@ -37,11 +37,12 @@ import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal"
 import AddSearchMixin from "../../../components/mixins/AddSearchMixin";
 import CancelFreebiesModal from "../../../components/modals/CancelFreebiesModal";
 import SecondaryButton from "../../../components/SecondaryButton";
-import AccentButton from "../../../components/AccentButton";
+import TertiaryButton from "../../../components/TertiaryButton";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
+import DangerButton from "../../../components/DangerButton";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -366,7 +367,7 @@ function ForReleasing() {
                           field.onChange(e.target.value.toUpperCase())
                         }
                         disabled={!editMode && drawerMode === "edit"}
-                        sx={{ gridColumn: "span 3" }}
+                        sx={{ gridColumn: "span 2" }}
                         label="Owner's Name"
                         size="small"
                         autoComplete="off"
@@ -409,8 +410,6 @@ function ForReleasing() {
                       size="small"
                       customInput={TextField}
                       autoComplete="off"
-                      allowNegative={false}
-                      decimalScale={0}
                       onValueChange={(e) => {
                         onChange(e.value);
                       }}
@@ -645,21 +644,29 @@ function ForReleasing() {
           </Box>
         </Box>
         <Box className="commonDrawer__actions">
-          {drawerMode !== "edit" || editMode ? (
-            <SuccessButton onClick={onConfirmOpen} disabled={!isValid}>
-              Submit
-            </SuccessButton>
-          ) : null}
+          <DangerButton
+            onClick={isDirty ? onCancelConfirmOpen : handleDrawerClose}
+          >
+            Close
+          </DangerButton>
+
           {drawerMode === "edit" && (
-            <AccentButton
+            <TertiaryButton
               sx={{ color: "white !important" }}
               onClick={() => {
                 setEditMode(!editMode);
               }}
             >
               Edit
-            </AccentButton>
+            </TertiaryButton>
           )}
+
+          <SuccessButton
+            onClick={onConfirmOpen}
+            disabled={!isValid || (drawerMode === "edit" && !editMode)}
+          >
+            Submit
+          </SuccessButton>
         </Box>
       </CommonDrawer>
 

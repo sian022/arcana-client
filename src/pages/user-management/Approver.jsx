@@ -18,7 +18,6 @@ import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
-import PageHeaderSearch from "../../components/PageHeaderSearch";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import {
   Cancel,
@@ -288,6 +287,7 @@ function Approver() {
         onOpen={handleAddOpen}
         setSearch={setSearch}
         setStatus={setStatus}
+        removeArchive
       />
       {isApproversPerModuleFetching ? (
         <CommonTableSkeleton />
