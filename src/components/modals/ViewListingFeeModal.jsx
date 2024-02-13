@@ -200,6 +200,7 @@ function ViewListingFeeModal({
               </Box>
             </Box>
           </Box>
+
           <Box className="viewListingFeeModal__table">
             <TableContainer
               sx={{

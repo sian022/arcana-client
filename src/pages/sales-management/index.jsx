@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import CommonPageIndex from "../../components/CommonPageIndex";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { ArrowCircleRight } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { navigationData } from "../../navigation/navigationData";
+import { AppContext } from "../../context/AppContext";
 
 function SalesManagement() {
   // return (
@@ -12,6 +13,8 @@ function SalesManagement() {
   // );
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { notifications } = useContext(AppContext);
 
   const permissions = useSelector((state) => state.permissions?.permissions);
   const permittedNavigators = navigationData
