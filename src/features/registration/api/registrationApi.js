@@ -13,7 +13,16 @@ export const registrationApi = createApi({
       );
     },
   }),
-  tagTypes: ["Registration"],
+  tagTypes: [
+    "Registration",
+    "Clients For Listing",
+    "TermsById",
+    "AttachmentsById",
+    "FreebiesById",
+    "ListingFeeById",
+    "OtherExpensesById",
+    "ApprovalHistoryById",
+  ],
   endpoints: (builder) => ({
     getAllClients: builder.query({
       query: (params) => ({
@@ -179,6 +188,7 @@ export const registrationApi = createApi({
       }),
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
+      providesTags: ["TermsById"],
     }),
 
     getAttachmentsByClientId: builder.query({
@@ -186,6 +196,7 @@ export const registrationApi = createApi({
         url: `/attachments/${id}`,
         method: "GET",
       }),
+      providesTags: ["AttachmentsById"],
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
@@ -195,6 +206,7 @@ export const registrationApi = createApi({
         url: `/freebies/${id}`,
         method: "GET",
       }),
+      providesTags: ["FreebiesById"],
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
@@ -204,6 +216,7 @@ export const registrationApi = createApi({
         url: `/listingfee/${id}`,
         method: "GET",
       }),
+      providesTags: ["ListingFeeById"],
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
@@ -213,6 +226,7 @@ export const registrationApi = createApi({
         url: `/other-expenses/${id}`,
         method: "GET",
       }),
+      providesTags: ["OtherExpensesById"],
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
@@ -222,6 +236,7 @@ export const registrationApi = createApi({
         url: `/client/${id}/approval-history`,
         method: "GET",
       }),
+      providesTags: ["ApprovalHistoryById"],
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),

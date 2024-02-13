@@ -31,6 +31,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
+  registrationApi,
   useGetAttachmentsByClientIdQuery,
   useGetTermsByClientIdQuery,
   useLazyGetAttachmentsByClientIdQuery,
@@ -271,6 +272,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const { data: priceModeData, isLoading: isPriceModeLoading } =
     useGetAllPriceModeForClientsQuery();
 
+  console.log(ownersRequirements);
+
   //Drawer Functions
   const onSubmit = async (data) => {
     try {
@@ -309,6 +312,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               }
             : {}),
         }).unwrap();
+        dispatch(registrationApi.util.invalidateTags(["TermsById"]));
 
         termsAndConditions["terms"] !== 1 &&
           (await addAttachmentsSubmit(response?.value?.id));
@@ -366,6 +370,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     } catch (error) {
       // showSnackbar(error.data.messages[0], "error");
       setIsAllApiLoading(false);
+      onConfirmClose();
 
       //Reset Direct Freebies
       setPhotoProofDirect(null);
@@ -456,6 +461,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         // id: clientId,
         formData,
       }).unwrap();
+      dispatch(registrationApi.util.invalidateTags(["AttachmentsById"]));
     } else {
       await putAddAttachmentsForDirect({
         // id: selectedRowData?.id,
