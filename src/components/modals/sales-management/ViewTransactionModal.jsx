@@ -97,12 +97,109 @@ function ViewTransactionModal({ ...props }) {
             </TableHead>
 
             <TableBody className="viewTransactionSlipModal__tableContainer__tableBody">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell>1</TableCell>
+                  <TableCell>PC</TableCell>
+                  <TableCell>Changioc</TableCell>
+                  <TableCell>1000.00</TableCell>
+                  <TableCell>1000.00</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+
+            <TableBody
+              className="viewTransactionSlipModal__tableContainer__tableBody"
+              // sx={{ position: "sticky", bottom: 0 }}
+            >
               <TableRow>
-                <TableCell>1</TableCell>
-                <TableCell>PC</TableCell>
-                <TableCell>Changioc</TableCell>
-                <TableCell>1000.00</TableCell>
-                <TableCell>1000.00</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <span className="label">SUBTOTAL</span>
+                </TableCell>
+                <TableCell>2795.00</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <span className="label">DISCOUNT</span>{" "}
+                  <span style={{ fontWeight: "400" }}>(10%)</span>
+                </TableCell>
+                <TableCell>279.50</TableCell>
+              </TableRow>
+
+              {/* <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+              </TableRow> */}
+
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <Box className="labelValueGrid">
+                    <span className="label">VATABLE SALES</span> 2245.98
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <span className="label">TOTAL SALES</span>{" "}
+                  <span style={{ fontWeight: "400" }}>(VAT INCLUSIVE)</span>
+                </TableCell>
+                <TableCell>2515.50</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <span className="label">VAT-EXEMPT SALES</span>
+                </TableCell>
+                <TableCell>
+                  <span className="label">AMOUNT DUE</span>
+                </TableCell>
+                <TableCell>2245.98</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <span className="label">ZERO RATED SALES</span>
+                </TableCell>
+                <TableCell>
+                  <span className="label">ADD VAT</span>
+                </TableCell>
+                <TableCell>269.52</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <Box className="labelValueGrid">
+                    <span className="label">VAT AMOUNT</span> 269.52
+                  </Box>
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <span className="label">TOTAL AMOUNT DUE</span>
+                </TableCell>
+                <TableCell>25515.50</TableCell>
               </TableRow>
             </TableBody>
           </Table>
