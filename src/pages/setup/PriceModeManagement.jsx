@@ -243,7 +243,7 @@ function PriceModeManagement() {
         ) : (
           <CommonTable
             mapData={priceModeItemsData?.priceModeItems}
-            editable
+            includeActions
             // onArchive={onArchiveOpen}
             onRemove={onDeleteOpen}
             onPriceChange={onPriceChangeOpen}
@@ -390,7 +390,7 @@ function PriceModeManagement() {
       <CommonDialog
         open={isDeleteOpen}
         onClose={onDeleteClose}
-        noIcon={!status}
+        question={!status}
         onYes={handleDelete}
         isLoading={isDeleteLoading}
       >
@@ -400,7 +400,7 @@ function PriceModeManagement() {
       {/* <CommonDialog
         open={isArchiveOpen}
         onClose={onArchiveClose}
-        noIcon={!status}
+        question={!status}
         onYes={handleArchive}
         isLoading={isArchiveLoading}
       >

@@ -332,7 +332,7 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
         open={isConfirmOpen}
         onClose={onConfirmClose}
         onYes={handlePrint}
-        noIcon
+        question
       >
         Confirm printing of freebies for{" "}
         <span style={{ fontWeight: "bold" }}>

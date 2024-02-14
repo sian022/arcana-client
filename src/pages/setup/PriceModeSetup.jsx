@@ -188,7 +188,7 @@ function PriceModeSetup() {
       ) : (
         <CommonTable
           mapData={data?.priceMode}
-          editable
+          includeActions
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
@@ -243,7 +243,7 @@ function PriceModeSetup() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

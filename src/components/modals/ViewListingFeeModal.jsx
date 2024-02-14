@@ -320,7 +320,7 @@ function ViewListingFeeModal({
             open={isApproveConfirmOpen}
             onYes={handleApprove}
             isLoading={isApproveLoading}
-            noIcon
+            question
           >
             Are you sure you want to approve listing fee for{" "}
             <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

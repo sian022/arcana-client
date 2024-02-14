@@ -27,7 +27,7 @@ function CommonTable({
   excludeKeysDisplay,
   tableHeads,
   customOrderKeys,
-  editable,
+  includeActions,
   archivable,
   onEdit,
   onArchive,
@@ -144,7 +144,7 @@ function CommonTable({
 
   const uppercaseKeys = ["storeType"];
 
-  if ((editable || archivable) && !tableHeadsList.includes("Actions")) {
+  if ((includeActions || archivable) && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
@@ -343,7 +343,7 @@ function CommonTable({
                     );
                   })}
 
-                  {(editable || archivable) && (
+                  {(includeActions || archivable) && (
                     <TableCell
                       sx={{
                         position: "sticky",

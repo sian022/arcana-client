@@ -193,7 +193,7 @@ function Department() {
         <CommonTable
           mapData={data?.department}
           excludeKeysDisplay={excludeKeysDisplay}
-          editable
+          includeActions
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
@@ -228,7 +228,7 @@ function Department() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

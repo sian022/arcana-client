@@ -28,7 +28,7 @@ function RoleTable({
   mapData,
   excludeKeys,
   tableHeads,
-  editable,
+  includeActions,
   archivable,
   onEdit,
   onArchive,
@@ -77,7 +77,7 @@ function RoleTable({
       .map((key) => transformKey(key));
   }
 
-  if ((editable || archivable) && !tableHeadsList.includes("Actions")) {
+  if ((includeActions || archivable) && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
@@ -110,7 +110,7 @@ function RoleTable({
                     }
                     return <TableCell key={k}>{item[keys]}</TableCell>;
                   })}
-                  {(editable || archivable) && (
+                  {(includeActions || archivable) && (
                     <TableCell>
                       <CommonActions
                         onEdit={onEdit}

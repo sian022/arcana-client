@@ -24,7 +24,7 @@ function ProductsTable({
   excludeKeys,
   excludeKeysDisplay,
   tableHeads,
-  editable,
+  includeActions,
   archivable,
   onEdit,
   onArchive,
@@ -100,7 +100,7 @@ function ProductsTable({
       .map((key) => transformKey(key));
   }
 
-  if ((editable || archivable) && !tableHeadsList.includes("Actions")) {
+  if ((includeActions || archivable) && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
@@ -177,7 +177,7 @@ function ProductsTable({
                       </TableCell>
                     );
                   })}
-                  {(editable || archivable) && (
+                  {(includeActions || archivable) && (
                     <TableCell>
                       <CommonActions
                         onEdit={onEdit}

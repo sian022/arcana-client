@@ -35,6 +35,7 @@ import { otherExpensesRegApi } from "../features/otherExpenses/api/otherExpenses
 import { priceModeSetupApi } from "../features/setup/api/priceModeSetupApi";
 import { priceModeItemsApi } from "../features/setup/api/priceModeItemsApi";
 import { salesTransactionApi } from "../features/sales-transaction/api/salesTransactionApi";
+import { specialDiscountApi } from "../features/special-discount/api/specialDiscountApi";
 
 export const store = configureStore({
   reducer: {
@@ -73,6 +74,7 @@ export const store = configureStore({
     [priceModeSetupApi.reducerPath]: priceModeSetupApi.reducer,
     [priceModeItemsApi.reducerPath]: priceModeItemsApi.reducer,
     [salesTransactionApi.reducerPath]: salesTransactionApi.reducer,
+    [specialDiscountApi.reducerPath]: specialDiscountApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -105,6 +107,7 @@ export const store = configureStore({
       priceModeSetupApi.middleware,
       priceModeItemsApi.middleware,
       salesTransactionApi.middleware,
+      specialDiscountApi.middleware,
     ]),
 });
 

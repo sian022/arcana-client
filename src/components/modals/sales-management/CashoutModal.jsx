@@ -220,7 +220,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
         open={isConfirmOpen}
         onYes={handleSubmit(onSubmit)}
         onClose={onConfirmClose}
-        noIcon
+        question
       >
         Confirm cashout of transaction?
       </CommonDialog>

@@ -250,7 +250,7 @@ function VariableDiscount() {
           excludeKeysDisplay={excludeKeysDisplay}
           pesoArray={pesoArray}
           percentageArray={percentageArray}
-          // editable
+          // includeActions
           archivable
           // onEdit={handleEditOpen}
           // onArchive={handleArchiveOpen}
@@ -429,7 +429,7 @@ function VariableDiscount() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to delete amount range{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

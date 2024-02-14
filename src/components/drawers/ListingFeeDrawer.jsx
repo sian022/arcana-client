@@ -657,7 +657,7 @@ function ListingFeeDrawer({
         onYes={handleSubmit(onListingFeeSubmit)}
         // isLoading={updateListingFee ? isUpdateLoading : isAddLoading}
         isLoading={editMode ? isUpdateLoading : isAddLoading}
-        noIcon
+        question
       >
         Confirm {editMode ? "update" : "adding"} of listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

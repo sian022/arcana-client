@@ -194,7 +194,7 @@ function MeatType() {
         <CommonTable
           mapData={data?.meatTypes}
           excludeKeysDisplay={excludeKeysDisplay}
-          editable
+          includeActions
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
@@ -229,7 +229,7 @@ function MeatType() {
         open={isArchiveOpen}
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
-        noIcon={!status}
+        question={!status}
         isLoading={isArchiveLoading}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}

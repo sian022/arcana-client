@@ -285,7 +285,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isDeleteLoading}
-        // noIcon={!status}
+        // question={!status}
       >
         Are you sure you want to remove price change of <br />
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

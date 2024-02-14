@@ -292,7 +292,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
             open={isApproveConfirmOpen}
             onYes={handleApprove}
             isLoading={isApproveLoading}
-            noIcon
+            question
           >
             Are you sure you want to approve other expenses for{" "}
             <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

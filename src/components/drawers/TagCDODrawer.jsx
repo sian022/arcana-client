@@ -157,7 +157,7 @@ function TagCDODrawer({ editMode, open, onClose }) {
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onTagSubmit)}
         isLoading={isTagLoading}
-        noIcon
+        question
       >
         Confirm tagging of CDO for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

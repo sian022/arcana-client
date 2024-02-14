@@ -536,7 +536,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
         open={isConfirmOpen}
         onClose={onConfirmClose}
         onYes={direct ? handleReleaseSave : handleReleaseSubmit}
-        noIcon
+        question
         isLoading={isLoading}
       >
         Confirm {direct && "save"} release freebies for{" "}
@@ -562,7 +562,7 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
         open={isRedirectRegisterOpen}
         onClose={onRedirectRegisterClose}
         onYes={handleRedirectRegisterYes}
-        noIcon
+        question
       >
         Continue to register{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
-import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
 import PageHeaderAddTabs from "../../components/PageHeaderAddTabs";
@@ -241,11 +240,6 @@ function DirectRegistration() {
           addTitle="Register Direct"
         />
 
-        {/* <SearchFilterMixin
-          setSearch={setSearch}
-          selectOptions={selectOptions}
-          setSelectValue={setOrigin}
-        /> */}
         <SearchVoidFilterMixin
           setSearch={setSearch}
           selectOptions={selectOptions}
@@ -268,7 +262,7 @@ function DirectRegistration() {
             setPage={setPage}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
-            editable
+            includeActions
             onView={onViewOpen}
             onHistory={onHistoryOpen}
             // onArchive={true}

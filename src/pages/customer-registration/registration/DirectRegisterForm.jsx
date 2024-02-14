@@ -891,6 +891,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                     <Typography className="register__title">
                       Customer's Information
                     </Typography>
+
                     <Box className="register__firstRow__customerInformation__row">
                       <Controller
                         control={control}
@@ -927,6 +928,56 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                         error={errors?.emailAddress}
                       />
                     </Box>
+                  </Box>
+
+                  <Box className="register__firstRow__tinNumber">
+                    <Typography className="register__title">
+                      TIN Number
+                    </Typography>
+
+                    <Controller
+                      control={control}
+                      name={"tinNumber"}
+                      render={({ field: { onChange, onBlur, value, ref } }) => {
+                        const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
+                        // let format = "###-###-###-###";
+                        let format = "###-###-###";
+
+                        if (formattedValue.length <= 3) {
+                          format = "####";
+                        } else if (formattedValue.length <= 6) {
+                          format = "###-####";
+                        }
+                        //  else if (formattedValue.length <= 9) {
+                        //   format = "###-###-####";
+                        // }
+
+                        return (
+                          <PatternFormat
+                            format={format}
+                            label="TIN Number"
+                            type="text"
+                            size="small"
+                            customInput={TextField}
+                            autoComplete="off"
+                            allowNegative={false}
+                            valueIsNumericString
+                            decimalScale={0}
+                            onValueChange={(e) => {
+                              onChange(e.value);
+                            }}
+                            onBlur={onBlur}
+                            value={value || ""}
+                            // required
+                            helperText={errors?.tinNumber?.message}
+                            error={!!errors?.tinNumber}
+                          />
+                        );
+                      }}
+                    />
+                  </Box>
+
+                  <Box className="register__firstRow__customerInformation">
                     <Box className="register__firstRow__customerInformation__row">
                       <Controller
                         name="dateOfBirth"
@@ -1003,52 +1054,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                         }}
                       />
                     </Box>
-                  </Box>
-                  <Box className="register__firstRow__tinNumber">
-                    <Typography className="register__title">
-                      TIN Number
-                    </Typography>
-
-                    <Controller
-                      control={control}
-                      name={"tinNumber"}
-                      render={({ field: { onChange, onBlur, value, ref } }) => {
-                        const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
-                        // let format = "###-###-###-###";
-                        let format = "###-###-###";
-
-                        if (formattedValue.length <= 3) {
-                          format = "####";
-                        } else if (formattedValue.length <= 6) {
-                          format = "###-####";
-                        }
-                        //  else if (formattedValue.length <= 9) {
-                        //   format = "###-###-####";
-                        // }
-
-                        return (
-                          <PatternFormat
-                            format={format}
-                            label="TIN Number"
-                            type="text"
-                            size="small"
-                            customInput={TextField}
-                            autoComplete="off"
-                            allowNegative={false}
-                            valueIsNumericString
-                            decimalScale={0}
-                            onValueChange={(e) => {
-                              onChange(e.value);
-                            }}
-                            onBlur={onBlur}
-                            value={value || ""}
-                            // required
-                            helperText={errors?.tinNumber?.message}
-                            error={!!errors?.tinNumber}
-                          />
-                        );
-                      }}
-                    />
                   </Box>
                 </Box>
                 <Box className="register__secondRow">
@@ -1700,7 +1705,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         onClose={onConfirmClose}
         // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
         isLoading={isAllApiLoading}
-        noIcon
+        question
       >
         Confirm {editMode ? "update" : "registration"} of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

@@ -313,7 +313,7 @@ function UserAccount() {
           mapData={data?.users}
           excludeKeysDisplay={excludeKeysDisplay}
           tableHeads={tableHeads}
-          editable
+          includeActions
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
@@ -577,7 +577,7 @@ function UserAccount() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isArchiveUserLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
@@ -591,7 +591,7 @@ function UserAccount() {
         onClose={onResetClose}
         onYes={onResetSubmit}
         isLoading={isResetLoading}
-        noIcon
+        question
       >
         Are you sure you want to reset password for{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

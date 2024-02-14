@@ -63,7 +63,6 @@ function ListingFee() {
   } = useDisclosure();
 
   //RTK Query
-
   const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
     Search: search,
     Status: true,
@@ -204,7 +203,7 @@ function ListingFee() {
             setRowsPerPage={setRowsPerPage}
             page={page}
             setPage={setPage}
-            editable
+            includeActions
             onView={onViewOpen}
             onEdit={listingFeeStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}

@@ -18,7 +18,7 @@ function CommonDialog({
   onClose,
   onYes,
   children,
-  noIcon,
+  question,
   customImageSource,
   isLoading,
   disableYes,
@@ -27,7 +27,6 @@ function CommonDialog({
   const handleYes = (e) => {
     e.preventDefault();
     onYes();
-    onClose();
   };
 
   return (
@@ -38,7 +37,7 @@ function CommonDialog({
         component="form"
         onSubmit={handleYes}
       >
-        {/* {!noIcon && (
+        {/* {!question && (
           <Box className="commonDialog__imageWrapper">
             <img
               src={customImageSource ? customImageSource : SecondaryAlert}
@@ -49,7 +48,7 @@ function CommonDialog({
 
         <Box
           className={
-            noIcon
+            question
               ? "commonDialog__imageWrapperQuestion"
               : "commonDialog__imageWrapper"
           }
@@ -58,7 +57,7 @@ function CommonDialog({
             src={
               customImageSource
                 ? customImageSource
-                : noIcon
+                : question
                 ? QuestionAlert
                 : // : SecondaryAlert
                   ErrorAlert

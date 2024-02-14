@@ -223,7 +223,7 @@ function Cluster() {
           <CommonTable
             mapData={data?.cluster}
             excludeKeysDisplay={excludeKeysDisplay}
-            editable
+            includeActions
             archivable
             onEdit={handleEditOpen}
             onArchive={handleArchiveOpen}
@@ -263,7 +263,7 @@ function Cluster() {
           onClose={onArchiveClose}
           onYes={onArchiveSubmit}
           isLoading={isArchiveLoading}
-          noIcon={!status}
+          question={!status}
         >
           Are you sure you want to {status ? "archive" : "restore"}{" "}
           <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

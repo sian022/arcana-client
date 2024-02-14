@@ -194,7 +194,7 @@ function ExpensesSetup() {
         <CommonTable
           mapData={data?.otherExpenses}
           excludeKeysDisplay={excludeKeysDisplay}
-          editable
+          includeActions
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
@@ -233,7 +233,7 @@ function ExpensesSetup() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

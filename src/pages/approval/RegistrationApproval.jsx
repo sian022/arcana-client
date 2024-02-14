@@ -172,7 +172,7 @@ function RegistrationApproval() {
             customOrderKeys={customOrderKeys}
             moreCompact
             moveNoDataUp
-            editable
+            includeActions
             onView={onViewOpen}
             onHistory={onHistoryOpen}
             page={page}

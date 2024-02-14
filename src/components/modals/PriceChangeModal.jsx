@@ -359,7 +359,7 @@ function PriceChangeModal({ ...props }) {
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onSubmit)}
-        noIcon
+        question
         isLoading={isPriceChangeLoading}
       >
         Are you sure you want to submit price changes for{" "}

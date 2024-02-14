@@ -321,7 +321,7 @@ function ForReleasing() {
             mapData={data?.requestedProspect}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
-            editable
+            includeActions
             onView={handleEditOpen}
             onCancelFreebies={onFreebieCancelOpen}
             onUpdateFreebies={onFreebieFormOpen}
@@ -706,7 +706,7 @@ function ForReleasing() {
         onClose={onConfirmClose}
         onYes={handleSubmit(onDrawerSubmit)}
         isLoading={drawerMode === "add" ? isAddLoading : isEditLoading}
-        noIcon
+        question
       >
         Are you sure you want to {drawerMode == "add" ? "add" : "update"}{" "}
         prospect{" "}
@@ -735,7 +735,7 @@ function ForReleasing() {
         open={isFreebieConfirmOpen}
         onClose={onFreebieConfirmClose}
         onYes={handleFreebieFormYes}
-        noIcon
+        question
       >
         Continue to add freebie for {newProspectName || "new prospect"}?
       </CommonDialog>

@@ -195,7 +195,7 @@ function ProductCategory() {
         <CommonTable
           mapData={data?.result}
           excludeKeysDisplay={excludeKeysDisplay}
-          editable
+          includeActions
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
@@ -234,7 +234,7 @@ function ProductCategory() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

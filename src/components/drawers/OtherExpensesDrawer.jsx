@@ -522,7 +522,7 @@ function OtherExpensesDrawer({
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onExpensesSubmit)}
         isLoading={editMode ? isUpdateLoading : isAddLoading}
-        noIcon
+        question
       >
         Confirm {editMode ? "update" : "adding"} of other expenses for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

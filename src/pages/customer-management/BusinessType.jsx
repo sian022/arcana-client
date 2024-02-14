@@ -196,7 +196,7 @@ function BusinessType() {
           mapData={data?.storeTypes}
           excludeKeysDisplay={excludeKeysDisplay}
           tableHeads={tableHeads}
-          editable
+          includeActions
           archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
@@ -233,7 +233,7 @@ function BusinessType() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

@@ -146,7 +146,7 @@ function Released() {
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
-            editable
+            includeActions
             onRegularRegister={
               registrationStatus !== "Voided" && onRegisterOpen
             }

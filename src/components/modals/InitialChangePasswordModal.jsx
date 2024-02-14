@@ -214,7 +214,7 @@ function InitialChangePasswordModal({ ...otherProps }) {
         onClose={onConfirmClose}
         open={isConfirmOpen}
         onYes={handleSubmit(onSubmit)}
-        noIcon
+        question
         isLoading={isLoading}
       >
         Are you sure you want to change password?

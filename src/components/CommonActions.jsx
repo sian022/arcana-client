@@ -406,7 +406,7 @@ function CommonActions({
             }
           >
             <Attachment />
-            Attach CI
+            CI Attachment
           </MenuItem>
         )}
 

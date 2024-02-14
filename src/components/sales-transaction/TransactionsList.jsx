@@ -78,7 +78,7 @@ function TransactionsList({ setTransactionsMode }) {
               }}
               // sx={{ ml: "30px", height: "100%" }}
             >
-              <KeyboardDoubleArrowLeft sx={{ fontSize: "32px" }} />
+              <KeyboardDoubleArrowLeft sx={{ fontSize: "1.6rem" }} />
             </IconButton>
 
             <Typography className="transactionsList__header__left__title">
@@ -146,7 +146,7 @@ function TransactionsList({ setTransactionsMode }) {
           tableHeads={tableHeads}
           mapData={dummyTransactionsData}
           pesoArray={pesoArray}
-          editable
+          includeActions
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}

@@ -167,7 +167,7 @@ function ListingFeeApproval() {
             setRowsPerPage={setRowsPerPage}
             page={page}
             setPage={setPage}
-            editable
+            includeActions
             onView={onViewOpen}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}

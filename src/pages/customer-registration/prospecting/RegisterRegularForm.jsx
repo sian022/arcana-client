@@ -617,6 +617,54 @@ function RegisterRegularForm({ open, onClose }) {
                     {...register("emailAddress")}
                   />
                 </Box>
+              </Box>
+
+              <Box className="register__firstRow__tinNumber">
+                <Typography className="register__title">TIN Number</Typography>
+
+                <Controller
+                  control={control}
+                  name={"tinNumber"}
+                  render={({ field: { onChange, onBlur, value, ref } }) => {
+                    const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
+                    // let format = "###-###-###-###";
+                    let format = "###-###-###";
+
+                    if (formattedValue.length <= 3) {
+                      format = "####";
+                    } else if (formattedValue.length <= 6) {
+                      format = "###-####";
+                    }
+                    //  else if (formattedValue.length <= 9) {
+                    //   format = "###-###-####";
+                    // }
+
+                    return (
+                      <PatternFormat
+                        format={format}
+                        label="TIN Number"
+                        type="text"
+                        size="small"
+                        customInput={TextField}
+                        autoComplete="off"
+                        allowNegative={false}
+                        valueIsNumericString
+                        decimalScale={0}
+                        onValueChange={(e) => {
+                          onChange(e.value);
+                        }}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        // required
+                        helperText={errors?.tinNumber?.message}
+                        error={!!errors?.tinNumber}
+                      />
+                    );
+                  }}
+                />
+              </Box>
+
+              <Box className="register__firstRow__customerInformation">
                 <Box className="register__firstRow__customerInformation__row">
                   <Controller
                     name="birthDate"
@@ -643,21 +691,6 @@ function RegisterRegularForm({ open, onClose }) {
                       </LocalizationProvider>
                     )}
                   />
-
-                  {/* <TextField
-                    label="Date of Birth"
-                    size="small"
-                    autoComplete="off"
-                    required
-                    type="date"
-                    className="register__textField"
-                    {...register("birthDate")}
-                    helperText={errors?.birthDate?.message}
-                    error={errors?.birthDate}
-                    InputLabelProps={{
-                      shrink: true, // This will make the label always appear on top.
-                    }}
-                  /> */}
 
                   <Controller
                     control={control}
@@ -707,72 +740,7 @@ function RegisterRegularForm({ open, onClose }) {
                       );
                     }}
                   />
-                  {/* <TextField
-                    label="Phone Number"
-                    type="number"
-                    size="small"
-                    autoComplete="off"
-                    required
-                    value={selectedRowData?.phoneNumber ?? ""}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Typography sx={{ color: "#9E9E9E" }}>+63</Typography>
-                        </InputAdornment>
-                      ),
-                      // onInput: handlePhoneNumberInput,
-                    }}
-                    disabled
-                    className="register__textField"
-                    // {...register("phoneNumber")}
-                    // helperText={errors?.phoneNumber?.message}
-                    // error={errors?.phoneNumber}
-                  /> */}
                 </Box>
-              </Box>
-              <Box className="register__firstRow__tinNumber">
-                <Typography className="register__title">TIN Number</Typography>
-
-                <Controller
-                  control={control}
-                  name={"tinNumber"}
-                  render={({ field: { onChange, onBlur, value, ref } }) => {
-                    const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
-                    // let format = "###-###-###-###";
-                    let format = "###-###-###";
-
-                    if (formattedValue.length <= 3) {
-                      format = "####";
-                    } else if (formattedValue.length <= 6) {
-                      format = "###-####";
-                    }
-                    //  else if (formattedValue.length <= 9) {
-                    //   format = "###-###-####";
-                    // }
-
-                    return (
-                      <PatternFormat
-                        format={format}
-                        label="TIN Number"
-                        type="text"
-                        size="small"
-                        customInput={TextField}
-                        autoComplete="off"
-                        allowNegative={false}
-                        valueIsNumericString
-                        decimalScale={0}
-                        onValueChange={(e) => {
-                          onChange(e.value);
-                        }}
-                        onBlur={onBlur}
-                        value={value || ""}
-                        // required
-                        helperText={errors?.tinNumber?.message}
-                        error={!!errors?.tinNumber}
-                      />
-                    );
-                  }}
-                />
               </Box>
             </Box>
             <Box className="register__secondRow">
@@ -1246,7 +1214,7 @@ function RegisterRegularForm({ open, onClose }) {
         onClose={onConfirmClose}
         // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
         isLoading={isAllApiLoading}
-        noIcon
+        question
       >
         Confirm registration of{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
@@ -1278,7 +1246,7 @@ function RegisterRegularForm({ open, onClose }) {
         open={isRedirectListingFeeOpen}
         onClose={onRedirectListingFeeClose}
         onYes={handleRedirectListingFeeYes}
-        noIcon
+        question
       >
         Continue to listing fee for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

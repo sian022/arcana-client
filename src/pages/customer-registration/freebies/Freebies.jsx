@@ -183,7 +183,7 @@ function Freebies() {
             setRowsPerPage={setRowsPerPage}
             page={page}
             setPage={setPage}
-            editable
+            includeActions
             onView={onViewOpen}
             tableHeads={tableHeads}
             pesoArray={pesoArray}

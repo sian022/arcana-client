@@ -754,7 +754,7 @@ function ForFreebies() {
         onClose={onConfirmClose}
         onYes={handleSubmit(onDrawerSubmit)}
         isLoading={drawerMode === "add" ? isAddLoading : isEditLoading}
-        noIcon
+        question
       >
         Are you sure you want to {drawerMode == "add" ? "add" : "update"}{" "}
         prospect{" "}
@@ -783,7 +783,7 @@ function ForFreebies() {
         open={isFreebieConfirmOpen}
         onClose={onFreebieConfirmClose}
         onYes={handleFreebieFormYes}
-        noIcon
+        question
       >
         Continue to add freebie for{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

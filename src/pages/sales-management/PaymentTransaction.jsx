@@ -122,7 +122,7 @@ function PaymentTransaction() {
           moreCompact
           tableHeads={tableHeads}
           pesoArray={pesoArray}
-          editable
+          includeActions
           archivable
           // onEdit={handleEditOpen}
           // onArchive={handleArchiveOpen}
@@ -160,7 +160,7 @@ function PaymentTransaction() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         isLoading={isArchiveLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>

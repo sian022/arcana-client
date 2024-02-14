@@ -338,7 +338,7 @@ function FreebieFormDirect({
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onFreebieSubmit)}
         isLoading={updateFreebies ? isUpdateLoading : isRequestLoading}
-        noIcon
+        question
       >
         Confirm request of freebies for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
@@ -367,7 +367,7 @@ function FreebieFormDirect({
         open={isRedirectReleaseOpen}
         onClose={onRedirectReleaseClose}
         onYes={handleRedirectReleaseYes}
-        noIcon
+        question
       >
         Continue to release freebies for{" "}
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>

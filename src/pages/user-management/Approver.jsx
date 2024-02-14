@@ -295,7 +295,7 @@ function Approver() {
         <CommonTable
           mapData={approversPerModuleData}
           excludeKeysDisplay={excludeKeysDisplay}
-          editable
+          includeActions
           onManageApprovers={handleEditOpen}
           page={page}
           setPage={setPage}
@@ -459,7 +459,7 @@ function Approver() {
         onClose={onArchiveClose}
         onYes={onArchiveSubmit}
         // isLoading={isArchiveLoading}
-        noIcon={!status}
+        question={!status}
       >
         Are you sure you want to {status ? "archive" : "restore"}{" "}
         <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
