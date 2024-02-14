@@ -157,8 +157,16 @@ function ViewRegistrationDetailsModal({
   const handleNext = () => {
     if (activeTab === "Personal Info") {
       setActiveTab("Terms and Conditions");
-    } else if (activeTab === "Terms and Conditions") {
+    } else if (
+      activeTab === "Terms and Conditions" &&
+      selectedRowData?.terms !== "COD"
+    ) {
       setActiveTab("Attachments");
+    } else if (
+      activeTab === "Terms and Conditions" &&
+      selectedRowData?.terms === "COD"
+    ) {
+      setActiveTab("Freebies");
     } else if (activeTab === "Attachments") {
       setActiveTab("Freebies");
     } else if (activeTab === "Freebies") {
@@ -173,8 +181,10 @@ function ViewRegistrationDetailsModal({
       setActiveTab("Personal Info");
     } else if (activeTab === "Attachments") {
       setActiveTab("Terms and Conditions");
-    } else if (activeTab === "Freebies") {
+    } else if (activeTab === "Freebies" && selectedRowData?.terms !== "COD") {
       setActiveTab("Attachments");
+    } else if (activeTab === "Freebies" && selectedRowData?.terms === "COD") {
+      setActiveTab("Terms and Conditions");
     } else if (activeTab === "Listing Fee") {
       setActiveTab("Freebies");
     } else if (activeTab === "Other Expenses") {

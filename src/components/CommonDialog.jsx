@@ -27,6 +27,7 @@ function CommonDialog({
   const handleYes = (e) => {
     e.preventDefault();
     onYes();
+    onClose();
   };
 
   return (

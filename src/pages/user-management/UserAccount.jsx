@@ -99,6 +99,8 @@ function UserAccount() {
 
   const tableHeads = ["Full ID Number", "Full Name", "Username", "Role Name"];
 
+  const disableActions = ["edit", "archive", "resetPassword"];
+
   //React Hook Form
   const {
     handleSubmit,
@@ -316,10 +318,9 @@ function UserAccount() {
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           onResetPassword={onResetOpen}
-          // onViewCluster={true}
-          // disableActions={
-          //   selectedRowData?.roleName !== "CDO" && ["viewCluster"]
-          // }
+          disableActions={
+            selectedRowData?.fullname === "Admin" && disableActions
+          }
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}

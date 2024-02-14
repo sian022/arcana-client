@@ -71,7 +71,7 @@
       // @media (max-width: 1024px) {
       //   width: 100px;
       // }
-      transition: transform 0.4s, right 0.4s, left 0.4s;
+      transition: transform 0.4s, left 0.4s;
       width: 150px;
       position: absolute;
       // right: 65px;
@@ -79,7 +79,6 @@
 
       &.small {
         transform: scale(0.5);
-        right: -40px;
         left: -30px;
       }
     }

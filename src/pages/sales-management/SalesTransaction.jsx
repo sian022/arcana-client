@@ -41,6 +41,8 @@ function SalesTransaction() {
   const [transactionsMode, setTransactionsMode] = useState(
     sessionStorage.getItem("transactionsMode") || false
   );
+  const [isLoading, setIsLoading] = useState(false);
+
   const [currentTime, setCurrentTime] = useState(
     moment().format("M/D/YY h:m a")
   );
@@ -86,14 +88,17 @@ function SalesTransaction() {
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsForPOSQuery();
 
-  const { data: productData, isFetching: isProductFetching } =
-    useGetAllItemsByPriceModeIdQuery({
-      Status: true,
-      Page: 1,
-      PageSize: 1000,
-      Search: search,
-      PriceModeId: watch("clientId") ? watch("clientId").priceModeId : -1,
-    });
+  const {
+    data: productData,
+    isFetching: isProductFetching,
+    isSuccess: isProductSuccess,
+  } = useGetAllItemsByPriceModeIdQuery({
+    Status: true,
+    Page: 1,
+    PageSize: 1000,
+    Search: search,
+    PriceModeId: watch("clientId") ? watch("clientId").priceModeId : -1,
+  });
 
   //Functions
   const debouncedSetSearch = debounce((value) => {
@@ -141,6 +146,17 @@ function SalesTransaction() {
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []); // Empty dependency array to run effect only once on mount
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 200);
+
+    // Clear the timeout if the component unmounts before the timeout
+    return () => clearTimeout(timeoutId);
+  }, [watch("clientId")]);
 
   return (
     <>
@@ -255,7 +271,7 @@ function SalesTransaction() {
                 </Box>
 
                 <Box className="salesTransaction__body__itemsForm__itemsList">
-                  {isProductFetching ? (
+                  {isProductFetching || isLoading ? (
                     <Box className="salesTransaction__body__itemsForm__itemsList__skeletons">
                       {Array.from({ length: 7 }).map((_, index) => (
                         <Skeleton

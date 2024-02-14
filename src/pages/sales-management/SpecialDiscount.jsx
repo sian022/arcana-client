@@ -6,10 +6,7 @@ import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonTable from "../../components/CommonTable";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import {
-  dummySpecialDiscountData,
-  dummyTableData,
-} from "../../utils/DummyData";
+import { dummySpecialDiscountData } from "../../utils/DummyData";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import { specialDiscountSchema } from "../../schema/schema";
@@ -21,7 +18,7 @@ import useSnackbar from "../../hooks/useSnackbar";
 import CommonDialog from "../../components/CommonDialog";
 
 function SpecialDiscount() {
-  const [drawerMode, setDrawerMode] = useState("add");
+  const [modalMode, setModalMode] = useState("add");
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [approvalStatus, setApprovalStatus] = useState("Under review");
@@ -128,6 +125,16 @@ function SpecialDiscount() {
     onFormClose();
   };
 
+  const handleAddOpen = () => {
+    setModalMode("add");
+    onFormOpen();
+  };
+
+  const handleEditOpen = () => {
+    setModalMode("edit");
+    onFormOpen();
+  };
+
   return (
     <>
       <Box className="commonPageLayout">
@@ -177,7 +184,7 @@ function SpecialDiscount() {
         onSubmit={onConfirmOpen}
         // onSubmit={handleSubmit(onSubmit)}
         width="600px"
-        disableSubmit={!isValid || !isDirty || watch("specialDiscount") === 0}
+        disableSubmit={!isValid || !isDirty || watch("discount") === 0}
         // height="520px"
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -214,15 +221,6 @@ function SpecialDiscount() {
                   error={errors?.clientId}
                 />
               )}
-              onChange={(_, value) => {
-                if (watch("clientId") && watch("listingItems")[0]?.itemId) {
-                  onClientConfirmationOpen();
-                  setConfirmationValue(value);
-                  return watch("clientId");
-                } else {
-                  return value;
-                }
-              }}
             />
           </Box>
 
@@ -233,7 +231,7 @@ function SpecialDiscount() {
 
             <Controller
               control={control}
-              name={"specialDiscount"}
+              name={"discount"}
               render={({ field: { onChange, onBlur, value, ref } }) => (
                 <NumericFormat
                   label="Special Discount"
@@ -271,7 +269,7 @@ function SpecialDiscount() {
                     return true;
                   }}
                   suffix="%"
-                  // disabled={!watch("clientId")}
+                  disabled={!watch("clientId")}
                 />
               )}
             />
