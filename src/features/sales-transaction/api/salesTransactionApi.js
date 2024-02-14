@@ -18,15 +18,39 @@ export const salesTransactionApi = createApi({
   endpoints: (builder) => ({
     getAllClientsForPOS: builder.query({
       query: (params) => ({
-        params: params,
         url: "/clients/pos",
         method: "GET",
+        params,
       }),
       providesTags: ["Clients"],
       transformResponse: (response) => response.value,
       transformErrorResponse: (response) => response.value,
     }),
+
+    getAllSalesTransaction: builder.query({
+      query: (params) => ({
+        url: "/sales-transaction",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Sales Transaction"],
+      transformResponse: (response) => response.value,
+      transformErrorResponse: (response) => response.value,
+    }),
+
+    uploadCiAttachment: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/sales-transaction/${id}/upload`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Sales Transaction"],
+    }),
   }),
 });
 
-export const { useGetAllClientsForPOSQuery } = salesTransactionApi;
+export const {
+  useGetAllClientsForPOSQuery,
+  useUploadCiAttachmentMutation,
+  useGetAllSalesTransactionQuery,
+} = salesTransactionApi;

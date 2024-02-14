@@ -20,14 +20,14 @@ function ViewTransactionModal({ ...props }) {
 
   return (
     <CommonModal closeTopRight {...props} width="1000px">
-      <Typography
+      {/* <Typography
         fontWeight="700"
         fontSize="1.1rem"
         width="100%"
         textAlign="center"
       >
         Transaction Slip
-      </Typography>
+      </Typography> */}
 
       <Box className="viewTransactionSlipModal">
         <Box className="viewTransactionSlipModal__header">

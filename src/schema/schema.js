@@ -630,7 +630,6 @@ export const requestExpensesSchema = {
   },
 };
 
-//Sales Module
 export const advancePaymentSchema = {
   schema: yup.object({
     clientId: yup.object().required("Business Name is required"),
