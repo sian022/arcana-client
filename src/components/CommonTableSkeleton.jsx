@@ -25,14 +25,14 @@ function CommonTableSkeleton({
         component={Paper}
         className="tableSuperContainer__tableContainer"
         sx={{
-          height: lesserCompact
-            ? "calc(100vh - 280px)"
+          height: expanded
+            ? "calc(100vh - 220px)"
+            : lesserCompact
+            ? "calc(100vh - 282px)"
             : lessCompact
             ? "calc(100vh - 290px)"
             : compact
             ? "calc(100vh - 330px)"
-            : expanded
-            ? "calc(100vh - 220px)"
             : null,
           overflow: "hidden",
         }}

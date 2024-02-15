@@ -264,7 +264,6 @@ function DirectRegistration() {
             customOrderKeys={customOrderKeys}
             onView={onViewOpen}
             onHistory={onHistoryOpen}
-            // onArchive={true}
             status={status}
             onEdit={
               userDetails?.roleName === "Admin"
