@@ -5,7 +5,6 @@ import {
   createFilterOptions,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -24,7 +23,7 @@ import {
   usePatchResetPasswordMutation,
 } from "../../features/user-management/api/userAccountApi";
 import { useGetAllEmployeesQuery } from "../../features/user-management/api/sedarApi";
-import { Person, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Person } from "@mui/icons-material";
 import { useGetAllUserRolesQuery } from "../../features/user-management/api/userRoleApi";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,6 +33,8 @@ import {
 } from "../../features/setup/api/clusterApi";
 import ControlledAutocompleteMultiple from "../../components/ControlledAutocompleteMultiple";
 import PageHeaderFilterAdd from "../../components/PageHeaderFilterAdd";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function UserAccount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -43,12 +44,13 @@ function UserAccount() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
 
   const dispatch = useDispatch();
+  const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  // Drawer Disclosures
+
+  // Disclosures
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
@@ -66,42 +68,15 @@ function UserAccount() {
     onOpen: onResetOpen,
     onClose: onResetClose,
   } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
-  } = useDisclosure();
+  // Disclosures End
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-    "users",
-    "password",
-    "permission",
-    "companyName",
-    "departmentName",
-    "locationName",
-    "cluster",
-    "clusterId",
-  ];
-
   const tableHeads = ["Full ID Number", "Full Name", "Username", "Role Name"];
-
+  const customOrderKeys = ["fullIdNo", "fullname", "username", "roleName"];
   const disableActions = ["edit", "archive", "resetPassword"];
+  // Constants End
 
-  //React Hook Form
+  // React Hook Form
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -109,16 +84,16 @@ function UserAccount() {
     watch,
     reset,
     control,
-    getValues,
   } = useForm({
     resolver: yupResolver(userAccountSchema.schema),
     mode: "onChange",
     defaultValues: userAccountSchema.defaultValues,
   });
+  // React Hook Form End
 
-  //RTK Query
+  // RTK Query: Main CRUD
   const [postUser, { isLoading: isAddUserLoading }] = usePostUserMutation();
-  const { data, isLoading, isFetching } = useGetAllUsersQuery({
+  const { data, isFetching } = useGetAllUsersQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -128,20 +103,25 @@ function UserAccount() {
   const [putUser, { isLoading: isEditUserLoading }] = usePutUserMutation();
   const [patchUserStatus, { isLoading: isArchiveUserLoading }] =
     usePatchUserStatusMutation();
+  // RTK Query: Main CRUD End
+
+  // RTK Query: Others
   const [patchResetPassword, { isLoading: isResetLoading }] =
     usePatchResetPasswordMutation();
+  // RTK Query: Others End
 
+  // RTK Query: Autocomplete Datas
   const { data: userRoleData } = useGetAllUserRolesQuery({ Status: true });
   const { data: sedarData = [], isLoading: isSedarLoading } =
     useGetAllEmployeesQuery();
   const { data: clusterData, isLoading: isClusterLoading } =
     useGetAllClustersQuery({ Status: true });
+  // RTK Query: Autocomplete Datas End
 
-  //Drawer Functions
+  // Functions: Submit
   const onDrawerSubmit = async (data) => {
     const {
       userRoleId: { id },
-      // clusters,
       clusterId,
       ...restData
     } = data;
@@ -152,37 +132,24 @@ function UserAccount() {
           ...restData,
           userRoleId: id,
           clusterId: clusterId?.id,
-          // clusters: clusters?.map((item) => ({
-          //   clusterId: item.id,
-          // })),
         }).unwrap();
-        setSnackbarMessage("User Account added successfully");
+
+        showSnackbar("User Account added successfully", "success");
       } else if (drawerMode === "edit") {
         await putUser({
           ...restData,
           userRoleId: id,
           clusterId: clusterId?.id,
-          // clusters: clusters?.map((item) => ({
-          //   clusterId: item.clusterId || item.id,
-          // })),
         }).unwrap();
-        setSnackbarMessage("User Account updated successfully");
+        showSnackbar("User Account updated successfully", "success");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
       dispatch(clusterApi.util.invalidateTags(["Cluster"]));
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} user account`
-        );
-      }
-
-      onErrorOpen();
+      console.log(error);
+      showSnackbar(handleCatchErrorMessage(error), "error");
     }
   };
 
@@ -190,22 +157,28 @@ function UserAccount() {
     try {
       await patchUserStatus(selectedId).unwrap();
       onArchiveClose();
-      setSnackbarMessage(
-        `User Account ${status ? "archived" : "restored"} successfully`
+      showSnackbar(
+        `User Account ${status ? "archived" : "restored"} successfully`,
+        "success"
       );
-      onSuccessOpen();
     } catch (error) {
       console.log(error);
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving user account");
-      }
-
-      onErrorOpen();
+      showSnackbar(handleCatchErrorMessage(error), "error");
     }
   };
 
+  const onResetSubmit = async () => {
+    try {
+      await patchResetPassword(selectedRowData?.id).unwrap();
+      showSnackbar("Password reset successfully", "success");
+    } catch (error) {
+      showSnackbar(handleCatchErrorMessage(error), "error");
+    }
+    onResetClose();
+  };
+  // Functions: Submit End
+
+  // Functions: Open & Close
   const handleAddOpen = () => {
     setDrawerMode("add");
     onDrawerOpen();
@@ -214,15 +187,10 @@ function UserAccount() {
   const handleEditOpen = (editData) => {
     setDrawerMode("edit");
     onDrawerOpen();
-
-    // Object.keys(editData).forEach((key) => {
-    //   setValue(key, editData[key]);
-    // });
     setValue("id", editData.id);
     setValue("fullIdNo", editData.fullIdNo);
     setValue("fullname", editData.fullname);
     setValue("username", editData.username);
-    // setValue("password", editData.password);
     setValue(
       "userRoleId",
       userRoleData?.userRoles?.find(
@@ -233,10 +201,6 @@ function UserAccount() {
       "clusterId",
       clusterData?.cluster?.find((item) => item.cluster === editData.cluster)
     );
-    // setValue(
-    //   "clusters",
-    //   editData.clusters?.map((item) => item)
-    // );
   };
 
   const handleArchiveOpen = (id) => {
@@ -249,32 +213,16 @@ function UserAccount() {
     onDrawerClose();
     setSelectedId("");
   };
+  // Functions: Open & Close End
 
-  //Misc Functions
+  // Other Functions
   const filterOptions = createFilterOptions({
     matchFrom: "any",
     limit: 50,
   });
+  // Other Functions End
 
-  const onResetSubmit = async () => {
-    try {
-      await patchResetPassword(selectedRowData?.id).unwrap();
-      setSnackbarMessage("Password reset successfully");
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error resetting password");
-      }
-
-      onErrorOpen();
-    }
-
-    onResetClose();
-  };
-
-  //UseEffect
+  // useEffect
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
@@ -285,51 +233,69 @@ function UserAccount() {
 
   useEffect(() => {
     if (watch("userRoleId")?.roleName !== "CDO") {
-      // setValue("clusters", []);
       setValue("clusterId", null);
     }
   }, [watch("userRoleId")]);
+  // useEffect End
 
   return (
-    <Box className="commonPageLayout">
-      <PageHeaderFilterAdd
-        pageTitle={
-          <>
-            User Account <Person />
-          </>
-        }
-        onOpen={handleAddOpen}
-        setSearch={setSearch}
-        setStatus={setStatus}
-        filterChoices={userRoleData?.userRoles || []}
-        choiceLabel="roleName"
-        choiceValue="id"
-        setFilter={setRoleFilter}
-      />
-      {isFetching ? (
-        <CommonTableSkeleton />
-      ) : (
-        <CommonTable
-          mapData={data?.users}
-          excludeKeysDisplay={excludeKeysDisplay}
-          tableHeads={tableHeads}
-          includeActions
-          archivable
-          onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
-          onResetPassword={onResetOpen}
-          disableActions={
-            selectedRowData?.fullname === "Admin" && disableActions
+    <>
+      <Box className="commonPageLayout">
+        {/* Page Header */}
+        <PageHeaderFilterAdd
+          pageTitle={
+            <>
+              User Account <Person />
+            </>
           }
-          page={page}
-          setPage={setPage}
-          rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
-          count={count}
-          status={status}
+          onOpen={handleAddOpen}
+          setSearch={setSearch}
+          setStatus={setStatus}
+          filterChoices={userRoleData?.userRoles || []}
+          choiceLabel="roleName"
+          choiceValue="id"
+          setFilter={setRoleFilter}
         />
-      )}
+        {/* Page Header End*/}
 
+        {/* Main Table */}
+        {isFetching ? (
+          <CommonTableSkeleton />
+        ) : (
+          <CommonTable
+            //Data Props
+            mapData={data?.users}
+            tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
+            //Data Props End
+
+            //Action Props
+            includeActions
+            onEdit={handleEditOpen}
+            onArchive={handleArchiveOpen}
+            onResetPassword={onResetOpen}
+            disableActions={
+              selectedRowData?.fullname === "Admin" && disableActions
+            }
+            //Action Props End
+
+            //Pagination Props
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            count={count}
+            //Pagination Props End
+
+            //Other Props
+            status={status}
+            //Other Props End
+          />
+        )}
+        {/* Main Table End */}
+      </Box>
+
+      {/* Drawer Form */}
       <CommonDrawer
         open={isDrawerOpen}
         onClose={handleDrawerClose}
@@ -339,17 +305,12 @@ function UserAccount() {
           watch("userRoleId")?.roleName === "CDO"
             ? !isValid || !watch("clusterId")
             : !isValid
-          // watch("userRoleId")?.roleName === "CDO"
-          //   ? !isValid || watch("clusters")?.length === 0
-          //   : !isValid
         }
         isLoading={drawerMode === "add" ? isAddUserLoading : isEditUserLoading}
       >
         {drawerMode === "add" ? (
           <Autocomplete
-            selectOnFocus
             clearOnBlur
-            handleHomeEndKeys
             options={sedarData}
             loading={isSedarLoading}
             disableClearable
@@ -357,15 +318,11 @@ function UserAccount() {
             getOptionLabel={(option) =>
               option.general_info.full_id_number_full_name
             }
-            // getOptionDisabled={(option) =>
-            //   data?.users?.some(
-            //     (item) => item?.itemId?.itemCode === option.itemCode
-            //   )
-            // }
             renderInput={(params) => (
               <TextField {...params} size="small" label="Employee ID" />
             )}
             onChange={(_, value) => {
+              //Auto generate username based on first name and last name
               const generateUsername = (firstName, lastName) => {
                 var part1 = firstName
                   .split(" ")
@@ -375,6 +332,8 @@ function UserAccount() {
                 var part2 = lastName.replace(/\s/g, "").toLowerCase();
                 return part1 + part2;
               };
+
+              //Autofill values based on selected employee data
               setValue("fullIdNo", value.general_info.full_id_number);
               setValue("fullname", value.general_info.full_name);
               setValue("location", value.unit_info.location_name);
@@ -387,6 +346,8 @@ function UserAccount() {
                   value.general_info.last_name
                 )
               );
+
+              //Initial password is same as the username
               setValue(
                 "password",
                 generateUsername(
@@ -397,6 +358,7 @@ function UserAccount() {
             }}
           />
         ) : (
+          //For viewing only in edit mode
           <TextField
             label="Employee ID"
             size="small"
@@ -404,7 +366,6 @@ function UserAccount() {
             value={watch("fullIdNo")}
           />
         )}
-
         <Controller
           control={control}
           name={"fullname"}
@@ -422,56 +383,58 @@ function UserAccount() {
           )}
         />
 
+        {/* FISTO Account Title */}
         {/* <Controller
-          control={control}
-          name={"location"}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <TextField
-              size="small"
-              label="Location"
-              autoComplete="off"
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-              inputRef={ref}
-              disabled
-            />
-          )}
-        />
+         control={control}
+         name={"location"}
+         render={({ field: { onChange, onBlur, value, ref } }) => (
+           <TextField
+             size="small"
+             label="Location"
+             autoComplete="off"
+             onChange={onChange}
+             onBlur={onBlur}
+             value={value}
+             inputRef={ref}
+             disabled
+           />
+         )}
+       />
 
-        <Controller
-          control={control}
-          name={"department"}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <TextField
-              size="small"
-              label="Department"
-              autoComplete="off"
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-              inputRef={ref}
-              disabled
-            />
-          )}
-        />
+       <Controller
+         control={control}
+         name={"department"}
+         render={({ field: { onChange, onBlur, value, ref } }) => (
+           <TextField
+             size="small"
+             label="Department"
+             autoComplete="off"
+             onChange={onChange}
+             onBlur={onBlur}
+             value={value}
+             inputRef={ref}
+             disabled
+           />
+         )}
+       />
 
-        <Controller
-          control={control}
-          name={"company"}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <TextField
-              size="small"
-              label="Company"
-              autoComplete="off"
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-              inputRef={ref}
-              disabled
-            />
-          )}
-        /> */}
+       <Controller
+         control={control}
+         name={"company"}
+         render={({ field: { onChange, onBlur, value, ref } }) => (
+           <TextField
+             size="small"
+             label="Company"
+             autoComplete="off"
+             onChange={onChange}
+             onBlur={onBlur}
+             value={value}
+             inputRef={ref}
+             disabled
+           />
+         )}
+       /> */}
+        {/* FISTO Account Title End*/}
 
         <Controller
           control={control}
@@ -489,38 +452,6 @@ function UserAccount() {
             />
           )}
         />
-
-        {/* <Controller
-          control={control}
-          name={"password"}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <TextField
-              size="small"
-              label="Password"
-              autoComplete="off"
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-              inputRef={ref}
-              type={showPassword ? "string" : "password"}
-              helperText={errors?.password?.message}
-              error={errors?.password}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => {
-                        setShowPassword(!showPassword);
-                      }}
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-        /> */}
 
         <ControlledAutocomplete
           name={"userRoleId"}
@@ -540,24 +471,14 @@ function UserAccount() {
           )}
         />
 
+        {/* If role is CDO, require cluster selection */}
         {watch("userRoleId")?.roleName === "CDO" && (
           <ControlledAutocompleteMultiple
             name={"clusterId"}
-            // multiple
-            // filterSelectedOptions
             control={control}
             options={clusterData?.cluster || []}
             getOptionLabel={(option) => option.cluster}
             disableClearable
-            // getOptionDisabled={(option) => {
-            //   const clusters = watch("clusters");
-            //   const isClusterRepeating = Array.isArray(clusters)
-            //     ? clusters.some((item) => item.cluster === option.cluster)
-            //     : false;
-
-            //   return isClusterRepeating;
-            // }}
-            // getOptionDisabled={(option) => option?.userId !== null}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <TextField
@@ -571,6 +492,7 @@ function UserAccount() {
           />
         )}
       </CommonDrawer>
+      {/* Drawer Form End */}
 
       <CommonDialog
         open={isArchiveOpen}
@@ -599,18 +521,7 @@ function UserAccount() {
         </span>
         ?
       </CommonDialog>
-
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
-    </Box>
+    </>
   );
 }
 

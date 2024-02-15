@@ -1,23 +1,26 @@
-import { RouterProvider } from "react-router-dom";
 import "./App.css";
-import { ThemeProvider } from "@emotion/react";
+import "./assets/styles/common.styles.scss";
 import { theme } from "./theme/theme";
 import { router } from "./navigation/router";
-import "./assets/styles/common.styles.scss";
+import { RouterProvider } from "react-router-dom";
+import { ThemeProvider } from "@emotion/react";
 import { AppProvider } from "./context/AppContext";
 import { AttachmentsProvider } from "./context/AttachmentsContext";
 import { DirectReleaseProvider } from "./context/DirectReleaseContext";
+import { ConfirmProvider } from "./context/ConfirmContext";
 
 function App() {
   return (
     <AppProvider>
-      <AttachmentsProvider>
-        <DirectReleaseProvider>
-          <ThemeProvider theme={theme}>
-            <RouterProvider router={router} />
-          </ThemeProvider>
-        </DirectReleaseProvider>
-      </AttachmentsProvider>
+      <ConfirmProvider>
+        <AttachmentsProvider>
+          <DirectReleaseProvider>
+            <ThemeProvider theme={theme}>
+              <RouterProvider router={router} />
+            </ThemeProvider>
+          </DirectReleaseProvider>
+        </AttachmentsProvider>
+      </ConfirmProvider>
     </AppProvider>
   );
 }

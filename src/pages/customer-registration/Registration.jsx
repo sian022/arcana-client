@@ -154,7 +154,7 @@ function DirectRegistration() {
     "Contact Number",
     "Business Type",
     "Cluster",
-    "Requested By",
+    // "Requested By",
     "Origin",
   ];
 
@@ -164,7 +164,7 @@ function DirectRegistration() {
     "phoneNumber",
     "storeType",
     "clusterName",
-    "requestedBy",
+    // "requestedBy",
     "origin",
   ];
 

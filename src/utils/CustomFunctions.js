@@ -184,3 +184,38 @@ export const formatPhoneNumber = (inputNumber) => {
     return inputNumber;
   }
 };
+
+//Error Handling
+export const handleCatchErrorMessage = (error) => {
+  if (error?.data?.error?.message) {
+    return error?.data?.error?.message;
+  } else if (error?.status === 400) {
+    return "Something went wrong with your request.";
+  } else if (error?.status === 401) {
+    return "Authentication required.";
+  } else if (error?.status === 403) {
+    return "You don't have permission for this.";
+  } else if (error?.status === 404) {
+    return "The requested resource couldn't be found.";
+  } else if (error?.status === 500) {
+    return "Something unexpected happened on our end.";
+  } else {
+    return "An unexpected error occurred";
+  }
+};
+
+export const handleCatchErrorMessageTest = (error) => {
+  if (error?.status === 400) {
+    return "Something went wrong with your request.";
+  } else if (error?.status === 401) {
+    return "Authentication required.";
+  } else if (error?.status === 403) {
+    return "You don't have permission for this.";
+  } else if (error?.status === 404) {
+    return "The requested resource couldn't be found.";
+  } else if (error?.status === 500) {
+    return "Something unexpected happened on our end.";
+  } else {
+    return "An unexpected error occurred";
+  }
+};

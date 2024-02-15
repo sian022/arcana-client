@@ -103,7 +103,7 @@ function ListingFee() {
     "Business Name",
     "Transaction Number",
     "Total Amount",
-    "Requested By",
+    // "Requested By",
   ];
 
   const customOrderKeys = [
@@ -111,7 +111,7 @@ function ListingFee() {
     "clientName",
     "listingFeeId",
     "total",
-    "requestedBy",
+    // "requestedBy",
   ];
 
   const pesoArray = ["total"];

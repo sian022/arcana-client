@@ -20,6 +20,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import ViewTransactionModal from "../modals/sales-management/ViewTransactionModal";
 import ViewAttachmentModal from "../modals/sales-management/ViewAttachmentModal";
 import { debounce } from "../../utils/CustomFunctions";
+import useConfirm from "../../hooks/useConfirm";
 
 function TransactionsList({ setTransactionsMode }) {
   const [search, setSearch] = useState("");
@@ -29,6 +30,9 @@ function TransactionsList({ setTransactionsMode }) {
   const [dateTo, setDateTo] = useState(moment());
   const [dateFromTemp, setDateFromTemp] = useState(moment());
   const [dateToTemp, setDateToTemp] = useState(moment());
+
+  // Hooks
+  const confirm = useConfirm();
 
   //Disclosures
   const {
@@ -134,7 +138,18 @@ function TransactionsList({ setTransactionsMode }) {
 
             <SecondaryButton
               size="medium"
-              onClick={handleSubmitDate}
+              // onClick={handleSubmitDate}
+              onClick={() => {
+                confirm({
+                  title: "Are you sure?",
+                  confirmationText: "Yes",
+                  cancellationText: "No",
+                  content: "Are you sure you want to apply the date filter?",
+                }).then(() => {
+                  setDateFrom(dateFromTemp);
+                  setDateTo(dateToTemp);
+                });
+              }}
               sx={{ ml: "10px", height: "100%" }}
             >
               <Search />

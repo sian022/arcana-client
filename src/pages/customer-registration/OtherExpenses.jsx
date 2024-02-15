@@ -103,7 +103,7 @@ function OtherExpenses() {
     "Owner's Name",
     "Transaction Number",
     "Total Amount",
-    "Requested By",
+    // "Requested By",
   ];
 
   const customOrderKeys = [
@@ -111,7 +111,7 @@ function OtherExpenses() {
     "ownersName",
     "id",
     "totalAmount",
-    "requestedBy",
+    // "requestedBy",
   ];
 
   const pesoArray = ["totalAmount"];

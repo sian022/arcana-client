@@ -24,6 +24,7 @@ import {
   useUpdateSpecialDiscountMutation,
   useVoidSpecialDiscountMutation,
 } from "../../features/special-discount/api/specialDiscountApi";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function SpecialDiscount() {
   const [modalMode, setModalMode] = useState("add");
@@ -159,13 +160,7 @@ function SpecialDiscount() {
       showSnackbar("Special discount added successfully", "success");
     } catch (error) {
       console.log(error);
-      if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
-      } else if (error?.status === 404) {
-        showSnackbar("404 Not Found", "error");
-      } else {
-        showSnackbar("Error adding special discount", "error");
-      }
+      showSnackbar(handleCatchErrorMessage(error), "error");
       onConfirmClose();
     }
   };
@@ -177,13 +172,14 @@ function SpecialDiscount() {
       onVoidClose();
     } catch (error) {
       console.log(error);
-      if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
-      } else if (error?.status === 404) {
-        showSnackbar("404 Not Found", "error");
-      } else {
-        showSnackbar("Error adding special discount", "error");
-      }
+      showSnackbar(handleCatchErrorMessage(error), "error");
+      // if (error?.data?.error?.message) {
+      //   showSnackbar(error?.data?.error?.message, "error");
+      // } else if (error?.status === 404) {
+      //   showSnackbar("404 Not Found", "error");
+      // } else {
+      //   showSnackbar("Error adding special discount", "error");
+      // }
       onVoidClose();
     }
   };
