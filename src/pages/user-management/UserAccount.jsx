@@ -45,7 +45,7 @@ function UserAccount() {
 
   // Hooks
   const dispatch = useDispatch();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const confirm = useConfirm();
 
@@ -113,14 +113,20 @@ function UserAccount() {
           clusterId: clusterId?.id,
         }).unwrap();
 
-        showSnackbar("User Account added successfully", "success");
+        snackbar({
+          message: "User Account added successfully",
+          variant: "success",
+        });
       } else if (editMode) {
         await putUser({
           ...restData,
           userRoleId: id,
           clusterId: clusterId?.id,
         }).unwrap();
-        showSnackbar("User Account updated successfully", "success");
+        snackbar({
+          message: "User Account updated successfully",
+          variant: "success",
+        });
       }
 
       onDrawerClose();
@@ -128,7 +134,7 @@ function UserAccount() {
       dispatch(clusterApi.util.invalidateTags(["Cluster"]));
     } catch (error) {
       console.log(error);
-      showSnackbar(handleCatchErrorMessage(error), "error");
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
@@ -148,12 +154,15 @@ function UserAccount() {
         callback: () => patchUserStatus(selectedRowData?.id).unwrap(),
       });
 
-      showSnackbar(
-        `User Account ${status ? "archived" : "restored"} successfully`
-      );
+      snackbar({
+        message: `User Account ${
+          status ? "archived" : "restored"
+        } successfully`,
+        variant: "success",
+      });
     } catch (error) {
       if (error?.isConfirmed) {
-        showSnackbar(handleCatchErrorMessage(error), "error");
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
     }
   };
@@ -174,10 +183,10 @@ function UserAccount() {
         callback: () => patchResetPassword(selectedRowData?.id).unwrap(),
       });
 
-      showSnackbar("Password reset successfully", "success");
+      snackbar({ message: "Password reset successfully", variant: "success" });
     } catch (error) {
       if (error?.isConfirmed) {
-        showSnackbar(handleCatchErrorMessage(error), "error");
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
     }
   };

@@ -31,7 +31,7 @@ function ListingFee() {
   const [count, setCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const { notifications, setModuleName } = useContext(AppContext);
@@ -128,16 +128,19 @@ function ListingFee() {
         selectedRowData?.listingFeeId
       ).unwrap();
 
-      showSnackbar("Listing Fee cancelled successfully", "success");
+      snackbar({
+        message: "Listing Fee cancelled successfully",
+        variant: "success",
+      });
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
       dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       onDeleteClose();
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error cancelling listing fee", "error");
+        snackbar({ message: "Error cancelling listing fee", variant: "error" });
       }
     }
   };

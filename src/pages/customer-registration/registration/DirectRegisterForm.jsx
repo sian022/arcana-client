@@ -91,7 +91,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
     setRequirementsMode,
   } = useContext(AttachmentsContext);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const [latitude, setLatitude] = useState(15.0944152);
   const [longitude, setLongitude] = useState(120.6075827);
@@ -358,17 +358,16 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
 
-      showSnackbar(
-        `Client ${editMode ? "updated" : "registered"}  successfully`,
-        "success"
-      );
+      snackbar({
+        message: `Client ${editMode ? "updated" : "registered"}  successfully`,
+        variant: "success",
+      });
       onConfirmClose();
       onClose();
       handleResetForms();
 
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
-      // showSnackbar(error.data.messages[0], "error");
       setIsAllApiLoading(false);
       onConfirmClose();
 
@@ -378,12 +377,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       dispatch(resetFreebies());
 
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar(
-          `Error ${editMode ? "updating" : "registering"} client`,
-          "error"
-        );
+        snackbar({
+          message: `Error ${editMode ? "updating" : "registering"} client`,
+          variant: "error",
+        });
       }
       console.log(error);
     }
@@ -587,9 +586,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
           }).unwrap();
         } catch (error) {
           if (error?.data?.error?.message) {
-            showSnackbar(error?.data?.error?.message, "error");
+            snackbar({
+              message: error?.data?.error?.message,
+              variant: "error",
+            });
           } else {
-            showSnackbar("Client already exists", "error");
+            snackbar({ message: "Client already exists", variant: "error" });
           }
           return;
         }

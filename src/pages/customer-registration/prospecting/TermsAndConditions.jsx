@@ -29,7 +29,7 @@ import { NumericFormat } from "react-number-format";
 
 function TermsAndConditions({ direct, editMode, storeType }) {
   const dispatch = useDispatch();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const [selectedValues, setSelectedValues] = useState([]);
 
@@ -68,7 +68,10 @@ function TermsAndConditions({ direct, editMode, storeType }) {
       parsedValue !== "" &&
       parsedValue !== null
     ) {
-      showSnackbar("Value must be between 1% and 10%", "error");
+      snackbar({
+        message: "Value must be between 1% and 10%",
+        variant: "error",
+      });
       return;
     }
 
@@ -91,21 +94,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
       })
     );
   };
-
-  // const handleFixedDiscountChange = (e) => {
-  //   if (e.target.value < 0 || e.target.value > 10) {
-  //     showSnackbar("Maximum of 10% only", "error");
-  //     return;
-  //   }
-  //   dispatch(
-  //     setTermsAndConditions({
-  //       property: "fixedDiscount",
-  //       value: {
-  //         discountPercentage: parseInt(e.target.value),
-  //       },
-  //     })
-  //   );
-  // };
 
   useEffect(() => {
     if (termsAndConditions["terms"] !== 3) {

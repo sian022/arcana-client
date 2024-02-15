@@ -13,7 +13,7 @@ function AddItemModal({ onSubmit, ...otherProps }) {
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const quantityRef = useRef();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   //Functions
   const handleClose = () => {
@@ -24,7 +24,10 @@ function AddItemModal({ onSubmit, ...otherProps }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (quantity == 0) {
-      showSnackbar("Quantity should be higher than 0", "error");
+      snackbar({
+        message: "Quantity should be higher than 0",
+        variant: "error",
+      });
     } else {
       onSubmit(selectedRowData, quantity);
       handleClose();

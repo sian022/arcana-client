@@ -43,8 +43,6 @@ function ListingFeeDrawer({
   updateListingFee,
   redirect,
 }) {
-  const { showSnackbar } = useSnackbar();
-
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
   const [confirmationValue, setConfirmationValue] = useState(null);

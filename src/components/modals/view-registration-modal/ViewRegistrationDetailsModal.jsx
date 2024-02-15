@@ -52,7 +52,7 @@ function ViewRegistrationDetailsModal({
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const dispatch = useDispatch();
 
@@ -198,15 +198,15 @@ function ViewRegistrationDetailsModal({
         // id: selectedRowData?.id,
         id: selectedRowData?.requestId,
       }).unwrap();
-      showSnackbar("Client approved successfully", "success");
+      snackbar({ message: "Client approved successfully", variant: "success" });
       onApproveConfirmClose();
       handleClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error approving client", "error");
+        snackbar({ message: "Error approving client", variant: "error" });
       }
     }
   };
@@ -223,14 +223,14 @@ function ViewRegistrationDetailsModal({
         id: selectedRowData?.requestId,
         reason,
       }).unwrap();
-      showSnackbar("Client rejected successfully", "success");
+      snackbar({ message: "Client rejected successfully", variant: "success" });
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
       dispatch(listingFeeApi.util.invalidateTags(["Listing Fee"]));
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error rejecting client", "error");
+        snackbar({ message: "Error rejecting client", variant: "error" });
       }
     }
 

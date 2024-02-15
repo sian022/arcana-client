@@ -23,7 +23,7 @@ import moment from "moment";
 import { usePostAddPriceChangeMutation } from "../../features/setup/api/priceModeItemsApi";
 
 function PriceChangeDrawer({ editMode, open, onClose }) {
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -58,15 +58,18 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
         ),
         price: data?.price,
       }).unwrap();
-      showSnackbar("Price Change added successfully", "success");
+      snackbar({
+        variant: "success",
+        message: "Price Change added successfully",
+      });
       onClose();
       reset();
       // onConfirmSubmitClose();
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ variant: "error", message: error?.data?.error?.message });
       } else {
-        showSnackbar("Error adding Price Change", "error");
+        snackbar({ variant: "error", message: "Error adding Price Change" });
       }
     }
   };

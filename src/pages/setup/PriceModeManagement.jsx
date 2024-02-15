@@ -39,7 +39,7 @@ function PriceModeManagement() {
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const dispatch = useDispatch();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   //Disclosures
   const {
@@ -150,12 +150,18 @@ function PriceModeManagement() {
       dispatch(productsApi.util.resetApiState());
 
       handleDrawerClose();
-      showSnackbar("Product successfully tagged to price mode", "success");
+      snackbar({
+        message: "Product successfully tagged to price mode",
+        variant: "success",
+      });
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error tagging product to price mode", "error");
+        snackbar({
+          message: "Error tagging product to price mode",
+          variant: "error",
+        });
       }
     }
   };
@@ -165,13 +171,13 @@ function PriceModeManagement() {
       await updatePriceModeItemStatus({
         id: selectedRowData?.priceModeItemId,
       }).unwrap();
-      showSnackbar("Item archived successfully", "success");
+      snackbar({ message: "Item archived successfully", variant: "success" });
       onArchiveClose();
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error archiving item", "error");
+        snackbar({ message: "Error archiving item", variant: "error" });
       }
       onArchiveClose();
     }
@@ -182,14 +188,14 @@ function PriceModeManagement() {
       await deletePriceModeItem({
         id: selectedRowData?.priceModeItemId,
       }).unwrap();
-      showSnackbar("Item deleted successfully", "success");
+      snackbar({ message: "Item deleted successfully", variant: "success" });
       onDeleteClose();
       dispatch(productsApi.util.resetApiState());
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error deleting item", "error");
+        snackbar({ message: "Error deleting item", variant: "error" });
       }
       onDeleteClose();
     }

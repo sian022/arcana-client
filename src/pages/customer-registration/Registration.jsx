@@ -33,7 +33,7 @@ function DirectRegistration() {
 
   const [voidConfirmBox, setVoidConfirmBox] = useState("");
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const userDetails = useSelector((state) => state.login.userDetails);
 
@@ -179,15 +179,15 @@ function DirectRegistration() {
     try {
       await patchUpdateRegistrationStatus(selectedRowData?.id).unwrap();
       onArchiveClose();
-      showSnackbar(
-        `Client ${status ? "archived" : "restored"} successfully`,
-        "success"
-      );
+      snackbar({
+        message: `Client ${status ? "archived" : "restored"} successfully`,
+        variant: "success",
+      });
     } catch (error) {
       if (error?.data?.messages) {
-        showSnackbar(error?.data?.messages[0], "error");
+        snackbar({ message: error?.data?.messages[0], variant: "error" });
       } else {
-        showSnackbar("Error archiving client", "error");
+        snackbar({ message: "Error archiving client", variant: "error" });
       }
     }
   };
@@ -196,12 +196,12 @@ function DirectRegistration() {
     try {
       await putVoidClientRegistration(selectedRowData?.id).unwrap();
       onVoidClose();
-      showSnackbar("Client voided successfully", "success");
+      snackbar({ message: "Client voided successfully", variant: "success" });
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error voiding client", "error");
+        snackbar({ message: "Error voiding client", variant: "error" });
       }
     }
   };

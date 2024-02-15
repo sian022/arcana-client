@@ -33,7 +33,7 @@ import { useNavigate } from "react-router-dom";
 function InitialChangePasswordModal({ ...otherProps }) {
   const { onClose, ...noOnClose } = otherProps;
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -70,7 +70,7 @@ function InitialChangePasswordModal({ ...otherProps }) {
   const onSubmit = async (data) => {
     if (data["newPassword"] !== data["confirmNewPassword"]) {
       // onConfirmClose();
-      return showSnackbar("Passwords do not match", "error");
+      return snackbar({ message: "Passwords do not match", variant: "error" });
     }
 
     const { newPassword } = data;
@@ -86,7 +86,10 @@ function InitialChangePasswordModal({ ...otherProps }) {
         oldPassword: userDetails.username,
         newPassword,
       }).unwrap();
-      showSnackbar("Password changed successfully", "success");
+      snackbar({
+        message: "Password changed successfully",
+        variant: "success",
+      });
 
       dispatch(setUserDetails(userDetails));
       dispatch(setFullname(userDetails.fullname));
@@ -99,9 +102,9 @@ function InitialChangePasswordModal({ ...otherProps }) {
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error changing password", "error");
+        snackbar({ message: "Error changing password", variant: "error" });
       }
     }
 

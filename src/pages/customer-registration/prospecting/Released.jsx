@@ -32,7 +32,7 @@ function Released() {
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
   );
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -98,14 +98,14 @@ function Released() {
     try {
       await patchVoidProspect(selectedRowData?.id).unwrap();
       onVoidClose();
-      showSnackbar(`Prospect voided successfully`, "success");
+      snackbar({ message: `Prospect voided successfully`, message: "success" });
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error voiding prospect", "error");
+        snackbar({ message: "Error voiding prospect", variant: "error" });
       }
     }
   };

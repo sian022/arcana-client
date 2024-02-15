@@ -34,7 +34,7 @@ function AdvancePayment() {
   const [count, setCount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   //React Hook Form
   const {
@@ -131,15 +131,18 @@ function AdvancePayment() {
 
     try {
       console.log(transformedData);
-      showSnackbar("Advance Payment added successfully!", "success");
+      snackbar({
+        message: "Advance Payment added successfully!",
+        variant: "success",
+      });
       handleFormClose();
       onConfirmClose();
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error adding Advance Payment", "error");
+        snackbar({ message: "Error adding Advance Payment", variant: "error" });
       }
       onConfirmClose();
     }

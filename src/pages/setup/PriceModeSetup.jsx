@@ -32,7 +32,7 @@ function PriceModeSetup() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const dispatch = useDispatch();
@@ -98,22 +98,30 @@ function PriceModeSetup() {
     try {
       if (drawerMode === "add") {
         await postPriceMode(data).unwrap();
-        showSnackbar("Price Mode added successfully", "success");
+        snackbar({
+          message: "Price Mode added successfully",
+          variant: "success",
+        });
       } else if (drawerMode === "edit") {
         await putPriceMode({ id: selectedRowData?.id, ...data }).unwrap();
-        showSnackbar("Price Mode updated successfully", "success");
+        snackbar({
+          message: "Price Mode updated successfully",
+          variant: "success",
+        });
       }
 
       onDrawerClose();
       reset();
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} Price Mode`,
-          "error"
-        );
+        snackbar({
+          message: `Error ${
+            drawerMode === "add" ? "adding" : "updating"
+          } Price Mode`,
+          variant: "error",
+        });
       }
     }
   };
@@ -122,16 +130,16 @@ function PriceModeSetup() {
     try {
       await patchPrideModeStatus(selectedId).unwrap();
       onArchiveClose();
-      showSnackbar(
-        `Price Mode ${status ? "archived" : "restored"} successfully`,
-        "success"
-      );
+      snackbar({
+        message: `Price Mode ${status ? "archived" : "restored"} successfully`,
+        variant: "success",
+      });
       dispatch(priceModeItemsApi.util.invalidateTags(["Price Mode Items"]));
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error archiving Price Mode", "error");
+        snackbar({ message: "Error archiving Price Mode", variant: "error" });
       }
       onArchiveClose();
     }

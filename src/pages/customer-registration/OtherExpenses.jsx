@@ -31,7 +31,7 @@ function OtherExpenses() {
 
   const [voidConfirmBox, setVoidConfirmBox] = useState("");
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const { notifications, setModuleName } = useContext(AppContext);
@@ -126,12 +126,18 @@ function OtherExpenses() {
     try {
       await patchVoidExpenseRequest(selectedRowData?.requestId).unwrap();
       onDeleteClose();
-      showSnackbar("Expense request cancelled successfully", "success");
+      snackbar({
+        message: "Expense request cancelled successfully",
+        variant: "success",
+      });
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error voiding expense request", "error");
+        snackbar({
+          message: "Error voiding expense request",
+          variant: "error",
+        });
       }
     }
   };

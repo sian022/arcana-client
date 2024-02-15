@@ -42,7 +42,7 @@ function ViewListingFeeModal({
   const [confirmReason, setConfirmReason] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const dispatch = useDispatch();
 
@@ -100,15 +100,18 @@ function ViewListingFeeModal({
         // id: selectedRowData?.approvalId,
         id: selectedRowData?.requestId,
       }).unwrap();
-      showSnackbar("Listing Fee approved successfully", "success");
+      snackbar({
+        message: "Listing Fee approved successfully",
+        variant: "success",
+      });
       onApproveConfirmClose();
       onClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error approving listing fee", "error");
+        snackbar({ message: "Error approving listing fee", variant: "error" });
       }
     }
   };
@@ -120,15 +123,18 @@ function ViewListingFeeModal({
         id: selectedRowData?.requestId,
         reason: reason,
       }).unwrap();
-      showSnackbar("Listing Fee rejected successfully", "success");
+      snackbar({
+        message: "Listing Fee rejected successfully",
+        variant: "success",
+      });
       handleRejectConfirmClose();
       onClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error rejecting listing fee", "error");
+        snackbar({ message: "Error rejecting listing fee", variant: "error" });
       }
     }
   };

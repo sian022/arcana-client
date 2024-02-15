@@ -23,7 +23,6 @@ import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { Cancel } from "@mui/icons-material";
 import SecondaryButton from "../SecondaryButton";
 import { NumericFormat } from "react-number-format";
-import ManageProductsSkeleton from "../skeletons/ManageProductsSkeleton";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
@@ -34,7 +33,7 @@ function PriceChangeModal({ ...props }) {
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   //Disclosures
   const {
@@ -90,12 +89,15 @@ function PriceChangeModal({ ...props }) {
       }).unwrap();
       onConfirmSubmitClose();
       handleFormClose();
-      showSnackbar("Price change submitted successfully", "success");
+      snackbar({
+        message: "Price change submitted successfully",
+        variant: "success",
+      });
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error adding price change", "error");
+        snackbar({ message: "Error adding price change", variant: "error" });
       }
     }
   };
@@ -325,10 +327,10 @@ function PriceChangeModal({ ...props }) {
                   sx={{ color: "error.main" }}
                   onClick={() => {
                     fields.length <= 1
-                      ? showSnackbar(
-                          "At least one product is required",
-                          "error"
-                        )
+                      ? snackbar({
+                          message: "At least one product is required",
+                          variant: "error",
+                        })
                       : remove(index);
                   }}
                   tabIndex={-1}

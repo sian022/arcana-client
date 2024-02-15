@@ -24,7 +24,7 @@ import useSnackbar from "../../hooks/useSnackbar";
 import { SupervisorAccount } from "@mui/icons-material";
 
 function UserRole() {
-  const { showSnackbar, closeSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -147,10 +147,10 @@ function UserRole() {
         `User Role ${status ? "archived" : "restored"} successfully`
       );
       // onSuccessOpen();
-      showSnackbar(
-        `User Role ${status ? "archived" : "restored"} successfully`,
-        "success"
-      );
+      snackbar({
+        message: `User Role ${status ? "archived" : "restored"} successfully`,
+        variant: "success",
+      });
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);

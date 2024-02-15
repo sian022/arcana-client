@@ -33,7 +33,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
   const [manageMode, setManageMode] = useState(false);
   const [futurePriceIndex, setFuturePriceIndex] = useState(0);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -65,14 +65,17 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         id: priceChangeData?.futurePriceChanges?.[futurePriceIndex]?.id,
       }).unwrap();
 
-      showSnackbar("Price change successfully removed!", "success");
+      snackbar({
+        message: "Price change successfully removed!",
+        variant: "success",
+      });
 
       onArchiveClose();
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error deleting price change", "error");
+        snackbar({ message: "Error deleting price change", variant: "error" });
       }
     }
   };

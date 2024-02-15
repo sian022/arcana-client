@@ -23,7 +23,7 @@ import { decryptString } from "../../utils/CustomFunctions";
 function ChangePasswordModal({ ...otherProps }) {
   const { onClose, ...noOnClose } = otherProps;
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const [viewOldPassword, setViewOldPassword] = useState(false);
   const [viewNewPassword, setViewNewPassword] = useState(false);
@@ -56,7 +56,7 @@ function ChangePasswordModal({ ...otherProps }) {
   const onSubmit = async (data) => {
     if (data["newPassword"] !== data["confirmNewPassword"]) {
       onConfirmClose();
-      return showSnackbar("Passwords do not match", "error");
+      return snackbar({ message: "Passwords do not match", variant: "error" });
     }
 
     const { oldPassword, newPassword } = data;
@@ -71,14 +71,17 @@ function ChangePasswordModal({ ...otherProps }) {
         oldPassword,
         newPassword,
       }).unwrap();
-      showSnackbar("Password changed successfully", "success");
+      snackbar({
+        message: "Password changed successfully",
+        variant: "success",
+      });
       handleCloseModal();
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error changing password", "error");
+        snackbar({ message: "Error changing password", variant: "error" });
       }
     }
 

@@ -44,7 +44,7 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
   const [manageMode, setManageMode] = useState(false);
   const [CDOIndex, setCDOIndex] = useState(0);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -72,7 +72,7 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
       }).unwrap();
 
       // dispatch(setSelectedRow());
-      showSnackbar("CDO successfully untagged!", "success");
+      snackbar({ message: "CDO successfully untagged!", variant: "success" });
 
       // if (!isFetching) {
       //   dispatch(
@@ -83,9 +83,9 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
       onArchiveClose();
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error untagging CDO", "error");
+        snackbar({ message: "Error untagging CDO", variant: "error" });
       }
     }
   };

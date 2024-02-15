@@ -36,7 +36,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
   const [confirmReason, setConfirmReason] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const dispatch = useDispatch();
 
@@ -92,15 +92,18 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
       await putApproveExpenses({
         id: selectedRowData?.requestId,
       }).unwrap();
-      showSnackbar("Other Expenses approved successfully", "success");
+      snackbar({
+        message: "Other Expenses approved successfully",
+        variant: "success",
+      });
       onApproveConfirmClose();
       onClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error approving expenses", "error");
+        snackbar({ message: "Error approving expenses", variant: "error" });
       }
     }
   };
@@ -112,15 +115,18 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
         id: selectedRowData?.requestId,
         reason: reason,
       }).unwrap();
-      showSnackbar("Other Expenses rejected successfully", "success");
+      snackbar({
+        message: "Other Expenses rejected successfully",
+        variant: "success",
+      });
       handleRejectConfirmClose();
       onClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error rejecting expenses", "error");
+        snackbar({ message: "Error rejecting expenses", variant: "error" });
       }
     }
   };

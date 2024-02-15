@@ -12,7 +12,7 @@ import useDisclosure from "../../../hooks/useDisclosure";
 function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   const { onClose, open } = props;
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   //Disclosures
   const {
@@ -56,13 +56,16 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
       resetTransaction();
       handleClose();
       onConfirmClose();
-      showSnackbar("Transaction successfully added!", "success");
+      snackbar({
+        message: "Transaction successfully added!",
+        variant: "success",
+      });
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error adding transaction", "error");
+        snackbar({ message: "Error adding transaction", variant: "error" });
       }
       onConfirmClose();
     }

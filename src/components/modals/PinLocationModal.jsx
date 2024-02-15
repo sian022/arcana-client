@@ -20,7 +20,6 @@ function PinLocationModal({
   ...otherProps
 }) {
   const { onClose, ...noOnClose } = otherProps;
-  const { showSnackbar } = useSnackbar();
 
   const [markerPosition, setMarkerPosition] = useState({
     lat: initialLatitude || 0,

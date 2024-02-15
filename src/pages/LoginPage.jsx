@@ -37,7 +37,7 @@ import InitialChangePasswordModal from "../components/modals/InitialChangePasswo
 import Cookies from "js-cookie";
 
 function LoginPage() {
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -105,9 +105,9 @@ function LoginPage() {
     } catch (err) {
       console.log(err);
       if (err?.data?.error?.message) {
-        showSnackbar(err?.data?.error?.message, "error");
+        snackbar({ message: err?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error logging in", "error");
+        snackbar({ message: "Error logging in", variant: "error" });
       }
     }
   };

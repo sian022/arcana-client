@@ -178,12 +178,12 @@ function FreebieFormWithUser({
     onRedirectReleaseClose();
   };
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const onDirectFreebieSave = (data) => {
     if (hasDuplicateItemCodes(watch("freebies"))) {
       setSnackbarMessage("No duplicate freebies allowed");
-      showSnackbar("No duplicated freebies allowed", "error");
+      snackbar({ message: "No duplicated freebies allowed", variant: "error" });
       onConfirmSubmitClose();
       return;
     }
@@ -198,9 +198,9 @@ function FreebieFormWithUser({
   //Misc Functions
   const handleFreebieError = () => {
     if (fields.length === 1) {
-      showSnackbar("Must have at least 1 freebie", "error");
+      snackbar({ message: "Must have at least 1 freebie", variant: "error" });
     } else if (fields.length === 5) {
-      showSnackbar("Maximum of 5 freebies only", "error");
+      snackbar({ message: "Maximum of 5 freebies only", variant: "error" });
     }
   };
 

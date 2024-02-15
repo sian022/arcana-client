@@ -69,7 +69,7 @@ function RegisterRegularForm({ open, onClose }) {
     convertSignatureToBase64,
   } = useContext(AttachmentsContext);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const [latitude, setLatitude] = useState(15.0944152);
   const [longitude, setLongitude] = useState(120.6075827);
@@ -250,7 +250,10 @@ function RegisterRegularForm({ open, onClose }) {
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
 
-      showSnackbar("Client registered successfully", "success");
+      snackbar({
+        message: "Client registered successfully",
+        variant: "success",
+      });
       onConfirmClose();
       onClose();
       handleResetForms();
@@ -261,9 +264,9 @@ function RegisterRegularForm({ open, onClose }) {
     } catch (error) {
       setIsAllApiLoading(false);
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
-        showSnackbar("Error registering client", "error");
+        snackbar({ message: "Error registering client", variant: "error" });
       }
     }
   };
@@ -409,9 +412,9 @@ function RegisterRegularForm({ open, onClose }) {
         }).unwrap();
       } catch (error) {
         if (error?.data?.error?.message) {
-          showSnackbar(error?.data?.error?.message, "error");
+          snackbar({ message: error?.data?.error?.message, variant: "error" });
         } else {
-          showSnackbar("Client already exists", "error");
+          snackbar({ message: "Client already exists", variant: "error" });
         }
         return;
       }

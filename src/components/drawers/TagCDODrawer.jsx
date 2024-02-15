@@ -15,8 +15,6 @@ import { useGetAllUsersQuery } from "../../features/user-management/api/userAcco
 import { usePostTagUserInClusterMutation } from "../../features/setup/api/clusterApi";
 
 function TagCDODrawer({ editMode, open, onClose }) {
-  const { showSnackbar } = useSnackbar();
-
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   //Redux States

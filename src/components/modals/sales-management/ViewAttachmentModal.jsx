@@ -13,7 +13,7 @@ function ViewAttachmentModal({ ...props }) {
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const [uploadAttachment, setUploadAttachment] = useState(null);
   const [currentAttachment, setCurrentAttachment] = useState(null);
@@ -33,11 +33,11 @@ function ViewAttachmentModal({ ...props }) {
     } catch (error) {
       console.log(error);
       if (error?.data?.error?.message) {
-        showSnackbar(error?.data?.error?.message, "error");
+        snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else if (error?.status === 404) {
-        showSnackbar("404 Not Found", "error");
+        snackbar({ message: "0404 Not Found", variant: "error" });
       } else {
-        showSnackbar("Error uploading attachment", "error");
+        snackbar({ message: "Error uploading attachment", variant: "error" });
       }
     }
   };

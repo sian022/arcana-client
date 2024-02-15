@@ -37,7 +37,7 @@ function SpecialDiscount() {
   const [editMode, setEditMode] = useState(false);
 
   const { notifications } = useContext(AppContext);
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -157,10 +157,14 @@ function SpecialDiscount() {
 
       handleFormClose();
       onConfirmClose();
-      showSnackbar("Special discount added successfully", "success");
+
+      snackbar({
+        message: "Special discount added successfully",
+        variant: "success",
+      });
     } catch (error) {
       console.log(error);
-      showSnackbar(handleCatchErrorMessage(error), "error");
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       onConfirmClose();
     }
   };
@@ -168,18 +172,14 @@ function SpecialDiscount() {
   const onVoidSubmit = async () => {
     try {
       await voidSpecialDiscoubt({ id: selectedRowData?.id }).unwrap();
-      showSnackbar("Special discount voided successfully", "success");
+      snackbar({
+        message: "Special discount voided successfully",
+        variant: "success",
+      });
       onVoidClose();
     } catch (error) {
-      console.log(error);
-      showSnackbar(handleCatchErrorMessage(error), "error");
-      // if (error?.data?.error?.message) {
-      //   showSnackbar(error?.data?.error?.message, "error");
-      // } else if (error?.status === 404) {
-      //   showSnackbar("404 Not Found", "error");
-      // } else {
-      //   showSnackbar("Error adding special discount", "error");
-      // }
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+
       onVoidClose();
     }
   };
@@ -331,10 +331,10 @@ function SpecialDiscount() {
                     const { floatValue } = values;
                     // Check if the floatValue is greater than 10 and show a snackbar
                     if (floatValue != null && floatValue > 10) {
-                      showSnackbar(
-                        "Value should be between 1% and 10%",
-                        "error"
-                      );
+                      snackbar({
+                        message: "Value should be between 1% and 10%",
+                        variant: "error",
+                      });
                       return false;
                     }
                     return true;
