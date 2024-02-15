@@ -58,16 +58,8 @@ function UnitOfMeasurements() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-  ];
-
   const tableHeads = ["UOM Code", "UOM Description"];
+  const customOrderKeys = ["uomCode", "uomDescription"];
 
   //React Hook Form
   const {
@@ -192,7 +184,7 @@ function UnitOfMeasurements() {
       ) : (
         <CommonTable
           mapData={data?.uom}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
           archivable
           onEdit={handleEditOpen}

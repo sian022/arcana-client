@@ -58,17 +58,8 @@ function Company() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-    "users",
-  ];
-
   const tableHeads = ["Company"];
+  const customOrderKeys = ["companyName"];
 
   //React Hook Form
   const {
@@ -192,7 +183,7 @@ function Company() {
       ) : (
         <CommonTable
           mapData={data?.companies}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
           archivable
           onEdit={handleEditOpen}

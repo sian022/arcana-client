@@ -60,17 +60,7 @@ function ProductSubCategory() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-  ];
-
   const tableHeads = ["Product Sub Category", "Product Category"];
-
   const customOrderKeys = ["productSubCategoryName", "productCategoryName"];
 
   //React Hook Form

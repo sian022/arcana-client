@@ -58,14 +58,7 @@ function TermDays() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-  ];
+  const customOrderKeys = ["days"];
 
   //React Hook Form
   const {
@@ -191,9 +184,8 @@ function TermDays() {
       ) : (
         <CommonTable
           mapData={data?.termDays}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

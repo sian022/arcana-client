@@ -58,17 +58,8 @@ function Location() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-    "users",
-  ];
-
   const tableHeads = ["Location"];
+  const customOrderKeys = ["locationName"];
 
   //React Hook Form
   const {
@@ -193,7 +184,7 @@ function Location() {
       ) : (
         <CommonTable
           mapData={data?.result}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
           archivable
           onEdit={handleEditOpen}

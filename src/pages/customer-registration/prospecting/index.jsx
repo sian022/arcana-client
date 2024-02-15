@@ -45,7 +45,6 @@ function Prospect() {
 
   const tabComponents = {
     1: <ForFreebies />,
-    // 1: <ForFreebiesWithLocations />,
     2: <ForReleasing />,
     3: <Released />,
   };

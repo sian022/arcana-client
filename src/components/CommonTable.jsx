@@ -9,7 +9,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
@@ -24,7 +23,6 @@ import moment from "moment";
 function CommonTable({
   mt,
   mapData,
-  excludeKeysDisplay,
   tableHeads,
   customOrderKeys,
   includeActions,
@@ -133,13 +131,9 @@ function CommonTable({
   if (tableHeads) {
     tableHeadsList = tableHeads;
   } else {
-    tableHeadsList = (customOrderKeys || dataToMapKeys)
-      .filter(
-        (key) =>
-          // key !== "id"
-          !excludeKeysDisplay?.includes(key)
-      )
-      .map((key) => transformKey(key));
+    tableHeadsList = (customOrderKeys || dataToMapKeys).map((key) =>
+      transformKey(key)
+    );
   }
 
   const uppercaseKeys = ["storeType"];
@@ -204,13 +198,6 @@ function CommonTable({
                   }}
                 >
                   {(customOrderKeys || dataToMapKeys).map((keys, k) => {
-                    if (
-                      // keys === "id"
-                      excludeKeysDisplay?.includes(keys)
-                    ) {
-                      return null;
-                    }
-
                     if (keys === attachKey) {
                       return (
                         <TableCell key={k}>

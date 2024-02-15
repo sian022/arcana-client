@@ -58,16 +58,8 @@ function BusinessType() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-  ];
-
   const tableHeads = ["Business Type"];
+  const customOrderKeys = ["storeTypeName"];
 
   //React Hook Form
   const {
@@ -194,10 +186,9 @@ function BusinessType() {
       ) : (
         <CommonTable
           mapData={data?.storeTypes}
-          excludeKeysDisplay={excludeKeysDisplay}
           tableHeads={tableHeads}
+          customOrderKeys={customOrderKeys}
           includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

@@ -72,19 +72,8 @@ function Cluster() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-    // "users",
-    "userId",
-  ];
-
-  // const tableHeads = ["Cluster", "CDO Details"];
   const tableHeads = ["Cluster", "Users Tagged"];
+  const customOrderKeys = ["cluster", "users"];
 
   //React Hook Form
   const {
@@ -93,7 +82,6 @@ function Cluster() {
     register,
     setValue,
     reset,
-    getValues,
   } = useForm({
     resolver: yupResolver(clusterSchema.schema),
     mode: "onChange",
@@ -222,7 +210,7 @@ function Cluster() {
         ) : (
           <CommonTable
             mapData={data?.cluster}
-            excludeKeysDisplay={excludeKeysDisplay}
+            customOrderKeys={customOrderKeys}
             includeActions
             archivable
             onEdit={handleEditOpen}

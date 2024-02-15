@@ -1,6 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import { ThemeProvider } from "@emotion/react";
-import { customerRegistrationTheme } from "../theme/customerRegistrationTheme";
 import LoginPage from "../pages/LoginPage";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../pages/Dashboard";
@@ -169,10 +167,7 @@ export const router = createBrowserRouter([
             path: "listing-fee",
             element: <ListingFee />,
           },
-          // {
-          //   path: "freebies",
-          //   element: <Freebies />,
-          // },
+
           {
             path: "other-expenses",
             element: <OtherExpenses />,

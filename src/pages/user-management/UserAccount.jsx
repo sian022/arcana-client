@@ -11,9 +11,6 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userAccountSchema } from "../../schema/schema";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   usePatchUserStatusMutation,
@@ -34,11 +31,11 @@ import {
 import ControlledAutocompleteMultiple from "../../components/ControlledAutocompleteMultiple";
 import PageHeaderFilterAdd from "../../components/PageHeaderFilterAdd";
 import useSnackbar from "../../hooks/useSnackbar";
+import useConfirm from "../../hooks/useConfirm";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function UserAccount() {
-  const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
+  const [editMode, setEditMode] = useState(false);
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -46,9 +43,11 @@ function UserAccount() {
   const [count, setCount] = useState(null);
   const [roleFilter, setRoleFilter] = useState("");
 
+  // Hooks
   const dispatch = useDispatch();
   const { showSnackbar } = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const confirm = useConfirm();
 
   // Disclosures
   const {
@@ -57,24 +56,10 @@ function UserAccount() {
     onClose: onDrawerClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isResetOpen,
-    onOpen: onResetOpen,
-    onClose: onResetClose,
-  } = useDisclosure();
-  // Disclosures End
-
   // Constants
   const tableHeads = ["Full ID Number", "Full Name", "Username", "Role Name"];
   const customOrderKeys = ["fullIdNo", "fullname", "username", "roleName"];
   const disableActions = ["edit", "archive", "resetPassword"];
-  // Constants End
 
   // React Hook Form
   const {
@@ -89,7 +74,6 @@ function UserAccount() {
     mode: "onChange",
     defaultValues: userAccountSchema.defaultValues,
   });
-  // React Hook Form End
 
   // RTK Query: Main CRUD
   const [postUser, { isLoading: isAddUserLoading }] = usePostUserMutation();
@@ -101,14 +85,10 @@ function UserAccount() {
     ...(roleFilter ? { UserRoleId: roleFilter } : {}),
   });
   const [putUser, { isLoading: isEditUserLoading }] = usePutUserMutation();
-  const [patchUserStatus, { isLoading: isArchiveUserLoading }] =
-    usePatchUserStatusMutation();
-  // RTK Query: Main CRUD End
+  const [patchUserStatus] = usePatchUserStatusMutation();
 
   // RTK Query: Others
-  const [patchResetPassword, { isLoading: isResetLoading }] =
-    usePatchResetPasswordMutation();
-  // RTK Query: Others End
+  const [patchResetPassword] = usePatchResetPasswordMutation();
 
   // RTK Query: Autocomplete Datas
   const { data: userRoleData } = useGetAllUserRolesQuery({ Status: true });
@@ -116,10 +96,9 @@ function UserAccount() {
     useGetAllEmployeesQuery();
   const { data: clusterData, isLoading: isClusterLoading } =
     useGetAllClustersQuery({ Status: true });
-  // RTK Query: Autocomplete Datas End
 
   // Functions: Submit
-  const onDrawerSubmit = async (data) => {
+  const onSubmit = async (data) => {
     const {
       userRoleId: { id },
       clusterId,
@@ -127,7 +106,7 @@ function UserAccount() {
     } = data;
 
     try {
-      if (drawerMode === "add") {
+      if (!editMode) {
         await postUser({
           ...restData,
           userRoleId: id,
@@ -135,7 +114,7 @@ function UserAccount() {
         }).unwrap();
 
         showSnackbar("User Account added successfully", "success");
-      } else if (drawerMode === "edit") {
+      } else if (editMode) {
         await putUser({
           ...restData,
           userRoleId: id,
@@ -153,40 +132,66 @@ function UserAccount() {
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchUserStatus(selectedId).unwrap();
-      onArchiveClose();
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.username}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () => patchUserStatus(selectedRowData?.id).unwrap(),
+      });
+
       showSnackbar(
-        `User Account ${status ? "archived" : "restored"} successfully`,
-        "success"
+        `User Account ${status ? "archived" : "restored"} successfully`
       );
     } catch (error) {
-      console.log(error);
-      showSnackbar(handleCatchErrorMessage(error), "error");
+      if (error?.isConfirmed) {
+        showSnackbar(handleCatchErrorMessage(error), "error");
+      }
     }
   };
 
-  const onResetSubmit = async () => {
+  const onReset = async () => {
     try {
-      await patchResetPassword(selectedRowData?.id).unwrap();
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to reset password for{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.username}
+            </span>
+            ?
+          </>
+        ),
+        question: true,
+        callback: () => patchResetPassword(selectedRowData?.id).unwrap(),
+      });
+
       showSnackbar("Password reset successfully", "success");
     } catch (error) {
-      showSnackbar(handleCatchErrorMessage(error), "error");
+      if (error?.isConfirmed) {
+        showSnackbar(handleCatchErrorMessage(error), "error");
+      }
     }
-    onResetClose();
   };
-  // Functions: Submit End
 
   // Functions: Open & Close
   const handleAddOpen = () => {
-    setDrawerMode("add");
+    setEditMode(false);
     onDrawerOpen();
   };
 
   const handleEditOpen = (editData) => {
-    setDrawerMode("edit");
+    setEditMode(true);
     onDrawerOpen();
+
     setValue("id", editData.id);
     setValue("fullIdNo", editData.fullIdNo);
     setValue("fullname", editData.fullname);
@@ -203,26 +208,18 @@ function UserAccount() {
     );
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
-  // Functions: Open & Close End
 
   // Other Functions
   const filterOptions = createFilterOptions({
     matchFrom: "any",
     limit: 50,
   });
-  // Other Functions End
 
-  // useEffect
+  // useEffect: Pagination
   useEffect(() => {
     setCount(data?.totalCount);
   }, [data]);
@@ -231,12 +228,12 @@ function UserAccount() {
     setPage(0);
   }, [search, status, rowsPerPage, roleFilter]);
 
+  // useEffect: Others
   useEffect(() => {
     if (watch("userRoleId")?.roleName !== "CDO") {
       setValue("clusterId", null);
     }
   }, [watch("userRoleId")]);
-  // useEffect End
 
   return (
     <>
@@ -256,7 +253,6 @@ function UserAccount() {
           choiceValue="id"
           setFilter={setRoleFilter}
         />
-        {/* Page Header End*/}
 
         {/* Main Table */}
         {isFetching ? (
@@ -267,48 +263,40 @@ function UserAccount() {
             mapData={data?.users}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
-            //Data Props End
-
             //Action Props
             includeActions
             onEdit={handleEditOpen}
-            onArchive={handleArchiveOpen}
-            onResetPassword={onResetOpen}
+            onArchive={onArchive}
+            onResetPassword={onReset}
             disableActions={
               selectedRowData?.fullname === "Admin" && disableActions
             }
-            //Action Props End
-
             //Pagination Props
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
-            //Pagination Props End
-
             //Other Props
             status={status}
-            //Other Props End
           />
         )}
-        {/* Main Table End */}
       </Box>
 
       {/* Drawer Form */}
       <CommonDrawer
         open={isDrawerOpen}
         onClose={handleDrawerClose}
-        drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " User Account"}
-        onSubmit={handleSubmit(onDrawerSubmit)}
+        drawerHeader={(!editMode ? "Add" : "Edit") + " User Account"}
+        onSubmit={handleSubmit(onSubmit)}
         disableSubmit={
           watch("userRoleId")?.roleName === "CDO"
             ? !isValid || !watch("clusterId")
             : !isValid
         }
-        isLoading={drawerMode === "add" ? isAddUserLoading : isEditUserLoading}
+        isLoading={!editMode ? isAddUserLoading : isEditUserLoading}
       >
-        {drawerMode === "add" ? (
+        {!editMode ? (
           <Autocomplete
             clearOnBlur
             options={sedarData}
@@ -434,7 +422,6 @@ function UserAccount() {
            />
          )}
        /> */}
-        {/* FISTO Account Title End*/}
 
         <Controller
           control={control}
@@ -443,7 +430,7 @@ function UserAccount() {
             <TextField
               size="small"
               label="Username"
-              disabled={drawerMode === "edit"}
+              disabled={editMode}
               autoComplete="off"
               onChange={onChange}
               onBlur={onBlur}
@@ -492,35 +479,6 @@ function UserAccount() {
           />
         )}
       </CommonDrawer>
-      {/* Drawer Form End */}
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveUserLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.username}
-        </span>
-        ?
-      </CommonDialog>
-
-      <CommonDialog
-        open={isResetOpen}
-        onClose={onResetClose}
-        onYes={onResetSubmit}
-        isLoading={isResetLoading}
-        question
-      >
-        Are you sure you want to reset password for{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.username}
-        </span>
-        ?
-      </CommonDialog>
     </>
   );
 }

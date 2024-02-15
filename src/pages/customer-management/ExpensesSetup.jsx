@@ -58,15 +58,8 @@ function ExpensesSetup() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "updatedAt",
-    "isActive",
-    "addedBy",
-  ];
-
   const tableHeads = ["Other Expenses"];
+  const customOrderKeys = ["expenseType"];
 
   //React Hook Form
   const {
@@ -193,9 +186,8 @@ function ExpensesSetup() {
       ) : (
         <CommonTable
           mapData={data?.otherExpenses}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

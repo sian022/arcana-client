@@ -158,16 +158,6 @@ function Products() {
         }).unwrap();
         setSnackbarMessage("Product added successfully");
       } else if (drawerMode === "edit") {
-        // if (changePrice) {
-        //   await putProduct({
-        //     ...restData,
-        //     uomId,
-        //     productSubCategoryId,
-        //     meatTypeId,
-        //     price: priceChange,
-        //   }).unwrap();
-        //   setSnackbarMessage("Product updated successfully");
-        // } else
         if (!changePrice) {
           await putProduct({
             ...restData,

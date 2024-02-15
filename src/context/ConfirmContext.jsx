@@ -1,48 +1,72 @@
 import { createContext, useCallback, useState } from "react";
 import CommonDialog from "../components/CommonDialog";
+import useDisclosure from "../hooks/useDisclosure";
 
 const ConfirmContext = createContext();
 
 let confirmGlobal;
 
 const ConfirmProvider = ({ children }) => {
-  const [resolveReject, setResolveReject] = useState([]);
-  const [options, setOptions] = useState({});
-  const [resolve, reject] = resolveReject;
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [promise, setPromise] = useState([]);
+  const [options, setOptions] = useState({
+    children: "Are you sure you want to proceed?",
+  });
+  const [resolve, reject, callback] = promise;
   const [key, setKey] = useState(0);
 
-  const confirm = useCallback(
-    (
-      options = {
-        children: "Are you sure?",
-      }
-    ) => {
-      return new Promise((resolve, reject) => {
-        setKey((key) => key + 1);
-        setOptions(options);
-        setResolveReject([resolve, reject]);
-      });
-    },
-    []
-  );
+  const confirm = useCallback((params = {}) => {
+    const { callback, ...options } = params;
+
+    return new Promise((resolve, reject) => {
+      setKey((key) => key + 1);
+      setOptions((defaultValue) => ({ ...defaultValue, ...options }));
+      setPromise([resolve, reject, callback]);
+    });
+  }, []);
 
   const handleClose = useCallback(() => {
-    setResolveReject([]);
+    setPromise([]);
   }, []);
 
   const handleCancel = useCallback(() => {
     if (reject) {
-      reject();
+      reject({ isConfirmed: false, isCancelled: true, result: null });
       handleClose();
     }
   }, [reject, handleClose]);
 
-  const handleConfirm = useCallback(() => {
-    if (resolve) {
-      resolve();
+  const handleConfirm = useCallback(async () => {
+    if (callback) {
+      setIsLoading(true);
+      try {
+        const result = await callback();
+        resolve({
+          isConfirmed: true,
+          isCancelled: false,
+          result,
+        });
+      } catch (error) {
+        reject({
+          isConfirmed: true,
+          isCancelled: false,
+          error: error,
+        });
+      }
+
+      setIsLoading(false);
+      handleClose();
+    } else if (resolve) {
+      resolve({
+        isConfirmed: true,
+        isCancelled: false,
+        result: null,
+      });
+
       handleClose();
     }
-  }, [resolve, handleClose]);
+  }, [resolve, callback, handleClose]);
 
   confirmGlobal = confirm;
 
@@ -53,9 +77,11 @@ const ConfirmProvider = ({ children }) => {
 
         <CommonDialog
           key={key}
-          open={resolveReject.length === 2}
+          open={promise.length === 3}
           onClose={handleCancel}
           onYes={handleConfirm}
+          isLoading={isLoading}
+          {...options}
         />
       </ConfirmContext.Provider>
     </>

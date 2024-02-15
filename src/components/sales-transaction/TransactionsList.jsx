@@ -139,16 +139,16 @@ function TransactionsList({ setTransactionsMode }) {
             <SecondaryButton
               size="medium"
               // onClick={handleSubmitDate}
-              onClick={() => {
-                confirm({
-                  title: "Are you sure?",
-                  confirmationText: "Yes",
-                  cancellationText: "No",
-                  content: "Are you sure you want to apply the date filter?",
-                }).then(() => {
-                  setDateFrom(dateFromTemp);
-                  setDateTo(dateToTemp);
-                });
+              onClick={async () => {
+                try {
+                  await confirm({
+                    children: "Are you really sure?",
+                    question: true,
+                  });
+                  console.log("Resolved");
+                } catch (error) {
+                  console.log("Rejected");
+                }
               }}
               sx={{ ml: "10px", height: "100%" }}
             >

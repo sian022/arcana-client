@@ -58,16 +58,8 @@ function MeatType() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-  ];
-
   const tableHeads = ["Meat Type"];
+  const customOrderKeys = ["meatTypeName"];
 
   //React Hook Form
   const {
@@ -193,7 +185,7 @@ function MeatType() {
       ) : (
         <CommonTable
           mapData={data?.meatTypes}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
           archivable
           onEdit={handleEditOpen}

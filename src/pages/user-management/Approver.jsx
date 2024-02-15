@@ -73,31 +73,7 @@ function Approver() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "approvers",
-    // "id",
-    // "createdAt",
-    // "addedBy",
-    // "updatedAt",
-    // "modifiedBy",
-    // "isActive",
-    // "users",
-  ];
-
-  // const tableMap = [
-  //   {
-  //     moduleName: "Freebie Approval",
-  //   },
-  //   {
-  //     moduleName: "Registration Approval",
-  //   },
-  //   {
-  //     moduleName: "Listing Fee Approval",
-  //   },
-  //   {
-  //     moduleName: "Sp. Discount Approval",
-  //   },
-  // ];
+  const customOrderKeys = ["moduleName"];
 
   const approvalItem = navigationData.find((item) => item.name === "Approval");
 
@@ -105,12 +81,10 @@ function Approver() {
   const {
     handleSubmit,
     formState: { errors, isValid },
-    register,
     setValue,
     reset,
     control,
     watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(approversSchema.schema),
     mode: "onChange",
@@ -294,7 +268,7 @@ function Approver() {
       ) : (
         <CommonTable
           mapData={approversPerModuleData}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
           onManageApprovers={handleEditOpen}
           page={page}

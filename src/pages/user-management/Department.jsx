@@ -58,15 +58,7 @@ function Department() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updatedAt",
-    "modifiedBy",
-    "isActive",
-    "users",
-  ];
+  const customOrderKeys = ["departmentName"];
 
   //React Hook Form
   const {
@@ -192,7 +184,7 @@ function Department() {
       ) : (
         <CommonTable
           mapData={data?.department}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
           archivable
           onEdit={handleEditOpen}

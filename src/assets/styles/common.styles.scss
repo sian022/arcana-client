@@ -73,6 +73,8 @@
 }
 
 .commonDialog {
+  min-width: 360px;
+
   &__roof {
     background-color: $primary;
     height: 1rem;

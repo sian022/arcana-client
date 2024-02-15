@@ -58,16 +58,8 @@ function ProductCategory() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "updatedAt",
-    "isActive",
-    "addedBy",
-    "productSubCategory",
-  ];
-
   const tableHeads = ["Product Category"];
+  const customOrderKeys = ["productCategoryName"];
 
   //React Hook Form
   const {
@@ -194,7 +186,7 @@ function ProductCategory() {
       ) : (
         <CommonTable
           mapData={data?.result}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           includeActions
           archivable
           onEdit={handleEditOpen}

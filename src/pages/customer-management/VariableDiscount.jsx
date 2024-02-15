@@ -60,17 +60,12 @@ function VariableDiscount() {
   } = useDisclosure();
 
   // Constants
-  const excludeKeysDisplay = [
-    "id",
-    "createdAt",
-    "addedBy",
-    "updateAt",
-    "modifiedBy",
-    "isActive",
-    "totalActives",
-    "currentAmount",
+  const customOrderKeys = [
+    "minimumAmount",
+    "maximumAmount",
+    "minimumPercentage",
+    "maximumPercentage",
   ];
-
   const pesoArray = ["minimumAmount", "maximumAmount"];
   const percentageArray = ["minimumPercentage", "maximumPercentage"];
 
@@ -247,14 +242,11 @@ function VariableDiscount() {
       ) : (
         <CommonTable
           mapData={data?.discount}
-          excludeKeysDisplay={excludeKeysDisplay}
+          customOrderKeys={customOrderKeys}
           pesoArray={pesoArray}
           percentageArray={percentageArray}
-          // includeActions
-          archivable
-          // onEdit={handleEditOpen}
-          // onArchive={handleArchiveOpen}
-          onDelete={handleArchiveOpen}
+          includeActions
+          onRemove={handleArchiveOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}

@@ -11,17 +11,17 @@ import { ConfirmProvider } from "./context/ConfirmContext";
 
 function App() {
   return (
-    <AppProvider>
-      <ConfirmProvider>
-        <AttachmentsProvider>
-          <DirectReleaseProvider>
-            <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <AppProvider>
+        <ConfirmProvider>
+          <AttachmentsProvider>
+            <DirectReleaseProvider>
               <RouterProvider router={router} />
-            </ThemeProvider>
-          </DirectReleaseProvider>
-        </AttachmentsProvider>
-      </ConfirmProvider>
-    </AppProvider>
+            </DirectReleaseProvider>
+          </AttachmentsProvider>
+        </ConfirmProvider>
+      </AppProvider>
+    </ThemeProvider>
   );
 }
 
