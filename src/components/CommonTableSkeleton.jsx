@@ -11,19 +11,28 @@ import {
 } from "@mui/material";
 import React from "react";
 
-function CommonTableSkeleton({ columnCount, compact, compact, mt }) {
+function CommonTableSkeleton({
+  columnCount,
+  lesserCompact,
+  lessCompact,
+  compact,
+  expanded,
+  mt,
+}) {
   return (
     <Box className="tableSuperContainer" sx={{ mt: mt && mt }}>
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
         sx={{
-          height: compact
-            ? // ? "calc(100vh - 370px)"
-              "calc(100vh - 330px)"
+          height: lesserCompact
+            ? "calc(100vh - 280px)"
+            : lessCompact
+            ? "calc(100vh - 290px)"
             : compact
-            ? // ? "calc(100vh - 400px)"
-              "calc(100vh - 330px)"
+            ? "calc(100vh - 330px)"
+            : expanded
+            ? "calc(100vh - 220px)"
             : null,
           overflow: "hidden",
         }}

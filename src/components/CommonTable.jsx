@@ -87,14 +87,14 @@ function CommonTable({
       <Box
         className="noData"
         sx={{
-          height: expanded
-            ? "calc(100vh - 220px)"
-            : lesserCompact
+          height: lesserCompact
             ? "calc(100vh - 280px)"
             : lessCompact
             ? "calc(100vh - 290px)"
             : compact
             ? "calc(100vh - 330px)"
+            : expanded
+            ? "calc(100vh - 220px)"
             : null,
         }}
       >
@@ -142,14 +142,14 @@ function CommonTable({
         component={Paper}
         className="tableSuperContainer__tableContainer"
         sx={{
-          height: expanded
-            ? "calc(100vh - 220px)"
-            : lesserCompact
+          height: lesserCompact
             ? "calc(100vh - 280px)"
             : lessCompact
             ? "calc(100vh - 290px)"
             : compact
             ? "calc(100vh - 330px)"
+            : expanded
+            ? "calc(100vh - 220px)"
             : null,
         }}
       >
