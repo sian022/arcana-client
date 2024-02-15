@@ -249,11 +249,11 @@ function DirectRegistration() {
         />
 
         {isFetching ? (
-          <CommonTableSkeleton moreCompact />
+          <CommonTableSkeleton compact />
         ) : (
           <CommonTable
             mapData={data?.regularClient}
-            moreCompact
+            compact
             moveNoDataUp
             count={count}
             rowsPerPage={rowsPerPage}
@@ -262,7 +262,6 @@ function DirectRegistration() {
             setPage={setPage}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
-            includeActions
             onView={onViewOpen}
             onHistory={onHistoryOpen}
             // onArchive={true}

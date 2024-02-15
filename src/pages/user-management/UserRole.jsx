@@ -233,8 +233,6 @@ function UserRole() {
         <RoleTable
           mapData={data?.userRoles}
           excludeKeys={excludeKeys}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           onTag={onTaggingOpen}

@@ -185,8 +185,6 @@ function UnitOfMeasurements() {
         <CommonTable
           mapData={data?.uom}
           customOrderKeys={customOrderKeys}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

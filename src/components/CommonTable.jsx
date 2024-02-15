@@ -25,8 +25,7 @@ function CommonTable({
   mapData,
   tableHeads,
   customOrderKeys,
-  includeActions,
-  archivable,
+  includeActions = true,
   onEdit,
   onArchive,
   onView,
@@ -55,11 +54,10 @@ function CommonTable({
   setRowsPerPage,
   count = 0,
   status,
-  expanded,
+  lesserCompact,
   lessCompact,
   compact,
-  moreCompact,
-  midCompact,
+  expanded,
   percentageArray,
   pesoArray,
   viewMoreKey,
@@ -91,16 +89,12 @@ function CommonTable({
         sx={{
           height: expanded
             ? "calc(100vh - 220px)"
+            : lesserCompact
+            ? "calc(100vh - 280px)"
             : lessCompact
             ? "calc(100vh - 290px)"
             : compact
-            ? // ? "calc(100vh - 370px)"
-              "calc(100vh - 330px)"
-            : moreCompact
-            ? // ? "calc(100vh - 400px)"
-              "calc(100vh - 330px)"
-            : midCompact
-            ? "calc(100vh - 280px)"
+            ? "calc(100vh - 330px)"
             : null,
         }}
       >
@@ -138,28 +132,24 @@ function CommonTable({
 
   const uppercaseKeys = ["storeType"];
 
-  if ((includeActions || archivable) && !tableHeadsList.includes("Actions")) {
+  if (includeActions && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
   return (
-    <Box className="tableSuperContainer" sx={{ mt: mt && mt }}>
+    <Box className="tableSuperContainer" sx={{ mt: mt ? mt : null }}>
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
         sx={{
           height: expanded
             ? "calc(100vh - 220px)"
+            : lesserCompact
+            ? "calc(100vh - 280px)"
             : lessCompact
             ? "calc(100vh - 290px)"
             : compact
-            ? // ? "calc(100vh - 370px)"
-              "calc(100vh - 330px)"
-            : moreCompact
-            ? // ? "calc(100vh - 400px)"
-              "calc(100vh - 330px)"
-            : midCompact
-            ? "calc(100vh - 280px)"
+            ? "calc(100vh - 330px)"
             : null,
         }}
       >
@@ -330,7 +320,7 @@ function CommonTable({
                     );
                   })}
 
-                  {(includeActions || archivable) && (
+                  {includeActions && (
                     <TableCell
                       sx={{
                         position: "sticky",

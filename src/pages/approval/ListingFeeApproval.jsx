@@ -157,17 +157,16 @@ function ListingFeeApproval() {
         </Box>
 
         {isFetching ? (
-          <CommonTableSkeleton moreCompact />
+          <CommonTableSkeleton compact />
         ) : (
           <CommonTable
             mapData={data?.listingFees}
-            moreCompact
+            compact
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             page={page}
             setPage={setPage}
-            includeActions
             onView={onViewOpen}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}

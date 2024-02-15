@@ -17,10 +17,8 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
-import useDisclosure from "../hooks/useDisclosure";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/NoRecordsFound.svg";
-import RoleTaggingModal from "./modals/RoleTaggingModal";
 import { useDispatch } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
 
@@ -28,8 +26,7 @@ function RoleTable({
   mapData,
   excludeKeys,
   tableHeads,
-  includeActions,
-  archivable,
+  includeActions = true,
   onEdit,
   onArchive,
   onTag,
@@ -77,7 +74,7 @@ function RoleTable({
       .map((key) => transformKey(key));
   }
 
-  if ((includeActions || archivable) && !tableHeadsList.includes("Actions")) {
+  if (includeActions && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
@@ -110,7 +107,7 @@ function RoleTable({
                     }
                     return <TableCell key={k}>{item[keys]}</TableCell>;
                   })}
-                  {(includeActions || archivable) && (
+                  {includeActions && (
                     <TableCell>
                       <CommonActions
                         onEdit={onEdit}

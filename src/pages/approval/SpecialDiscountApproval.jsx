@@ -88,7 +88,7 @@ function SpecialDiscountApproval() {
           />
         </Box>
 
-        <CommonTable mapData={dummyTableData} moreCompact />
+        <CommonTable mapData={dummyTableData} compact />
       </Box>
     </>
   );

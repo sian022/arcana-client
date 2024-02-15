@@ -185,8 +185,6 @@ function Department() {
         <CommonTable
           mapData={data?.department}
           customOrderKeys={customOrderKeys}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

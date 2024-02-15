@@ -146,7 +146,6 @@ function Released() {
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
-            includeActions
             onRegularRegister={
               registrationStatus !== "Voided" && onRegisterOpen
             }

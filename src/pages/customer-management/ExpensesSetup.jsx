@@ -187,7 +187,6 @@ function ExpensesSetup() {
         <CommonTable
           mapData={data?.otherExpenses}
           customOrderKeys={customOrderKeys}
-          includeActions
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

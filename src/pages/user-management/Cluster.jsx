@@ -211,8 +211,6 @@ function Cluster() {
           <CommonTable
             mapData={data?.cluster}
             customOrderKeys={customOrderKeys}
-            includeActions
-            archivable
             onEdit={handleEditOpen}
             onArchive={handleArchiveOpen}
             viewMoreKey={"users"}

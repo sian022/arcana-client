@@ -188,7 +188,6 @@ function BusinessType() {
           mapData={data?.storeTypes}
           tableHeads={tableHeads}
           customOrderKeys={customOrderKeys}
-          includeActions
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

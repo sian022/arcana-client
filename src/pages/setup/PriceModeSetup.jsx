@@ -188,8 +188,6 @@ function PriceModeSetup() {
       ) : (
         <CommonTable
           mapData={data?.priceMode}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           onViewMoreConstant={onViewProductsByPriceModeModalOpen}

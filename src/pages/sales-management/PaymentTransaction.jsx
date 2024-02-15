@@ -119,13 +119,9 @@ function PaymentTransaction() {
       ) : (
         <CommonTable
           mapData={dummyPaymentData}
-          moreCompact
+          compact
           tableHeads={tableHeads}
           pesoArray={pesoArray}
-          includeActions
-          archivable
-          // onEdit={handleEditOpen}
-          // onArchive={handleArchiveOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}

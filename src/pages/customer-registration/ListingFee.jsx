@@ -189,12 +189,12 @@ function ListingFee() {
         />
 
         {isFetching ? (
-          <CommonTableSkeleton moreCompact mt={"-20px"} />
+          <CommonTableSkeleton compact mt={"-20px"} />
         ) : (
           <CommonTable
             moveNoDataUp
             mapData={data?.listingFees}
-            moreCompact
+            compact
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
             pesoArray={pesoArray}
@@ -203,7 +203,6 @@ function ListingFee() {
             setRowsPerPage={setRowsPerPage}
             page={page}
             setPage={setPage}
-            includeActions
             onView={onViewOpen}
             onEdit={listingFeeStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}

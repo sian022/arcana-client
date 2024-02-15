@@ -320,7 +320,6 @@ function ForFreebies() {
             mapData={data?.requestedProspect}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
-            archivable
             onView={handleEditOpen}
             onArchive={handleArchiveOpen}
             onFreebie={onFreebieFormOpen}

@@ -264,7 +264,6 @@ function UserAccount() {
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
             //Action Props
-            includeActions
             onEdit={handleEditOpen}
             onArchive={onArchive}
             onResetPassword={onReset}

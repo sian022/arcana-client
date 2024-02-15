@@ -243,8 +243,6 @@ function PriceModeManagement() {
         ) : (
           <CommonTable
             mapData={priceModeItemsData?.priceModeItems}
-            includeActions
-            // onArchive={onArchiveOpen}
             onRemove={onDeleteOpen}
             onPriceChange={onPriceChangeOpen}
             onViewMoreConstant={onPriceDetailsOpen}

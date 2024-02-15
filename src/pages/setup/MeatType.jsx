@@ -186,8 +186,6 @@ function MeatType() {
         <CommonTable
           mapData={data?.meatTypes}
           customOrderKeys={customOrderKeys}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

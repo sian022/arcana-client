@@ -245,7 +245,6 @@ function VariableDiscount() {
           customOrderKeys={customOrderKeys}
           pesoArray={pesoArray}
           percentageArray={percentageArray}
-          includeActions
           onRemove={handleArchiveOpen}
           page={page}
           setPage={setPage}

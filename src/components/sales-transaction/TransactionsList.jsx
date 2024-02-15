@@ -161,7 +161,6 @@ function TransactionsList({ setTransactionsMode }) {
           tableHeads={tableHeads}
           mapData={dummyTransactionsData}
           pesoArray={pesoArray}
-          includeActions
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}

@@ -22,10 +22,8 @@ import { Visibility } from "@mui/icons-material";
 function ProductsTable({
   mapData,
   excludeKeys,
-  excludeKeysDisplay,
   tableHeads,
-  includeActions,
-  archivable,
+  includeActions = true,
   onEdit,
   onArchive,
   onView,
@@ -44,7 +42,6 @@ function ProductsTable({
   count = 0,
   status,
   compact,
-  moreCompact,
   percentageArray,
   pesoArray,
 }) {
@@ -91,16 +88,10 @@ function ProductsTable({
   if (tableHeads) {
     tableHeadsList = tableHeads;
   } else {
-    tableHeadsList = dataToMapKeys
-      .filter(
-        (key) =>
-          // key !== "id"
-          !excludeKeysDisplay?.includes(key)
-      )
-      .map((key) => transformKey(key));
+    tableHeadsList = dataToMapKeys.map((key) => transformKey(key));
   }
 
-  if ((includeActions || archivable) && !tableHeadsList.includes("Actions")) {
+  if (includeActions && !tableHeadsList.includes("Actions")) {
     tableHeadsList.push("Actions");
   }
 
@@ -112,7 +103,7 @@ function ProductsTable({
         sx={{
           height: compact
             ? "calc(100vh - 370px)"
-            : moreCompact
+            : compact
             ? "calc(100vh - 400px)"
             : null,
         }}
@@ -135,13 +126,6 @@ function ProductsTable({
                   }}
                 >
                   {dataToMapKeys.map((keys, k) => {
-                    if (
-                      // keys === "id"
-                      excludeKeysDisplay?.includes(keys)
-                    ) {
-                      return null;
-                    }
-
                     let total = 0;
                     if (keys === "listingFee") {
                       item[keys]?.[0]?.listingItems?.forEach((item) => {
@@ -177,7 +161,7 @@ function ProductsTable({
                       </TableCell>
                     );
                   })}
-                  {(includeActions || archivable) && (
+                  {includeActions && (
                     <TableCell>
                       <CommonActions
                         onEdit={onEdit}

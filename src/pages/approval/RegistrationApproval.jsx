@@ -164,15 +164,14 @@ function RegistrationApproval() {
           setSelectValue={setOrigin}
         />
         {isFetching ? (
-          <CommonTableSkeleton moreCompact />
+          <CommonTableSkeleton compact />
         ) : (
           <CommonTable
             mapData={data?.regularClient}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
-            moreCompact
+            compact
             moveNoDataUp
-            includeActions
             onView={onViewOpen}
             onHistory={onHistoryOpen}
             page={page}

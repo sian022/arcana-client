@@ -234,18 +234,17 @@ function SpecialDiscount() {
         />
 
         {isFetching ? (
-          <CommonTableSkeleton moreCompact />
+          <CommonTableSkeleton compact />
         ) : (
           <CommonTable
             mapData={dummySpecialDiscountData}
             tableHeads={tableHeads}
-            moreCompact
+            compact
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             page={page}
             setPage={setPage}
-            includeActions
             onEdit={tabViewing === 2 ? null : handleEditOpen}
             onHistory={onHistoryOpen}
             // onVoid={tabViewing === 3 ? onVoidOpen : null}

@@ -269,7 +269,6 @@ function Approver() {
         <CommonTable
           mapData={approversPerModuleData}
           customOrderKeys={customOrderKeys}
-          includeActions
           onManageApprovers={handleEditOpen}
           page={page}
           setPage={setPage}

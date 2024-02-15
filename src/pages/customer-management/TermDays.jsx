@@ -185,7 +185,6 @@ function TermDays() {
         <CommonTable
           mapData={data?.termDays}
           customOrderKeys={customOrderKeys}
-          includeActions
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

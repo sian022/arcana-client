@@ -302,8 +302,6 @@ function Products() {
       ) : (
         <CommonTable
           mapData={data?.items}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

@@ -321,7 +321,6 @@ function ForReleasing() {
             mapData={data?.requestedProspect}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
-            includeActions
             onView={handleEditOpen}
             onCancelFreebies={onFreebieCancelOpen}
             onUpdateFreebies={onFreebieFormOpen}

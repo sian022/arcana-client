@@ -187,8 +187,6 @@ function ProductCategory() {
         <CommonTable
           mapData={data?.result}
           customOrderKeys={customOrderKeys}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

@@ -171,17 +171,13 @@ function AdvancePayment() {
           mapData={dummyAdvancePaymentData}
           tableHeads={tableHeads}
           pesoArray={pesoArray}
-          includeActions
-          archivable
-          // onEdit={handleEditOpen}
-          // onArchive={handleArchiveOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={count}
           status={status}
-          midCompact
+          lesserCompact
         />
       )}
 

@@ -184,8 +184,6 @@ function Company() {
         <CommonTable
           mapData={data?.companies}
           customOrderKeys={customOrderKeys}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}

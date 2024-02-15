@@ -88,7 +88,7 @@ function FreebieApproval() {
           />
         </Box>
 
-        <CommonTable mapData={dummyTableData} moreCompact />
+        <CommonTable mapData={dummyTableData} compact />
       </Box>
     </>
   );

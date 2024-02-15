@@ -210,8 +210,6 @@ function ProductSubCategory() {
       ) : (
         <CommonTable
           mapData={data?.productSubCategories}
-          includeActions
-          archivable
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
           page={page}
