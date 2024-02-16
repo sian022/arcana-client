@@ -48,6 +48,8 @@ function CommonTable({
   onManageProducts,
   onPriceChange,
   onRemove,
+  onApprove,
+  onReject,
   page,
   setPage,
   rowsPerPage,
@@ -71,6 +73,7 @@ function CommonTable({
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const dispatch = useDispatch();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   useEffect(() => {
@@ -114,8 +117,6 @@ function CommonTable({
       </Box>
     );
   }
-
-  const dispatch = useDispatch();
 
   var dataToMap = mapData;
   var tableHeadsList;
@@ -357,6 +358,8 @@ function CommonTable({
                         onPriceChange={onPriceChange && onPriceChange}
                         onAttach={onAttach && onAttach}
                         onRemove={onRemove && onRemove}
+                        onApprove={onApprove && onApprove}
+                        onReject={onReject && onReject}
                         item={item}
                         status={status}
                         disableActions={disableActions}

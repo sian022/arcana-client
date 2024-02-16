@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CommonModal from "../../CommonModal";
 import { Box, Divider, Input, TextField, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -7,6 +7,8 @@ import SecondaryButton from "../../SecondaryButton";
 import DangerButton from "../../DangerButton";
 import useSnackbar from "../../../hooks/useSnackbar";
 import { useUploadCiAttachmentMutation } from "../../../features/sales-transaction/api/salesTransactionApi";
+import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
+import moment from "moment/moment";
 
 function ViewAttachmentModal({ ...props }) {
   const { onClose, open } = props;
@@ -31,14 +33,7 @@ function ViewAttachmentModal({ ...props }) {
     try {
       await uploadAttachment({ id: selectedRowData?.id }).unwrap();
     } catch (error) {
-      console.log(error);
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else if (error?.status === 404) {
-        snackbar({ message: "0404 Not Found", variant: "error" });
-      } else {
-        snackbar({ message: "Error uploading attachment", variant: "error" });
-      }
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
@@ -63,13 +58,15 @@ function ViewAttachmentModal({ ...props }) {
         <Divider />
 
         <Box className="viewAttachmentModal__labels">
-          <Box className="viewAttachmentModal__labels__name">
-            <Typography>
-              {currentAttachment
-                ? currentAttachment?.name
-                : "No attachment found"}
-            </Typography>
-          </Box>
+          <Typography>
+            {currentAttachment
+              ? currentAttachment?.name
+              : "No attachment found"}
+          </Typography>
+
+          {currentAttachment && (
+            <Typography>{moment().format("MM/DD/YYYY")}</Typography>
+          )}
         </Box>
 
         <Box

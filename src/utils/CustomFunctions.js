@@ -11,7 +11,7 @@ export const transformKey = (key) => {
   return transformedKey;
 };
 
-export const formatDate = (month, day, year, hours, minutes) => {
+export const formatDate = (month, day, year) => {
   const months = [
     "January",
     "February",
@@ -187,6 +187,7 @@ export const formatPhoneNumber = (inputNumber) => {
 
 //Error Handling
 export const handleCatchErrorMessage = (error) => {
+  console.log(error);
   if (error?.data?.error?.message) {
     return error?.data?.error?.message;
   } else if (error?.status === 400) {

@@ -1,12 +1,12 @@
 import { IconButton, Menu, MenuItem } from "@mui/material";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import useDisclosure from "../hooks/useDisclosure";
 import {
   Archive,
-  ArrowForward,
   Attachment,
   Block,
   Cancel,
+  CheckCircle,
   Delete,
   Edit,
   History,
@@ -17,7 +17,6 @@ import {
   PeopleAlt,
   PersonAdd,
   Print,
-  Remove,
   RemoveCircle,
   RequestPage,
   Restore,
@@ -51,6 +50,8 @@ function CommonActions({
   onPriceChange,
   onAttach,
   onRemove,
+  onApprove,
+  onReject,
   disableActions,
   item,
   status,
@@ -105,6 +106,10 @@ function CommonActions({
       onAttach();
     } else if (action === "remove") {
       onRemove();
+    } else if (action === "approve") {
+      onApprove();
+    } else if (action === "reject") {
+      onReject();
     }
 
     onClose();
@@ -133,6 +138,21 @@ function CommonActions({
           >
             <Visibility />
             View
+          </MenuItem>
+        )}
+
+        {onApprove && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("approve");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("approve") : false
+            }
+          >
+            <CheckCircle />
+            Approve
           </MenuItem>
         )}
 
@@ -360,6 +380,21 @@ function CommonActions({
           </MenuItem>
         )}
 
+        {onReject && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("reject");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("reject") : false
+            }
+          >
+            <Cancel />
+            Reject
+          </MenuItem>
+        )}
+
         {onHistory && (
           <MenuItem
             className="actionsMenuItem"
@@ -426,6 +461,7 @@ function CommonActions({
         )}
 
         {/* Negative */}
+
         {onVoid && (
           <MenuItem
             className="actionsMenuItem"

@@ -1021,13 +1021,12 @@
   &__labels {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+    border: 1px solid $secondary;
+    padding: 10px 15px;
 
     &__name {
-      border-radius: 5px;
-      border: 1px solid $secondary;
-      padding: 10px 15px;
-      width: 100%;
-
       & p {
         font-size: 0.9rem;
       }

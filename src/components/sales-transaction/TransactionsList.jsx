@@ -138,18 +138,7 @@ function TransactionsList({ setTransactionsMode }) {
 
             <SecondaryButton
               size="medium"
-              // onClick={handleSubmitDate}
-              onClick={async () => {
-                try {
-                  await confirm({
-                    children: "Are you really sure?",
-                    question: true,
-                  });
-                  console.log("Resolved");
-                } catch (error) {
-                  console.log("Rejected");
-                }
-              }}
+              onClick={handleSubmitDate}
               sx={{ ml: "10px", height: "100%" }}
             >
               <Search />

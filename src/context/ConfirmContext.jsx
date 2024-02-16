@@ -1,6 +1,5 @@
 import { createContext, useCallback, useState } from "react";
 import CommonDialog from "../components/CommonDialog";
-import useDisclosure from "../hooks/useDisclosure";
 
 const ConfirmContext = createContext();
 
@@ -45,13 +44,13 @@ const ConfirmProvider = ({ children }) => {
         resolve({
           isConfirmed: true,
           isCancelled: false,
-          result,
+          ...result,
         });
       } catch (error) {
         reject({
           isConfirmed: true,
           isCancelled: false,
-          error: error,
+          ...error,
         });
       }
 
@@ -66,7 +65,7 @@ const ConfirmProvider = ({ children }) => {
 
       handleClose();
     }
-  }, [resolve, callback, handleClose]);
+  }, [resolve, reject, callback, handleClose]);
 
   confirmGlobal = confirm;
 

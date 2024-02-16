@@ -133,13 +133,13 @@ function ViewTransactionModal({ ...props }) {
                 <TableCell>279.50</TableCell>
               </TableRow>
 
-              {/* <TableRow>
+              <TableRow>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
-              </TableRow> */}
+              </TableRow>
 
               <TableRow>
                 <TableCell></TableCell>

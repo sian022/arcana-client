@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   IconButton,
   InputAdornment,
   Typography,
@@ -8,9 +7,9 @@ import {
   CircularProgress,
   Checkbox,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "../assets/styles/login.styles.scss";
-import { Lock, Person, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { usePostLoginMutation } from "../features/authentication/api/loginApi";
 import { loginSchema } from "../schema/schema";
 import { useForm } from "react-hook-form";
@@ -24,7 +23,6 @@ import {
   setTokenTemp,
   setUserDetails,
   setUserDetailsTemp,
-  setUsername,
 } from "../features/authentication/reducers/loginSlice";
 import { setPermissisons } from "../features/authentication/reducers/permissionsSlice";
 import MisLogo from "../assets/images/MIS-logo.png";
@@ -35,6 +33,7 @@ import { AppContext } from "../context/AppContext";
 import useDisclosure from "../hooks/useDisclosure";
 import InitialChangePasswordModal from "../components/modals/InitialChangePasswordModal";
 import Cookies from "js-cookie";
+import { handleCatchErrorMessage } from "../utils/CustomFunctions";
 
 function LoginPage() {
   const snackbar = useSnackbar();
@@ -102,13 +101,8 @@ function LoginPage() {
       refetchNotifications();
 
       reset();
-    } catch (err) {
-      console.log(err);
-      if (err?.data?.error?.message) {
-        snackbar({ message: err?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error logging in", variant: "error" });
-      }
+    } catch (error) {
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
@@ -119,7 +113,7 @@ function LoginPage() {
       setValue("username", rememberMeUsername);
       setRememberMe(true);
     }
-  }, []);
+  }, [setValue]);
 
   return (
     <>

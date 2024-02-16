@@ -11,16 +11,14 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
 import { Add, KeyboardDoubleArrowRight, Tune } from "@mui/icons-material";
-import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { salesTransactionSchema } from "../../schema/schema";
 import { useFieldArray, useForm } from "react-hook-form";
 import moment from "moment";
-import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { debounce } from "../../utils/CustomFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import NoProductFound from "../../assets/images/NoProductFound.svg";
@@ -84,21 +82,17 @@ function SalesTransaction() {
     name: "items",
   });
 
-  //RTK Query
+  //RTK Query: Autocomplete
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsForPOSQuery();
-
-  const {
-    data: productData,
-    isFetching: isProductFetching,
-    isSuccess: isProductSuccess,
-  } = useGetAllItemsByPriceModeIdQuery({
-    Status: true,
-    Page: 1,
-    PageSize: 1000,
-    Search: search,
-    PriceModeId: watch("clientId") ? watch("clientId").priceModeId : -1,
-  });
+  const { data: productData, isFetching: isProductFetching } =
+    useGetAllItemsByPriceModeIdQuery({
+      Status: true,
+      Page: 1,
+      PageSize: 1000,
+      Search: search,
+      PriceModeId: watch("clientId") ? watch("clientId").priceModeId : -1,
+    });
 
   //Functions
   const debouncedSetSearch = debounce((value) => {
@@ -113,7 +107,7 @@ function SalesTransaction() {
     });
 
     return total;
-  }, [watch()]);
+  }, [watch]);
 
   const handleAddItem = (item, quantity) => {
     const existingItemIndex = watch("items").findIndex(

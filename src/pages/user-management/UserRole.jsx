@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -99,7 +99,7 @@ function UserRole() {
 
   //RTK Query
   const [postUserRole, { isLoading: isAddLoading }] = usePostUserRoleMutation();
-  const { data, isLoading, isFetching } = useGetAllUserRolesQuery({
+  const { data, isFetching } = useGetAllUserRolesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,

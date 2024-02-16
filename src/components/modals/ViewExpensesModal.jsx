@@ -283,7 +283,9 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               right: "40px",
             }}
           >
-            <DangerButton onClick={onRejectConfirmOpen}>Reject</DangerButton>
+            <DangerButton contained onClick={onRejectConfirmOpen}>
+              Reject
+            </DangerButton>
 
             <SuccessButton onClick={onApproveConfirmOpen}>
               Approve

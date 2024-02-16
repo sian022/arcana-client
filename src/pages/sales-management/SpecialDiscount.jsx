@@ -1,21 +1,19 @@
 import { Box, Checkbox, TextField, Typography } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { AppContext } from "../../context/AppContext";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonTable from "../../components/CommonTable";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import { dummySpecialDiscountData } from "../../utils/DummyData";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import { specialDiscountSchema } from "../../schema/schema";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CommonModalForm from "../../components/CommonModalForm";
 import { NumericFormat } from "react-number-format";
 import useSnackbar from "../../hooks/useSnackbar";
-import CommonDialog from "../../components/CommonDialog";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import {
@@ -25,9 +23,9 @@ import {
   useVoidSpecialDiscountMutation,
 } from "../../features/special-discount/api/specialDiscountApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import useConfirm from "../../hooks/useConfirm";
 
 function SpecialDiscount() {
-  const [modalMode, setModalMode] = useState("add");
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
   const [approvalStatus, setApprovalStatus] = useState("Under review");
@@ -36,9 +34,10 @@ function SpecialDiscount() {
   const [count, setCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
 
+  // Hooks
   const { notifications } = useContext(AppContext);
   const snackbar = useSnackbar();
-
+  const confirm = useConfirm();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //React Hook Form
@@ -49,7 +48,6 @@ function SpecialDiscount() {
     reset,
     control,
     watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(specialDiscountSchema.schema),
     mode: "onChange",
@@ -64,48 +62,37 @@ function SpecialDiscount() {
   } = useDisclosure();
 
   const {
-    isOpen: isVoidOpen,
-    onOpen: onVoidOpen,
-    onClose: onVoidClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isConfirmOpen,
-    onOpen: onConfirmOpen,
-    onClose: onConfirmClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isHistoryOpen,
     onOpen: onHistoryOpen,
     onClose: onHistoryClose,
   } = useDisclosure();
 
   //Constants
-  const spDiscountNavigation = [
-    {
-      case: 1,
-      name: "Pending Sp. Discount",
-      listingFeeStatus: "Under review",
-      badge: notifications["pendingSpDiscount"],
-    },
-    {
-      case: 2,
-      name: "Approved Sp. Discount",
-      listingFeeStatus: "Approved",
-      badge: notifications["approvedSpDiscount"],
-    },
-    {
-      case: 3,
-      name: "Rejected Sp. Discount",
-      listingFeeStatus: "Rejected",
-      badge: notifications["rejectedSpDiscount"],
-    },
-  ];
+  const spDiscountNavigation = useMemo(() => {
+    return [
+      {
+        case: 1,
+        name: "Pending Sp. Discount",
+        approvalStatus: "Under review",
+        badge: notifications["pendingSpDiscount"],
+      },
+      {
+        case: 2,
+        name: "Approved Sp. Discount",
+        approvalStatus: "Approved",
+        badge: notifications["approvedSpDiscount"],
+      },
+      {
+        case: 3,
+        name: "Rejected Sp. Discount",
+        approvalStatus: "Rejected",
+        badge: notifications["rejectedSpDiscount"],
+      },
+    ];
+  }, [notifications]);
 
   //RTK Query
-  const [createSpecialDiscount, { isLoading: isCreateLoading }] =
-    useCreateSpecialDiscountMutation();
+  const [createSpecialDiscount] = useCreateSpecialDiscountMutation();
   const { data: specialDiscountData, isFetching: isSpecialDiscountFetching } =
     useGetAllSpecialDiscountQuery({
       Search: search,
@@ -114,83 +101,103 @@ function SpecialDiscount() {
       PageNumber: page + 1,
       PageSize: rowsPerPage,
     });
-  const [updateSpecialDiscount, { isLoading: isUpdateLoading }] =
-    useUpdateSpecialDiscountMutation();
-  const [voidSpecialDiscoubt, { isLoading: isVoidLoading }] =
-    useVoidSpecialDiscountMutation();
+  const [updateSpecialDiscount] = useUpdateSpecialDiscountMutation();
+  const [voidSpecialDiscount] = useVoidSpecialDiscountMutation();
 
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsQuery({
       RegistrationStatus: "Approved",
     });
 
-  console.log(getValues());
-
-  const isFetching = false;
-
   //Constants
+  const customOrderKeys = ["id", "businessName", "clientName", "discount"];
   const tableHeads = [
+    "Request No.",
     "Business Name",
     "Owner's Name",
-    "Special Discount",
-    "Created At",
+    "Discount",
   ];
+  const percentageArray = ["discount"];
 
-  //Functions
+  //Functions: API
   const onSubmit = async (data) => {
-    const transformedData = {
-      ...data,
-      clientId: data.clientId?.id,
-    };
-
-    const { clientId, ...noClientId } = transformedData;
-
     try {
-      if (modalMode === "edit") {
-        await updateSpecialDiscount({
-          id: transformedData.id,
-          ...noClientId,
-        }).unwrap();
-      } else {
-        await createSpecialDiscount(transformedData).unwrap();
-      }
+      await confirm({
+        children: (
+          <>
+            Confirm {editMode ? "update" : "adding"} of{" "}
+            <span style={{ fontWeight: "700" }}>{watch("discount")}%</span>{" "}
+            special discount for <br />
+            <span style={{ fontWeight: "700" }}>
+              {watch("clientId")?.businessName}
+            </span>
+            ?
+          </>
+        ),
+        question: true,
+        callback: () =>
+          editMode
+            ? updateSpecialDiscount({
+                ...data,
+                clientId: data?.clientId.id,
+              }).unwrap()
+            : createSpecialDiscount({
+                ...data,
+                clientId: data?.clientId.id,
+              }).unwrap(),
+      });
 
       handleFormClose();
-      onConfirmClose();
-
       snackbar({
         message: "Special discount added successfully",
         variant: "success",
       });
     } catch (error) {
-      console.log(error);
-      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
-      onConfirmClose();
+      if (error?.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
     }
   };
 
-  const onVoidSubmit = async () => {
+  const onVoid = async () => {
     try {
-      await voidSpecialDiscoubt({ id: selectedRowData?.id }).unwrap();
+      await confirm({
+        children: (
+          <>
+            Confirm void of{" "}
+            <span style={{ fontWeight: "700" }}>
+              {selectedRowData?.discount}%
+            </span>{" "}
+            special discount for <br />
+            <span style={{ fontWeight: "700" }}>
+              {selectedRowData?.businessName}
+            </span>
+            ?
+          </>
+        ),
+        callback: () =>
+          voidSpecialDiscount({ id: selectedRowData?.id }).unwrap(),
+      });
+
       snackbar({
         message: "Special discount voided successfully",
         variant: "success",
       });
-      onVoidClose();
     } catch (error) {
-      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
-
-      onVoidClose();
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
     }
   };
 
+  // Functions: Form Open
   const handleFormClose = () => {
     reset();
     onFormClose();
   };
 
   const handleAddOpen = () => {
-    setModalMode("add");
+    setEditMode(false);
     onFormOpen();
   };
 
@@ -207,14 +214,24 @@ function SpecialDiscount() {
       selectedRowData?.discount ? parseFloat(selectedRowData?.discount) : null
     );
 
-    setModalMode("edit");
+    setEditMode(true);
     onFormOpen();
   };
 
-  //UseEffects
+  // UseEffect
   useEffect(() => {
-    setCount(dummySpecialDiscountData?.length);
-  }, [dummySpecialDiscountData]);
+    const foundItem = spDiscountNavigation.find(
+      (item) => item.case === tabViewing
+    );
+
+    setApprovalStatus(foundItem?.approvalStatus);
+  }, [tabViewing, spDiscountNavigation]);
+
+  useEffect(() => {
+    if (specialDiscountData) {
+      setCount(specialDiscountData.totalCount);
+    }
+  }, [specialDiscountData]);
 
   return (
     <>
@@ -233,12 +250,14 @@ function SpecialDiscount() {
           setSearch={setSearch}
         />
 
-        {isFetching ? (
-          <CommonTableSkeleton compact />
+        {isSpecialDiscountFetching ? (
+          <CommonTableSkeleton compact mt={"-20px"} />
         ) : (
           <CommonTable
-            mapData={dummySpecialDiscountData}
+            mapData={specialDiscountData?.specialDiscounts}
             tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
+            percentageArray={percentageArray}
             compact
             count={count}
             rowsPerPage={rowsPerPage}
@@ -247,17 +266,17 @@ function SpecialDiscount() {
             setPage={setPage}
             onEdit={tabViewing === 2 ? null : handleEditOpen}
             onHistory={onHistoryOpen}
-            // onVoid={tabViewing === 3 ? onVoidOpen : null}
+            onVoid={tabViewing === 3 ? onVoid : null}
             mt={"-20px"}
           />
         )}
       </Box>
 
       <CommonModalForm
-        title={(modalMode === "edit" ? "Edit" : "Add") + " Special Discount"}
+        title={(editMode ? "Edit" : "Add") + " Special Discount"}
         open={isFormOpen}
         onClose={handleFormClose}
-        onSubmit={onConfirmOpen}
+        onSubmit={handleSubmit(onSubmit)}
         width="600px"
         disableSubmit={!isValid || !isDirty || watch("discount") === 0}
       >
@@ -284,7 +303,7 @@ function SpecialDiscount() {
               }
               disableClearable
               loading={isClientLoading}
-              isOptionEqualToValue={(option, value) => true}
+              isOptionEqualToValue={() => true}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -369,37 +388,6 @@ function SpecialDiscount() {
         onClose={onHistoryClose}
         variant="specialDiscount"
       />
-
-      <CommonDialog
-        open={isConfirmOpen}
-        onClose={onConfirmClose}
-        onYes={handleSubmit(onSubmit)}
-        question
-        isLoading={modalMode === "edit" ? isUpdateLoading : isCreateLoading}
-      >
-        Confirm {modalMode === "edit" ? "update" : "adding"} of{" "}
-        <span style={{ fontWeight: "700" }}>{watch("discount")}%</span> special
-        discount for <br />
-        <span style={{ fontWeight: "700" }}>
-          {watch("clientId")?.businessName}
-        </span>
-        ?
-      </CommonDialog>
-
-      <CommonDialog
-        open={isVoidOpen}
-        onClose={onVoidClose}
-        onYes={onVoidSubmit}
-        isLoading={isVoidLoading}
-      >
-        Confirm void of{" "}
-        <span style={{ fontWeight: "700" }}>{selectedRowData?.discount}%</span>{" "}
-        special discount for <br />
-        <span style={{ fontWeight: "700" }}>
-          {selectedRowData?.businessName}
-        </span>
-        ?
-      </CommonDialog>
     </>
   );
 }

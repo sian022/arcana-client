@@ -53,10 +53,28 @@ export const specialDiscountApi = createApi({
       invalidatesTags: ["Special Discount"],
     }),
 
+    //Approvals
+    approveSpecialDiscount: builder.mutation({
+      query: ({ id }) => ({
+        url: `/special-discount/approve/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Special Discount"],
+    }),
+
+    rejectSpecialDiscount: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/special-discount/reject/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Special Discount"],
+    }),
+
     //Others
     getSpecialDiscountApprovalHistoryById: builder.query({
       query: ({ id }) => ({
-        url: `/special-discount/${id}/approval-history`,
+        url: `/special-discount/approval-history/${id}`,
         method: "GET",
       }),
       providesTags: ["ApprovalHistoryById"],
@@ -72,4 +90,6 @@ export const {
   useUpdateSpecialDiscountMutation,
   useVoidSpecialDiscountMutation,
   useLazyGetSpecialDiscountApprovalHistoryByIdQuery,
+  useApproveSpecialDiscountMutation,
+  useRejectSpecialDiscountMutation,
 } = specialDiscountApi;

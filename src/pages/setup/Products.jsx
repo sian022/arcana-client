@@ -1,12 +1,12 @@
-import { Box, Checkbox, TextField, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { Controller, get, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { productEditSchema, productSchema } from "../../schema/schema";
+import { productSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
@@ -22,11 +22,6 @@ import { useGetAllUomsQuery } from "../../features/setup/api/uomApi";
 import { useGetAllProductSubCategoriesQuery } from "../../features/setup/api/productSubCategoryApi";
 import { useGetAllMeatTypesQuery } from "../../features/setup/api/meatTypeApi";
 import { useSelector } from "react-redux";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import moment from "moment";
-import { NumericFormat } from "react-number-format";
-import ProductsTable from "../../components/customTables/ProductsTable";
 import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
 import PriceChangeDrawer from "../../components/drawers/PriceChangeDrawer";
 import { LocalMall } from "@mui/icons-material";
@@ -111,14 +106,9 @@ function Products() {
     control,
     watch,
   } = useForm({
-    resolver: yupResolver(
-      drawerMode === "add" ? productSchema.schema : productEditSchema.schema
-    ),
+    resolver: yupResolver(productSchema.schema),
     mode: "onChange",
-    defaultValues:
-      drawerMode === "add"
-        ? productSchema.defaultValues
-        : productEditSchema.defaultValues,
+    defaultValues: productSchema.defaultValues,
   });
 
   //RTK Query
@@ -413,103 +403,6 @@ function Products() {
             />
           )}
         />
-
-        {drawerMode === "add" && (
-          <Controller
-            control={control}
-            name={"price"}
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-              <NumericFormat
-                label="Price (₱)"
-                type="text"
-                size="small"
-                customInput={TextField}
-                autoComplete="off"
-                onValueChange={(e) => {
-                  onChange(Number(e.value));
-                }}
-                onBlur={onBlur}
-                value={value || ""}
-                ref={ref}
-                thousandSeparator=","
-                helperText={errors?.price?.message}
-                error={errors?.price}
-              />
-            )}
-          />
-        )}
-
-        {/* {drawerMode === "edit" && (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "end",
-              gap: "5px",
-            }}
-          >
-            <Checkbox
-              checked={changePrice}
-              onChange={() => {
-                setChangePrice((prev) => !prev);
-              }}
-            />
-            <Typography>Change price</Typography>
-          </Box>
-        )}
-
-        {drawerMode === "edit" && changePrice && (
-          <>
-            <Controller
-              control={control}
-              name={"priceChange"}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <NumericFormat
-                  label="Price Change (₱)"
-                  type="text"
-                  size="small"
-                  customInput={TextField}
-                  autoComplete="off"
-                  onValueChange={(e) => {
-                    onChange(Number(e.value));
-                  }}
-                  onBlur={onBlur}
-                  value={value || ""}
-                  ref={ref}
-                  required
-                  thousandSeparator=","
-                  helperText={errors?.price?.message}
-                  error={errors?.price}
-                />
-              )}
-            />
-
-            <Controller
-              name="effectivityDate"
-              control={control}
-              render={({ field }) => (
-                <LocalizationProvider dateAdapter={AdapterMoment}>
-                  <DatePicker
-                    {...field}
-                    label="Price Effectivity Date"
-                    slotProps={{
-                      textField: { size: "small", required: true },
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        helperText={errors?.effectivityDate?.message}
-                        error={errors?.effectivityDate}
-                      />
-                    )}
-                    minDate={moment()}
-                    // maxDate={moment().subtract(18, "years")}
-                  />
-                </LocalizationProvider>
-              )}
-            />
-          </>
-        )} */}
       </CommonDrawer>
 
       <CommonDialog

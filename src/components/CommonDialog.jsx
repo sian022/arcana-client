@@ -5,7 +5,6 @@ import {
   DialogActions,
   DialogTitle,
 } from "@mui/material";
-import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
 import ErrorAlert from "../assets/images/ErrorAlert.png";

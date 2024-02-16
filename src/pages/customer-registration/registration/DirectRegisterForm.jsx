@@ -61,6 +61,7 @@ import {
   convertToTitleCase,
   dashFormat,
   debounce,
+  handleCatchErrorMessage,
   shallowEqual,
 } from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
@@ -272,8 +273,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const { data: priceModeData, isLoading: isPriceModeLoading } =
     useGetAllPriceModeForClientsQuery();
 
-  console.log(ownersRequirements);
-
   //Drawer Functions
   const onSubmit = async (data) => {
     try {
@@ -376,15 +375,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setSignatureDirect(null);
       dispatch(resetFreebies());
 
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({
-          message: `Error ${editMode ? "updating" : "registering"} client`,
-          variant: "error",
-        });
-      }
-      console.log(error);
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 

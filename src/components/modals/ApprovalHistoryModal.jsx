@@ -191,7 +191,8 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
         {isLoading ||
         isClientApprovalFetching ||
         isListingFeeApprovalFetching ||
-        isOtherExpensesApprovalFetching ? (
+        isOtherExpensesApprovalFetching ||
+        isSpecialDiscountApprovalFetching ? (
           <ApprovalHistorySkeleton />
         ) : (
           <Box className="approvalHistoryModal__content">
