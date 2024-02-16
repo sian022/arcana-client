@@ -97,7 +97,7 @@ function SpecialDiscount() {
     useGetAllSpecialDiscountQuery({
       Search: search,
       Status: true,
-      ApprovalStatus: approvalStatus,
+      SpDiscountStatus: approvalStatus,
       PageNumber: page + 1,
       PageSize: rowsPerPage,
     });
@@ -110,12 +110,19 @@ function SpecialDiscount() {
     });
 
   //Constants
-  const customOrderKeys = ["id", "businessName", "clientName", "discount"];
+  const customOrderKeys = [
+    "id",
+    "businessName",
+    "clientName",
+    "discount",
+    "isOneTime",
+  ];
   const tableHeads = [
     "Request No.",
     "Business Name",
     "Owner's Name",
     "Discount",
+    "One Time Only",
   ];
   const percentageArray = ["discount"];
 
@@ -211,8 +218,11 @@ function SpecialDiscount() {
     );
     setValue(
       "discount",
-      selectedRowData?.discount ? parseFloat(selectedRowData?.discount) : null
+      selectedRowData?.discount
+        ? parseFloat(selectedRowData?.discount) * 100
+        : null
     );
+    setValue("isOnetime", selectedRowData?.isOnetime);
 
     setEditMode(true);
     onFormOpen();
@@ -268,6 +278,7 @@ function SpecialDiscount() {
             onHistory={onHistoryOpen}
             onVoid={tabViewing === 3 ? onVoid : null}
             mt={"-20px"}
+            moveNoDataUp
           />
         )}
       </Box>
@@ -302,6 +313,7 @@ function SpecialDiscount() {
                   option.ownersName?.toUpperCase() || ""
               }
               disableClearable
+              disabled={editMode}
               loading={isClientLoading}
               isOptionEqualToValue={() => true}
               renderInput={(params) => (
@@ -368,7 +380,7 @@ function SpecialDiscount() {
           <Box sx={{ display: "flex", gap: "5px", justifyContent: "end" }}>
             <Controller
               control={control}
-              name="isOneTime"
+              name="isOnetime"
               render={({ field }) => (
                 <Checkbox
                   {...field}

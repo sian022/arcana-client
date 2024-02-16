@@ -187,7 +187,6 @@ export const formatPhoneNumber = (inputNumber) => {
 
 //Error Handling
 export const handleCatchErrorMessage = (error) => {
-  console.log(error);
   if (error?.data?.error?.message) {
     return error?.data?.error?.message;
   } else if (error?.status === 400) {

@@ -9,31 +9,44 @@ import useSnackbar from "../../../hooks/useSnackbar";
 import { useUploadCiAttachmentMutation } from "../../../features/sales-transaction/api/salesTransactionApi";
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 import moment from "moment/moment";
+import useConfirm from "../../../hooks/useConfirm";
 
 function ViewAttachmentModal({ ...props }) {
   const { onClose, open } = props;
 
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
-
-  const snackbar = useSnackbar();
-
   const [uploadAttachment, setUploadAttachment] = useState(null);
   const [currentAttachment, setCurrentAttachment] = useState(null);
 
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
   const uploadRef = useRef();
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //RTK Query
   const [uploadCiAttachment, { isUploadLoading }] =
     useUploadCiAttachmentMutation();
 
   //Functions
-  const onUploadSubmit = async () => {
+  const onUpload = async () => {
     const formData = new FormData();
 
     try {
-      await uploadAttachment({ id: selectedRowData?.id }).unwrap();
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to upload CI attachment for CI No.{" "}
+            <span style={{ fontWeight: "700" }}>20012</span>?
+          </>
+        ),
+        question: true,
+        callback: () => {
+          uploadAttachment({ id: selectedRowData?.id }).unwrap();
+        },
+      });
     } catch (error) {
-      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
     }
   };
 
@@ -109,10 +122,7 @@ function ViewAttachmentModal({ ...props }) {
 
         <Box className="viewAttachmentModal__actions">
           <DangerButton onClick={onClose}>Close</DangerButton>
-          <SecondaryButton
-            onClick={onUploadSubmit}
-            disabled={!currentAttachment}
-          >
+          <SecondaryButton onClick={onUpload} disabled={!currentAttachment}>
             Upload
           </SecondaryButton>
         </Box>

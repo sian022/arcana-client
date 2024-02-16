@@ -1,14 +1,5 @@
-import React, { useState } from "react";
-import DangerButton from "../DangerButton";
-import {
-  Box,
-  Divider,
-  IconButton,
-  Input,
-  InputLabel,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { useState } from "react";
+import { Box, Divider, IconButton, TextField, Typography } from "@mui/material";
 import { KeyboardDoubleArrowLeft, Search } from "@mui/icons-material";
 import CommonTable from "../CommonTable";
 import { dummyTransactionsData } from "../../utils/DummyData";
@@ -60,7 +51,11 @@ function TransactionsList({ setTransactionsMode }) {
   ];
   const pesoArray = ["amount"];
 
-  //Functions
+  //RTK Query
+
+  //Functions: API Submit
+
+  //Functions: Others
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);

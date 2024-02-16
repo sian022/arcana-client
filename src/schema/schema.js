@@ -1,4 +1,3 @@
-import moment from "moment";
 import * as yup from "yup";
 
 //Login
@@ -579,12 +578,12 @@ export const specialDiscountSchema = {
   schema: yup.object({
     clientId: yup.object().required("Client is required"),
     discount: yup.number().required("Special Discount is required"),
-    isOneTime: yup.boolean(),
+    isOnetime: yup.boolean(),
   }),
   defaultValues: {
     clientId: null,
     discount: null,
-    isOneTime: false,
+    isOnetime: false,
   },
 };
 

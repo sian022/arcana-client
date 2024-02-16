@@ -41,15 +41,17 @@ export const theme = createTheme({
       main: "#FFFFFF",
     },
   },
+
   typography: {
     fontFamily: null,
   },
+
   components: {
     MuiInputBase: {
       styleOverrides: {
         root: ({ ownerState }) => ({
           color: colorSchemes.light.secondary,
-          backgroundColor: !!ownerState?.formControl?.required
+          backgroundColor: ownerState?.formControl?.required
             ? "#f3f1ff"
             : ownerState?.formControl?.disabled
             ? "#f1f1f1"

@@ -189,6 +189,14 @@ function CommonTable({
                   }}
                 >
                   {(customOrderKeys || dataToMapKeys).map((keys, k) => {
+                    if (item[keys] === true) {
+                      return <TableCell key={k}>Yes</TableCell>;
+                    }
+
+                    if (item[keys] === false) {
+                      return <TableCell key={k}>No</TableCell>;
+                    }
+
                     if (keys === attachKey) {
                       return (
                         <TableCell key={k}>

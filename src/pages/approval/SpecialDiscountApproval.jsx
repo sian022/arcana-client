@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box, TextField, debounce } from "@mui/material";
+import { Box, Checkbox, TextField, Typography, debounce } from "@mui/material";
 import CommonTable from "../../components/CommonTable";
 import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
@@ -15,6 +15,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { AppContext } from "../../context/AppContext";
+import CommonDialog from "../../components/CommonDialog";
 
 function SpecialDiscountApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -23,6 +24,9 @@ function SpecialDiscountApproval() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+
+  const [reason, setReason] = useState("");
+  const [confirmReason, setConfirmReason] = useState(false);
 
   //Hooks
   const { notifications } = useContext(AppContext);
@@ -37,13 +41,28 @@ function SpecialDiscountApproval() {
     onClose: onHistoryClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isRejectOpen,
+    onOpen: onRejectOpen,
+    onClose: onRejectClose,
+  } = useDisclosure();
+
   //Constants
-  const customOrderKeys = ["id", "businessName", "clientName", "discount"];
+  const customOrderKeys = [
+    "id",
+    "businessName",
+    "clientName",
+    "discount",
+    "isOneTime",
+    "requestedBy",
+  ];
   const tableHeads = [
     "Request No.",
     "Business Name",
     "Owner's Name",
     "Discount",
+    "One Time Only",
+    "Requested By",
   ];
   const percentageArray = ["discount"];
 
@@ -81,7 +100,8 @@ function SpecialDiscountApproval() {
 
   //RTK Query: Approvals
   const [approveSpecialDiscount] = useApproveSpecialDiscountMutation();
-  const [rejectSpecialDiscount] = useRejectSpecialDiscountMutation();
+  const [rejectSpecialDiscount, { isLoading: isRejectLoading }] =
+    useRejectSpecialDiscountMutation();
 
   // Functions: API
   const onApprove = async () => {
@@ -102,7 +122,7 @@ function SpecialDiscountApproval() {
         ),
         question: true,
         callback: () =>
-          approveSpecialDiscount({ id: selectedRowData?.id }).unwrap(),
+          approveSpecialDiscount({ id: selectedRowData?.requestId }).unwrap(),
       });
 
       snackbar({
@@ -118,29 +138,34 @@ function SpecialDiscountApproval() {
 
   const onReject = async () => {
     try {
-      await confirm({
-        children: (
-          <>
-            Confirm rejection of{" "}
-            <span style={{ fontWeight: "700" }}>
-              {selectedRowData?.discount * 100}%
-            </span>{" "}
-            special discount for <br />
-            <span style={{ fontWeight: "700" }}>
-              {selectedRowData?.businessName}
-            </span>
-            ?
-          </>
-        ),
-        question: false,
-        callback: () =>
-          rejectSpecialDiscount({ id: selectedRowData?.id }).unwrap(),
-      });
+      await rejectSpecialDiscount({
+        id: selectedRowData?.requestId,
+        reason,
+      }).unwrap();
+      // await confirm({
+      //   children: (
+      //     <>
+      //       Confirm rejection of{" "}
+      //       <span style={{ fontWeight: "700" }}>
+      //         {selectedRowData?.discount * 100}%
+      //       </span>{" "}
+      //       special discount for <br />
+      //       <span style={{ fontWeight: "700" }}>
+      //         {selectedRowData?.businessName}
+      //       </span>
+      //       ?
+      //     </>
+      //   ),
+      //   question: false,
+      //   callback: () =>
+      //     rejectSpecialDiscount({ id: selectedRowData?.id, reason }).unwrap(),
+      // });
 
       snackbar({
         message: "Special Discount rejected successfully",
         variant: "success",
       });
+      handleRejectConfirmClose();
     } catch (error) {
       if (error.isConfirmed) {
         snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
@@ -152,6 +177,12 @@ function SpecialDiscountApproval() {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
+
+  const handleRejectConfirmClose = () => {
+    setReason("");
+    setConfirmReason(false);
+    onRejectClose();
+  };
 
   // UseEffect
   useEffect(() => {
@@ -201,13 +232,14 @@ function SpecialDiscountApproval() {
             percentageArray={percentageArray}
             compact
             onApprove={approvalStatus === "Under review" ? onApprove : null}
-            onReject={approvalStatus === "Under review" ? onReject : null}
+            onReject={approvalStatus === "Under review" ? onRejectOpen : null}
             onHistory={onHistoryOpen}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
+            moveNoDataUp
           />
         )}
       </Box>
@@ -217,6 +249,47 @@ function SpecialDiscountApproval() {
         onClose={onHistoryClose}
         variant="specialDiscount"
       />
+
+      <CommonDialog
+        onClose={handleRejectConfirmClose}
+        open={isRejectOpen}
+        onYes={onReject}
+        disableYes={!confirmReason || !reason.trim()}
+        isLoading={isRejectLoading}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <Box>
+            Are you sure you want to reject listing fee for{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.businessName || "client"}
+            </span>
+            ?
+          </Box>
+
+          <TextField
+            size="small"
+            label="Reason"
+            autoComplete="off"
+            value={reason}
+            onChange={(e) => {
+              setReason(e.target.value.toUpperCase());
+            }}
+            multiline
+            rows={3}
+          />
+
+          <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>
+            <Typography>Confirm reason</Typography>
+            <Checkbox
+              checked={confirmReason}
+              onChange={(e) => {
+                setConfirmReason(e.target.checked);
+              }}
+              disabled={!reason.trim()}
+            />
+          </Box>
+        </Box>
+      </CommonDialog>
     </>
   );
 }

@@ -6,13 +6,12 @@ import {
   FormGroup,
   IconButton,
   InputAdornment,
-  MenuItem,
   Radio,
   RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetFreebies,
@@ -31,22 +30,15 @@ function TermsAndConditions({ direct, editMode, storeType }) {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
 
-  const [selectedValues, setSelectedValues] = useState([]);
-
   const termsAndConditions = useSelector(
     (state) => state.regularRegistration.value.termsAndConditions
   );
   const freebiesDirect = useSelector(
     (state) => state.regularRegistration.value.directFreebie.freebies
   );
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const {
-    photoProofDirect,
-    signatureDirect,
-    setPhotoProofDirect,
-    setSignatureDirect,
-  } = useContext(DirectReleaseContext);
+  const { setPhotoProofDirect, setSignatureDirect } =
+    useContext(DirectReleaseContext);
 
   //Disclosures
   const {
@@ -166,6 +158,19 @@ function TermsAndConditions({ direct, editMode, storeType }) {
       })
     );
   };
+
+  useEffect(() => {
+    if (termsAndConditions["terms"] === 1) {
+      dispatch(
+        setTermsAndConditions({
+          property: "modeOfPayments",
+          value: termsAndConditions.modeOfPayments.filter(
+            (item) => item.modeOfPaymentId !== 2
+          ),
+        })
+      );
+    }
+  }, [termsAndConditions["terms"]]);
 
   return (
     <Box className="terms">
@@ -556,6 +561,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               onChange={() => {
                 handleCheckboxChange(2);
               }}
+              disabled={termsAndConditions["terms"] === 1}
             />
 
             <FormControlLabel
