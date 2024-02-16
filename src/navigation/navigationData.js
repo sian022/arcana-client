@@ -212,42 +212,42 @@ export const navigationData = [
     ],
   },
 
-  // {
-  //   id: 8,
-  //   path: "/sales-management",
-  //   name: "Sales Management",
-  //   icon: "TrendingUp",
-  //   sub: [
-  //     {
-  //       id: 1,
-  //       path: "/sales-management/sales-transaction",
-  //       name: "Sales Transaction",
-  //       icon: "MonetizationOn",
-  //       description: "POS and transactions list with attaching of CI photo",
-  //     },
-  //     {
-  //       id: 2,
-  //       path: "/sales-management/payment-transaction",
-  //       name: "Payment Transaction",
-  //       icon: "Payment",
-  //       description: "Manage and create payments",
-  //     },
-  //     {
-  //       id: 3,
-  //       path: "/sales-management/special-discount",
-  //       name: "Special Discount",
-  //       icon: "Discount",
-  //       description: "Manage and create special discounts",
-  //     },
-  //     {
-  //       id: 4,
-  //       path: "/sales-management/advance-payment",
-  //       name: "Advance Payment",
-  //       icon: "FastForward",
-  //       description: "Manage and create advance payments",
-  //     },
-  //   ],
-  // },
+  {
+    id: 8,
+    path: "/sales-management",
+    name: "Sales Management",
+    icon: "TrendingUp",
+    sub: [
+      {
+        id: 1,
+        path: "/sales-management/sales-transaction",
+        name: "Sales Transaction",
+        icon: "MonetizationOn",
+        description: "POS and transactions list with attaching of CI photo",
+      },
+      {
+        id: 2,
+        path: "/sales-management/payment-transaction",
+        name: "Payment Transaction",
+        icon: "Payment",
+        description: "Manage and create payments",
+      },
+      {
+        id: 3,
+        path: "/sales-management/special-discount",
+        name: "Special Discount",
+        icon: "Discount",
+        description: "Manage and create special discounts",
+      },
+      {
+        id: 4,
+        path: "/sales-management/advance-payment",
+        name: "Advance Payment",
+        icon: "FastForward",
+        description: "Manage and create advance payments",
+      },
+    ],
+  },
 
   // {
   //   id: 8,
@@ -286,14 +286,14 @@ export const navigationData = [
         description: "Approval and rejection of other expenses requests",
         notifications: ["pendingExpenses"],
       },
-      // {
-      //   id: 4,
-      //   name: "Sp. Discount Approval",
-      //   path: "/approval/sp-discount-approval",
-      //   icon: "LocalOffer",
-      //   description: "Approval and rejection of sp. discount requests",
-      //   // notifications: "pendingSpDiscount",
-      // },
+      {
+        id: 4,
+        name: "Sp. Discount Approval",
+        path: "/approval/sp-discount-approval",
+        icon: "LocalOffer",
+        description: "Approval and rejection of sp. discount requests",
+        // notifications: "pendingSpDiscount",
+      },
     ],
   },
   // {

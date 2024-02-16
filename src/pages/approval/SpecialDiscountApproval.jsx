@@ -167,9 +167,7 @@ function SpecialDiscountApproval() {
       });
       handleRejectConfirmClose();
     } catch (error) {
-      if (error.isConfirmed) {
-        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
-      }
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
