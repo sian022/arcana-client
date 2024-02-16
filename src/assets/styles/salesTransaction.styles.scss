@@ -65,8 +65,10 @@
         flex: 1;
         overflow: auto;
         height: 100%;
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        // display: flex;
+        // flex-direction: column;
         gap: 5px;
         padding-bottom: 5px;
 
@@ -94,6 +96,7 @@
             0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important;
           border: 1px solid #dee2e6 !important;
           background-color: white !important;
+          height: 120px;
 
           &:hover {
             background-color: darken(#fff, 3%) !important;
@@ -118,6 +121,64 @@
           }
         }
       }
+
+      // &__itemsList {
+      //   flex: 1;
+      //   overflow: auto;
+      //   height: 100%;
+      //   display: flex;
+      //   flex-direction: column;
+      //   gap: 5px;
+      //   padding-bottom: 5px;
+
+      //   &__skeletons {
+      //     display: flex;
+      //     flex-direction: column;
+      //     gap: 5px;
+      //     overflow: hidden;
+      //   }
+
+      //   &__noProductFound {
+      //     display: flex;
+      //     align-items: center;
+      //     justify-content: center;
+      //     flex: 1;
+      //   }
+
+      //   & &__itemCard {
+      //     display: flex;
+      //     justify-content: space-between;
+      //     align-items: center;
+      //     padding: 5px 20px;
+      //     color: black;
+      //     box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+      //       0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important;
+      //     border: 1px solid #dee2e6 !important;
+      //     background-color: white !important;
+
+      //     &:hover {
+      //       background-color: darken(#fff, 3%) !important;
+      //     }
+
+      //     &__labels {
+      //       display: flex;
+      //       flex-direction: column;
+      //       text-align: left;
+      //     }
+
+      //     &__right {
+      //       display: flex;
+      //       gap: 20px;
+      //       align-items: center;
+
+      //       &__price {
+      //         background-color: $success;
+      //         padding: 5px 10px;
+      //         border-radius: 10px;
+      //       }
+      //     }
+      //   }
+      // }
     }
 
     &__orderDetails {

@@ -326,13 +326,81 @@ function SalesTransaction() {
                               </span>
                             </Typography>
                           </Box>
+                        </Box>
+                      </Button>
+                    ))
+                  )}
+                </Box>
+
+                {/* <Box className="salesTransaction__body__itemsForm__itemsList">
+                  {isProductFetching || isLoading ? (
+                    <Box className="salesTransaction__body__itemsForm__itemsList__skeletons">
+                      {Array.from({ length: 7 }).map((_, index) => (
+                        <Skeleton
+                          height="60px"
+                          key={index}
+                          sx={{ transform: "none" }}
+                        />
+                      ))}
+                    </Box>
+                  ) : productData?.priceModeItems?.length === 0 ? (
+                    <Box className="salesTransaction__body__itemsForm__itemsList__noProductFound">
+                      <img
+                        width="200px"
+                        src={NoProductFound}
+                        alt="no-product-found"
+                      />
+                    </Box>
+                  ) : (
+                    productData?.priceModeItems?.map((item) => (
+                      <Button
+                        className="salesTransaction__body__itemsForm__itemsList__itemCard"
+                        key={item.id}
+                        onClick={() => {
+                          if (quickAdd) {
+                            handleAddItem(item);
+                          } else {
+                            dispatch(setSelectedRow(item));
+                            onAddItemOpen();
+                          }
+                        }}
+                      >
+                        <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__labels">
+                          <Typography
+                            fontSize="1.2rem"
+                            fontWeight="700"
+                            textTransform="none"
+                          >
+                            {item.itemCode}
+                          </Typography>
+                          <Typography fontSize="12px">
+                            {item.itemDescription}
+                          </Typography>
+                        </Box>
+
+                        <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__right">
+                          <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__right__price">
+                            <Typography
+                              fontWeight="700"
+                              whiteSpace="nowrap"
+                              color="white !important"
+                            >
+                              <span style={{ whiteSpace: "nowrap" }}>
+                                ₱{" "}
+                                {item.currentPrice?.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}
+                              </span>
+                            </Typography>
+                          </Box>
 
                           <Add />
                         </Box>
                       </Button>
                     ))
                   )}
-                </Box>
+                </Box> */}
               </Box>
 
               <Box className="salesTransaction__body__orderDetails">
