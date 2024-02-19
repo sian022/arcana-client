@@ -40,6 +40,7 @@ import { prospectApi } from "../features/prospect/api/prospectApi";
 import { notificationApi } from "../features/notification/api/notificationApi";
 import moment from "moment";
 import { clusterApi } from "../features/setup/api/clusterApi";
+import { specialDiscountApi } from "../features/special-discount/api/specialDiscountApi";
 
 function Header() {
   const dispatch = useDispatch();
@@ -114,6 +115,7 @@ function Header() {
     dispatch(prospectApi.util.resetApiState());
     dispatch(notificationApi.util.resetApiState());
     dispatch(clusterApi.util.resetApiState());
+    dispatch(specialDiscountApi.util.resetApiState());
 
     // sessionStorage.removeItem("token");
     // sessionStorage.removeItem("fullname");
