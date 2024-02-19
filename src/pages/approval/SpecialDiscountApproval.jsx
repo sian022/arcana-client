@@ -49,7 +49,7 @@ function SpecialDiscountApproval() {
 
   //Constants
   const customOrderKeys = [
-    "id",
+    // "id",
     "businessName",
     "clientName",
     "discount",
@@ -57,7 +57,7 @@ function SpecialDiscountApproval() {
     "requestedBy",
   ];
   const tableHeads = [
-    "Request No.",
+    // "Request No.",
     "Business Name",
     "Owner's Name",
     "Discount",

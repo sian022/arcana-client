@@ -65,10 +65,10 @@
         flex: 1;
         overflow: auto;
         height: 100%;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        // display: flex;
-        // flex-direction: column;
+        // display: grid;
+        // grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        display: flex;
+        flex-direction: column;
         gap: 5px;
         padding-bottom: 5px;
 
@@ -84,6 +84,7 @@
           align-items: center;
           justify-content: center;
           flex: 1;
+          grid-column: 1 / -1;
         }
 
         & &__itemCard {

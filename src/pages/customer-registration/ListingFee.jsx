@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box } from "@mui/material";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
@@ -34,7 +34,7 @@ function ListingFee() {
   const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { notifications, setModuleName } = useContext(AppContext);
+  const { notifications } = useContext(AppContext);
   const dispatch = useDispatch();
 
   //Disclosures
@@ -63,7 +63,7 @@ function ListingFee() {
   } = useDisclosure();
 
   //RTK Query
-  const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
+  const { data, isFetching } = useGetAllListingFeeQuery({
     Search: search,
     Status: true,
     ListingFeeStatus: listingFeeStatus,
@@ -77,26 +77,29 @@ function ListingFee() {
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
-  const listingFeeNavigation = [
-    {
-      case: 1,
-      name: "Pending Listing Fee",
-      listingFeeStatus: "Under review",
-      // badge: notifications["pendingListingFee"],
-    },
-    {
-      case: 2,
-      name: "Approved Listing Fee",
-      listingFeeStatus: "Approved",
-      // badge: notifications["approvedListingFee"],
-    },
-    {
-      case: 3,
-      name: "Rejected Listing Fee",
-      listingFeeStatus: "Rejected",
-      badge: notifications["rejectedListingFee"],
-    },
-  ];
+  const listingFeeNavigation = useMemo(
+    () => [
+      {
+        case: 1,
+        name: "Pending Listing Fee",
+        listingFeeStatus: "Under review",
+        // badge: notifications["pendingListingFee"],
+      },
+      {
+        case: 2,
+        name: "Approved Listing Fee",
+        listingFeeStatus: "Approved",
+        // badge: notifications["approvedListingFee"],
+      },
+      {
+        case: 3,
+        name: "Rejected Listing Fee",
+        listingFeeStatus: "Rejected",
+        badge: notifications["rejectedListingFee"],
+      },
+    ],
+    [notifications]
+  );
 
   const tableHeads = [
     "Business Name",
@@ -124,9 +127,7 @@ function ListingFee() {
 
   const onDeleteSubmit = async () => {
     try {
-      const res = await deleteCancelListingFee(
-        selectedRowData?.listingFeeId
-      ).unwrap();
+      await deleteCancelListingFee(selectedRowData?.listingFeeId).unwrap();
 
       snackbar({
         message: "Listing Fee cancelled successfully",
@@ -151,13 +152,13 @@ function ListingFee() {
     );
 
     setListingFeeStatus(foundItem?.listingFeeStatus);
-  }, [tabViewing]);
+  }, [tabViewing, listingFeeNavigation]);
 
   useEffect(() => {
     if (listingFeeStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Listing Fee" });
     }
-  }, [listingFeeStatus]);
+  }, [listingFeeStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -165,7 +166,7 @@ function ListingFee() {
 
   useEffect(() => {
     setPage(0);
-  }, [tabViewing, search, status, rowsPerPage]);
+  }, [tabViewing, search, rowsPerPage]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -6,7 +6,6 @@ import PageHeaderAddTabs from "../../components/PageHeaderAddTabs";
 import DirectRegisterForm from "./registration/DirectRegisterForm";
 import {
   useGetAllClientsQuery,
-  usePatchUpdateRegistrationStatusMutation,
   usePutVoidClientRegistrationMutation,
 } from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
@@ -28,7 +27,6 @@ function DirectRegistration() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
-  const [status, setStatus] = useState(true);
   const [editMode, setEditMode] = useState(false);
 
   const [voidConfirmBox, setVoidConfirmBox] = useState("");
@@ -37,7 +35,7 @@ function DirectRegistration() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const userDetails = useSelector((state) => state.login.userDetails);
 
-  const { notifications, setModuleName } = useContext(AppContext);
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -50,12 +48,6 @@ function DirectRegistration() {
     isOpen: isViewOpen,
     onOpen: onViewOpen,
     onClose: onViewClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
   } = useDisclosure();
 
   const {
@@ -95,7 +87,7 @@ function DirectRegistration() {
   //     RegistrationStatus: "Rejected",
   //   });
 
-  const { data, isLoading, isFetching } = useGetAllClientsQuery({
+  const { data, isFetching } = useGetAllClientsQuery({
     Search: search,
     // Status: status,
     RegistrationStatus: clientStatus,
@@ -103,35 +95,35 @@ function DirectRegistration() {
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
-
-  const [patchUpdateRegistrationStatus, { isLoading: isUpdateStatusLoading }] =
-    usePatchUpdateRegistrationStatusMutation();
   const [putVoidClientRegistration, { isLoading: isVoidLoading }] =
     usePutVoidClientRegistrationMutation();
 
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
-  const registrationNavigation = [
-    {
-      case: 1,
-      name: "Pending Clients",
-      registrationStatus: "Under review",
-      // badge: notifications["pendingClient"],
-    },
-    {
-      case: 2,
-      name: "Approved Clients",
-      registrationStatus: "Approved",
-      // badge: notifications["approvedClient"],
-    },
-    {
-      case: 3,
-      name: "Rejected Clients",
-      registrationStatus: "Rejected",
-      badge: notifications["rejectedClient"],
-    },
-  ];
+  const registrationNavigation = useMemo(
+    () => [
+      {
+        case: 1,
+        name: "Pending Clients",
+        registrationStatus: "Under review",
+        // badge: notifications["pendingClient"],
+      },
+      {
+        case: 2,
+        name: "Approved Clients",
+        registrationStatus: "Approved",
+        // badge: notifications["approvedClient"],
+      },
+      {
+        case: 3,
+        name: "Rejected Clients",
+        registrationStatus: "Rejected",
+        badge: notifications["rejectedClient"],
+      },
+    ],
+    [notifications]
+  );
 
   const selectOptions = [
     {
@@ -175,23 +167,6 @@ function DirectRegistration() {
     onRegisterOpen();
   };
 
-  const onArchiveSubmit = async () => {
-    try {
-      await patchUpdateRegistrationStatus(selectedRowData?.id).unwrap();
-      onArchiveClose();
-      snackbar({
-        message: `Client ${status ? "archived" : "restored"} successfully`,
-        variant: "success",
-      });
-    } catch (error) {
-      if (error?.data?.messages) {
-        snackbar({ message: error?.data?.messages[0], variant: "error" });
-      } else {
-        snackbar({ message: "Error archiving client", variant: "error" });
-      }
-    }
-  };
-
   const onVoidSubmit = async () => {
     try {
       await putVoidClientRegistration(selectedRowData?.id).unwrap();
@@ -212,13 +187,13 @@ function DirectRegistration() {
     );
 
     setClientStatus(foundItem?.registrationStatus);
-  }, [tabViewing]);
+  }, [tabViewing, registrationNavigation]);
 
   useEffect(() => {
     if (clientStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Clients" });
     }
-  }, [clientStatus]);
+  }, [clientStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -226,7 +201,7 @@ function DirectRegistration() {
 
   useEffect(() => {
     setPage(0);
-  }, [tabViewing, search, status, rowsPerPage]);
+  }, [tabViewing, search, rowsPerPage]);
 
   return (
     <>
@@ -304,19 +279,6 @@ function DirectRegistration() {
       />
 
       <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        isLoading={isUpdateStatusLoading}
-        onYes={onArchiveSubmit}
-      >
-        Are you sure you want to {status ? "archive" : "restore"} client{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.businessName}
-        </span>
-        ?
-      </CommonDialog>
-
-      <CommonDialog
         open={isVoidOpen}
         onClose={onVoidClose}
         isLoading={isVoidLoading}
@@ -336,7 +298,8 @@ function DirectRegistration() {
           sx={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
         >
           <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
-            To confirm, type "{selectedRowData?.businessName}" in the box below
+            To confirm, type &quot;{selectedRowData?.businessName}&quot; in the
+            box below
           </Typography>
           <TextField
             size="small"

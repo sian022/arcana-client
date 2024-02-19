@@ -16,7 +16,12 @@ import CommonActions from "./CommonActions";
 import NoData from "../assets/images/NoRecordsFound.svg";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
-import { Attachment, Visibility } from "@mui/icons-material";
+import {
+  Attachment,
+  Cancel,
+  CheckCircle,
+  Visibility,
+} from "@mui/icons-material";
 import { formatPhoneNumber } from "../utils/CustomFunctions";
 import moment from "moment";
 
@@ -189,12 +194,20 @@ function CommonTable({
                   }}
                 >
                   {(customOrderKeys || dataToMapKeys).map((keys, k) => {
-                    if (item[keys] === true) {
-                      return <TableCell key={k}>Yes</TableCell>;
+                    if (item[keys] === true && keys !== attachKey) {
+                      return (
+                        <TableCell key={k}>
+                          <CheckCircle color="success" />
+                        </TableCell>
+                      );
                     }
 
-                    if (item[keys] === false) {
-                      return <TableCell key={k}>No</TableCell>;
+                    if (item[keys] === false && keys !== attachKey) {
+                      return (
+                        <TableCell key={k}>
+                          <Cancel color="error" />
+                        </TableCell>
+                      );
                     }
 
                     if (keys === attachKey) {
@@ -278,7 +291,10 @@ function CommonTable({
                             {pesoArray && pesoArray.includes(keys) && "₱ "}
 
                             {percentageArray && percentageArray.includes(keys)
-                              ? item[keys] * 100
+                              ? (item[keys] * 100)?.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionsDigits: 2,
+                                })
                               : pesoArray && pesoArray.includes(keys)
                               ? item[keys]?.toLocaleString(undefined, {
                                   minimumFractionDigits: 2,
@@ -287,6 +303,7 @@ function CommonTable({
                               : !item[keys]
                               ? "N/A"
                               : item[keys]}
+
                             {percentageArray &&
                               percentageArray.includes(keys) &&
                               "%"}
@@ -312,7 +329,10 @@ function CommonTable({
                         {/* {keys === "phoneNumber" && "+63"} */}
 
                         {percentageArray && percentageArray.includes(keys)
-                          ? item[keys] * 100
+                          ? (item[keys] * 100)?.toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionsDigits: 2,
+                            })
                           : pesoArray && pesoArray.includes(keys)
                           ? item[keys]?.toLocaleString(undefined, {
                               minimumFractionDigits: 2,

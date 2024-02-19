@@ -1,26 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
   IconButton,
   Step,
-  StepButton,
   StepContent,
-  StepIcon,
   StepLabel,
   Stepper,
   Typography,
 } from "@mui/material";
-import SecondaryButton from "../SecondaryButton";
-import {
-  Cancel,
-  Check,
-  CheckCircle,
-  Circle,
-  Close,
-  EventNote,
-  HowToReg,
-} from "@mui/icons-material";
+import { Cancel, CheckCircle, Circle, Close } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { formatOrdinalPrefix } from "../../utils/CustomFunctions";
@@ -150,14 +139,22 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
         );
       } else if (variant === "specialDiscount") {
         triggerSpecialDiscount(
-          { id: selectedRowData?.requestId },
+          { id: selectedRowData?.id },
           { preferCacheValue: true }
         );
       }
     } else if (!open) {
       setIsLoading(true);
     }
-  }, [open]);
+  }, [
+    open,
+    selectedRowData,
+    triggerClient,
+    triggerListingFee,
+    triggerOtherExpenses,
+    triggerSpecialDiscount,
+    variant,
+  ]);
 
   useEffect(() => {
     // Set a timeout to change the loading state after the first second
@@ -206,6 +203,8 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     ? handleActiveStep(combinedListingFeeHistories?.[0])
                     : variant === "otherExpenses"
                     ? handleActiveStep(combinedOtherExpensesHistories?.[0])
+                    : variant === "specialDiscount"
+                    ? handleActiveStep(combinedSpecialDiscountHistories?.[0])
                     : null
                 }
               >
@@ -217,6 +216,8 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                   ? listingFeeApprovalData
                   : variant === "otherExpenses"
                   ? otherExpensesApprovalData
+                  : variant === "specialDiscount"
+                  ? specialDiscountApprovalData
                   : clientApprovalData
                 )?.approvers?.map((item, index) => (
                   <Step key={index}>

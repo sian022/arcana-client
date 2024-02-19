@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -86,7 +86,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
       );
     }
-  }, [isFetching]);
+  }, [isFetching, dispatch, data, selectedRowData?.id]);
 
   useEffect(() => {
     if (open) {
@@ -100,7 +100,12 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
         { preferCacheValue: true }
       ).then(() => setIsLoading(false));
     }
-  }, [open]);
+  }, [
+    open,
+    selectedRowData?.priceModeId,
+    selectedRowData?.itemId,
+    triggerPriceChange,
+  ]);
 
   return (
     <>
@@ -187,7 +192,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                       <Stepper orientation="vertical">
                         {priceChangeData?.futurePriceChanges?.map(
                           (item, index) => (
-                            <Step expanded>
+                            <Step key={index} expanded>
                               <StepLabel sx={{ position: "relative" }}>
                                 <span style={{ fontWeight: "600" }}>
                                   ₱{" "}
@@ -213,15 +218,19 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                                   </IconButton>
                                 )}
                               </StepLabel>
+
                               <StepContent>
-                                <Typography fontSize="14px">
-                                  Effectivity Date:{" "}
-                                  <span style={{ fontWeight: "500" }}>
+                                <Box sx={{ display: "flex", gap: "5px" }}>
+                                  <Typography fontSize="14px">
+                                    Effectivity Date:{" "}
+                                  </Typography>
+
+                                  <Typography fontWeight="500" fontSize="14px">
                                     {moment(item.effectivityDate).format(
                                       "MMMM D, hh:mm a"
                                     )}
-                                  </span>
-                                </Typography>
+                                  </Typography>
+                                </Box>
                               </StepContent>
                             </Step>
                           )
@@ -245,7 +254,7 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                       >
                         {priceChangeData?.priceChangeHistories?.map(
                           (item, index) => (
-                            <Step active expanded>
+                            <Step key={index} active expanded>
                               <StepLabel
                                 sx={{ position: "relative" }}
                                 StepIconProps={{ icon: "" }}
@@ -258,15 +267,19 @@ function PriceDetailsModal({ isFetching, data, ...otherProps }) {
                                   })}
                                 </span>
                               </StepLabel>
+
                               <StepContent>
-                                <Typography fontSize="14px">
-                                  Effectivity Date:{" "}
-                                  <span style={{ fontWeight: "500" }}>
+                                <Box sx={{ display: "flex", gap: "5px" }}>
+                                  <Typography fontSize="14px">
+                                    Effectivity Date:{" "}
+                                  </Typography>
+
+                                  <Typography fontSize="14px" fontWeight="500">
                                     {moment(item.effectivityDate).format(
                                       "MMMM D, hh:mm a"
                                     )}
-                                  </span>
-                                </Typography>
+                                  </Typography>
+                                </Box>
                               </StepContent>
                             </Step>
                           )

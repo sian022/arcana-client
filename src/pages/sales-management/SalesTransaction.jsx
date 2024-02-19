@@ -107,7 +107,7 @@ function SalesTransaction() {
     });
 
     return total;
-  }, [watch]);
+  }, [watch, watch("items"), watch()]);
 
   const handleAddItem = (item, quantity) => {
     const existingItemIndex = watch("items").findIndex(
@@ -264,17 +264,23 @@ function SalesTransaction() {
                   </Box>
                 </Box>
 
-                <Box className="salesTransaction__body__itemsForm__itemsList">
+                {/* <Box
+                  className="salesTransaction__body__itemsForm__itemsList"
+                  sx={{
+                    overflow:
+                      isProductFetching || isLoading ? "hidden" : "auto",
+                  }}
+                >
                   {isProductFetching || isLoading ? (
-                    <Box className="salesTransaction__body__itemsForm__itemsList__skeletons">
-                      {Array.from({ length: 7 }).map((_, index) => (
+                    <>
+                      {Array.from({ length: 12 }).map((_, index) => (
                         <Skeleton
-                          height="60px"
+                          height="120px"
                           key={index}
                           sx={{ transform: "none" }}
                         />
                       ))}
-                    </Box>
+                    </>
                   ) : productData?.priceModeItems?.length === 0 ? (
                     <Box className="salesTransaction__body__itemsForm__itemsList__noProductFound">
                       <img
@@ -330,11 +336,12 @@ function SalesTransaction() {
                       </Button>
                     ))
                   )}
-                </Box>
+                </Box> */}
 
-                {/* <Box className="salesTransaction__body__itemsForm__itemsList">
+                <Box className="salesTransaction__body__itemsForm__itemsList">
                   {isProductFetching || isLoading ? (
-                    <Box className="salesTransaction__body__itemsForm__itemsList__skeletons">
+                    // <Box className="salesTransaction__body__itemsForm__itemsList__skeletons">
+                    <>
                       {Array.from({ length: 7 }).map((_, index) => (
                         <Skeleton
                           height="60px"
@@ -342,8 +349,9 @@ function SalesTransaction() {
                           sx={{ transform: "none" }}
                         />
                       ))}
-                    </Box>
-                  ) : productData?.priceModeItems?.length === 0 ? (
+                    </>
+                  ) : // </Box>
+                  productData?.priceModeItems?.length === 0 ? (
                     <Box className="salesTransaction__body__itemsForm__itemsList__noProductFound">
                       <img
                         width="200px"
@@ -400,7 +408,7 @@ function SalesTransaction() {
                       </Button>
                     ))
                   )}
-                </Box> */}
+                </Box>
               </Box>
 
               <Box className="salesTransaction__body__orderDetails">

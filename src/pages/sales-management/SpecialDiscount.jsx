@@ -17,10 +17,10 @@ import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import {
+  useCancelSpecialDiscountMutation,
   useCreateSpecialDiscountMutation,
   useGetAllSpecialDiscountQuery,
   useUpdateSpecialDiscountMutation,
-  useVoidSpecialDiscountMutation,
 } from "../../features/special-discount/api/specialDiscountApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import useConfirm from "../../hooks/useConfirm";
@@ -39,6 +39,7 @@ function SpecialDiscount() {
   const snackbar = useSnackbar();
   const confirm = useConfirm();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const userDetails = useSelector((state) => state.login.userDetails);
 
   //React Hook Form
   const {
@@ -102,7 +103,8 @@ function SpecialDiscount() {
       PageSize: rowsPerPage,
     });
   const [updateSpecialDiscount] = useUpdateSpecialDiscountMutation();
-  const [voidSpecialDiscount] = useVoidSpecialDiscountMutation();
+  // const [voidSpecialDiscount] = useVoidSpecialDiscountMutation();
+  const [cancelSpecialDiscount] = useCancelSpecialDiscountMutation();
 
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsQuery({
@@ -111,14 +113,14 @@ function SpecialDiscount() {
 
   //Constants
   const customOrderKeys = [
-    "id",
+    // "id",
     "businessName",
     "clientName",
     "discount",
     "isOneTime",
   ];
   const tableHeads = [
-    "Request No.",
+    // "Request No.",
     "Business Name",
     "Owner's Name",
     "Discount",
@@ -145,6 +147,7 @@ function SpecialDiscount() {
         callback: () =>
           editMode
             ? updateSpecialDiscount({
+                id: selectedRowData?.id,
                 ...data,
                 clientId: data?.clientId.id,
               }).unwrap()
@@ -166,12 +169,12 @@ function SpecialDiscount() {
     }
   };
 
-  const onVoid = async () => {
+  const onCancel = async () => {
     try {
       await confirm({
         children: (
           <>
-            Confirm void of{" "}
+            Confirm cancel of{" "}
             <span style={{ fontWeight: "700" }}>
               {selectedRowData?.discount}%
             </span>{" "}
@@ -183,7 +186,7 @@ function SpecialDiscount() {
           </>
         ),
         callback: () =>
-          voidSpecialDiscount({ id: selectedRowData?.id }).unwrap(),
+          cancelSpecialDiscount({ id: selectedRowData?.id }).unwrap(),
       });
 
       snackbar({
@@ -222,7 +225,7 @@ function SpecialDiscount() {
         ? parseFloat(selectedRowData?.discount) * 100
         : null
     );
-    setValue("isOnetime", selectedRowData?.isOnetime);
+    setValue("isOnetime", selectedRowData?.isOneTime);
 
     setEditMode(true);
     onFormOpen();
@@ -274,9 +277,16 @@ function SpecialDiscount() {
             setRowsPerPage={setRowsPerPage}
             page={page}
             setPage={setPage}
-            onEdit={tabViewing === 2 ? null : handleEditOpen}
+            // onEdit={tabViewing === 2 ? null : handleEditOpen}
+            onEdit={
+              userDetails?.roleName === "Admin"
+                ? handleEditOpen
+                : userDetails?.roleName !== "Admin"
+                ? approvalStatus !== "Approved" && handleEditOpen
+                : null
+            }
             onHistory={onHistoryOpen}
-            onVoid={tabViewing === 3 ? onVoid : null}
+            onCancel={tabViewing === 3 ? onCancel : null}
             mt={"-20px"}
             moveNoDataUp
           />
@@ -313,7 +323,7 @@ function SpecialDiscount() {
                   option.ownersName?.toUpperCase() || ""
               }
               disableClearable
-              disabled={editMode}
+              // disabled={editMode}
               loading={isClientLoading}
               isOptionEqualToValue={() => true}
               renderInput={(params) => (
