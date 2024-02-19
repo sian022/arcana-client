@@ -323,7 +323,11 @@ function SpecialDiscount() {
                   option.ownersName?.toUpperCase() || ""
               }
               disableClearable
-              disabled={editMode && approvalStatus === "Approved"}
+              // disabled={
+              //   editMode &&
+              //   (approvalStatus === "Approved" || approvalStatus === "Rejected")
+              // }
+              disabled={editMode}
               loading={isClientLoading}
               isOptionEqualToValue={() => true}
               renderInput={(params) => (
