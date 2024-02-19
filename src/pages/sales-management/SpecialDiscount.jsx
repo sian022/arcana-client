@@ -185,6 +185,7 @@ function SpecialDiscount() {
             ?
           </>
         ),
+        question: false,
         callback: () =>
           cancelSpecialDiscount({ id: selectedRowData?.id }).unwrap(),
       });
@@ -286,7 +287,8 @@ function SpecialDiscount() {
                 : null
             }
             onHistory={onHistoryOpen}
-            onCancel={tabViewing === 3 ? onCancel : null}
+            onCancel={tabViewing === 1 ? onCancel : null}
+            onVoid={tabViewing === 3}
             mt={"-20px"}
             moveNoDataUp
           />
