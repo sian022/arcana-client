@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl = import.meta.env.VITE_SEDAR_BASE_URL;
+const baseUrl = import.meta.env.VITE_RDF_SMS_BASE_URL;
 
 export const rdfSmsApi = createApi({
   reducerPath: "rdfSmsApi",

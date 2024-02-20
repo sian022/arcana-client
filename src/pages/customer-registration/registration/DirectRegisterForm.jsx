@@ -304,10 +304,12 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
             : {}),
         }).unwrap();
 
-        // await sendMessage({
-        //   message: `Fresh morning ${selectedRowData?.currentApproverName}! You have a new customer approval. \n\n-Arcana System SMS`,
-        //   mobileNumber: selectedRowData?.currentApproverMobileNumber,
-        // }).unwrap();
+        await sendMessage({
+          message: `Fresh morning ${
+            response?.value?.approver || "approver"
+          }! You have a new customer approval. \n\n-Arcana System SMS`,
+          mobile_number: `+63${response?.value?.approverMobileNumber}`,
+        }).unwrap();
 
         if (freebiesDirect && signatureDirect && photoProofDirect) {
           const signatureFile = new File(
