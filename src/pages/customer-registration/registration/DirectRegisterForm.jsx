@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CommonDrawer from "../../../components/CommonDrawer";
 import {
   Box,
@@ -12,42 +12,25 @@ import {
   Typography,
 } from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
-import SecondaryButton from "../../../components/SecondaryButton";
-import {
-  Attachment,
-  Check,
-  Close,
-  Gavel,
-  Person,
-  PushPin,
-} from "@mui/icons-material";
+import { Attachment, Check, Close, Gavel, Person } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  directRegisterPersonalSchema,
-  regularRegisterSchema,
-} from "../../../schema/schema";
+import { directRegisterPersonalSchema } from "../../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
   registrationApi,
-  useGetAttachmentsByClientIdQuery,
-  useGetTermsByClientIdQuery,
   useLazyGetAttachmentsByClientIdQuery,
   useLazyGetTermsByClientIdQuery,
   usePostDirectRegistrationMutation,
   usePostValidateClientMutation,
   usePutAddAttachmentsForDirectMutation,
-  usePutAddAttachmentsMutation,
-  usePutAddTermsAndCondtionsMutation,
-  usePutRegisterClientMutation,
   usePutReleaseFreebiesMutation,
   usePutUpdateClientAttachmentsMutation,
   usePutUpdateClientInformationMutation,
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
-import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "../prospecting/TermsAndConditions";
 import Attachments from "../prospecting/Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
@@ -59,8 +42,6 @@ import {
 import {
   base64ToBlob,
   convertToTitleCase,
-  dashFormat,
-  debounce,
   handleCatchErrorMessage,
   shallowEqual,
 } from "../../../utils/CustomFunctions";
@@ -71,16 +52,16 @@ import DangerButton from "../../../components/DangerButton";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import { coverageMapping } from "../../../utils/Constants";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
-import { NumericFormat, PatternFormat } from "react-number-format";
+import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 import RegisterClientFormSkeleton from "../../../components/skeletons/RegisterClientFormSkeleton";
 import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
+import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 
 function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const dispatch = useDispatch();
@@ -101,9 +82,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
   const [includeAuthorizedRepresentative, setIncludeAuthorizedRepresentative] =
     useState(false);
   const [isAllApiLoading, setIsAllApiLoading] = useState(false);
-
-  const [isInitialized, setIsInitialzied] = useState(false);
-  const [isPhoneNumberShrinked, setIsPhoneNumberShrinked] = useState(false);
 
   const { ownersRequirements, representativeRequirements, requirementsMode } =
     useContext(AttachmentsContext);
@@ -232,31 +210,29 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   //RTK Query
 
-  const [postDirectRegistration, { isLoading: isRegisterLoading }] =
-    usePostDirectRegistrationMutation();
-  const [putAddAttachmentsForDirect, { isLoading: isAttachmentsLoading }] =
-    usePutAddAttachmentsForDirectMutation();
+  const [postDirectRegistration] = usePostDirectRegistrationMutation();
+  const [putAddAttachmentsForDirect] = usePutAddAttachmentsForDirectMutation();
+  const [sendMessage] = useSendMessageMutation();
 
-  const [putUpdateClientInformation, { isLoading: isUpdateClientLoading }] =
-    usePutUpdateClientInformationMutation();
-  const [
-    putUpdateClientAttachments,
-    { isLoading, isUpdateAttachmentsLoading },
-  ] = usePutUpdateClientAttachmentsMutation();
+  const [putUpdateClientInformation] = usePutUpdateClientInformationMutation();
+  const [putUpdateClientAttachments] = usePutUpdateClientAttachmentsMutation();
 
-  const [putReleaseFreebies, { isLoading: isReleaseFreebiesLoading }] =
-    usePutReleaseFreebiesMutation();
+  const [putReleaseFreebies] = usePutReleaseFreebiesMutation();
 
   const { data: storeTypeData, isLoading: isStoreTypeLoading } =
     useGetAllStoreTypesQuery({ Status: true, Page: 1, PageSize: 1000 });
-  const { data: termDaysData, isLoading: isTermDaysLoading } =
-    useGetAllTermDaysQuery({ Status: true, Page: 1, PageSize: 1000 });
-  const { data: clusterData } = useGetAllClustersQuery({
+  const { data: termDaysData } = useGetAllTermDaysQuery({
     Status: true,
-    ModuleName: "Registration",
     Page: 1,
     PageSize: 1000,
   });
+  const { data: clusterData, isLoading: isClusterDataLoading } =
+    useGetAllClustersQuery({
+      Status: true,
+      ModuleName: "Registration",
+      Page: 1,
+      PageSize: 1000,
+    });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
@@ -327,6 +303,11 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
               }
             : {}),
         }).unwrap();
+
+        // await sendMessage({
+        //   message: `Fresh morning ${selectedRowData?.currentApproverName}! You have a new customer approval. \n\n-Arcana System SMS`,
+        //   mobileNumber: selectedRowData?.currentApproverMobileNumber,
+        // }).unwrap();
 
         if (freebiesDirect && signatureDirect && photoProofDirect) {
           const signatureFile = new File(
@@ -956,6 +937,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                             allowNegative={false}
                             valueIsNumericString
                             decimalScale={0}
+                            inputRef={ref}
                             onValueChange={(e) => {
                               onChange(e.value);
                             }}
@@ -1266,6 +1248,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                         option.storeTypeName?.toUpperCase()
                       }
                       disableClearable
+                      isLoading={isStoreTypeLoading}
                       // value={storeTypeData?.storeTypes?.find(
                       //   (store) => store.storeTypeName === selectedStoreType
                       // )}
@@ -1462,6 +1445,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                       name={"clusterId"}
                       control={control}
                       options={clusterData?.cluster || []}
+                      loading={isClusterDataLoading}
                       getOptionLabel={(option) => option.cluster?.toUpperCase()}
                       disableClearable
                       isOptionEqualToValue={(option, value) =>

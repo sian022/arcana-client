@@ -1,12 +1,4 @@
-import {
-  Box,
-  Checkbox,
-  Paper,
-  TextField,
-  Typography,
-  debounce,
-} from "@mui/material";
-import React from "react";
+import { Box, Checkbox, TextField, Typography, debounce } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 
 function AddVoidSearchMixin({
@@ -28,6 +20,7 @@ function AddVoidSearchMixin({
           Add {addTitle && addTitle}
         </SecondaryButton>
       </Box>
+
       <Box className="pageHeader__right">
         {(status === "Voided" || status === "Rejected") && (
           <>
@@ -37,10 +30,12 @@ function AddVoidSearchMixin({
                   ? setStatus("Rejected")
                   : setStatus("Voided");
               }}
+              checked={status === "Voided"}
             />
             <Typography variant="subtitle2">Voided</Typography>
           </>
         )}
+
         <TextField
           type="search"
           size="small"

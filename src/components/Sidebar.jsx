@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { navigationData } from "../navigation/navigationData";
 import {
-  Backdrop,
   Box,
   Collapse,
   IconButton,
@@ -18,12 +17,8 @@ import { getIconElement } from "./GetIconElement";
 import SystemLogoName from "../assets/images/SystemLogoName.png";
 import SystemLogo from "../assets/images/SystemLogo.png";
 import { KeyboardDoubleArrowLeft } from "@mui/icons-material";
-import {
-  toggleSidebar,
-  toggleSidebarSmallScreen,
-} from "../features/misc/reducers/disclosureSlice";
+import { toggleSidebarSmallScreen } from "../features/misc/reducers/disclosureSlice";
 import { AppContext } from "../context/AppContext";
-import { usePatchReadNotificationMutation } from "../features/notification/api/notificationApi";
 
 function Sidebar() {
   const [activeModule, setActiveModule] = useState("");

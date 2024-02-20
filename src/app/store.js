@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { loginSlice } from "../features/authentication/reducers/loginSlice";
 import { loginApi } from "../features/authentication/api/loginApi";
@@ -36,6 +36,7 @@ import { priceModeSetupApi } from "../features/setup/api/priceModeSetupApi";
 import { priceModeItemsApi } from "../features/setup/api/priceModeItemsApi";
 import { salesTransactionApi } from "../features/sales-transaction/api/salesTransactionApi";
 import { specialDiscountApi } from "../features/special-discount/api/specialDiscountApi";
+import { rdfSmsApi } from "../features/misc/api/rdfSmsApi";
 
 export const store = configureStore({
   reducer: {
@@ -75,6 +76,7 @@ export const store = configureStore({
     [priceModeItemsApi.reducerPath]: priceModeItemsApi.reducer,
     [salesTransactionApi.reducerPath]: salesTransactionApi.reducer,
     [specialDiscountApi.reducerPath]: specialDiscountApi.reducer,
+    [rdfSmsApi.reducerPath]: rdfSmsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -108,6 +110,7 @@ export const store = configureStore({
       priceModeItemsApi.middleware,
       salesTransactionApi.middleware,
       specialDiscountApi.middleware,
+      rdfSmsApi.middleware,
     ]),
 });
 

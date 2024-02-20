@@ -2,7 +2,7 @@ import { Box, Checkbox, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { AppContext } from "../../context/AppContext";
-import AddSearchMixin from "../../components/mixins/AddSearchMixin";
+import AddVoidSearchMixin from "../../components/mixins/AddVoidSearchMixin";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonTable from "../../components/CommonTable";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
@@ -21,6 +21,7 @@ import {
   useCreateSpecialDiscountMutation,
   useGetAllSpecialDiscountQuery,
   useUpdateSpecialDiscountMutation,
+  useVoidSpecialDiscountMutation,
 } from "../../features/special-discount/api/specialDiscountApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import useConfirm from "../../hooks/useConfirm";
@@ -103,7 +104,7 @@ function SpecialDiscount() {
       PageSize: rowsPerPage,
     });
   const [updateSpecialDiscount] = useUpdateSpecialDiscountMutation();
-  // const [voidSpecialDiscount] = useVoidSpecialDiscountMutation();
+  const [voidSpecialDiscount] = useVoidSpecialDiscountMutation();
   const [cancelSpecialDiscount] = useCancelSpecialDiscountMutation();
 
   const { data: clientData, isLoading: isClientLoading } =
@@ -176,7 +177,7 @@ function SpecialDiscount() {
           <>
             Confirm cancel of{" "}
             <span style={{ fontWeight: "700" }}>
-              {selectedRowData?.discount}%
+              {selectedRowData?.discount * 100}%
             </span>{" "}
             special discount for <br />
             <span style={{ fontWeight: "700" }}>
@@ -188,6 +189,38 @@ function SpecialDiscount() {
         question: false,
         callback: () =>
           cancelSpecialDiscount({ id: selectedRowData?.id }).unwrap(),
+      });
+
+      snackbar({
+        message: "Special discount cancelled successfully",
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
+    }
+  };
+
+  const onVoid = async () => {
+    try {
+      await confirm({
+        children: (
+          <>
+            Confirm void of{" "}
+            <span style={{ fontWeight: "700" }}>
+              {selectedRowData?.discount * 100}%
+            </span>{" "}
+            special discount for <br />
+            <span style={{ fontWeight: "700" }}>
+              {selectedRowData?.businessName}
+            </span>
+            ?
+          </>
+        ),
+        question: false,
+        callback: () =>
+          voidSpecialDiscount({ id: selectedRowData?.id }).unwrap(),
       });
 
       snackbar({
@@ -258,10 +291,12 @@ function SpecialDiscount() {
           setTabViewing={setTabViewing}
         />
 
-        <AddSearchMixin
+        <AddVoidSearchMixin
           addTitle="Special Discount"
           onAddOpen={handleAddOpen}
           setSearch={setSearch}
+          setStatus={setApprovalStatus}
+          status={approvalStatus}
         />
 
         {isSpecialDiscountFetching ? (
@@ -288,7 +323,9 @@ function SpecialDiscount() {
             }
             onHistory={onHistoryOpen}
             onCancel={tabViewing === 1 ? onCancel : null}
-            onVoid={tabViewing === 3}
+            onVoid={
+              tabViewing === 3 && approvalStatus !== "Voided" ? onVoid : null
+            }
             mt={"-20px"}
             moveNoDataUp
           />

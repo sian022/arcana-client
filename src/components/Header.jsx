@@ -1,17 +1,6 @@
-import {
-  Box,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  Autocomplete,
-  TextField,
-  Divider,
-} from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import { Box, Typography, IconButton, Menu, MenuItem } from "@mui/material";
+import { useRef } from "react";
 import "../assets/styles/navbar.styles.scss";
-import { formatDate } from "../utils/CustomFunctions";
-import { navigationData } from "../navigation/navigationData";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setSelectedStoreType } from "../features/prospect/reducers/selectedStoreTypeSlice";
 import {
@@ -23,7 +12,6 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import useDisclosure from "../hooks/useDisclosure";
-import CommonDialog from "./CommonDialog";
 import {
   setFullname,
   setToken,
@@ -47,38 +35,11 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const permissions = useSelector((state) => state.permissions?.permissions);
-  const permittedRoutes = navigationData.filter((item) =>
-    permissions?.includes(item.name)
-  );
-
-  const navigationLabel = [
-    navigationData[0],
-    ...permittedRoutes.reduce((accumulator, item) => {
-      if (item.sub) {
-        accumulator.push(...item.sub);
-      }
-      return accumulator;
-    }, []),
-  ];
-
-  // const initialPage =
-  //   location.pathname === "/"
-  //     ? navigationData[0]
-  //     : navigationLabel?.find((item) => location.pathname?.includes(item.path));
-
-  const initialPage = navigationLabel?.find((item) =>
-    location.pathname?.includes(item.path)
-  );
-
-  const [currentPage, setCurrentPage] = useState(initialPage);
-
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
   );
 
   const fullName = useSelector((state) => state.login.fullname);
-  const roleName = useSelector((state) => state.login.roleName);
 
   const {
     isOpen: isMenuOpen,
@@ -96,11 +57,6 @@ function Header() {
 
   //Constants
   const routesForStoreType = ["/customer-registration/prospect"];
-
-  const handleNavigate = (_, sub) => {
-    setCurrentPage(sub);
-    navigate(sub.path);
-  };
 
   const handleLogout = () => {
     dispatch(setToken(""));
@@ -134,18 +90,6 @@ function Header() {
     onMenuClose();
   };
 
-  useEffect(() => {
-    // if (location.pathname !== "/" || location.pathname !== "") {
-    const foundItem = navigationLabel?.find(
-      (item) =>
-        // location.pathname?.includes(item.path)
-        location.pathname === item.path
-    );
-    setCurrentPage(foundItem);
-    // }
-  }, [location.pathname]);
-
-  // console.log(currentPage);
   return (
     <>
       <Box className="navbar">

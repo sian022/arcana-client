@@ -47,15 +47,15 @@ export const specialDiscountApi = createApi({
 
     voidSpecialDiscount: builder.mutation({
       query: ({ id }) => ({
-        url: `/special-discount/${id}/void`,
-        method: "PATCH",
+        url: `/special-discount/void/${id}`,
+        method: "PUT",
       }),
       invalidatesTags: ["Special Discount"],
     }),
 
     cancelSpecialDiscount: builder.mutation({
       query: ({ id }) => ({
-        url: `/special-discount/${id}/cancel`,
+        url: `/special-discount/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Special Discount"],
