@@ -20,7 +20,7 @@ export const rdfSmsApi = createApi({
       query: (body) => ({
         url: "/post_message",
         method: "POST",
-        body: { system: "Arcana", ...body },
+        body: { system_name: "Arcana", ...body },
       }),
     }),
   }),
