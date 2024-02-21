@@ -222,6 +222,7 @@ function ListingFee() {
         editMode={editMode}
         setEditMode={setEditMode}
         onListingFeeViewClose={onViewClose}
+        listingFeeStatus={listingFeeStatus}
       />
 
       <ViewListingFeeModal

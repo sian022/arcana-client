@@ -63,7 +63,13 @@ import RegisterClientFormSkeleton from "../../../components/skeletons/RegisterCl
 import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
 import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 
-function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
+function DirectRegisterForm({
+  open,
+  onClose,
+  editMode,
+  setEditMode,
+  clientStatus,
+}) {
   const dispatch = useDispatch();
   const {
     setOwnersRequirements,
@@ -212,7 +218,8 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
   const [postDirectRegistration] = usePostDirectRegistrationMutation();
   const [putAddAttachmentsForDirect] = usePutAddAttachmentsForDirectMutation();
-  const [sendMessage] = useSendMessageMutation();
+  const [sendMessage, { isError: isSendMessageError }] =
+    useSendMessageMutation();
 
   const [putUpdateClientInformation] = usePutUpdateClientInformationMutation();
   const [putUpdateClientAttachments] = usePutUpdateClientAttachmentsMutation();
@@ -291,6 +298,14 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
         termsAndConditions["terms"] !== 1 &&
           (await addAttachmentsSubmit(response?.value?.id));
+
+        clientStatus === "Rejected" &&
+          (await sendMessage({
+            message: `Fresh morning ${
+              response?.value?.approver || "approver"
+            }! You have a new customer approval.`,
+            mobile_number: `+63${response?.value?.approverMobileNumber}`,
+          }).unwrap());
       } else {
         response = await postDirectRegistration({
           ...transformedData,
@@ -302,13 +317,6 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
                 })),
               }
             : {}),
-        }).unwrap();
-
-        await sendMessage({
-          message: `Fresh morning ${
-            response?.value?.approver || "approver"
-          }! You have a new customer approval. \n\n-Arcana System SMS`,
-          mobile_number: `+63${response?.value?.approverMobileNumber}`,
         }).unwrap();
 
         if (freebiesDirect && signatureDirect && photoProofDirect) {
@@ -334,6 +342,13 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
 
         termsAndConditions["terms"] !== 1 &&
           (await addAttachmentsSubmit(response?.value?.id));
+
+        await sendMessage({
+          message: `Fresh morning ${
+            response?.value?.approver || "approver"
+          }! You have a new customer approval.`,
+          mobile_number: `+63${response?.value?.approverMobileNumber}`,
+        }).unwrap();
       }
 
       setIsAllApiLoading(false);
@@ -344,6 +359,7 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
         message: `Client ${editMode ? "updated" : "registered"}  successfully`,
         variant: "success",
       });
+
       onConfirmClose();
       onClose();
       handleResetForms();
@@ -357,6 +373,18 @@ function DirectRegisterForm({ open, onClose, editMode, setEditMode }) {
       setPhotoProofDirect(null);
       setSignatureDirect(null);
       dispatch(resetFreebies());
+
+      if (isSendMessageError) {
+        snackbar({
+          message: "Client registration requested successfully but SMS failed",
+          variant: "warning",
+        });
+
+        onConfirmClose();
+        onClose();
+        handleResetForms();
+        dispatch(notificationApi.util.invalidateTags(["Notification"]));
+      }
 
       snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }

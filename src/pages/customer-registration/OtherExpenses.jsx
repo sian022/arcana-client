@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
-import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
@@ -17,7 +16,6 @@ import {
   usePatchVoidExpenseRequestMutation,
 } from "../../features/otherExpenses/api/otherExpensesRegApi";
 import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
-import AddVoidSearchMixin from "../../components/mixins/AddVoidSearchMixin";
 import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function OtherExpenses() {
@@ -29,12 +27,10 @@ function OtherExpenses() {
   const [count, setCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
 
-  const [voidConfirmBox, setVoidConfirmBox] = useState("");
-
   const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { notifications, setModuleName } = useContext(AppContext);
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -63,7 +59,7 @@ function OtherExpenses() {
 
   //RTK Query
 
-  const { data, isLoading, isFetching } = useGetAllExpensesQuery({
+  const { data, isFetching } = useGetAllExpensesQuery({
     Search: search,
     Status: true,
     ExpenseStatus: expenseStatus,
@@ -219,6 +215,7 @@ function OtherExpenses() {
         onExpensesClose={onListingFeeClose}
         editMode={editMode}
         setEditMode={setEditMode}
+        expenseStatus={expenseStatus}
       />
 
       <ViewExpensesModal

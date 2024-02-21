@@ -17,10 +17,14 @@ export const rdfSmsApi = createApi({
   }),
   endpoints: (builder) => ({
     sendMessage: builder.mutation({
-      query: (body) => ({
+      query: ({ message, mobile_number }) => ({
         url: "/post_message",
         method: "POST",
-        body: { system_name: "Arcana", ...body },
+        body: {
+          system_name: "Arcana",
+          message: `${message} \n\n-Arcana System SMS`,
+          mobile_number,
+        },
       }),
     }),
   }),

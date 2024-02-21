@@ -69,24 +69,6 @@ function DirectRegistration() {
   } = useDisclosure();
 
   //RTK Query
-  // const { data: pendingData, isLoading: isPendingLoading } =
-  //   useGetAllClientsQuery({
-  //     Status: status,
-  //     RegistrationStatus: "Under review",
-  //   });
-
-  // const { data: approvedData, isLoading: isApprovedLoading } =
-  //   useGetAllClientsQuery({
-  //     Status: status,
-  //     RegistrationStatus: "Approved",
-  //   });
-
-  // const { data: rejectedData, isLoading: isRejectedLoading } =
-  //   useGetAllClientsQuery({
-  //     Status: status,
-  //     RegistrationStatus: "Rejected",
-  //   });
-
   const { data, isFetching } = useGetAllClientsQuery({
     Search: search,
     // Status: status,
@@ -266,6 +248,7 @@ function DirectRegistration() {
         onClose={onRegisterClose}
         editMode={editMode}
         setEditMode={setEditMode}
+        clientStatus={clientStatus}
       />
 
       <ViewRegistrationDetailsModal

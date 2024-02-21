@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
 import { Cancel } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
 import ErrorSnackbar from "../ErrorSnackbar";
 import useDisclosure from "../../hooks/useDisclosure";
 import SuccessSnackbar from "../SuccessSnackbar";
 import CommonDialog from "../CommonDialog";
 import { requestExpensesSchema } from "../../schema/schema";
-import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
-import useSnackbar from "../../hooks/useSnackbar";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NumericFormat } from "react-number-format";
 import { useGetAllOtherExpensesQuery } from "../../features/setup/api/otherExpensesApi";
 import {
   usePostExpensesMutation,
   usePutUpdateExpensesMutation,
 } from "../../features/otherExpenses/api/otherExpensesRegApi";
+import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 
 function OtherExpensesDrawer({
   editMode,
@@ -29,17 +27,14 @@ function OtherExpensesDrawer({
   isExpensesOpen,
   onExpensesClose,
   redirect,
+  expenseStatus,
 }) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
   const [confirmationValue, setConfirmationValue] = useState(null);
 
-  const [parent] = useAutoAnimate();
-
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const clientId = selectedRowData?.id || selectedRowData?.clientId;
-  const dispatch = useDispatch();
 
   //Disclosures
   const {
@@ -76,12 +71,10 @@ function OtherExpensesDrawer({
   const {
     handleSubmit,
     formState: { errors, isValid, isDirty },
-    register,
     setValue,
     reset,
     control,
     watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(requestExpensesSchema.schema),
     mode: "onChange",
@@ -94,16 +87,13 @@ function OtherExpensesDrawer({
   });
 
   //RTK Query
-  const {
-    data: clientData,
-    isLoading: isClientLoading,
-    refetch: refetchClients,
-  } = useGetAllClientsForListingFeeQuery({
-    Status: true,
-    PageNumber: 1,
-    PageSize: 1000,
-    IncludeRejected: editMode ? editMode : "",
-  });
+  const { data: clientData, isLoading: isClientLoading } =
+    useGetAllClientsForListingFeeQuery({
+      Status: true,
+      PageNumber: 1,
+      PageSize: 1000,
+      IncludeRejected: editMode ? editMode : "",
+    });
 
   const { data: expensesData, isLoading: isExpensesLoading } =
     useGetAllOtherExpensesQuery({ Status: true, page: 1, pageSize: 1000 });
@@ -111,6 +101,8 @@ function OtherExpensesDrawer({
   const [postExpenses, { isLoading: isAddLoading }] = usePostExpensesMutation();
   const [putUpdateExpenses, { isLoading: isUpdateLoading }] =
     usePutUpdateExpensesMutation();
+
+  const [sendMessage] = useSendMessageMutation();
 
   //Drawer Functions
   const onExpensesSubmit = async (data) => {
@@ -134,6 +126,14 @@ function OtherExpensesDrawer({
           })),
         });
         setSnackbarMessage("Expense updated successfully");
+
+        expenseStatus === "Rejected" &&
+          (await sendMessage({
+            message: `Fresh morning ${
+              response?.approver || "approver"
+            }! You have a new other expenses approval.`,
+            mobile_number: `+63${response?.approverMobileNumber}`,
+          }).unwrap());
       } else {
         response = await postExpenses({
           clientId: data.clientId.id,
@@ -147,6 +147,13 @@ function OtherExpensesDrawer({
         setSnackbarMessage(
           `Other Expenses ${editMode ? "updated" : "added"} successfully`
         );
+
+        await sendMessage({
+          message: `Fresh morning ${
+            response?.approver || "approver"
+          }! You have a new other expenses approval.`,
+          mobile_number: `+63${response?.approverMobileNumber}`,
+        }).unwrap();
       }
 
       // dispatch(setSelectedRow(response?.data));
@@ -192,20 +199,6 @@ function OtherExpensesDrawer({
     onErrorOpen();
   };
 
-  function hasDuplicateItemCodes(data) {
-    const expenseTypes = new Set();
-
-    for (const item of data) {
-      const expenseType = item.otherExpenseId?.expenseType;
-      if (expenseTypes.has(expenseType)) {
-        return true;
-      }
-      expenseTypes.add(expenseType);
-    }
-
-    return false;
-  }
-
   const handleRecalculateTotalAmount = () => {
     let total = 0;
     watch("expenses")?.forEach((item) => {
@@ -216,10 +209,6 @@ function OtherExpensesDrawer({
     });
 
     setTotalAmount(total);
-  };
-
-  const handleConfirmation = (value) => {
-    // onClientConfirmationOpen();
   };
 
   const resetExpenses = (clientId) => {
@@ -280,7 +269,6 @@ function OtherExpensesDrawer({
         width="600px"
         disableSubmit={!isValid || totalAmount < 0}
         onSubmit={onConfirmSubmitOpen}
-        // zIndex={editMode && 1300}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
           <Box
@@ -314,7 +302,7 @@ function OtherExpensesDrawer({
               disableClearable
               loading={isClientLoading}
               disabled={redirect || editMode}
-              isOptionEqualToValue={(option, value) => true}
+              isOptionEqualToValue={() => true}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -402,8 +390,7 @@ function OtherExpensesDrawer({
                   disableClearable
                   loading={isExpensesLoading}
                   disabled={!watch("clientId")}
-                  // isOptionEqualToValue={(option, value) => option.id === value.id}
-                  isOptionEqualToValue={(option, value) => true}
+                  isOptionEqualToValue={() => true}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -420,7 +407,7 @@ function OtherExpensesDrawer({
                 <Controller
                   control={control}
                   name={`expenses[${index}].amount`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                  render={({ field: { onChange, onBlur, value } }) => (
                     <NumericFormat
                       label="Amount"
                       type="text"

@@ -25,6 +25,7 @@ import {
 } from "../../features/special-discount/api/specialDiscountApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import useConfirm from "../../hooks/useConfirm";
+import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 
 function SpecialDiscount() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -106,6 +107,7 @@ function SpecialDiscount() {
   const [updateSpecialDiscount] = useUpdateSpecialDiscountMutation();
   const [voidSpecialDiscount] = useVoidSpecialDiscountMutation();
   const [cancelSpecialDiscount] = useCancelSpecialDiscountMutation();
+  const [sendMessage] = useSendMessageMutation();
 
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsQuery({
@@ -132,7 +134,7 @@ function SpecialDiscount() {
   //Functions: API
   const onSubmit = async (data) => {
     try {
-      await confirm({
+      const response = await confirm({
         children: (
           <>
             Confirm {editMode ? "update" : "adding"} of{" "}
@@ -163,6 +165,14 @@ function SpecialDiscount() {
         message: "Special discount added successfully",
         variant: "success",
       });
+
+      (!editMode || (editMode && approvalStatus === "Rejected")) &&
+        (await sendMessage({
+          message: `Fresh morning ${
+            response?.approver || "approver"
+          }! You have a new sp. discount approval.`,
+          mobile_number: `+63${response?.approverMobileNumber}`,
+        }).unwrap());
     } catch (error) {
       if (error?.isConfirmed) {
         snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
@@ -362,10 +372,6 @@ function SpecialDiscount() {
                   option.ownersName?.toUpperCase() || ""
               }
               disableClearable
-              // disabled={
-              //   editMode &&
-              //   (approvalStatus === "Approved" || approvalStatus === "Rejected")
-              // }
               disabled={editMode}
               loading={isClientLoading}
               isOptionEqualToValue={() => true}

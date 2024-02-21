@@ -38,16 +38,17 @@ import OtherExpenses from "../pages/customer-registration/OtherExpenses";
 import OtherExpensesApproval from "../pages/approval/OtherExpensesApproval";
 import PriceModeSetup from "../pages/setup/PriceModeSetup";
 import PriceModeManagement from "../pages/setup/PriceModeManagement";
+import PageNotFound from "../pages/PageNotFound";
 
 export const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
   },
-  // {
-  //   path: "*",
-  //   element: <PageNotFound text ={""}/>,
-  // },
+  {
+    path: "*",
+    element: <PageNotFound />,
+  },
   {
     path: "/",
     element: <ProtectedRoutes />,

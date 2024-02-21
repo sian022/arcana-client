@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
-import { Add, Cancel, Search } from "@mui/icons-material";
+import { Cancel } from "@mui/icons-material";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
@@ -23,16 +17,15 @@ import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import {
   registrationApi,
   useGetAllClientsForListingFeeQuery,
-  useGetAllClientsQuery,
 } from "../../features/registration/api/registrationApi";
-import useSnackbar from "../../hooks/useSnackbar";
 import {
   usePostListingFeeMutation,
   usePutUpdateListingFeeMutation,
 } from "../../features/listing-fee/api/listingFeeApi";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NumericFormat } from "react-number-format";
 import { notificationApi } from "../../features/notification/api/notificationApi";
+import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function ListingFeeDrawer({
   editMode,
@@ -40,18 +33,15 @@ function ListingFeeDrawer({
   isListingFeeOpen,
   onListingFeeClose,
   onListingFeeViewClose,
-  updateListingFee,
+  listingFeeStatus,
   redirect,
 }) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
   const [confirmationValue, setConfirmationValue] = useState(null);
 
-  const [parent] = useAutoAnimate();
-
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const clientId = selectedRowData?.id || selectedRowData?.clientId;
   const dispatch = useDispatch();
 
   //Disclosures
@@ -89,12 +79,10 @@ function ListingFeeDrawer({
   const {
     handleSubmit,
     formState: { errors, isValid, isDirty },
-    register,
     setValue,
     reset,
     control,
     watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(requestListingFeeSchema.schema),
     mode: "onChange",
@@ -107,28 +95,13 @@ function ListingFeeDrawer({
   });
 
   //RTK Query
-  // const {
-  //   data: clientData,
-  //   isLoading: isClientLoading,
-  //   refetch: refetchClients,
-  // } = useGetAllClientsQuery({
-  //   RegistrationStatus: "Approved",
-  //   Status: true,
-  //   PageNumber: 1,
-  //   PageSize: 1000,
-  //   // IncludeRejected: editMode ? editMode : "",
-  // });
-
-  const {
-    data: clientData,
-    isLoading: isClientLoading,
-    refetch: refetchClients,
-  } = useGetAllClientsForListingFeeQuery({
-    Status: true,
-    PageNumber: 1,
-    PageSize: 1000,
-    IncludeRejected: editMode ? editMode : "",
-  });
+  const { data: clientData, isLoading: isClientLoading } =
+    useGetAllClientsForListingFeeQuery({
+      Status: true,
+      PageNumber: 1,
+      PageSize: 1000,
+      IncludeRejected: editMode ? editMode : "",
+    });
 
   const { data: productData, isLoading: isProductLoading } =
     useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
@@ -137,6 +110,8 @@ function ListingFeeDrawer({
     usePostListingFeeMutation();
   const [putListingFee, { isLoading: isUpdateLoading }] =
     usePutUpdateListingFeeMutation();
+
+  const [sendMessage] = useSendMessageMutation();
 
   //Drawer Functions
   const onListingFeeSubmit = async (data) => {
@@ -166,6 +141,14 @@ function ListingFeeDrawer({
         onListingFeeViewClose();
         setSnackbarMessage("Listing Fee updated successfully");
         dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
+
+        listingFeeStatus === "Rejected" &&
+          (await sendMessage({
+            message: `Fresh morning ${
+              response?.approver || "approver"
+            }! You have a new listing fee approval.`,
+            mobile_number: `+63${response?.approverMobileNumber}`,
+          }).unwrap());
       } else {
         response = await postListingFee({
           clientId: data.clientId.id,
@@ -183,21 +166,20 @@ function ListingFeeDrawer({
         dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       }
 
-      dispatch(setSelectedRow(response?.data));
+      dispatch(setSelectedRow(response));
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
       handleDrawerClose();
-      onSuccessOpen();
-      // refetchClients();
-    } catch (error) {
-      console.log(error);
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${editMode ? "updating" : "adding"} listing fee`
-        );
-      }
 
+      await sendMessage({
+        message: `Fresh morning ${
+          response?.approver || "approver"
+        }! You have a new listing fee approval.`,
+        mobile_number: `+63${response?.approverMobileNumber}`,
+      }).unwrap();
+
+      onSuccessOpen();
+    } catch (error) {
+      setSnackbarMessage(handleCatchErrorMessage());
       onErrorOpen();
     }
 
@@ -251,10 +233,6 @@ function ListingFeeDrawer({
     });
 
     setTotalAmount(total);
-  };
-
-  const handleConfirmation = (value) => {
-    // onClientConfirmationOpen();
   };
 
   const resetListingFee = (clientId) => {
@@ -355,7 +333,7 @@ function ListingFeeDrawer({
               //   (item) => item.businessName === selectedRowData?.businessName
               // )}
               // isOptionEqualToValue={(option, value) => option.id === value.id}
-              isOptionEqualToValue={(option, value) => true}
+              isOptionEqualToValue={() => true}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -464,8 +442,7 @@ function ListingFeeDrawer({
                   disableClearable
                   loading={isProductLoading}
                   disabled={!watch("clientId")}
-                  // isOptionEqualToValue={(option, value) => option.id === value.id}
-                  isOptionEqualToValue={(option, value) => true}
+                  isOptionEqualToValue={() => true}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -527,7 +504,7 @@ function ListingFeeDrawer({
                   key={index}
                   control={control}
                   name={`listingItems[${index}].sku`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                  render={({ field: { onChange, onBlur, ref } }) => (
                     <TextField
                       label="SKU"
                       size="small"
@@ -535,7 +512,6 @@ function ListingFeeDrawer({
                       disabled
                       onChange={onChange}
                       onBlur={onBlur}
-                      // value={value || ""}
                       value={1}
                       ref={ref}
                       sx={{ width: "200px" }}
@@ -546,7 +522,7 @@ function ListingFeeDrawer({
                 <Controller
                   control={control}
                   name={`listingItems[${index}].unitCost`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                  render={({ field: { onChange, onBlur, value } }) => (
                     <NumericFormat
                       label="Unit Cost"
                       type="text"

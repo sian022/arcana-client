@@ -34,6 +34,9 @@ export const theme = createTheme({
     success: {
       main: colorSchemes.light.success,
     },
+    warning: {
+      main: colorSchemes.light.warning,
+    },
     notification: {
       main: colorSchemes.light.notification,
     },

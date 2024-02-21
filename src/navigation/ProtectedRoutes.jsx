@@ -1,7 +1,5 @@
-import React from "react";
 import { useSelector } from "react-redux";
-import { Navigate, Outlet } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
+import { Navigate } from "react-router-dom";
 import PermittedRoutes from "./PermittedRoutes";
 
 function ProtectedRoutes() {

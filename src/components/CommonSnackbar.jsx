@@ -1,6 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Button, IconButton, Snackbar } from "@mui/material";
-import React from "react";
+import { IconButton, Snackbar } from "@mui/material";
 
 function CommonSnackbar({ variant, ...otherProps }) {
   const { onClose } = otherProps;
@@ -11,7 +10,12 @@ function CommonSnackbar({ variant, ...otherProps }) {
       {...otherProps}
       sx={{
         "& .MuiSnackbarContent-root": {
-          bgcolor: variant === "error" ? "error.main" : "success.main",
+          bgcolor:
+            variant === "error"
+              ? "error.main"
+              : variant === "warning"
+              ? "warning.main"
+              : "success.main",
           fontWeight: "600",
         },
       }}
