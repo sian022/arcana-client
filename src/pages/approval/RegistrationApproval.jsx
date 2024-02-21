@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box } from "@mui/material";
 import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import CommonTable from "../../components/CommonTable";
 import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useSelector } from "react-redux";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
@@ -21,8 +20,7 @@ function RegistrationApproval() {
   const [clientStatus, setClientStatus] = useState("under review");
   const [count, setCount] = useState(0);
 
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const { notifications, setModuleName } = useContext(AppContext);
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -37,26 +35,7 @@ function RegistrationApproval() {
     onClose: onHistoryClose,
   } = useDisclosure();
 
-  //RTK Query
-  // const { data: pendingData, isLoading: isPendingLoading } =
-  //   useGetAllClientsQuery({
-  //     Status: true,
-  //     RegistrationStatus: "Under review",
-  //   });
-
-  // const { data: approvedData, isLoading: isApprovedLoading } =
-  //   useGetAllClientsQuery({
-  //     Status: true,
-  //     RegistrationStatus: "Approved",
-  //   });
-
-  // const { data: rejectedData, isLoading: isRejectedLoading } =
-  //   useGetAllClientsQuery({
-  //     Status: true,
-  //     RegistrationStatus: "Rejected",
-  //   });
-
-  const { data, isLoading, isFetching } = useGetAllClientsQuery({
+  const { data, isFetching } = useGetAllClientsQuery({
     Search: search,
     Status: true,
     RegistrationStatus: clientStatus,
@@ -68,26 +47,29 @@ function RegistrationApproval() {
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
-  const registrationNavigation = [
-    {
-      case: 1,
-      name: "Pending Clients",
-      registrationStatus: "Under review",
-      badge: notifications["pendingClient"],
-    },
-    {
-      case: 2,
-      name: "Approved Clients",
-      registrationStatus: "Approved",
-      // badge: notifications["approvedClient"],
-    },
-    {
-      case: 3,
-      name: "Rejected Clients",
-      registrationStatus: "Rejected",
-      // badge: notifications["rejectedClient"],
-    },
-  ];
+  const registrationNavigation = useMemo(
+    () => [
+      {
+        case: 1,
+        name: "Pending Clients",
+        registrationStatus: "Under review",
+        badge: notifications["pendingClient"],
+      },
+      {
+        case: 2,
+        name: "Approved Clients",
+        registrationStatus: "Approved",
+        // badge: notifications["approvedClient"],
+      },
+      {
+        case: 3,
+        name: "Rejected Clients",
+        registrationStatus: "Rejected",
+        // badge: notifications["rejectedClient"],
+      },
+    ],
+    [notifications]
+  );
 
   const selectOptions = [
     {
@@ -132,13 +114,13 @@ function RegistrationApproval() {
     );
 
     setClientStatus(foundItem?.registrationStatus);
-  }, [tabViewing]);
+  }, [tabViewing, registrationNavigation]);
 
   useEffect(() => {
     if (clientStatus === "Under review") {
       patchReadNotification({ Tab: "Pending Clients" });
     }
-  }, [clientStatus]);
+  }, [clientStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -146,7 +128,7 @@ function RegistrationApproval() {
 
   useEffect(() => {
     setPage(0);
-  }, [tabViewing, search, status, rowsPerPage]);
+  }, [tabViewing, search, rowsPerPage]);
 
   return (
     <>

@@ -19,7 +19,7 @@ function OtherExpensesApproval() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
-  const { notifications, setModuleName } = useContext(AppContext);
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {

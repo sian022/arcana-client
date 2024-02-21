@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import { Storefront } from "@mui/icons-material";
@@ -9,13 +9,10 @@ import Released from "./Released";
 import ForFreebies from "./ForFreebies";
 import ForReleasing from "./ForReleasing";
 import StoreTypeSkeleton from "../../../components/skeletons/StoreTypeSkeleton";
-import { AppContext } from "../../../context/AppContext";
 import "../../../assets/styles/prospect.styles.scss";
 
 function Prospect() {
   const [tabViewing, setTabViewing] = useState(1);
-
-  const { setModuleName } = useContext(AppContext);
 
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
@@ -52,10 +49,6 @@ function Prospect() {
   useEffect(() => {
     setTabViewing(1);
   }, [selectedStoreType]);
-
-  useEffect(() => {
-    setModuleName("Prospect");
-  }, []);
 
   return (
     <Box className="commonPageLayout">

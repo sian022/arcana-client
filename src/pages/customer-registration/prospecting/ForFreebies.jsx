@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddArchiveSearchMixin from "../../../components/mixins/AddArchiveSearchMixin";
 import useDisclosure from "../../../hooks/useDisclosure";
 import {
@@ -7,14 +7,10 @@ import {
   InputAdornment,
   TextField,
   Typography,
-  createFilterOptions,
 } from "@mui/material";
 import CommonTable from "../../../components/CommonTable";
 import CommonDrawer from "../../../components/CommonDrawer";
-import {
-  prospectSchema,
-  prospectWithLocationsSchema,
-} from "../../../schema/schema";
+import { prospectSchema } from "../../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
@@ -30,13 +26,9 @@ import { useDispatch, useSelector } from "react-redux";
 import CommonDialog from "../../../components/CommonDialog";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
-import {
-  debounce,
-  handlePhoneNumberInput,
-} from "../../../utils/CustomFunctions";
+import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
-import SecondaryButton from "../../../components/SecondaryButton";
 import TertiaryButton from "../../../components/TertiaryButton";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
@@ -52,7 +44,6 @@ function ForFreebies() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
-  const [newProspectName, setNewProspectName] = useState("");
   const [editMode, setEditMode] = useState(false);
 
   const dispatch = useDispatch();
@@ -136,7 +127,6 @@ function ForFreebies() {
     reset,
     control,
     watch,
-    getValues,
     clearErrors,
   } = useForm({
     resolver: yupResolver(prospectSchema.schema),
@@ -148,7 +138,7 @@ function ForFreebies() {
 
   //RTK Query
   const [postProspect, { isLoading: isAddLoading }] = usePostProspectMutation();
-  const { data, isLoading, isFetching } = useGetAllApprovedProspectsQuery({
+  const { data, isFetching } = useGetAllApprovedProspectsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -196,7 +186,6 @@ function ForFreebies() {
       handleDrawerClose();
 
       if (drawerMode === "add") {
-        setNewProspectName(watch("businessName"));
         debounce(onFreebieConfirmOpen(), 2000);
       }
 
@@ -244,6 +233,7 @@ function ForFreebies() {
   const handleEditOpen = (editData) => {
     setDrawerMode("edit");
     onDrawerOpen();
+    clearErrors();
 
     setValue("id", editData.id);
     setValue("ownersName", editData.ownersName);
@@ -302,7 +292,7 @@ function ForFreebies() {
         )
       );
     }
-  }, [isDrawerOpen]);
+  }, [isDrawerOpen, selectedStoreType, setValue, storeTypeData]);
 
   return (
     <>

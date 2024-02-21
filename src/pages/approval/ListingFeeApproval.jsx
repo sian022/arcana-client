@@ -1,12 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box, Button, TextField, debounce } from "@mui/material";
-import AddSearchMixin from "../../components/mixins/AddSearchMixin";
+import { Box, TextField, debounce } from "@mui/material";
 import CommonTable from "../../components/CommonTable";
-import { dummyTableData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
-import ListingFeeDrawer from "../../components/drawers/ListingFeeDrawer";
-import SearchFilterMixin from "../../components/mixins/SearchFilterMixin";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
 import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
@@ -17,13 +13,12 @@ import { usePatchReadNotificationMutation } from "../../features/notification/ap
 function ListingFeeApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
-  const [origin, setOrigin] = useState("");
   const [listingFeeStatus, setListingFeeStatus] = useState("Under review");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
-  const { notifications, setModuleName } = useContext(AppContext);
+  const { notifications } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -57,7 +52,7 @@ function ListingFeeApproval() {
   //     ListingFeeStatus: "Rejected",
   //   });
 
-  const { data, isLoading, isFetching } = useGetAllListingFeeQuery({
+  const { data, isFetching } = useGetAllListingFeeQuery({
     Search: search,
     Status: true,
     ListingFeeStatus: listingFeeStatus,
@@ -68,26 +63,29 @@ function ListingFeeApproval() {
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
-  const listingFeeNavigation = [
-    {
-      case: 1,
-      name: "Pending Listing Fee",
-      listingFeeStatus: "Under review",
-      badge: notifications["pendingListingFee"],
-    },
-    {
-      case: 2,
-      name: "Approved Listing Fee",
-      listingFeeStatus: "Approved",
-      // badge: notifications["approvedListingFee"],
-    },
-    {
-      case: 3,
-      name: "Rejected Listing Fee",
-      listingFeeStatus: "Rejected",
-      // badge: notifications["rejectedListingFee"],
-    },
-  ];
+  const listingFeeNavigation = useMemo(
+    () => [
+      {
+        case: 1,
+        name: "Pending Listing Fee",
+        listingFeeStatus: "Under review",
+        badge: notifications["pendingListingFee"],
+      },
+      {
+        case: 2,
+        name: "Approved Listing Fee",
+        listingFeeStatus: "Approved",
+        // badge: notifications["approvedListingFee"],
+      },
+      {
+        case: 3,
+        name: "Rejected Listing Fee",
+        listingFeeStatus: "Rejected",
+        // badge: notifications["rejectedListingFee"],
+      },
+    ],
+    [notifications]
+  );
 
   const tableHeads = [
     "Business Name",
@@ -117,13 +115,13 @@ function ListingFeeApproval() {
     );
 
     setListingFeeStatus(foundItem?.listingFeeStatus);
-  }, [tabViewing]);
+  }, [tabViewing, listingFeeNavigation]);
 
   useEffect(() => {
     if (listingFeeStatus === "Under review") {
       patchReadNotification({ Tab: "Pending Listing Fee" });
     }
-  }, [listingFeeStatus]);
+  }, [listingFeeStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -131,7 +129,7 @@ function ListingFeeApproval() {
 
   useEffect(() => {
     setPage(0);
-  }, [tabViewing, search, status, rowsPerPage]);
+  }, [tabViewing, search, rowsPerPage]);
 
   return (
     <>
