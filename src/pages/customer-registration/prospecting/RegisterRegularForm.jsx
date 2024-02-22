@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CommonDrawer from "../../../components/CommonDrawer";
 import {
-  Autocomplete,
   Box,
   Button,
   Checkbox,
@@ -10,10 +9,8 @@ import {
   InputAdornment,
   TextField,
   Typography,
-  debounce,
 } from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
-import SecondaryButton from "../../../components/SecondaryButton";
 import {
   Attachment,
   Check,
@@ -50,7 +47,6 @@ import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeA
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import ListingFeeDrawer from "../../../components/drawers/ListingFeeDrawer";
 import SuccessButton from "../../../components/SuccessButton";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
@@ -66,7 +62,6 @@ function RegisterRegularForm({ open, onClose }) {
     setRepresentativeRequirements,
     setRepresentativeRequirementsIsLink,
     setRequirementsMode,
-    convertSignatureToBase64,
   } = useContext(AttachmentsContext);
 
   const snackbar = useSnackbar();
@@ -206,12 +201,9 @@ function RegisterRegularForm({ open, onClose }) {
   }
 
   //RTK Query
-  const [putRegisterClient, { isLoading: isRegisterLoading }] =
-    usePutRegisterClientMutation();
-  const [putAddAttachments, { isLoading: isAttachmentsLoading }] =
-    usePutAddAttachmentsMutation();
-  const [putAddTermsAndConditions, { isLoading: isTermsLoading }] =
-    usePutAddTermsAndCondtionsMutation();
+  const [putRegisterClient] = usePutRegisterClientMutation();
+  const [putAddAttachments] = usePutAddAttachmentsMutation();
+  const [putAddTermsAndConditions] = usePutAddTermsAndCondtionsMutation();
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery({
     Status: true,

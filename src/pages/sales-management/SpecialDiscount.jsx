@@ -134,7 +134,7 @@ function SpecialDiscount() {
   //Functions: API
   const onSubmit = async (data) => {
     try {
-      const response = await confirm({
+      await confirm({
         children: (
           <>
             Confirm {editMode ? "update" : "adding"} of{" "}
@@ -153,28 +153,38 @@ function SpecialDiscount() {
           </>
         ),
         question: true,
-        callback: () =>
-          editMode
-            ? updateSpecialDiscount({
-                id: selectedRowData?.id,
-                ...data,
-                clientId: data?.clientId.id,
-              }).unwrap()
-            : createSpecialDiscount({
-                ...data,
-                clientId: data?.clientId.id,
-              }).unwrap(),
+        callback: async () => {
+          if (editMode) {
+            await updateSpecialDiscount({
+              id: selectedRowData?.id,
+              ...data,
+              clientId: data?.clientId.id,
+            }).unwrap();
+
+            if (approvalStatus === "Rejected") {
+              await sendMessage({
+                message: `Fresh morning ${
+                  selectedRowData?.currentApprover || "approver"
+                }! You have a new sp. discount approval.`,
+                mobile_number: `+63${selectedRowData?.currentApproverPhoneNumber}`,
+              }).unwrap();
+            }
+          } else {
+            const response = await createSpecialDiscount({
+              ...data,
+              clientId: data?.clientId.id,
+            }).unwrap();
+
+            await sendMessage({
+              message: `Fresh morning ${
+                response?.approver || "approver"
+              }! You have a new sp. discount approval.`,
+              mobile_number: `+63${response?.approverMobileNumber}`,
+            }).unwrap();
+          }
+        },
       });
-
       handleFormClose();
-
-      (!editMode || (editMode && approvalStatus === "Rejected")) &&
-        (await sendMessage({
-          message: `Fresh morning ${
-            response?.approver || "approver"
-          }! You have a new sp. discount approval.`,
-          mobile_number: `+63${response?.approverMobileNumber}`,
-        }).unwrap());
 
       snackbar({
         message: "Special discount added successfully",
@@ -194,6 +204,7 @@ function SpecialDiscount() {
             "Special Discount requested successfully but failed to send message to approver.",
           variant: "warning",
         });
+        handleFormClose();
       }
     }
   };

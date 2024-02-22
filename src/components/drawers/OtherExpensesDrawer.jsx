@@ -12,7 +12,10 @@ import useDisclosure from "../../hooks/useDisclosure";
 import SuccessSnackbar from "../SuccessSnackbar";
 import CommonDialog from "../CommonDialog";
 import { requestExpensesSchema } from "../../schema/schema";
-import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
+import {
+  useGetAllClientsForListingFeeQuery,
+  useGetAllClientsQuery,
+} from "../../features/registration/api/registrationApi";
 import { NumericFormat } from "react-number-format";
 import { useGetAllOtherExpensesQuery } from "../../features/setup/api/otherExpensesApi";
 import {
@@ -91,7 +94,7 @@ function OtherExpensesDrawer({
 
   //RTK Query
   const { data: clientData, isLoading: isClientLoading } =
-    useGetAllClientsForListingFeeQuery({
+    useGetAllClientsQuery({
       Status: true,
       PageNumber: 1,
       PageSize: 1000,
