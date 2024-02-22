@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -11,13 +11,10 @@ import {
   TableHead,
   TableRow,
   TextField,
-  TextareaAutosize,
   Typography,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
-import AccentButton from "../AccentButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +25,8 @@ import {
 import useSnackbar from "../../hooks/useSnackbar";
 import SuccessButton from "../SuccessButton";
 import { notificationApi } from "../../features/notification/api/notificationApi";
+import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function ViewListingFeeModal({
   // setEditMode,
@@ -48,6 +47,22 @@ function ViewListingFeeModal({
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
+  const messageReceiverNumberApproved =
+    selectedRowData?.nextApproverMobileNumber
+      ? selectedRowData?.nextApproverMobileNumber
+      : selectedRowData?.requestorMobileNumber;
+  const messageReceiverNumberRejected = selectedRowData?.requestorMobileNumber;
+
+  const messageReceiverNameApproved = selectedRowData?.nextApprover
+    ? selectedRowData?.nextApprover
+    : selectedRowData?.requestor;
+  const messageReceiverNameRejected = selectedRowData?.requestor;
+
+  const messageReceiverMessageApproved = selectedRowData?.nextApprover
+    ? "You have a new listing fee approval."
+    : `${selectedRowData?.businessName}'s listing fee request has been approved.`;
+  const messageReceiverMessageRejected = `${selectedRowData?.businessName}'s listing fee request has been rejected.`;
+
   //Disclosures
   const {
     isOpen: isApproveConfirmOpen,
@@ -67,6 +82,9 @@ function ViewListingFeeModal({
 
   const [putRejectListingFee, { isLoading: isRejectLoading }] =
     usePutRejectListingFeeMutation();
+
+  const [sendMessage, { isLoading: isSendMessageLoading }] =
+    useSendMessageMutation();
 
   const customRibbonContent = (
     // <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
@@ -100,19 +118,33 @@ function ViewListingFeeModal({
         // id: selectedRowData?.approvalId,
         id: selectedRowData?.requestId,
       }).unwrap();
+
+      await sendMessage({
+        message: `Fresh morning ${messageReceiverNameApproved}! ${messageReceiverMessageApproved}`,
+        mobile_number: `+63${messageReceiverNumberApproved}`,
+      }).unwrap();
+
       snackbar({
         message: "Listing Fee approved successfully",
         variant: "success",
       });
+
       onApproveConfirmClose();
       onClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error approving listing fee", variant: "error" });
+      if (error.function !== "sendMessage") {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
+
+      snackbar({
+        message:
+          "Listing fee approved successfully but failed to send message.",
+        variant: "warning",
+      });
+      onApproveConfirmClose();
+      onClose();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -123,6 +155,12 @@ function ViewListingFeeModal({
         id: selectedRowData?.requestId,
         reason: reason,
       }).unwrap();
+
+      await sendMessage({
+        message: `Fresh morning ${messageReceiverNameRejected}! ${messageReceiverMessageRejected}`,
+        mobile_number: `+63${messageReceiverNumberRejected}`,
+      }).unwrap();
+
       snackbar({
         message: "Listing Fee rejected successfully",
         variant: "success",
@@ -131,11 +169,18 @@ function ViewListingFeeModal({
       onClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error rejecting listing fee", variant: "error" });
+      if (error.function !== "sendMessage") {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
+
+      snackbar({
+        message:
+          "Listing fee rejected successfully but failed to send message.",
+        variant: "warning",
+      });
+      handleRejectConfirmClose();
+      onClose();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -327,7 +372,7 @@ function ViewListingFeeModal({
             onClose={onApproveConfirmClose}
             open={isApproveConfirmOpen}
             onYes={handleApprove}
-            isLoading={isApproveLoading}
+            isLoading={isApproveLoading || isSendMessageLoading}
             question
           >
             Are you sure you want to approve listing fee for{" "}
@@ -342,7 +387,7 @@ function ViewListingFeeModal({
             open={isRejectConfirmOpen}
             onYes={handleReject}
             disableYes={!confirmReason || !reason.trim()}
-            isLoading={isRejectLoading}
+            isLoading={isRejectLoading || isSendMessageLoading}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <Box>

@@ -26,6 +26,11 @@ export const rdfSmsApi = createApi({
           mobile_number,
         },
       }),
+
+      transformErrorResponse: (response) => ({
+        function: "sendMessage",
+        ...response,
+      }),
     }),
   }),
 });

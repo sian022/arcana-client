@@ -26,6 +26,7 @@ import { NumericFormat } from "react-number-format";
 import { notificationApi } from "../../features/notification/api/notificationApi";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function ListingFeeDrawer({
   editMode,
@@ -39,6 +40,8 @@ function ListingFeeDrawer({
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
   const [confirmationValue, setConfirmationValue] = useState(null);
+
+  const snackbar = useSnackbar();
 
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -111,7 +114,8 @@ function ListingFeeDrawer({
   const [putListingFee, { isLoading: isUpdateLoading }] =
     usePutUpdateListingFeeMutation();
 
-  const [sendMessage] = useSendMessageMutation();
+  const [sendMessage, { isLoading: isSendMessageLoading }] =
+    useSendMessageMutation();
 
   //Drawer Functions
   const onListingFeeSubmit = async (data) => {
@@ -141,14 +145,6 @@ function ListingFeeDrawer({
         onListingFeeViewClose();
         setSnackbarMessage("Listing Fee updated successfully");
         dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
-
-        listingFeeStatus === "Rejected" &&
-          (await sendMessage({
-            message: `Fresh morning ${
-              response?.approver || "approver"
-            }! You have a new listing fee approval.`,
-            mobile_number: `+63${response?.approverMobileNumber}`,
-          }).unwrap());
       } else {
         response = await postListingFee({
           clientId: data.clientId.id,
@@ -165,22 +161,40 @@ function ListingFeeDrawer({
         );
         dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       }
-
       dispatch(setSelectedRow(response));
+
+      if (editMode) {
+        listingFeeStatus === "Rejected" &&
+          (await sendMessage({
+            message: `Fresh morning ${
+              selectedRowData?.currentApprover || "approver"
+            }! You have a new listing fee approval.`,
+            mobile_number: `+63${selectedRowData?.currentApproverNumber}`,
+          }).unwrap());
+      } else {
+        await sendMessage({
+          message: `Fresh morning ${
+            response?.approver || "approver"
+          }! You have a new listing fee approval.`,
+          mobile_number: `+63${response?.approverMobileNumber}`,
+        }).unwrap();
+      }
+
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
       handleDrawerClose();
-
-      await sendMessage({
-        message: `Fresh morning ${
-          response?.approver || "approver"
-        }! You have a new listing fee approval.`,
-        mobile_number: `+63${response?.approverMobileNumber}`,
-      }).unwrap();
-
       onSuccessOpen();
     } catch (error) {
-      setSnackbarMessage(handleCatchErrorMessage());
-      onErrorOpen();
+      if (error.function !== "sendMessage") {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
+
+      snackbar({
+        message:
+          "Listing fee requested successfully but failed to send message to approver.",
+        variant: "warning",
+      });
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
+      handleDrawerClose();
     }
 
     onConfirmSubmitClose();
@@ -226,7 +240,7 @@ function ListingFeeDrawer({
   const handleRecalculateTotalAmount = () => {
     let total = 0;
     watch("listingItems").forEach((item) => {
-      const unitCost = parseInt(item.unitCost);
+      const unitCost = parseFloat(item.unitCost);
       if (!isNaN(unitCost)) {
         total += unitCost;
       }
@@ -630,7 +644,13 @@ function ListingFeeDrawer({
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onListingFeeSubmit)}
         // isLoading={updateListingFee ? isUpdateLoading : isAddLoading}
-        isLoading={editMode ? isUpdateLoading : isAddLoading}
+        isLoading={
+          editMode
+            ? listingFeeStatus === "Rejected"
+              ? isUpdateLoading || isSendMessageLoading
+              : isUpdateLoading
+            : isAddLoading || isSendMessageLoading
+        }
         question
       >
         Confirm {editMode ? "update" : "adding"} of listing fee for{" "}

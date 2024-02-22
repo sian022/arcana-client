@@ -1,6 +1,4 @@
-import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import CommonPageIndex from "../../components/CommonPageIndex";
 import { ArrowCircleRight } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -32,6 +30,7 @@ function Setup() {
         <Box className="pageIndex__navigators">
           {permittedNavigators.map((navigator) => (
             <Box
+              key={navigator.name}
               className="pageIndex__navigators__item"
               onClick={() => navigate(navigator.path)}
             >

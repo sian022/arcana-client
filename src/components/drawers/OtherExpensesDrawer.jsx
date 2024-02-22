@@ -20,6 +20,8 @@ import {
   usePutUpdateExpensesMutation,
 } from "../../features/otherExpenses/api/otherExpensesRegApi";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function OtherExpensesDrawer({
   editMode,
@@ -35,6 +37,7 @@ function OtherExpensesDrawer({
 
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const snackbar = useSnackbar();
 
   //Disclosures
   const {
@@ -102,7 +105,8 @@ function OtherExpensesDrawer({
   const [putUpdateExpenses, { isLoading: isUpdateLoading }] =
     usePutUpdateExpensesMutation();
 
-  const [sendMessage] = useSendMessageMutation();
+  const [sendMessage, { isLoading: isSendMessageLoading }] =
+    useSendMessageMutation();
 
   //Drawer Functions
   const onExpensesSubmit = async (data) => {
@@ -126,14 +130,6 @@ function OtherExpensesDrawer({
           })),
         });
         setSnackbarMessage("Expense updated successfully");
-
-        expenseStatus === "Rejected" &&
-          (await sendMessage({
-            message: `Fresh morning ${
-              response?.approver || "approver"
-            }! You have a new other expenses approval.`,
-            mobile_number: `+63${response?.approverMobileNumber}`,
-          }).unwrap());
       } else {
         response = await postExpenses({
           clientId: data.clientId.id,
@@ -147,7 +143,17 @@ function OtherExpensesDrawer({
         setSnackbarMessage(
           `Other Expenses ${editMode ? "updated" : "added"} successfully`
         );
+      }
 
+      if (editMode) {
+        expenseStatus === "Rejected" &&
+          (await sendMessage({
+            message: `Fresh morning ${
+              selectedRowData?.currentApprover || "approver"
+            }! You have a new other expenses approval.`,
+            mobile_number: `+63${selectedRowData?.currentApproverNumber}`,
+          }).unwrap());
+      } else {
         await sendMessage({
           message: `Fresh morning ${
             response?.approver || "approver"
@@ -156,23 +162,20 @@ function OtherExpensesDrawer({
         }).unwrap();
       }
 
-      // dispatch(setSelectedRow(response?.data));
       handleDrawerClose();
       onSuccessOpen();
-      // refetchClients();
     } catch (error) {
-      console.log(error);
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${editMode ? "updating" : "adding"} other expenses`
-        );
+      if (error.function !== "sendMessage") {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
 
-      onErrorOpen();
+      snackbar({
+        message:
+          "Other expenses requested successfully but failed to send message to approver.",
+        variant: "warning",
+      });
+      handleDrawerClose();
     }
-
     onConfirmSubmitClose();
   };
 
@@ -506,7 +509,13 @@ function OtherExpensesDrawer({
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onExpensesSubmit)}
-        isLoading={editMode ? isUpdateLoading : isAddLoading}
+        isLoading={
+          editMode
+            ? expenseStatus === "Rejected"
+              ? isUpdateLoading || isSendMessageLoading
+              : isUpdateLoading
+            : isAddLoading || isSendMessageLoading
+        }
         question
       >
         Confirm {editMode ? "update" : "adding"} of other expenses for{" "}

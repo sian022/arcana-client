@@ -7,7 +7,7 @@ const colorSchemes = {
     tertiary: "#008080",
     accent: "#766bb9",
     error: "#BB0000",
-    warning: "#FFBB33",
+    warning: "#D89C00",
     success: "#009c7a",
     notification: "#F30737",
     // error: "#F30737",

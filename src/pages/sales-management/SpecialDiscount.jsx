@@ -138,7 +138,13 @@ function SpecialDiscount() {
         children: (
           <>
             Confirm {editMode ? "update" : "adding"} of{" "}
-            <span style={{ fontWeight: "700" }}>{watch("discount")}%</span>{" "}
+            <span style={{ fontWeight: "700" }}>
+              {watch("discount")?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionsDigits: 2,
+              })}
+              %
+            </span>{" "}
             special discount for <br />
             <span style={{ fontWeight: "700" }}>
               {watch("clientId")?.businessName}
@@ -161,10 +167,6 @@ function SpecialDiscount() {
       });
 
       handleFormClose();
-      snackbar({
-        message: "Special discount added successfully",
-        variant: "success",
-      });
 
       (!editMode || (editMode && approvalStatus === "Rejected")) &&
         (await sendMessage({
@@ -173,9 +175,25 @@ function SpecialDiscount() {
           }! You have a new sp. discount approval.`,
           mobile_number: `+63${response?.approverMobileNumber}`,
         }).unwrap());
+
+      snackbar({
+        message: "Special discount added successfully",
+        variant: "success",
+      });
     } catch (error) {
       if (error?.isConfirmed) {
-        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+        snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
+      }
+
+      if (error.function && error.function === "sendMessage") {
+        snackbar({
+          message:
+            "Special Discount requested successfully but failed to send message to approver.",
+          variant: "warning",
+        });
       }
     }
   };
@@ -187,7 +205,11 @@ function SpecialDiscount() {
           <>
             Confirm cancel of{" "}
             <span style={{ fontWeight: "700" }}>
-              {selectedRowData?.discount * 100}%
+              {(selectedRowData?.discount * 100)?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionsDigits: 2,
+              })}
+              %
             </span>{" "}
             special discount for <br />
             <span style={{ fontWeight: "700" }}>
@@ -219,7 +241,11 @@ function SpecialDiscount() {
           <>
             Confirm void of{" "}
             <span style={{ fontWeight: "700" }}>
-              {selectedRowData?.discount * 100}%
+              {(selectedRowData?.discount * 100)?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionsDigits: 2,
+              })}
+              %
             </span>{" "}
             special discount for <br />
             <span style={{ fontWeight: "700" }}>

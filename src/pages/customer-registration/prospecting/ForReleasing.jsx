@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import AddArchiveSearchMixin from "../../../components/mixins/AddArchiveSearchMixin";
+import { useEffect, useState } from "react";
 import useDisclosure from "../../../hooks/useDisclosure";
 import {
   Autocomplete,
@@ -17,26 +16,19 @@ import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import {
   useGetAllApprovedProspectsQuery,
-  usePatchProspectStatusMutation,
   usePostProspectMutation,
   usePutProspectMutation,
 } from "../../../features/prospect/api/prospectApi";
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
 import { useDispatch, useSelector } from "react-redux";
-import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 import CommonDialog from "../../../components/CommonDialog";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
-import {
-  debounce,
-  handlePhoneNumberInput,
-} from "../../../utils/CustomFunctions";
+import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
-import CommonModal from "../../../components/CommonModal";
 import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
 import AddSearchMixin from "../../../components/mixins/AddSearchMixin";
 import CancelFreebiesModal from "../../../components/modals/CancelFreebiesModal";
-import SecondaryButton from "../../../components/SecondaryButton";
 import TertiaryButton from "../../../components/TertiaryButton";
 import SuccessButton from "../../../components/SuccessButton";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
@@ -46,10 +38,8 @@ import DangerButton from "../../../components/DangerButton";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
@@ -57,8 +47,6 @@ function ForReleasing() {
   const [editMode, setEditMode] = useState(false);
 
   const dispatch = useDispatch();
-  const badges = useSelector((state) => state.badge.value);
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
   );
@@ -74,12 +62,6 @@ function ForReleasing() {
     isOpen: isFreebieFormOpen,
     onOpen: onFreebieFormOpen,
     onClose: onFreebieFormClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
   } = useDisclosure();
 
   const {
@@ -124,12 +106,6 @@ function ForReleasing() {
     onClose: onFreebieCancelClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isFreebieUpdateOpen,
-    onOpen: onFreebieUpdateOpen,
-    onClose: onFreebieUpdateClose,
-  } = useDisclosure();
-
   //Constants
 
   const tableHeads = [
@@ -164,17 +140,14 @@ function ForReleasing() {
 
   //RTK Query
   const [postProspect, { isLoading: isAddLoading }] = usePostProspectMutation();
-  const { data, isLoading, isFetching } = useGetAllApprovedProspectsQuery({
+  const { data, isFetching } = useGetAllApprovedProspectsQuery({
     Search: search,
-    Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
     FreebieStatus: "For Releasing",
   });
   const [putProspect, { isLoading: isEditLoading }] = usePutProspectMutation();
-  const [patchProspectStatus, { isLoading: isArchiveLoading }] =
-    usePatchProspectStatusMutation();
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery();
 
@@ -229,26 +202,6 @@ function ForReleasing() {
     onConfirmClose();
   };
 
-  const onArchiveSubmit = async () => {
-    try {
-      await patchProspectStatus(selectedId).unwrap();
-      onArchiveClose();
-      setSnackbarMessage(
-        `Prospect ${status ? "archived" : "restored"} successfully`
-      );
-      onSuccessOpen();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving prospect");
-      }
-
-      onErrorOpen();
-    }
-  };
-
   const handleAddOpen = () => {
     setDrawerMode("add");
     onDrawerOpen();
@@ -276,17 +229,11 @@ function ForReleasing() {
     );
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     clearErrors();
     onDrawerClose();
     onCancelConfirmClose();
-    setSelectedId("");
   };
 
   const handleFreebieFormYes = () => {
@@ -297,7 +244,6 @@ function ForReleasing() {
   //useEffects
   useEffect(() => {
     setCount(data?.totalCount);
-    dispatch(setBadge({ ...badges, forReleasing: data?.totalCount }));
   }, [data]);
 
   return (
@@ -330,7 +276,6 @@ function ForReleasing() {
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
-            status={status}
             compact
           />
         )}
@@ -414,6 +359,7 @@ function ForReleasing() {
                       }}
                       onBlur={onBlur}
                       value={value || ""}
+                      inputRef={ref}
                       required
                       InputProps={{
                         startAdornment: (
@@ -686,19 +632,6 @@ function ForReleasing() {
         open={isFreebieCancelOpen}
         onClose={onFreebieCancelClose}
       />
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-      >
-        Are you sure you want to set prospect{" "}
-        <span style={{ fontWeight: "bold" }}>
-          {selectedRowData?.businessName}
-        </span>{" "}
-        as {status ? "inactive" : "active"}?
-      </CommonDialog>
 
       <CommonDialog
         open={isConfirmOpen}

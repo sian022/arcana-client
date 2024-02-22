@@ -71,6 +71,7 @@ function UserAccount() {
     watch,
     reset,
     control,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(userAccountSchema.schema),
     mode: "onChange",
@@ -202,6 +203,7 @@ function UserAccount() {
   const handleEditOpen = (editData) => {
     setEditMode(true);
     onDrawerOpen();
+    clearErrors();
 
     setValue("id", editData.id);
     setValue("fullIdNo", editData.fullIdNo);
@@ -222,6 +224,7 @@ function UserAccount() {
 
   const handleDrawerClose = () => {
     reset();
+    // clearErrors();
     onDrawerClose();
   };
 

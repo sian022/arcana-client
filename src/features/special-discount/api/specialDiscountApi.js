@@ -23,6 +23,7 @@ export const specialDiscountApi = createApi({
         body: body,
       }),
       invalidatesTags: ["Special Discount"],
+      transformResponse: (response) => response.value,
     }),
 
     getAllSpecialDiscount: builder.query({
@@ -43,6 +44,7 @@ export const specialDiscountApi = createApi({
         body: body,
       }),
       invalidatesTags: ["Special Discount"],
+      transformResponse: (response) => response.value,
     }),
 
     voidSpecialDiscount: builder.mutation({

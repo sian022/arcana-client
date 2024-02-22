@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { ArrowCircleRight } from "@mui/icons-material";
@@ -11,7 +11,7 @@ function SalesManagement() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
 
   const permissions = useSelector((state) => state.permissions?.permissions);
   const permittedNavigators = navigationData
@@ -34,6 +34,7 @@ function SalesManagement() {
         <Box className="pageIndex__navigators">
           {permittedNavigators.map((navigator) => (
             <Box
+              key={navigator.name}
               className="pageIndex__navigators__item"
               onClick={() => navigate(navigator.path)}
             >
