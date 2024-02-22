@@ -393,6 +393,7 @@ function DirectRegisterForm({
     }
   };
 
+  console.log(selectedRowData);
   const addAttachmentsSubmit = async (clientId) => {
     const formData = new FormData();
     let attachmentsObject = null;
@@ -603,10 +604,12 @@ function DirectRegisterForm({
       }
 
       setActiveTab("Terms and Conditions");
-      // dispatch(setSelectedRow(getValues()));
       dispatch(
         setSelectedRow({
           id: selectedRowData?.id,
+          currentApprover: selectedRowData?.currentApprover,
+          currentApproverPhoneNumber:
+            selectedRowData?.currentApproverPhoneNumber,
           ...getValues(),
           dateOfBirth: getValues().dateOfBirth.format("YYYY-MM-DD"),
         })

@@ -30,6 +30,8 @@ import FreebiesTab from "./FreebiesTab";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { listingFeeApi } from "../../../features/listing-fee/api/listingFeeApi";
 import OtherExpensesTab from "./OtherExpensesTab";
+import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
+import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 
 function ViewRegistrationDetailsModal({
   approval,
@@ -51,6 +53,22 @@ function ViewRegistrationDetailsModal({
   });
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const messageReceiverNumberApproved =
+    selectedRowData?.nextApproverMobileNumber
+      ? selectedRowData?.nextApproverMobileNumber
+      : selectedRowData?.requestorMobileNumber;
+  const messageReceiverNumberRejected = selectedRowData?.requestorMobileNumber;
+
+  const messageReceiverNameApproved = selectedRowData?.nextApprover
+    ? selectedRowData?.nextApprover
+    : selectedRowData?.requestor;
+  const messageReceiverNameRejected = selectedRowData?.requestor;
+
+  const messageReceiverMessageApproved = selectedRowData?.nextApprover
+    ? "You have a new customer approval."
+    : `${selectedRowData?.businessName}'s registration request has been approved.`;
+  const messageReceiverMessageRejected = `${selectedRowData?.businessName}'s registration request has been rejected.`;
 
   const snackbar = useSnackbar();
 
@@ -102,6 +120,8 @@ function ViewRegistrationDetailsModal({
     usePutApproveClientMutation();
   const [putRejectClient, { isLoading: isRejectLoading }] =
     usePutRejectClientMutation();
+  const [sendMessage, { isLoading: isSendMessageLoading }] =
+    useSendMessageMutation();
 
   //Handler Functions
   const handleClose = () => {
@@ -198,16 +218,33 @@ function ViewRegistrationDetailsModal({
         // id: selectedRowData?.id,
         id: selectedRowData?.requestId,
       }).unwrap();
+
+      await sendMessage({
+        message: `Fresh morning ${messageReceiverNameApproved}! ${messageReceiverMessageApproved}`,
+        mobile_number: `+63${messageReceiverNumberApproved}`,
+      }).unwrap();
+
       snackbar({ message: "Client approved successfully", variant: "success" });
+
       onApproveConfirmClose();
       handleClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error approving client", variant: "error" });
+      if (error.function !== "sendMessage") {
+        return snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
       }
+
+      snackbar({
+        message:
+          "Registration approved successfully but failed to send message.",
+        variant: "warning",
+      });
+      onApproveConfirmClose();
+      handleClose();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -223,15 +260,30 @@ function ViewRegistrationDetailsModal({
         id: selectedRowData?.requestId,
         reason,
       }).unwrap();
+
+      await sendMessage({
+        message: `Fresh morning ${messageReceiverNameRejected}! ${messageReceiverMessageRejected}`,
+        mobile_number: `+63${messageReceiverNumberRejected}`,
+      }).unwrap();
+
       snackbar({ message: "Client rejected successfully", variant: "success" });
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
       dispatch(listingFeeApi.util.invalidateTags(["Listing Fee"]));
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error rejecting client", variant: "error" });
+      if (error.function !== "sendMessage") {
+        return snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
       }
+
+      snackbar({
+        message:
+          "Registration rejected successfully but failed to send message.",
+        variant: "warning",
+      });
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
+      dispatch(listingFeeApi.util.invalidateTags(["Listing Fee"]));
     }
 
     handleRejectConfirmClose();
@@ -345,7 +397,7 @@ function ViewRegistrationDetailsModal({
             onClose={onApproveConfirmClose}
             open={isApproveConfirmOpen}
             onYes={handleApprove}
-            isLoading={isApproveLoading}
+            isLoading={isApproveLoading || isSendMessageLoading}
             question
           >
             Are you sure you want to approve{" "}
@@ -359,7 +411,7 @@ function ViewRegistrationDetailsModal({
             onClose={handleRejectConfirmClose}
             open={isRejectConfirmOpen}
             onYes={handleReject}
-            isLoading={isRejectLoading}
+            isLoading={isRejectLoading || isSendMessageLoading}
             disableYes={!confirmReason || !reason.trim()}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>

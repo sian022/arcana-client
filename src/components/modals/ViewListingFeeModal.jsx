@@ -134,7 +134,10 @@ function ViewListingFeeModal({
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error.function !== "sendMessage") {
-        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+        return snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
       }
 
       snackbar({
