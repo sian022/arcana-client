@@ -342,9 +342,9 @@ function DirectRegisterForm({
         clientStatus === "Rejected" &&
           (await sendMessage({
             message: `Fresh morning ${
-              response?.value?.approver || "approver"
+              selectedRowData?.currentApprover || "approver"
             }! You have a new customer approval.`,
-            mobile_number: `+63${response?.value?.approverMobileNumber}`,
+            mobile_number: `+63${selectedRowData?.currentApproverPhoneNumber}`,
           }).unwrap());
       } else {
         await sendMessage({

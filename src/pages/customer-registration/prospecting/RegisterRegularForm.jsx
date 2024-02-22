@@ -40,6 +40,7 @@ import { resetTermsAndConditions } from "../../../features/registration/reducers
 import {
   base64ToBlob,
   convertToTitleCase,
+  handleCatchErrorMessage,
 } from "../../../utils/CustomFunctions";
 import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import DangerButton from "../../../components/DangerButton";
@@ -53,6 +54,7 @@ import { notificationApi } from "../../../features/notification/api/notification
 import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
+import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -120,10 +122,8 @@ function RegisterRegularForm({ open, onClose }) {
     register,
     setValue,
     reset,
-    getValues,
     control,
     watch,
-    trigger,
     clearErrors,
   } = useForm({
     resolver: yupResolver(regularRegisterSchema.schema),
@@ -221,6 +221,8 @@ function RegisterRegularForm({ open, onClose }) {
     usePostValidateClientMutation();
   const { data: priceModeData, isLoading: isPriceModeLoading } =
     useGetAllPriceModeForClientsQuery();
+  const [sendMessage, { isLoading: isSendMessageLoading }] =
+    useSendMessageMutation();
 
   //Drawer Functions
   const onSubmit = async (data) => {
@@ -234,33 +236,52 @@ function RegisterRegularForm({ open, onClose }) {
 
     try {
       setIsAllApiLoading(true);
-      // await putRegisterClient(data).unwrap();
-      await putRegisterClient(transformedData).unwrap();
+      const registerResponse = await putRegisterClient(
+        transformedData
+      ).unwrap();
       await addTermsAndConditions();
       termsAndConditions["terms"] !== 1 && (await addAttachmentsSubmit());
       setIsAllApiLoading(false);
 
       dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
 
+      // debounce(onRedirectListingFeeOpen(), 2000);
+      await sendMessage({
+        message: `Fresh morning ${
+          registerResponse?.currentApprover || "approver"
+        }! You have a new customer approval.`,
+        mobile_number: `+63${registerResponse?.currentApproverPhoneNumber}`,
+      }).unwrap();
+
+      onClose();
+      handleResetForms();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
+
       snackbar({
         message: "Client registered successfully",
         variant: "success",
       });
-      onConfirmClose();
-      onClose();
-      handleResetForms();
-
-      // debounce(onRedirectListingFeeOpen(), 2000);
-
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       setIsAllApiLoading(false);
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error registering client", variant: "error" });
+
+      if (error.function !== "sendMessage") {
+        return snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
       }
+
+      snackbar({
+        message:
+          "Client registered successfully but failed to send message to approver.",
+        variant: "warning",
+      });
+      onClose();
+      handleResetForms();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
+
+    onConfirmClose();
   };
 
   const addTermsAndConditions = async () => {
@@ -1208,7 +1229,7 @@ function RegisterRegularForm({ open, onClose }) {
         onYes={handleSubmit(onSubmit)}
         onClose={onConfirmClose}
         // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
-        isLoading={isAllApiLoading}
+        isLoading={isAllApiLoading || isSendMessageLoading}
         question
       >
         Confirm registration of{" "}

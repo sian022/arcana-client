@@ -53,6 +53,7 @@ export const registrationApi = createApi({
         body: body,
       }),
       invalidatesTags: ["Registration"],
+      transformResponse: (response) => response.value,
     }),
 
     postDirectRegistration: builder.mutation({
