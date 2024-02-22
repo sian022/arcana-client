@@ -299,7 +299,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           <Typography fontSize="14px">
                             Name:{" "}
                             <span style={{ fontWeight: "500" }}>
-                              {selectedRowData?.requestedBy}
+                              {selectedRowData?.requestor}
                             </span>
                           </Typography>
                           {history?.reason && (
@@ -318,7 +318,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                         <Typography fontSize="14px">
                           Name:{" "}
                           <span style={{ fontWeight: "500" }}>
-                            {selectedRowData?.requestedBy}
+                            {selectedRowData?.requestor}
                           </span>
                         </Typography>
                       </StepContent>
@@ -401,7 +401,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           <Typography fontSize="14px">
                             Name:{" "}
                             <span style={{ fontWeight: "500" }}>
-                              {selectedRowData?.requestedBy}
+                              {selectedRowData?.requestor}
                             </span>
                           </Typography>
                         </StepContent>
@@ -484,7 +484,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           <Typography fontSize="14px">
                             Name:{" "}
                             <span style={{ fontWeight: "500" }}>
-                              {selectedRowData?.requestedBy}
+                              {selectedRowData?.requestor}
                             </span>
                           </Typography>
                         </StepContent>
@@ -567,7 +567,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                           <Typography fontSize="14px">
                             Name:{" "}
                             <span style={{ fontWeight: "500" }}>
-                              {selectedRowData?.requestedBy}
+                              {selectedRowData?.requestor}
                             </span>
                           </Typography>
                         </StepContent>
@@ -630,7 +630,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     <Typography fontSize="14px">
                       Name:{" "}
                       <span style={{ fontWeight: "500" }}>
-                        {selectedRowData?.requestedBy}
+                        {selectedRowData?.requestor}
                       </span>
                     </Typography>
                   </StepContent>
