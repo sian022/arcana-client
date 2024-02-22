@@ -17,7 +17,7 @@ function RegistrationApproval() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [origin, setOrigin] = useState("");
-  const [clientStatus, setClientStatus] = useState("under review");
+  const [clientStatus, setClientStatus] = useState("Under review");
   const [count, setCount] = useState(0);
 
   const { notifications } = useContext(AppContext);
@@ -37,7 +37,7 @@ function RegistrationApproval() {
 
   const { data, isFetching } = useGetAllClientsQuery({
     Search: search,
-    Status: true,
+    // Status: true,
     RegistrationStatus: clientStatus,
     Origin: origin,
     PageNumber: page + 1,
