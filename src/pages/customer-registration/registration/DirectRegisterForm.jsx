@@ -218,7 +218,7 @@ function DirectRegisterForm({
 
   const [postDirectRegistration] = usePostDirectRegistrationMutation();
   const [putAddAttachmentsForDirect] = usePutAddAttachmentsForDirectMutation();
-  const [sendMessage, { isError: isSendMessageError }] =
+  const [sendMessage, { isLoading: isSendMessageLoading }] =
     useSendMessageMutation();
 
   const [putUpdateClientInformation] = usePutUpdateClientInformationMutation();
@@ -298,14 +298,6 @@ function DirectRegisterForm({
 
         termsAndConditions["terms"] !== 1 &&
           (await addAttachmentsSubmit(response?.value?.id));
-
-        clientStatus === "Rejected" &&
-          (await sendMessage({
-            message: `Fresh morning ${
-              response?.value?.approver || "approver"
-            }! You have a new customer approval.`,
-            mobile_number: `+63${response?.value?.approverMobileNumber}`,
-          }).unwrap());
       } else {
         response = await postDirectRegistration({
           ...transformedData,
@@ -342,7 +334,19 @@ function DirectRegisterForm({
 
         termsAndConditions["terms"] !== 1 &&
           (await addAttachmentsSubmit(response?.value?.id));
+      }
+      setIsAllApiLoading(false);
+      dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
 
+      if (editMode) {
+        clientStatus === "Rejected" &&
+          (await sendMessage({
+            message: `Fresh morning ${
+              response?.value?.approver || "approver"
+            }! You have a new customer approval.`,
+            mobile_number: `+63${response?.value?.approverMobileNumber}`,
+          }).unwrap());
+      } else {
         await sendMessage({
           message: `Fresh morning ${
             response?.value?.approver || "approver"
@@ -350,10 +354,6 @@ function DirectRegisterForm({
           mobile_number: `+63${response?.value?.approverMobileNumber}`,
         }).unwrap();
       }
-
-      setIsAllApiLoading(false);
-
-      dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
 
       snackbar({
         message: `Client ${editMode ? "updated" : "registered"}  successfully`,
@@ -374,19 +374,22 @@ function DirectRegisterForm({
       setSignatureDirect(null);
       dispatch(resetFreebies());
 
-      if (isSendMessageError) {
-        snackbar({
-          message: "Client registration requested successfully but SMS failed",
-          variant: "warning",
+      if (error.function !== "sendMessage") {
+        return snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
         });
-
-        onConfirmClose();
-        onClose();
-        handleResetForms();
-        dispatch(notificationApi.util.invalidateTags(["Notification"]));
       }
 
-      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      snackbar({
+        message:
+          "Client registered successfully but failed to send message to approver.",
+        variant: "warning",
+      });
+      onConfirmClose();
+      onClose();
+      handleResetForms();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -1711,7 +1714,7 @@ function DirectRegisterForm({
         onYes={handleSubmit(onSubmit)}
         onClose={onConfirmClose}
         // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
-        isLoading={isAllApiLoading}
+        isLoading={isAllApiLoading || isSendMessageLoading}
         question
       >
         Confirm {editMode ? "update" : "registration"} of{" "}
