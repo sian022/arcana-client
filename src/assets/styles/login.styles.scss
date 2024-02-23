@@ -17,8 +17,6 @@
   }
 
   &__wrapper {
-    width: fit-content;
-    height: fit-content;
     border-radius: 10px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -33,30 +31,9 @@
     }
   }
 
-  // @media (max-width: 768px) {
-  //   &__wrapper {
-  //     display: flex;
-  //     flex-direction: column;
-  //   }
-
-  //   &__logoWrapper {
-  //     background: url("../images/wave-haikei-transparent-top.svg") 0% 50% /
-  //       cover;
-  //     border-radius: 10px 10px 0px 0px !important;
-  //   }
-
-  //   &__formWrapper {
-  //     border-radius: 0px 0px 10px 10px !important;
-  //   }
-  // }
-
   &__logoWrapper {
     background: url("../images/wave-haikei-transparent-left.svg") 0% 50% / cover;
-  }
-
-  &__logoWrapper {
     border-radius: 10px 0px 0px 10px;
-    // border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -64,8 +41,10 @@
     background-color: #fff;
 
     &__logo {
-      // width: clamp(100px, 30vw, 300px);
       width: 300px;
+      width: 250px;
+      position: relative;
+      left: 35px;
     }
 
     @media (max-width: 935px) {
