@@ -25,30 +25,33 @@
     justify-content: space-between;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 3px 4px -2px,
       rgba(0, 0, 0, 0.04) 0px 6px 10px 1px, rgba(0, 0, 0, 0.03) 0px 2px 15px 2px;
-  }
 
-  @media (max-width: 768px) {
-    &__wrapper {
-      display: flex;
-      flex-direction: column;
-    }
-
-    &__logoWrapper {
-      background: url("../images/wave-haikei-transparent-top.svg") 0% 50% /
-        cover;
-      border-radius: 10px 10px 0px 0px !important;
-    }
-
-    &__formWrapper {
-      border-radius: 0px 0px 10px 10px !important;
+    @media (max-width: 935px) {
+      grid-template-columns: 1fr;
+      border-radius: 10px;
+      width: 80vw;
     }
   }
 
-  @media (min-width: 769px) {
-    &__logoWrapper {
-      background: url("../images/wave-haikei-transparent-left.svg") 0% 50% /
-        cover;
-    }
+  // @media (max-width: 768px) {
+  //   &__wrapper {
+  //     display: flex;
+  //     flex-direction: column;
+  //   }
+
+  //   &__logoWrapper {
+  //     background: url("../images/wave-haikei-transparent-top.svg") 0% 50% /
+  //       cover;
+  //     border-radius: 10px 10px 0px 0px !important;
+  //   }
+
+  //   &__formWrapper {
+  //     border-radius: 0px 0px 10px 10px !important;
+  //   }
+  // }
+
+  &__logoWrapper {
+    background: url("../images/wave-haikei-transparent-left.svg") 0% 50% / cover;
   }
 
   &__logoWrapper {
@@ -61,7 +64,12 @@
     background-color: #fff;
 
     &__logo {
-      width: clamp(100px, 30vw, 300px);
+      // width: clamp(100px, 30vw, 300px);
+      width: 300px;
+    }
+
+    @media (max-width: 935px) {
+      display: none;
     }
   }
 
@@ -69,14 +77,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    // background-color: lighten(#e0e0e0, 5%);
+    flex-direction: column;
     background-color: lighten($primary, 50%);
-    // border-radius: 10px;
-    border-radius: 0 10px 10px 0;
+    border-radius: 10px;
     padding: 50px;
-    // position: relative;
-    // right: 5px;
-    // z-index: 10;
+
+    @media (min-width: 935px) {
+      border-radius: 0 10px 10px 0;
+    }
+
+    &__logo {
+      width: 150px;
+
+      @media (min-width: 935px) {
+        display: none;
+      }
+    }
 
     & &__form {
       display: flex;
@@ -85,18 +101,15 @@
       align-items: center;
       gap: 15px;
 
-      & input {
-        padding: 10px;
-        width: 100%;
+      @media (max-width: 935px) {
+        width: 80%;
       }
 
-      &__signIn {
-        background-color: $secondary;
-        color: white;
-        // width: 50%;
-        &:hover {
-          background-color: $secondary-hover;
-        }
+      &__rememberMe {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        width: 100%;
       }
     }
   }

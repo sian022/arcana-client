@@ -128,6 +128,12 @@ function LoginPage() {
           </Box>
 
           <Box className="login__formWrapper">
+            <img
+              src={SystemLogoName}
+              alt="arcana-logo"
+              className="login__formWrapper__logo"
+            />
+
             <Box
               component="form"
               className="login__formWrapper__form"
@@ -139,8 +145,8 @@ function LoginPage() {
                 size="small"
                 type="text"
                 autoComplete="off"
-                // variant="standard"
-                sx={{ width: "230px" }}
+                // sx={{ width: "230px" }}
+                sx={{ width: "100%" }}
                 {...register("username")}
                 helperText={errors && errors.username?.message}
               />
@@ -151,8 +157,8 @@ function LoginPage() {
                 size="small"
                 type={showPassword ? "text" : "password"}
                 autoComplete="off"
-                // variant="standard"
-                sx={{ width: "230px" }}
+                // sx={{ width: "230px" }}
+                sx={{ width: "100% !important" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -170,14 +176,7 @@ function LoginPage() {
                 helperText={errors && errors.password?.message}
               />
 
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "end",
-                  alignItems: "center",
-                  width: "100%",
-                }}
-              >
+              <Box className="login__formWrapper__form__rememberMe">
                 <Checkbox
                   onChange={(e) => {
                     setRememberMe(e.target.checked);
@@ -193,7 +192,6 @@ function LoginPage() {
               </Box>
 
               <SecondaryButton
-                className="login__formWrapper__form__signIn"
                 type="submit"
                 disabled={isLoading || !isValid}
                 fullWidth
