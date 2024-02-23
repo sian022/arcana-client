@@ -14,7 +14,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
-import { Add, KeyboardDoubleArrowRight, Tune } from "@mui/icons-material";
+import { KeyboardDoubleArrowRight, Tune } from "@mui/icons-material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { salesTransactionSchema } from "../../schema/schema";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -267,7 +267,13 @@ function SalesTransaction() {
                 </Box>
 
                 <Box
-                  className="salesTransaction__body__itemsForm__itemsList"
+                  className={
+                    "salesTransaction__body__itemsForm__itemsList" +
+                    (productData?.priceModeItems?.length === 0 &&
+                    !isProductFetching
+                      ? " noProductFound"
+                      : "")
+                  }
                   sx={{
                     overflow:
                       isProductFetching || isLoading ? "hidden" : "auto",
@@ -277,7 +283,7 @@ function SalesTransaction() {
                     <>
                       {Array.from({ length: 12 }).map((_, index) => (
                         <Skeleton
-                          height="120px"
+                          height="220"
                           key={index}
                           sx={{ transform: "none" }}
                         />
@@ -306,7 +312,7 @@ function SalesTransaction() {
                         }}
                       >
                         <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__imageWrapper">
-                          <img src={SisigSample} alt="no-img" width="100px" />
+                          <img src={SisigSample} alt="no-img" />
                         </Box>
                         <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__labels">
                           <Typography
