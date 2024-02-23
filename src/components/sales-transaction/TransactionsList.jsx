@@ -11,7 +11,8 @@ import useDisclosure from "../../hooks/useDisclosure";
 import ViewTransactionModal from "../modals/sales-management/ViewTransactionModal";
 import ViewAttachmentModal from "../modals/sales-management/ViewAttachmentModal";
 import { debounce } from "../../utils/CustomFunctions";
-import useConfirm from "../../hooks/useConfirm";
+import { useGetAllSalesTransactionQuery } from "../../features/sales-transaction/api/salesTransactionApi";
+import CommonTableSkeleton from "../CommonTableSkeleton";
 
 function TransactionsList({ setTransactionsMode }) {
   const [search, setSearch] = useState("");
@@ -23,7 +24,6 @@ function TransactionsList({ setTransactionsMode }) {
   const [dateToTemp, setDateToTemp] = useState(moment());
 
   // Hooks
-  const confirm = useConfirm();
 
   //Disclosures
   const {
@@ -43,15 +43,27 @@ function TransactionsList({ setTransactionsMode }) {
     "Tx Number",
     "Time",
     "Amount",
-    "Payment Type",
     "Business Name",
     "CI No.",
     "CI Status",
-    // "Attach CI",
+  ];
+  const customOrderKeys = [
+    "txNumber",
+    "time",
+    "amount",
+    "businessName",
+    "CINo.",
+    "attachmentStatus",
   ];
   const pesoArray = ["amount"];
 
   //RTK Query
+  const { data: transactionsData, isFetching: isTransactionsFetching } =
+    useGetAllSalesTransactionQuery({
+      Search: search,
+      DateFrom: dateFrom,
+      DateTo: dateTo,
+    });
 
   //Functions: API Submit
 
@@ -112,6 +124,7 @@ function TransactionsList({ setTransactionsMode }) {
                 }}
                 sx={{ width: "200px" }}
                 renderInput={(params) => <TextField {...params} />}
+                maxDate={dateToTemp}
               />
             </LocalizationProvider>
 
@@ -141,21 +154,26 @@ function TransactionsList({ setTransactionsMode }) {
           </Box>
         </Box>
 
-        <CommonTable
-          tableHeads={tableHeads}
-          mapData={dummyTransactionsData}
-          pesoArray={pesoArray}
-          page={page}
-          setPage={setPage}
-          rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
-          count={dummyTransactionsData.length}
-          attachKey="attachmentStatus"
-          onView={onViewOpen}
-          onAttach={onAttachmentOpen}
-          // expanded
-          lessCompact
-        />
+        {isTransactionsFetching ? (
+          <CommonTableSkeleton lessCompact />
+        ) : (
+          <CommonTable
+            tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
+            mapData={transactionsData || dummyTransactionsData}
+            pesoArray={pesoArray}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            count={dummyTransactionsData.length}
+            attachKey="attachmentStatus"
+            onView={onViewOpen}
+            onAttach={onAttachmentOpen}
+            // expanded
+            lessCompact
+          />
+        )}
 
         {/* <Box className="transactionsList__footer">
           <DangerButton

@@ -1,20 +1,13 @@
-import {
-  Box,
-  InputAdornment,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useState } from "react";
+import { Box, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonTable from "../../components/CommonTable";
-import { dummyAdvancePaymentData, dummyTableData } from "../../utils/DummyData";
+import { dummyAdvancePaymentData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
-import CommonDialog from "../../components/CommonDialog";
 import { useSelector } from "react-redux";
 import CommonModalForm from "../../components/CommonModalForm";
-import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
+import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { advancePaymentSchema } from "../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
@@ -24,28 +17,34 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { paymentTypesAdvPayment } from "../../utils/Constants";
 import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import {
+  useCancelAdvancePaymentMutation,
+  useCreateAdvancePaymentMutation,
+  useGetAllAdvancePaymentsQuery,
+  useUpdateAdvancePaymentMutation,
+} from "../../features/sales-management/api/advancePaymentApi";
+import useConfirm from "../../hooks/useConfirm";
 
 function AdvancePayment() {
-  const [drawerMode, setDrawerMode] = useState("add");
+  const [editMode, setEditMode] = useState(false);
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const confirm = useConfirm();
   const snackbar = useSnackbar();
 
   //React Hook Form
   const {
     handleSubmit,
     formState: { errors, isValid, isDirty },
-    register,
     setValue,
     reset,
     control,
     watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(advancePaymentSchema.schema),
     mode: "onSubmit",
@@ -55,36 +54,28 @@ function AdvancePayment() {
   //Disclosures
 
   const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isFormOpen,
     onOpen: onFormOpen,
     onClose: onFormClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isConfirmOpen,
-    onOpen: onConfirmOpen,
-    onClose: onConfirmClose,
-  } = useDisclosure();
-
   //RTK Query
-  const {
-    data: clientData,
-    isLoading: isClientLoading,
-    refetch: refetchClients,
-  } = useGetAllClientsForListingFeeQuery({
-    Status: true,
-    PageNumber: 1,
-    PageSize: 1000,
-    IncludeRejected: drawerMode === "edit" ? true : "",
-  });
+  const [createAdvancePayment] = useCreateAdvancePaymentMutation();
+  const { data: advancePaymentData, isFetching: isAdvancePaymentFetching } =
+    useGetAllAdvancePaymentsQuery({
+      Search: search,
+      Page: page + 1,
+      PageSize: rowsPerPage,
+    });
+  const [updateAdvancePayment] = useUpdateAdvancePaymentMutation();
+  const [cancelAdvancePayment] = useCancelAdvancePaymentMutation();
 
-  const isFetching = false;
+  const { data: clientData, isLoading: isClientLoading } =
+    useGetAllClientsQuery({
+      RegistrationStatus: "Approved",
+      PageNumber: 1,
+      PageSize: 1000,
+    });
 
   //Constants
   const tableHeads = [
@@ -98,7 +89,7 @@ function AdvancePayment() {
   const pesoArray = ["amount"];
 
   //Functions
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     let transformedData;
 
     if (data.paymentType.label === "Cheque") {
@@ -130,28 +121,96 @@ function AdvancePayment() {
     }
 
     try {
-      console.log(transformedData);
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {editMode ? "update" : "add"} advance
+            payment for{" "}
+            <span style={{ fontWeight: "700" }}>
+              {watch("clientId")?.businessName}
+            </span>
+            ?
+          </>
+        ),
+        question: true,
+        callback: () =>
+          editMode
+            ? updateAdvancePayment({
+                id: selectedRowData?.id,
+                ...transformedData,
+              }).unwrap()
+            : createAdvancePayment(transformedData).unwrap(),
+      });
+
       snackbar({
         message: "Advance Payment added successfully!",
         variant: "success",
       });
       handleFormClose();
-      onConfirmClose();
     } catch (error) {
-      console.log(error);
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error adding Advance Payment", variant: "error" });
+      if (error?.isConfirmed) {
+        snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
       }
-      onConfirmClose();
+    }
+  };
+
+  const onCancel = async () => {
+    try {
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to cancel advance payment for{" "}
+            <span style={{ fontWeight: "700" }}>
+              {selectedRowData?.businessName}
+            </span>
+            ?
+          </>
+        ),
+        question: false,
+        callback: () =>
+          cancelAdvancePayment({ id: selectedRowData?.id }).unwrap(),
+      });
+
+      snackbar({
+        message: "Advance Payment canceled successfully!",
+        variant: "success",
+      });
+      handleFormClose();
+    } catch (error) {
+      if (error?.isConfirmed) {
+        snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
+      }
     }
   };
 
   const handleAddOpen = () => {
-    setDrawerMode("add");
-    // onDrawerOpen();
+    setEditMode(false);
     onFormOpen();
+  };
+
+  const handleEditOpen = () => {
+    setEditMode(true);
+    onFormOpen();
+
+    setValue(
+      "clientId",
+      clientData?.regularClient?.find(
+        (item) => item.clienId === selectedRowData?.id
+      )
+    );
+    setValue(
+      "paymentType",
+      paymentTypesAdvPayment.find(
+        (item) => item.value === selectedRowData?.paymentType
+      )
+    );
+    setValue("amount", selectedRowData?.amount);
   };
 
   const handleFormClose = () => {
@@ -159,19 +218,25 @@ function AdvancePayment() {
     onFormClose();
   };
 
+  // UseEffect
+  useEffect(() => {
+    setCount(advancePaymentData?.totalCount);
+  }, [advancePaymentData]);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd
         pageTitle="Advance Payment"
         onOpen={handleAddOpen}
         setSearch={setSearch}
-        setStatus={setStatus}
+        removeArchive
       />
-      {isFetching ? (
-        <CommonTableSkeleton />
+
+      {isAdvancePaymentFetching ? (
+        <CommonTableSkeleton lesserCompact />
       ) : (
         <CommonTable
-          mapData={dummyAdvancePaymentData}
+          mapData={advancePaymentData || dummyAdvancePaymentData}
           tableHeads={tableHeads}
           pesoArray={pesoArray}
           page={page}
@@ -179,8 +244,9 @@ function AdvancePayment() {
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={count}
-          status={status}
           lesserCompact
+          onEdit={handleEditOpen}
+          onCancel={onCancel}
         />
       )}
 
@@ -188,8 +254,7 @@ function AdvancePayment() {
         title="Advance Payment"
         open={isFormOpen}
         onClose={handleFormClose}
-        // onSubmit={handleSubmit(onSubmit)}
-        onSubmit={onConfirmOpen}
+        onSubmit={handleSubmit(onSubmit)}
         disableSubmit={!isValid || !isDirty}
         width="800px"
         height="520px"
@@ -217,8 +282,8 @@ function AdvancePayment() {
               }
               disableClearable
               loading={isClientLoading}
-              disabled={drawerMode === "edit"}
-              isOptionEqualToValue={(option, value) => true}
+              disabled={editMode}
+              isOptionEqualToValue={() => true}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -229,15 +294,6 @@ function AdvancePayment() {
                   error={errors?.clientId}
                 />
               )}
-              onChange={(_, value) => {
-                if (watch("clientId") && watch("listingItems")[0]?.itemId) {
-                  onClientConfirmationOpen();
-                  setConfirmationValue(value);
-                  return watch("clientId");
-                } else {
-                  return value;
-                }
-              }}
             />
           </Box>
 
@@ -260,7 +316,7 @@ function AdvancePayment() {
                 getOptionLabel={(option) => option.label.toUpperCase()}
                 disableClearable
                 // disabled={!watch("clientId")}
-                isOptionEqualToValue={(option, value) => true}
+                isOptionEqualToValue={() => true}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -306,6 +362,7 @@ function AdvancePayment() {
                     onValueChange={(e) => {
                       onChange(e.value === "" ? null : Number(e.value));
                     }}
+                    inputRef={ref}
                     onBlur={onBlur}
                     value={value || ""}
                     thousandSeparator=","
@@ -444,6 +501,7 @@ function AdvancePayment() {
                       onChange(e.value === "" ? null : Number(e.value));
                     }}
                     onBlur={onBlur}
+                    inputRef={ref}
                     value={value || ""}
                     thousandSeparator=","
                     allowNegative={false}
@@ -504,28 +562,6 @@ function AdvancePayment() {
           )}
         </Box>
       </CommonModalForm>
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        // onYes={onArchiveSubmit}
-        // isLoading={isArchiveLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.storeTypeName}
-        </span>
-        ?
-      </CommonDialog>
-
-      <CommonDialog
-        open={isConfirmOpen}
-        onClose={onConfirmClose}
-        onYes={handleSubmit(onSubmit)}
-      >
-        Confirm adding of advance payment?
-      </CommonDialog>
     </Box>
   );
 }

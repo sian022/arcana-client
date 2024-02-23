@@ -64,52 +64,6 @@ export const dummyTransactionsData = [
   },
 ];
 
-export const dummySpecialDiscountData = [
-  {
-    businessName: "Kiana's BBQ and Wings",
-    ownersName: "Kiana Kaslana",
-    discount: "10%",
-    date: "January 10, 2024",
-  },
-
-  {
-    businessName: "Sunny Delights Bakery",
-    ownersName: "Samantha Sunshine",
-    discount: "5%",
-    date: "December 20, 2023",
-  },
-  {
-    businessName: "Taste of Italy Pizzeria",
-    ownersName: "Luigi Rossi",
-    discount: "8%",
-    date: "November 10, 2023",
-  },
-  {
-    businessName: "Spice Paradise Indian Cuisine",
-    ownersName: "Raj Patel",
-    discount: "10%",
-    date: "October 5, 2023",
-  },
-  {
-    businessName: "Seafood Haven",
-    ownersName: "Marina Fisher",
-    discount: "7%",
-    date: "September 15, 2023",
-  },
-  // {
-  //   businessName: "Green Harvest Organic Market",
-  //   ownersName: "Emma Greene",
-  //   discount: "3%",
-  //   date: "August 8, 2023",
-  // },
-  // {
-  //   businessName: "Macho Tacos",
-  //   ownersName: "Carlos Hernandez",
-  //   discount: "6%",
-  //   date: "July 1, 2023",
-  // },
-];
-
 export const dummyAdvancePaymentData = [
   {
     businessName: "Kiana's BBQ and Wings",

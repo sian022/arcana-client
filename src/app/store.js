@@ -37,6 +37,7 @@ import { priceModeItemsApi } from "../features/setup/api/priceModeItemsApi";
 import { salesTransactionApi } from "../features/sales-transaction/api/salesTransactionApi";
 import { specialDiscountApi } from "../features/special-discount/api/specialDiscountApi";
 import { rdfSmsApi } from "../features/misc/api/rdfSmsApi";
+import { advancePaymentApi } from "../features/sales-management/api/advancePaymentApi";
 
 export const store = configureStore({
   reducer: {
@@ -77,6 +78,7 @@ export const store = configureStore({
     [salesTransactionApi.reducerPath]: salesTransactionApi.reducer,
     [specialDiscountApi.reducerPath]: specialDiscountApi.reducer,
     [rdfSmsApi.reducerPath]: rdfSmsApi.reducer,
+    [advancePaymentApi.reducerPath]: advancePaymentApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -111,6 +113,7 @@ export const store = configureStore({
       salesTransactionApi.middleware,
       specialDiscountApi.middleware,
       rdfSmsApi.middleware,
+      advancePaymentApi.middleware,
     ]),
 });
 

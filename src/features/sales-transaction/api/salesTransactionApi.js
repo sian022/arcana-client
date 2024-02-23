@@ -13,7 +13,7 @@ export const salesTransactionApi = createApi({
       );
     },
   }),
-  tagTypes: ["Clients"],
+  tagTypes: ["Clients", "Sales Transaction"],
 
   endpoints: (builder) => ({
     getAllClientsForPOS: builder.query({
