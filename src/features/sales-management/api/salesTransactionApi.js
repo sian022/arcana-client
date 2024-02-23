@@ -24,7 +24,6 @@ export const salesTransactionApi = createApi({
       }),
       providesTags: ["Clients"],
       transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
     }),
 
     getAllSalesTransaction: builder.query({
@@ -35,14 +34,21 @@ export const salesTransactionApi = createApi({
       }),
       providesTags: ["Sales Transaction"],
       transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
+    }),
+
+    voidSalesTransaction: builder.mutation({
+      query: ({ id }) => ({
+        url: `/sales-transaction/${id}/void`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Sales Transaction"],
     }),
 
     uploadCiAttachment: builder.mutation({
-      query: ({ id, ...body }) => ({
+      query: ({ id, formData }) => ({
         url: `/sales-transaction/${id}/upload`,
         method: "PATCH",
-        body,
+        body: formData,
       }),
       invalidatesTags: ["Sales Transaction"],
     }),
@@ -51,6 +57,7 @@ export const salesTransactionApi = createApi({
 
 export const {
   useGetAllClientsForPOSQuery,
-  useUploadCiAttachmentMutation,
   useGetAllSalesTransactionQuery,
+  useVoidSalesTransactionMutation,
+  useUploadCiAttachmentMutation,
 } = salesTransactionApi;

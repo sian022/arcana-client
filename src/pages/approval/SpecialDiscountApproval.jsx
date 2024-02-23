@@ -219,9 +219,13 @@ function SpecialDiscountApproval() {
 
   useEffect(() => {
     if (data) {
-      setCount(data.totalCount);
+      setCount(data?.totalCount);
     }
   }, [data]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [search, rowsPerPage, tabViewing]);
 
   return (
     <>

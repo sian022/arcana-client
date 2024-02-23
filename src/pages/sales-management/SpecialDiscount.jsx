@@ -345,6 +345,10 @@ function SpecialDiscount() {
     }
   }, [approvalStatus, patchReadNotification, notifications]);
 
+  useEffect(() => {
+    setPage(0);
+  }, [search, rowsPerPage, tabViewing]);
+
   return (
     <>
       <Box className="commonPageLayout">

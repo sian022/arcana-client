@@ -39,6 +39,7 @@ import OtherExpensesApproval from "../pages/approval/OtherExpensesApproval";
 import PriceModeSetup from "../pages/setup/PriceModeSetup";
 import PriceModeManagement from "../pages/setup/PriceModeManagement";
 import PageNotFound from "../pages/PageNotFound";
+import Clearing from "../pages/sales-management/Clearing";
 
 export const router = createBrowserRouter([
   {
@@ -195,6 +196,10 @@ export const router = createBrowserRouter([
           {
             path: "advance-payment",
             element: <AdvancePayment />,
+          },
+          {
+            path: "clearing",
+            element: <Clearing />,
           },
         ],
       },

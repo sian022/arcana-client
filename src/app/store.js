@@ -34,7 +34,7 @@ import { otherExpensesApi } from "../features/setup/api/otherExpensesApi";
 import { otherExpensesRegApi } from "../features/otherExpenses/api/otherExpensesRegApi";
 import { priceModeSetupApi } from "../features/setup/api/priceModeSetupApi";
 import { priceModeItemsApi } from "../features/setup/api/priceModeItemsApi";
-import { salesTransactionApi } from "../features/sales-transaction/api/salesTransactionApi";
+import { salesTransactionApi } from "../features/sales-management/api/salesTransactionApi";
 import { specialDiscountApi } from "../features/special-discount/api/specialDiscountApi";
 import { rdfSmsApi } from "../features/misc/api/rdfSmsApi";
 import { advancePaymentApi } from "../features/sales-management/api/advancePaymentApi";

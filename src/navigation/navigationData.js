@@ -246,6 +246,13 @@ export const navigationData = [
         icon: "FastForward",
         description: "Manage advance payments for approved clients",
       },
+      {
+        id: 5,
+        path: "/sales-management/clearing",
+        name: "Clearing",
+        icon: "DoneAll",
+        description: "Clearing of paid transactions",
+      },
     ],
   },
 

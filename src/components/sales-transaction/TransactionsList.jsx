@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Divider, IconButton, TextField, Typography } from "@mui/material";
 import { KeyboardDoubleArrowLeft, Search } from "@mui/icons-material";
 import CommonTable from "../CommonTable";
@@ -10,20 +10,30 @@ import SecondaryButton from "../SecondaryButton";
 import useDisclosure from "../../hooks/useDisclosure";
 import ViewTransactionModal from "../modals/sales-management/ViewTransactionModal";
 import ViewAttachmentModal from "../modals/sales-management/ViewAttachmentModal";
-import { debounce } from "../../utils/CustomFunctions";
-import { useGetAllSalesTransactionQuery } from "../../features/sales-transaction/api/salesTransactionApi";
+import { debounce, handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import {
+  useGetAllSalesTransactionQuery,
+  useVoidSalesTransactionMutation,
+} from "../../features/sales-management/api/salesTransactionApi";
 import CommonTableSkeleton from "../CommonTableSkeleton";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { useSelector } from "react-redux";
 
 function TransactionsList({ setTransactionsMode }) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [dateFrom, setDateFrom] = useState(moment());
-  const [dateTo, setDateTo] = useState(moment());
+  const [count, setCount] = useState(0);
+  const [dateFrom, setDateFrom] = useState(moment().format("YYYY-MM-DD"));
+  const [dateTo, setDateTo] = useState(moment().format("YYYY-MM-DD"));
   const [dateFromTemp, setDateFromTemp] = useState(moment());
   const [dateToTemp, setDateToTemp] = useState(moment());
 
   // Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //Disclosures
   const {
@@ -61,11 +71,42 @@ function TransactionsList({ setTransactionsMode }) {
   const { data: transactionsData, isFetching: isTransactionsFetching } =
     useGetAllSalesTransactionQuery({
       Search: search,
-      DateFrom: dateFrom,
-      DateTo: dateTo,
+      DateFrom: moment(dateFrom).format("YYYY-MM-DD"),
+      DateTo: moment(dateTo).format("YYYY-MM-DD"),
     });
+  const [voidSalesTransaction] = useVoidSalesTransactionMutation();
 
   //Functions: API Submit
+  const onVoid = async () => {
+    try {
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to void transaction number{" "}
+            <span style={{ fontWeight: "700" }}>
+              {selectedRowData?.txNumber}
+            </span>
+            ?
+          </>
+        ),
+        question: false,
+        callback: () =>
+          voidSalesTransaction({ id: selectedRowData?.id }).unwrap(),
+      });
+
+      snackbar({
+        message: "Transaction voided successfully",
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
+      }
+    }
+  };
 
   //Functions: Others
   const debouncedSetSearch = debounce((value) => {
@@ -76,6 +117,15 @@ function TransactionsList({ setTransactionsMode }) {
     setDateFrom(dateFromTemp);
     setDateTo(dateToTemp);
   };
+
+  //UseEffect
+  useEffect(() => {
+    setCount(transactionsData?.totalCount);
+  }, [transactionsData]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [search, rowsPerPage, dateFrom, dateTo]);
 
   return (
     <>
@@ -123,7 +173,6 @@ function TransactionsList({ setTransactionsMode }) {
                   },
                 }}
                 sx={{ width: "200px" }}
-                renderInput={(params) => <TextField {...params} />}
                 maxDate={dateToTemp}
               />
             </LocalizationProvider>
@@ -140,7 +189,6 @@ function TransactionsList({ setTransactionsMode }) {
                 }}
                 sx={{ width: "200px" }}
                 minDate={dateFromTemp}
-                renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
 
@@ -166,11 +214,11 @@ function TransactionsList({ setTransactionsMode }) {
             setPage={setPage}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
-            count={dummyTransactionsData.length}
+            count={count}
             attachKey="attachmentStatus"
             onView={onViewOpen}
             onAttach={onAttachmentOpen}
-            // expanded
+            onVoid={onVoid}
             lessCompact
           />
         )}

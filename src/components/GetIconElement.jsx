@@ -38,8 +38,8 @@ import {
   MonetizationOn,
   AttachMoney,
   Settings,
-  Tag,
   Link,
+  DoneAll,
 } from "@mui/icons-material";
 
 export const getIconElement = (iconName, color) => {
@@ -105,6 +105,7 @@ export const getIconElement = (iconName, color) => {
     AttachMoney: <AttachMoney sx={{ color: color && `${color} !important` }} />,
     Settings: <Settings sx={{ color: color && `${color} !important` }} />,
     Link: <Link sx={{ color: color && `${color} !important` }} />,
+    DoneAll: <DoneAll sx={{ color: color && `${color} !important` }} />,
   };
 
   return (

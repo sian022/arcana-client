@@ -1,5 +1,4 @@
 import { Box, MenuItem, TextField, debounce } from "@mui/material";
-import React from "react";
 
 function SearchFilterMixin({ setSearch, selectOptions, setSelectValue }) {
   const debouncedSetSearch = debounce((value) => {

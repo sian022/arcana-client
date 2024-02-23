@@ -1,19 +1,17 @@
 import {
   Box,
   Button,
-  CircularProgress,
   IconButton,
   Input,
   Radio,
   Typography,
 } from "@mui/material";
-import React, { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import {
   AddAPhoto,
   Assignment,
   Business,
   CameraAlt,
-  Close,
   Create,
   PermIdentity,
   Visibility,
@@ -21,11 +19,8 @@ import {
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
 import SignatureCanvasModal from "../../../components/modals/SignatureCanvasModal";
 import useDisclosure from "../../../hooks/useDisclosure";
-import { useSelector } from "react-redux";
-import CommonModal from "../../../components/CommonModal";
 import { base64ToBlob } from "../../../utils/CustomFunctions";
 import ViewPhotoModal from "../../../components/modals/ViewPhotoModal";
-import { set } from "react-hook-form";
 
 function Attachments() {
   const {
@@ -128,11 +123,11 @@ function Attachments() {
             }
           >
             <Typography className="attachments__column__title">
-              Owner's Requirements
+              Owner&lsquo;s Requirements
             </Typography>
             <Box className="attachments__column__content">
               <Box className="attachments__column__content__item">
-                <Typography>Customer's Signature</Typography>
+                <Typography>Customer&lsquo;s Signature</Typography>
                 <Button
                   className={ownersRequirements["signature"] && "buttonActive"}
                   onClick={
@@ -265,11 +260,11 @@ function Attachments() {
             }
           >
             <Typography className="attachments__column__title">
-              Representative's Requirements
+              Representative&lsquo;s Requirements
             </Typography>
             <Box className="attachments__column__content">
               <Box className="attachments__column__content__item">
-                <Typography>Representative's Signature</Typography>
+                <Typography>Representative&lsquo;s Signature</Typography>
                 <Button
                   className={
                     representativeRequirements["signature"] && "buttonActive"

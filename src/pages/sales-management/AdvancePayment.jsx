@@ -223,6 +223,10 @@ function AdvancePayment() {
     setCount(advancePaymentData?.totalCount);
   }, [advancePaymentData]);
 
+  useEffect(() => {
+    setPage(0);
+  }, [search, rowsPerPage]);
+
   return (
     <Box className="commonPageLayout">
       <PageHeaderAdd

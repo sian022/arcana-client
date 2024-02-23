@@ -29,7 +29,7 @@ import SwipeableItem from "../../components/sales-transaction/SwipeableItem";
 import CashoutModal from "../../components/modals/sales-management/CashoutModal";
 import TransactionsList from "../../components/sales-transaction/TransactionsList";
 import UnderConstruction from "../../assets/images/under-construction.svg";
-import { useGetAllClientsForPOSQuery } from "../../features/sales-transaction/api/salesTransactionApi";
+import { useGetAllClientsForPOSQuery } from "../../features/sales-management/api/salesTransactionApi";
 import { useGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
 import NoImage from "../../assets/images/NoImage.png";
 import SisigSample from "../../assets/images/SisigSample.png";
