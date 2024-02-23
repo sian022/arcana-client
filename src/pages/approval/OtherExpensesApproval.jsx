@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box, TextField, debounce } from "@mui/material";
 import CommonTable from "../../components/CommonTable";
@@ -13,7 +13,6 @@ import { usePatchReadNotificationMutation } from "../../features/notification/ap
 function OtherExpensesApproval() {
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
-  const [origin, setOrigin] = useState("");
   const [expenseStatus, setExpenseStatus] = useState("Under review");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -36,7 +35,7 @@ function OtherExpensesApproval() {
 
   //RTK Query
 
-  const { data, isLoading, isFetching } = useGetAllExpensesQuery({
+  const { data, isFetching } = useGetAllExpensesQuery({
     Search: search,
     Status: true,
     ExpenseStatus: expenseStatus,
@@ -47,26 +46,29 @@ function OtherExpensesApproval() {
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
-  const otherExpensesNavigation = [
-    {
-      case: 1,
-      name: "Pending Expenses",
-      expenseStatus: "Under review",
-      badge: notifications["pendingExpenses"],
-    },
-    {
-      case: 2,
-      name: "Approved Expenses",
-      expenseStatus: "Approved",
-      // badge: notifications["approvedOtherExpenses"],
-    },
-    {
-      case: 3,
-      name: "Rejected Expenses",
-      expenseStatus: "Rejected",
-      // badge: notifications["rejectedOtherExpenses"],
-    },
-  ];
+  const otherExpensesNavigation = useMemo(
+    () => [
+      {
+        case: 1,
+        name: "Pending Expenses",
+        expenseStatus: "Under review",
+        badge: notifications["pendingExpenses"],
+      },
+      {
+        case: 2,
+        name: "Approved Expenses",
+        expenseStatus: "Approved",
+        // badge: notifications["approvedOtherExpenses"],
+      },
+      {
+        case: 3,
+        name: "Rejected Expenses",
+        expenseStatus: "Rejected",
+        // badge: notifications["rejectedOtherExpenses"],
+      },
+    ],
+    [notifications]
+  );
 
   const tableHeads = [
     "Business Name",
@@ -84,7 +86,7 @@ function OtherExpensesApproval() {
     "requestedBy",
   ];
 
-  const pesoArray = ["total"];
+  const pesoArray = ["totalAmount"];
 
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
@@ -96,13 +98,13 @@ function OtherExpensesApproval() {
     );
 
     setExpenseStatus(foundItem?.expenseStatus);
-  }, [tabViewing]);
+  }, [tabViewing, otherExpensesNavigation]);
 
   useEffect(() => {
     if (expenseStatus === "Under review") {
       patchReadNotification({ Tab: "Pending Expenses" });
     }
-  }, [expenseStatus]);
+  }, [expenseStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -110,7 +112,7 @@ function OtherExpensesApproval() {
 
   useEffect(() => {
     setPage(0);
-  }, [tabViewing, search, status, rowsPerPage]);
+  }, [tabViewing, search, rowsPerPage, expenseStatus]);
 
   return (
     <>

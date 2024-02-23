@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box } from "@mui/material";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
@@ -73,26 +73,29 @@ function OtherExpenses() {
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
-  const expenseNavigation = [
-    {
-      case: 1,
-      name: "Pending Expenses",
-      expenseStatus: "Under review",
-      // badge: notifications["pendingOtherExpenses"],
-    },
-    {
-      case: 2,
-      name: "Approved Expenses",
-      expenseStatus: "Approved",
-      // badge: notifications["approvedOtherExpenses"],
-    },
-    {
-      case: 3,
-      name: "Rejected Expenses",
-      expenseStatus: "Rejected",
-      badge: notifications["rejectedExpenses"],
-    },
-  ];
+  const expenseNavigation = useMemo(
+    () => [
+      {
+        case: 1,
+        name: "Pending Expenses",
+        expenseStatus: "Under review",
+        // badge: notifications["pendingOtherExpenses"],
+      },
+      {
+        case: 2,
+        name: "Approved Expenses",
+        expenseStatus: "Approved",
+        // badge: notifications["approvedOtherExpenses"],
+      },
+      {
+        case: 3,
+        name: "Rejected Expenses",
+        expenseStatus: "Rejected",
+        badge: notifications["rejectedExpenses"],
+      },
+    ],
+    [notifications]
+  );
 
   const tableHeads = [
     "Business Name",
@@ -145,13 +148,13 @@ function OtherExpenses() {
     );
 
     setExpenseStatus(foundItem?.expenseStatus);
-  }, [tabViewing]);
+  }, [tabViewing, expenseNavigation]);
 
   useEffect(() => {
     if (expenseStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Expenses" });
     }
-  }, [expenseStatus]);
+  }, [expenseStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -159,7 +162,7 @@ function OtherExpenses() {
 
   useEffect(() => {
     setPage(0);
-  }, [tabViewing, search, status, rowsPerPage]);
+  }, [tabViewing, search, rowsPerPage, expenseStatus]);
 
   return (
     <>
