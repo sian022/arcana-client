@@ -35,7 +35,7 @@ function ViewListingFeeModal({
   listingFeeStatus,
   ...props
 }) {
-  const { onClose, ...noOnClose } = props;
+  const { onClose } = props;
 
   const [reason, setReason] = useState("");
   const [confirmReason, setConfirmReason] = useState(false);

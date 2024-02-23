@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -11,13 +11,10 @@ import {
   TableHead,
   TableRow,
   TextField,
-  TextareaAutosize,
   Typography,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
-import AccentButton from "../AccentButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,9 +25,11 @@ import {
   usePutApproveExpensesMutation,
   usePutRejectExpensesMutation,
 } from "../../features/otherExpenses/api/otherExpensesRegApi";
+import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function ViewExpensesModal({ approval, expenseStatus, ...props }) {
-  const { onClose, ...noOnClose } = props;
+  const { onClose } = props;
 
   const [reason, setReason] = useState("");
   const [confirmReason, setConfirmReason] = useState(false);
@@ -41,6 +40,22 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
   const dispatch = useDispatch();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const messageReceiverNumberApproved =
+    selectedRowData?.nextApproverMobileNumber
+      ? selectedRowData?.nextApproverMobileNumber
+      : selectedRowData?.requestorMobileNumber;
+  const messageReceiverNumberRejected = selectedRowData?.requestorMobileNumber;
+
+  const messageReceiverNameApproved = selectedRowData?.nextApprover
+    ? selectedRowData?.nextApprover
+    : selectedRowData?.requestor;
+  const messageReceiverNameRejected = selectedRowData?.requestor;
+
+  const messageReceiverMessageApproved = selectedRowData?.nextApprover
+    ? "You have a new other expenses approval."
+    : `${selectedRowData?.businessName}'s other expenses request has been approved.`;
+  const messageReceiverMessageRejected = `${selectedRowData?.businessName}'s other expenses request has been rejected.`;
 
   //Disclosures
   const {
@@ -61,6 +76,9 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
 
   const [putRejectExpenses, { isLoading: isRejectLoading }] =
     usePutRejectExpensesMutation();
+
+  const [sendMessage, { isLoading: isSendMessageLoading }] =
+    useSendMessageMutation();
 
   const customRibbonContent = (
     // <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
@@ -92,19 +110,36 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
       await putApproveExpenses({
         id: selectedRowData?.requestId,
       }).unwrap();
+
+      await sendMessage({
+        message: `Fresh morning ${messageReceiverNameApproved}! ${messageReceiverMessageApproved}`,
+        mobile_number: `+63${messageReceiverNumberApproved}`,
+      }).unwrap();
+
       snackbar({
         message: "Other Expenses approved successfully",
         variant: "success",
       });
+
       onApproveConfirmClose();
       onClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error approving expenses", variant: "error" });
+      if (error.function !== "sendMessage") {
+        return snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
       }
+
+      snackbar({
+        message:
+          "Other expenses approved successfully but failed to send message.",
+        variant: "warning",
+      });
+      onApproveConfirmClose();
+      onClose();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -115,19 +150,33 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
         id: selectedRowData?.requestId,
         reason: reason,
       }).unwrap();
+
+      await sendMessage({
+        message: `Fresh morning ${messageReceiverNameRejected}! ${messageReceiverMessageRejected}`,
+        mobile_number: `+63${messageReceiverNumberRejected}`,
+      }).unwrap();
+
       snackbar({
         message: "Other Expenses rejected successfully",
         variant: "success",
       });
+
       handleRejectConfirmClose();
       onClose();
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error rejecting expenses", variant: "error" });
+      if (error.function !== "sendMessage") {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
+
+      snackbar({
+        message:
+          "Listing fee rejected successfully but failed to send message.",
+        variant: "warning",
+      });
+      handleRejectConfirmClose();
+      onClose();
+      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -299,7 +348,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
             onClose={onApproveConfirmClose}
             open={isApproveConfirmOpen}
             onYes={handleApprove}
-            isLoading={isApproveLoading}
+            isLoading={isApproveLoading || isSendMessageLoading}
             question
           >
             Are you sure you want to approve other expenses for{" "}
@@ -314,7 +363,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
             open={isRejectConfirmOpen}
             onYes={handleReject}
             disableYes={!confirmReason || !reason.trim()}
-            isLoading={isRejectLoading}
+            isLoading={isRejectLoading || isSendMessageLoading}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <Box>
