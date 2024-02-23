@@ -35,9 +35,8 @@
       flex: 1;
       flex-direction: column;
       gap: 15px;
-      // overflow: auto;
-      overflow: hidden;
-      height: 100% !important;
+      // overflow: hidden;
+      height: 100%;
 
       &__searchFilter {
         display: flex;
@@ -64,11 +63,10 @@
       &__itemsList {
         flex: 1;
         overflow: auto;
-        height: 100%;
-        // display: grid;
-        // grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        // display: flex;
+        // flex-direction: column;
         gap: 5px;
         padding-bottom: 5px;
 
@@ -89,30 +87,42 @@
 
         & &__itemCard {
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
           align-items: center;
-          padding: 5px 20px;
+          // padding: 5px 20px;
           color: black;
           box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
-            0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important;
-          border: 1px solid #dee2e6 !important;
-          background-color: white !important;
-          height: 120px;
+            0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+          border: 1px solid #dee2e6;
+          background-color: white;
+          gap: 10px;
+          // height: 200px;
 
           &:hover {
             background-color: darken(#fff, 3%) !important;
           }
 
-          &__labels {
+          &__imageWrapper {
+            height: 100px;
+            width: 100%;
+            border: 1px solid black;
+            border-radius: 5px;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            text-align: left;
+            justify-content: center;
+            align-items: center;
+
+            & img {
+              object-fit: cover;
+              width: 60%;
+            }
           }
 
-          &__right {
+          &__labels {
             display: flex;
-            gap: 20px;
+            justify-content: space-between;
             align-items: center;
+            width: 100%;
 
             &__price {
               background-color: $success;
@@ -120,7 +130,49 @@
               border-radius: 10px;
             }
           }
+
+          &__description {
+            width: 100%;
+            & p {
+              text-align: left;
+            }
+          }
         }
+
+        // & &__itemCard {
+        //   display: flex;
+        //   justify-content: space-between;
+        //   align-items: center;
+        //   padding: 5px 20px;
+        //   color: black;
+        //   box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+        //     0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important;
+        //   border: 1px solid #dee2e6 !important;
+        //   background-color: white !important;
+        //   height: 120px;
+
+        //   &:hover {
+        //     background-color: darken(#fff, 3%) !important;
+        //   }
+
+        //   &__labels {
+        //     display: flex;
+        //     flex-direction: column;
+        //     text-align: left;
+        //   }
+
+        //   &__right {
+        //     display: flex;
+        //     gap: 20px;
+        //     align-items: center;
+
+        //     &__price {
+        //       background-color: $success;
+        //       padding: 5px 10px;
+        //       border-radius: 10px;
+        //     }
+        //   }
+        // }
       }
 
       // &__itemsList {

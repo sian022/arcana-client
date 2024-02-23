@@ -31,6 +31,8 @@ import TransactionsList from "../../components/sales-transaction/TransactionsLis
 import UnderConstruction from "../../assets/images/under-construction.svg";
 import { useGetAllClientsForPOSQuery } from "../../features/sales-transaction/api/salesTransactionApi";
 import { useGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
+import NoImage from "../../assets/images/NoImage.png";
+import SisigSample from "../../assets/images/SisigSample.png";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
@@ -264,7 +266,7 @@ function SalesTransaction() {
                   </Box>
                 </Box>
 
-                {/* <Box
+                <Box
                   className="salesTransaction__body__itemsForm__itemsList"
                   sx={{
                     overflow:
@@ -303,6 +305,9 @@ function SalesTransaction() {
                           }
                         }}
                       >
+                        <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__imageWrapper">
+                          <img src={SisigSample} alt="no-img" width="100px" />
+                        </Box>
                         <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__labels">
                           <Typography
                             fontSize="1.2rem"
@@ -311,13 +316,8 @@ function SalesTransaction() {
                           >
                             {item.itemCode}
                           </Typography>
-                          <Typography fontSize="12px">
-                            {item.itemDescription}
-                          </Typography>
-                        </Box>
 
-                        <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__right">
-                          <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__right__price">
+                          <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__labels__price">
                             <Typography
                               fontWeight="700"
                               whiteSpace="nowrap"
@@ -333,12 +333,18 @@ function SalesTransaction() {
                             </Typography>
                           </Box>
                         </Box>
+
+                        <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__description">
+                          <Typography fontSize="12px">
+                            {item.itemDescription}
+                          </Typography>
+                        </Box>
                       </Button>
                     ))
                   )}
-                </Box> */}
+                </Box>
 
-                <Box className="salesTransaction__body__itemsForm__itemsList">
+                {/* <Box className="salesTransaction__body__itemsForm__itemsList">
                   {isProductFetching || isLoading ? (
                     // <Box className="salesTransaction__body__itemsForm__itemsList__skeletons">
                     <>
@@ -362,8 +368,9 @@ function SalesTransaction() {
                   ) : (
                     productData?.priceModeItems?.map((item) => (
                       <Button
-                        className="salesTransaction__body__itemsForm__itemsList__itemCard"
                         key={item.id}
+                        className="salesTransaction__body__itemsForm__itemsList__itemCard"
+                        disableRipple
                         onClick={() => {
                           if (quickAdd) {
                             handleAddItem(item);
@@ -408,7 +415,7 @@ function SalesTransaction() {
                       </Button>
                     ))
                   )}
-                </Box>
+                </Box> */}
               </Box>
 
               <Box className="salesTransaction__body__orderDetails">
