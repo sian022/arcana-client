@@ -58,7 +58,7 @@
     justify-content: center;
     align-items: center;
     padding: 50px;
-    background-color: #f5f5f5;
+    background-color: #fff;
 
     &__logo {
       width: clamp(100px, 30vw, 300px);
@@ -69,7 +69,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: lighten(#e0e0e0, 5%);
+    // background-color: lighten(#e0e0e0, 5%);
+    background-color: lighten($primary, 50%);
     // border-radius: 10px;
     border-radius: 0 10px 10px 0;
     padding: 50px;
