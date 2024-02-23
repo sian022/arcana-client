@@ -3,10 +3,15 @@
 .login {
   &__page {
     background: linear-gradient(
-      to right,
-      darken(#544d915a, 10%),
-      darken(#544d91aa, 10%)
+      to bottom right,
+      lighten(#2434485a, 80%),
+      lighten(#243448aa, 20%)
     );
+    // background: linear-gradient(
+    //   to right,
+    //   darken(#544d915a, 10%),
+    //   darken(#544d91aa, 10%)
+    // );
 
     width: 100vw;
     height: 100vh;
