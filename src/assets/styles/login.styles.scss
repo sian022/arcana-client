@@ -2,16 +2,17 @@
 
 .login {
   &__page {
-    background: linear-gradient(
-      to bottom right,
-      lighten(#2434485a, 80%),
-      lighten(#243448aa, 20%)
-    );
+    // background: darken(#fff, 2%);
     // background: linear-gradient(
-    //   to right,
-    //   darken(#544d915a, 10%),
-    //   darken(#544d91aa, 10%)
+    //   to bottom right,
+    //   lighten(#2434485a, 80%),
+    //   lighten(#243448aa, 20%)
     // );
+    background: linear-gradient(
+      to right,
+      lighten(#544d915a, 30%),
+      lighten(#544d91aa, 3%)
+    );
 
     width: 100vw;
     height: 100vh;
@@ -26,8 +27,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     justify-content: space-between;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 3px 4px -2px,
-      rgba(0, 0, 0, 0.04) 0px 6px 10px 1px, rgba(0, 0, 0, 0.03) 0px 2px 15px 2px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 3px 4px -2px,
+      rgba(0, 0, 0, 0.015) 0px 6px 10px 1px,
+      rgba(0, 0, 0, 0.01) 0px 2px 15px 2px;
+
+    // box-shadow: rgba(0, 0, 0, 0.05) 0px 3px 4px -2px,
+    //   rgba(0, 0, 0, 0.04) 0px 6px 10px 1px, rgba(0, 0, 0, 0.03) 0px 2px 15px 2px;
 
     @media (max-width: 935px) {
       grid-template-columns: 1fr;
