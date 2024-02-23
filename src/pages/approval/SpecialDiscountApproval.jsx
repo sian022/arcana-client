@@ -95,13 +95,13 @@ function SpecialDiscountApproval() {
         case: 2,
         name: "Approved Sp. Discount",
         approvalStatus: "Approved",
-        badge: notifications["approvedSpDiscount"],
+        // badge: notifications["approvedSpDiscount"],
       },
       {
         case: 3,
         name: "Rejected Sp. Discount",
         approvalStatus: "Rejected",
-        badge: notifications["rejectedSpDiscount"],
+        // badge: notifications["rejectedSpDiscount"],
       },
     ];
   }, [notifications]);

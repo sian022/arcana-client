@@ -8,7 +8,6 @@ import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
 import { useGetAllExpensesQuery } from "../../features/otherExpenses/api/otherExpensesRegApi";
 import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
-import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function OtherExpensesApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -43,7 +42,7 @@ function OtherExpensesApproval() {
     PageSize: rowsPerPage,
   });
 
-  const [patchReadNotification] = usePatchReadNotificationMutation();
+  // const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
   const otherExpensesNavigation = useMemo(
@@ -100,11 +99,11 @@ function OtherExpensesApproval() {
     setExpenseStatus(foundItem?.expenseStatus);
   }, [tabViewing, otherExpensesNavigation]);
 
-  useEffect(() => {
-    if (expenseStatus === "Under review") {
-      patchReadNotification({ Tab: "Pending Expenses" });
-    }
-  }, [expenseStatus, patchReadNotification]);
+  // useEffect(() => {
+  //   if (expenseStatus === "Under review") {
+  //     patchReadNotification({ Tab: "Pending Expenses" });
+  //   }
+  // }, [expenseStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);

@@ -9,7 +9,7 @@ import { useGetAllClientsQuery } from "../../features/registration/api/registrat
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
-import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
+// import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function RegistrationApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -44,7 +44,7 @@ function RegistrationApproval() {
     PageSize: rowsPerPage,
   });
 
-  const [patchReadNotification] = usePatchReadNotificationMutation();
+  // const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
   const registrationNavigation = useMemo(
@@ -116,11 +116,11 @@ function RegistrationApproval() {
     setClientStatus(foundItem?.registrationStatus);
   }, [tabViewing, registrationNavigation]);
 
-  useEffect(() => {
-    if (clientStatus === "Under review") {
-      patchReadNotification({ Tab: "Pending Clients" });
-    }
-  }, [clientStatus, patchReadNotification]);
+  // useEffect(() => {
+  //   if (clientStatus === "Under review") {
+  //     patchReadNotification({ Tab: "Pending Clients" });
+  //   }
+  // }, [clientStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);

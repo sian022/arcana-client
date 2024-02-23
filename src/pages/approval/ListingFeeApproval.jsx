@@ -8,7 +8,6 @@ import { useGetAllListingFeeQuery } from "../../features/listing-fee/api/listing
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
-import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function ListingFeeApproval() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -60,7 +59,7 @@ function ListingFeeApproval() {
     PageSize: rowsPerPage,
   });
 
-  const [patchReadNotification] = usePatchReadNotificationMutation();
+  // const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
   const listingFeeNavigation = useMemo(
@@ -117,11 +116,11 @@ function ListingFeeApproval() {
     setListingFeeStatus(foundItem?.listingFeeStatus);
   }, [tabViewing, listingFeeNavigation]);
 
-  useEffect(() => {
-    if (listingFeeStatus === "Under review") {
-      patchReadNotification({ Tab: "Pending Listing Fee" });
-    }
-  }, [listingFeeStatus, patchReadNotification]);
+  // useEffect(() => {
+  //   if (listingFeeStatus === "Under review") {
+  //     patchReadNotification({ Tab: "Pending Listing Fee" });
+  //   }
+  // }, [listingFeeStatus, patchReadNotification]);
 
   useEffect(() => {
     setCount(data?.totalCount);
