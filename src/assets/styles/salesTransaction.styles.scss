@@ -103,9 +103,8 @@
           }
 
           &__imageWrapper {
-            height: 100px;
             width: 100%;
-            border: 1px solid black;
+            // border: 1px solid black;
             border-radius: 5px;
             overflow: hidden;
             display: flex;
@@ -114,7 +113,7 @@
 
             & img {
               object-fit: cover;
-              width: 60%;
+              width: 55%;
             }
           }
 
