@@ -1,7 +1,12 @@
 import { Box, TextField, debounce } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 
-function SearchActionMixin({ setSearch, actionTitle, actionCallback }) {
+function SearchActionMixin({
+  setSearch,
+  actionTitle,
+  actionCallback,
+  removeAction,
+}) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
@@ -22,9 +27,11 @@ function SearchActionMixin({ setSearch, actionTitle, actionCallback }) {
       </Box>
 
       <Box className="pageHeader__right">
-        <SecondaryButton size="medium" onClick={actionCallback}>
-          {actionTitle || "Action"}
-        </SecondaryButton>
+        {!removeAction && (
+          <SecondaryButton size="medium" onClick={actionCallback}>
+            {actionTitle || "Action"}
+          </SecondaryButton>
+        )}
       </Box>
     </Box>
     // </Paper>

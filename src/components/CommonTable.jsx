@@ -1,5 +1,6 @@
 import {
   Box,
+  Checkbox,
   IconButton,
   Paper,
   Table,
@@ -75,6 +76,9 @@ function CommonTable({
   highlightSelected,
   disableActions,
   moveNoDataUp,
+  checkboxSelection,
+  checkedArray,
+  setCheckedArray,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -162,6 +166,12 @@ function CommonTable({
         <Table>
           <TableHead>
             <TableRow>
+              {checkboxSelection && (
+                <TableCell>
+                  <Checkbox sx={{ color: "white !important" }} />
+                </TableCell>
+              )}
+
               {tableHeadsList.map((item, i) => (
                 <TableCell
                   sx={{
@@ -193,6 +203,12 @@ function CommonTable({
                       "#f3f3f3",
                   }}
                 >
+                  {checkboxSelection && (
+                    <TableCell>
+                      <Checkbox checked={checkedArray?.[j]} />
+                    </TableCell>
+                  )}
+
                   {(customOrderKeys || dataToMapKeys).map((keys, k) => {
                     if (item[keys] === true && keys !== attachKey) {
                       return (

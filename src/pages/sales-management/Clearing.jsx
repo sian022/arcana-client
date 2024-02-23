@@ -75,6 +75,7 @@ function Clearing() {
         setSearch={setSearch}
         actionTitle="Clear"
         actionCallback={() => console.log("Cleared")}
+        removeAction={clearingStatus === "Cleared"}
       />
 
       <CommonTable
@@ -85,6 +86,8 @@ function Clearing() {
         setRowsPerPage={setRowsPerPage}
         count={count}
         compact
+        checkboxSelection
+        includeActions={false}
       />
     </Box>
   );
