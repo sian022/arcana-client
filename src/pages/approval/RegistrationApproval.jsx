@@ -20,7 +20,7 @@ function RegistrationApproval() {
   const [clientStatus, setClientStatus] = useState("Under review");
   const [count, setCount] = useState(0);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -138,6 +138,7 @@ function RegistrationApproval() {
           tabsList={registrationNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
+          isNotificationFetching={isNotificationFetching}
         />
 
         <SearchFilterMixin

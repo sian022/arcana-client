@@ -21,6 +21,7 @@ import {
   usePatchReadNotificationMutation,
 } from "../../features/notification/api/notificationApi";
 import { registrationApi } from "../../features/registration/api/registrationApi";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -34,7 +35,7 @@ function ListingFee() {
   const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
   const dispatch = useDispatch();
 
   //Disclosures
@@ -89,7 +90,7 @@ function ListingFee() {
         case: 2,
         name: "Approved Listing Fee",
         listingFeeStatus: "Approved",
-        // badge: notifications["approvedListingFee"],
+        badge: notifications["approvedListingFee"],
       },
       {
         case: 3,
@@ -137,12 +138,7 @@ function ListingFee() {
       dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       onDeleteClose();
     } catch (error) {
-      console.log(error);
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error cancelling listing fee", variant: "error" });
-      }
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
@@ -155,10 +151,20 @@ function ListingFee() {
   }, [tabViewing, listingFeeNavigation]);
 
   useEffect(() => {
-    if (listingFeeStatus === "Rejected") {
+    if (
+      notifications["rejectedListingFee"] > 0 &&
+      listingFeeStatus === "Rejected"
+    ) {
       patchReadNotification({ Tab: "Rejected Listing Fee" });
     }
-  }, [listingFeeStatus, patchReadNotification]);
+
+    if (
+      notifications["approvedListingFee"] > 0 &&
+      listingFeeStatus === "Approved"
+    ) {
+      patchReadNotification({ Tab: "Approved Listing Fee" });
+    }
+  }, [listingFeeStatus, patchReadNotification, notifications]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -177,6 +183,7 @@ function ListingFee() {
           tabsList={listingFeeNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
+          isNotificationFetching={isNotificationFetching}
         />
 
         {/* <AddVoidSearchMixin

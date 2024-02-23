@@ -30,7 +30,7 @@ function SpecialDiscountApproval() {
   const [confirmReason, setConfirmReason] = useState(false);
 
   //Hooks
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
   const confirm = useConfirm();
   const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -232,6 +232,7 @@ function SpecialDiscountApproval() {
           tabsList={spDiscountNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
+          isNotificationFetching={isNotificationFetching}
         />
 
         <Box sx={{ padding: "15px", my: "-20px" }}>

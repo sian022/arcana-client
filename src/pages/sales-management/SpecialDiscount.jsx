@@ -26,6 +26,7 @@ import {
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import useConfirm from "../../hooks/useConfirm";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
+import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 
 function SpecialDiscount() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -37,7 +38,7 @@ function SpecialDiscount() {
   const [editMode, setEditMode] = useState(false);
 
   // Hooks
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
   const snackbar = useSnackbar();
   const confirm = useConfirm();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -77,19 +78,19 @@ function SpecialDiscount() {
         case: 1,
         name: "Pending Sp. Discount",
         approvalStatus: "Under review",
-        badge: notifications["pendingSpDiscount"],
+        badge: notifications["pendingSpDisocunt"],
       },
       {
         case: 2,
         name: "Approved Sp. Discount",
         approvalStatus: "Approved",
-        badge: notifications["approvedSpDiscount"],
+        badge: notifications["approvedSpDisocunt"],
       },
       {
         case: 3,
         name: "Rejected Sp. Discount",
         approvalStatus: "Rejected",
-        badge: notifications["rejectedSpDiscount"],
+        badge: notifications["rejectedSpDisocunt"],
       },
     ];
   }, [notifications]);
@@ -113,6 +114,7 @@ function SpecialDiscount() {
     useGetAllClientsQuery({
       RegistrationStatus: "Approved",
     });
+  const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Constants
   const customOrderKeys = [
@@ -327,6 +329,22 @@ function SpecialDiscount() {
     }
   }, [specialDiscountData]);
 
+  useEffect(() => {
+    if (
+      notifications["rejectedSpDisocunt"] > 0 &&
+      approvalStatus === "Rejected"
+    ) {
+      patchReadNotification({ Tab: "Rejected Sp. Discount" });
+    }
+
+    if (
+      notifications["approvedSpDisocunt"] > 0 &&
+      approvalStatus === "Approved"
+    ) {
+      patchReadNotification({ Tab: "Approved Sp. Discount" });
+    }
+  }, [approvalStatus, patchReadNotification, notifications]);
+
   return (
     <>
       <Box className="commonPageLayout">
@@ -336,6 +354,7 @@ function SpecialDiscount() {
           tabsList={spDiscountNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
+          isNotificationFetching={isNotificationFetching}
         />
 
         <AddVoidSearchMixin

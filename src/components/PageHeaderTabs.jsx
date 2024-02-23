@@ -1,13 +1,4 @@
-import {
-  Box,
-  Paper,
-  Typography,
-  Stack,
-  Badge,
-  Divider,
-  CircularProgress,
-} from "@mui/material";
-import React from "react";
+import { Box, Paper, Typography, Stack, Badge, Divider } from "@mui/material";
 import "../assets/styles/common.styles.scss";
 
 function PageHeaderTabs({
@@ -18,6 +9,7 @@ function PageHeaderTabs({
   tabsList,
   tabViewing,
   setTabViewing,
+  isNotificationFetching,
 }) {
   return (
     <Box sx={{ padding: "1px" }}>
@@ -52,7 +44,7 @@ function PageHeaderTabs({
                 <Badge
                   badgeContent={!item.isBadgeLoading ? item.badge : <></>}
                   color="notification"
-                  invisible={item.case === tabViewing}
+                  invisible={item.case === tabViewing || isNotificationFetching}
                   sx={{ color: "white !important" }}
                 >
                   <Typography

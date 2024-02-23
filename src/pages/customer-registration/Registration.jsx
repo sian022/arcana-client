@@ -35,7 +35,7 @@ function DirectRegistration() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const userDetails = useSelector((state) => state.login.userDetails);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -95,7 +95,7 @@ function DirectRegistration() {
         case: 2,
         name: "Approved Clients",
         registrationStatus: "Approved",
-        // badge: notifications["approvedClient"],
+        badge: notifications["approvedClient"],
       },
       {
         case: 3,
@@ -172,10 +172,14 @@ function DirectRegistration() {
   }, [tabViewing, registrationNavigation]);
 
   useEffect(() => {
-    if (clientStatus === "Rejected") {
+    if (notifications["rejectedClient"] > 0 && clientStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Clients" });
     }
-  }, [clientStatus, patchReadNotification]);
+
+    if (notifications["approvedClient"] > 0 && clientStatus === "Approved") {
+      patchReadNotification({ Tab: "Approved Clients" });
+    }
+  }, [clientStatus, patchReadNotification, notifications]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -195,6 +199,7 @@ function DirectRegistration() {
           setTabViewing={setTabViewing}
           onOpen={onRegisterOpen}
           addTitle="Register Direct"
+          isNotificationFetching={isNotificationFetching}
         />
 
         <SearchVoidFilterMixin

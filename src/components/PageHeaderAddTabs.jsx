@@ -1,5 +1,4 @@
 import { Box, Paper, Typography, Stack, Badge, Divider } from "@mui/material";
-import React from "react";
 import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
 
@@ -14,6 +13,7 @@ function PageHeaderAddTabs({
   setTabViewing,
   addTitle,
   largeButton,
+  isNotificationFetching,
 }) {
   return (
     <Box sx={{ padding: "1px" }}>
@@ -59,7 +59,7 @@ function PageHeaderAddTabs({
                 <Badge
                   badgeContent={item.badge}
                   color="notification"
-                  invisible={item.case === tabViewing}
+                  invisible={item.case === tabViewing || isNotificationFetching}
                   sx={{ color: "white !important" }}
                 >
                   <Typography

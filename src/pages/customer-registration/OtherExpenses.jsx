@@ -30,7 +30,7 @@ function OtherExpenses() {
   const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -79,13 +79,13 @@ function OtherExpenses() {
         case: 1,
         name: "Pending Expenses",
         expenseStatus: "Under review",
-        // badge: notifications["pendingOtherExpenses"],
+        // badge: notifications["pendingExpenses"],
       },
       {
         case: 2,
         name: "Approved Expenses",
         expenseStatus: "Approved",
-        // badge: notifications["approvedOtherExpenses"],
+        badge: notifications["approvedExpenses"],
       },
       {
         case: 3,
@@ -151,10 +151,14 @@ function OtherExpenses() {
   }, [tabViewing, expenseNavigation]);
 
   useEffect(() => {
-    if (expenseStatus === "Rejected") {
+    if (notifications["rejectedExpenses"] > 0 && expenseStatus === "Rejected") {
       patchReadNotification({ Tab: "Rejected Expenses" });
     }
-  }, [expenseStatus, patchReadNotification]);
+
+    if (notifications["approvedExpenses"] > 0 && expenseStatus === "Approved") {
+      patchReadNotification({ Tab: "Approved Expenses" });
+    }
+  }, [expenseStatus, patchReadNotification, notifications]);
 
   useEffect(() => {
     setCount(data?.totalCount);
@@ -173,6 +177,7 @@ function OtherExpenses() {
           tabsList={expenseNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
+          isNotificationFetching={isNotificationFetching}
         />
 
         {/* <AddVoidSearchMixin

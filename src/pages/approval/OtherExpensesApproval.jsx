@@ -17,7 +17,7 @@ function OtherExpensesApproval() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
-  const { notifications } = useContext(AppContext);
+  const { notifications, isNotificationFetching } = useContext(AppContext);
 
   //Disclosures
   const {
@@ -122,6 +122,7 @@ function OtherExpensesApproval() {
           tabsList={otherExpensesNavigation}
           tabViewing={tabViewing}
           setTabViewing={setTabViewing}
+          isNotificationFetching={isNotificationFetching}
         />
 
         <Box sx={{ padding: "15px", my: "-20px" }}>
