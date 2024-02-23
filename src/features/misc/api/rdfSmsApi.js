@@ -22,7 +22,7 @@ export const rdfSmsApi = createApi({
         method: "POST",
         body: {
           system_name: "Arcana",
-          message: `${message} \n\n-Arcana System SMS`,
+          message: `${message} \n\n-Arcana System`,
           mobile_number,
         },
       }),

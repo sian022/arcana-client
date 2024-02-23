@@ -102,7 +102,7 @@ function RegistrationApproval() {
     "phoneNumber",
     "storeType",
     "clusterName",
-    "requestedBy",
+    "requestor",
     "origin",
   ];
 

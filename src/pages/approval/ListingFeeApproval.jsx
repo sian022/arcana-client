@@ -100,7 +100,7 @@ function ListingFeeApproval() {
     "clientName",
     "listingFeeId",
     "total",
-    "requestedBy",
+    "requestor",
   ];
 
   const pesoArray = ["total"];

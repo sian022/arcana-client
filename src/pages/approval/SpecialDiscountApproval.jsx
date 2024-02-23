@@ -47,9 +47,9 @@ function SpecialDiscountApproval() {
   const messageReceiverNameRejected = selectedRowData?.requestor;
 
   const messageReceiverMessageApproved = selectedRowData?.nextApprover
-    ? "You have a new listing fee approval."
-    : `${selectedRowData?.businessName}'s listing fee request has been approved.`;
-  const messageReceiverMessageRejected = `${selectedRowData?.businessName}'s listing fee request has been rejected.`;
+    ? "You have a new sp. discount approval."
+    : `${selectedRowData?.businessName}'s sp. discount request has been approved.`;
+  const messageReceiverMessageRejected = `${selectedRowData?.businessName}'s sp. discount request has been rejected.`;
 
   //Disclosures
   const {
@@ -71,7 +71,7 @@ function SpecialDiscountApproval() {
     "clientName",
     "discount",
     "isOneTime",
-    "requestedBy",
+    "requestor",
   ];
   const tableHeads = [
     // "Request No.",
@@ -283,7 +283,7 @@ function SpecialDiscountApproval() {
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <Box>
-            Are you sure you want to reject listing fee for{" "}
+            Are you sure you want to reject special discount for{" "}
             <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
               {selectedRowData?.businessName || "client"}
             </span>

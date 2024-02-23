@@ -83,7 +83,7 @@ function OtherExpensesApproval() {
     "ownersName",
     "id",
     "totalAmount",
-    "requestedBy",
+    "requestor",
   ];
 
   const pesoArray = ["totalAmount"];
