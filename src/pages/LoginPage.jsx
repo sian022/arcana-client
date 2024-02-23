@@ -202,12 +202,12 @@ function LoginPage() {
                   "Sign In"
                 )}
               </SecondaryButton>
+            </Box>
 
-              <Box className="login__footer">
-                <img src={MisLogo} alt="mis-logo" />
-                <Typography>© 2023 Powered by</Typography>
-                <Typography>Management Information System</Typography>
-              </Box>
+            <Box className="login__formWrapper__footer">
+              <img src={MisLogo} alt="mis-logo" />
+              <Typography>© 2023 Powered by</Typography>
+              <Typography>Management Information System</Typography>
             </Box>
           </Box>
         </Box>
