@@ -146,6 +146,36 @@ function CommonTable({
     tableHeadsList.push("Actions");
   }
 
+  //Checkbox Selection
+  const isAllSelected = dataToMap?.every((item, index) =>
+    checkedArray?.includes(index)
+  );
+
+  const isIndeterminate =
+    !isAllSelected &&
+    dataToMap?.some((item, index) => checkedArray?.includes(index));
+
+  const handleCheckboxChange = (index) => {
+    // Check if the index is already in the array
+    if (checkedArray.includes(index)) {
+      // If it's present, remove it
+      setCheckedArray(checkedArray.filter((item) => item !== index));
+    } else {
+      // If it's not present, add it
+      setCheckedArray([...checkedArray, index]);
+    }
+  };
+
+  const handleMasterCheckboxChange = (e) => {
+    const { checked } = e.target;
+
+    if (checked) {
+      setCheckedArray(dataToMap?.map((item, index) => index));
+    } else {
+      setCheckedArray([]);
+    }
+  };
+
   return (
     <Box className="tableSuperContainer" sx={{ mt: mt ? mt : null }}>
       <TableContainer
@@ -168,7 +198,12 @@ function CommonTable({
             <TableRow>
               {checkboxSelection && (
                 <TableCell>
-                  <Checkbox sx={{ color: "white !important" }} />
+                  <Checkbox
+                    checked={isAllSelected}
+                    indeterminate={isIndeterminate}
+                    onChange={handleMasterCheckboxChange}
+                    sx={{ color: "white !important" }}
+                  />
                 </TableCell>
               )}
 
@@ -205,7 +240,10 @@ function CommonTable({
                 >
                   {checkboxSelection && (
                     <TableCell>
-                      <Checkbox checked={checkedArray?.[j]} />
+                      <Checkbox
+                        checked={checkedArray?.includes(j)}
+                        onChange={() => handleCheckboxChange(j)}
+                      />
                     </TableCell>
                   )}
 
