@@ -270,7 +270,8 @@ function SalesTransaction() {
                   className={
                     "salesTransaction__body__itemsForm__itemsList" +
                     (productData?.priceModeItems?.length === 0 &&
-                    !isProductFetching
+                    !isProductFetching &&
+                    !isLoading
                       ? " noProductFound"
                       : "")
                   }
