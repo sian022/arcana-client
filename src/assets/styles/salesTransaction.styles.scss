@@ -80,6 +80,17 @@
           overflow: hidden;
         }
 
+        & &__selectClientFirst {
+          grid-column: 1 / -1;
+          margin: auto;
+          text-align: center;
+          font-size: 2.2rem;
+          font-weight: 600;
+          color: gray;
+          position: relative;
+          bottom: 10%;
+        }
+
         &__noProductFound {
           display: flex;
           align-items: center;

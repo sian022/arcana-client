@@ -6,6 +6,7 @@ function SearchActionMixin({
   actionTitle,
   actionCallback,
   removeAction,
+  disableAction,
 }) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
@@ -28,7 +29,11 @@ function SearchActionMixin({
 
       <Box className="pageHeader__right">
         {!removeAction && (
-          <SecondaryButton size="medium" onClick={actionCallback}>
+          <SecondaryButton
+            size="medium"
+            disabled={disableAction}
+            onClick={actionCallback}
+          >
             {actionTitle || "Action"}
           </SecondaryButton>
         )}

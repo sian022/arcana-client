@@ -1,6 +1,6 @@
 export const dummyTransactionsData = [
   {
-    txNumber: 1,
+    id: 1,
     time: "10:00 am",
     amount: "2,515.2",
     paymentType: "Cash",
@@ -9,7 +9,7 @@ export const dummyTransactionsData = [
     attachmentStatus: true,
   },
   {
-    txNumber: 2,
+    id: 2,
     time: "02:30 pm",
     amount: "1,200.75",
     paymentType: "Credit Card",
@@ -18,7 +18,7 @@ export const dummyTransactionsData = [
     attachmentStatus: true,
   },
   {
-    txNumber: 3,
+    id: 3,
     time: "08:45 am",
     amount: "850.00",
     paymentType: "Debit Card",
@@ -27,7 +27,7 @@ export const dummyTransactionsData = [
     attachmentStatus: false,
   },
   {
-    txNumber: 4,
+    id: 10,
     time: "05:15 pm",
     amount: "3,700.50",
     paymentType: "Mobile Payment",
@@ -36,7 +36,7 @@ export const dummyTransactionsData = [
     attachmentStatus: true,
   },
   {
-    txNumber: 5,
+    id: 5,
     time: "12:20 pm",
     amount: "500.00",
     paymentType: "Cash",
@@ -45,7 +45,7 @@ export const dummyTransactionsData = [
     attachmentStatus: true,
   },
   {
-    txNumber: 6,
+    id: 30,
     time: "03:45 pm",
     amount: "1,800.25",
     paymentType: "Credit Card",
@@ -54,7 +54,7 @@ export const dummyTransactionsData = [
     attachmentStatus: false,
   },
   {
-    txNumber: 7,
+    id: 7,
     time: "09:30 am",
     amount: "950.75",
     paymentType: "Debit Card",

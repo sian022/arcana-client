@@ -11,7 +11,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/NoRecordsFound.svg";
@@ -80,19 +80,8 @@ function CommonTable({
   checkedArray,
   setCheckedArray,
 }) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
   const dispatch = useDispatch();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-
-  useEffect(() => {
-    const image = new Image();
-    image.src = NoData;
-
-    image.onload = () => {
-      setImageLoaded(true);
-    };
-  }, [mapData]);
 
   if (!mapData || mapData.length === 0) {
     return (
@@ -110,19 +99,15 @@ function CommonTable({
             : null,
         }}
       >
-        {imageLoaded && (
-          <>
-            <img
-              src={NoData}
-              alt="no-data-img"
-              className="noData__image"
-              style={{
-                position: moveNoDataUp && "relative",
-                bottom: moveNoDataUp && "10%",
-              }}
-            />
-          </>
-        )}
+        <img
+          src={NoData}
+          alt="no-data-img"
+          className="noData__image"
+          style={{
+            position: moveNoDataUp && "relative",
+            bottom: moveNoDataUp && "10%",
+          }}
+        />
       </Box>
     );
   }
@@ -276,13 +261,6 @@ function CommonTable({
                           />
                         </TableCell>
                       );
-                    }
-
-                    let total = 0;
-                    if (keys === "listingFee") {
-                      item[keys]?.[0]?.listingItems?.forEach((item) => {
-                        total += item.unitCost;
-                      });
                     }
 
                     if (viewMoreKey === keys) {

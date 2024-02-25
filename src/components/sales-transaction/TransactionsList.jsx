@@ -58,7 +58,7 @@ function TransactionsList({ setTransactionsMode }) {
     "CI Status",
   ];
   const customOrderKeys = [
-    "txNumber",
+    "id",
     "time",
     "amount",
     "businessName",
@@ -83,10 +83,7 @@ function TransactionsList({ setTransactionsMode }) {
         children: (
           <>
             Are you sure you want to void transaction number{" "}
-            <span style={{ fontWeight: "700" }}>
-              {selectedRowData?.txNumber}
-            </span>
-            ?
+            <span style={{ fontWeight: "700" }}>{selectedRowData?.id}</span>?
           </>
         ),
         question: false,

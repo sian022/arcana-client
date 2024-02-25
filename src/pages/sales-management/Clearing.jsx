@@ -6,6 +6,10 @@ import CommonTable from "../../components/CommonTable";
 import { dummyTransactionsData } from "../../utils/DummyData";
 import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 import SearchActionMixin from "../../components/mixins/SearchActionMixin";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { useClearSalesTransactionMutation } from "../../features/sales-management/api/salesTransactionApi";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function Clearing() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -19,6 +23,8 @@ function Clearing() {
 
   //Hooks
   const { notifications, isNotificationFetching } = useContext(AppContext);
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
 
   //Constants
   const tabsList = useMemo(() => {
@@ -39,7 +45,7 @@ function Clearing() {
   }, [notifications]);
 
   const customOrderKeys = [
-    "txNumber",
+    "id",
     "time",
     "amount",
     "paymentType",
@@ -47,8 +53,46 @@ function Clearing() {
     "CINo.",
   ];
 
+  const tableHeads = [
+    "Tx Number",
+    "Time",
+    "Amount",
+    "Payment Type",
+    "Business Name",
+    "CI No.",
+  ];
+
   //RTK Query
+  const [clearSalesTransaction] = useClearSalesTransactionMutation();
   const [patchReadNotification] = usePatchReadNotificationMutation();
+
+  //Functions
+  const onClear = async () => {
+    try {
+      await confirm({
+        children: <>Are you sure you want to clear selected transactions?</>,
+        question: true,
+        callback: () =>
+          clearSalesTransaction({
+            transactions: checkedArray?.map(
+              (item) => dummyTransactionsData?.[item]?.id
+            ),
+          }).unwrap(),
+      });
+
+      snackbar({
+        message: "Transaction cleared successfully",
+        variant: "success",
+      });
+    } catch (error) {
+      if (error?.isConfirmed) {
+        snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
+      }
+    }
+  };
 
   //UseEffect
   useEffect(() => {
@@ -71,8 +115,6 @@ function Clearing() {
     setPage(0);
   }, [search, rowsPerPage, tabViewing]);
 
-  console.log(checkedArray);
-
   return (
     <Box className="commonPageLayout">
       <PageHeaderTabs
@@ -87,13 +129,15 @@ function Clearing() {
       <SearchActionMixin
         setSearch={setSearch}
         actionTitle="Clear"
-        actionCallback={() => console.log("Cleared")}
+        actionCallback={onClear}
         removeAction={clearingStatus === "Cleared"}
+        disableAction={checkedArray.length === 0}
       />
 
       <CommonTable
         mapData={dummyTransactionsData}
         customOrderKeys={customOrderKeys}
+        tableHeads={tableHeads}
         page={page}
         setPage={setPage}
         rowsPerPage={rowsPerPage}

@@ -52,6 +52,16 @@ export const salesTransactionApi = createApi({
       }),
       invalidatesTags: ["Sales Transaction"],
     }),
+
+    //Payment
+    clearSalesTransaction: builder.mutation({
+      query: (body) => ({
+        url: "/sales-transaction/clear",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Sales Transaction"],
+    }),
   }),
 });
 
@@ -60,4 +70,5 @@ export const {
   useGetAllSalesTransactionQuery,
   useVoidSalesTransactionMutation,
   useUploadCiAttachmentMutation,
+  useClearSalesTransactionMutation,
 } = salesTransactionApi;
