@@ -189,6 +189,7 @@ function SalesTransaction() {
                   name={`clientId`}
                   control={control}
                   options={clientData || []}
+                  disabled={watch("items")?.length > 0}
                   getOptionLabel={(option) =>
                     option.businessName?.toUpperCase() +
                       " - " +
