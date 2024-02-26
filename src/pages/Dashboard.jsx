@@ -6,6 +6,7 @@ import {
   ArrowUpward,
   Group,
   Info,
+  KeyboardDoubleArrowRight,
   Schedule,
   SupervisorAccount,
 } from "@mui/icons-material";
@@ -13,6 +14,9 @@ import { BarChart } from "@mui/x-charts";
 import { dummyDataset, dummyInventoryData } from "../utils/DummyData";
 import { useNavigate } from "react-router-dom";
 import { transformName } from "../utils/CustomFunctions";
+import Register from "../assets/images/Register.svg";
+import Sales from "../assets/images/Sales.svg";
+import Inventory from "../assets/images/Inventory.svg";
 
 function Dashboard() {
   //Hooks
@@ -34,9 +38,11 @@ function Dashboard() {
           </Typography>
 
           <Box className="dashboard__top__greetingCard__content">
-            <Typography className="dashboard__top__greetingCard__content__name">
-              {transformName(fullName) || "user"}
-            </Typography>
+            <Box className="dashboard__top__greetingCard__content__nameContainer">
+              <Typography className="dashboard__top__greetingCard__content__nameContainer__name">
+                {transformName(fullName) || "user"}
+              </Typography>
+            </Box>
 
             <Typography className="dashboard__top__greetingCard__content__message">
               Here&apos;s what&apos;s happening today
@@ -169,27 +175,57 @@ function Dashboard() {
               className="dashboard__body__left__quickLinks__firstCard"
               onClick={() => navigate("customer-registration/registration")}
             >
-              <Typography className="dashboard__body__left__quickLinks__firstCard__title">
-                Register a customer
-              </Typography>
+              <Box className="dashboard__body__left__quickLinks__firstCard__left">
+                <Typography className="dashboard__body__left__quickLinks__firstCard__left__title">
+                  Register a customer
+                </Typography>
+
+                <Box className="dashboard__body__left__quickLinks__firstCard__left__arrow">
+                  <KeyboardDoubleArrowRight />
+                </Box>
+              </Box>
+
+              <Box className="dashboard__body__left__quickLinks__firstCard__imageContainer">
+                <img src={Register} alt="registration" />
+              </Box>
             </Box>
 
             <Box
               className="dashboard__body__left__quickLinks__secondCard"
               onClick={() => navigate("sales-management/sales-transaction")}
             >
-              <Typography className="dashboard__body__left__quickLinks__secondCard__title">
-                Create a sales order
-              </Typography>
+              <Box className="dashboard__body__left__quickLinks__secondCard__left">
+                <Typography className="dashboard__body__left__quickLinks__secondCard__left__title">
+                  Create a sales order
+                </Typography>
+
+                <Box className="dashboard__body__left__quickLinks__secondCard__left__arrow">
+                  <KeyboardDoubleArrowRight />
+                </Box>
+              </Box>
+
+              <Box className="dashboard__body__left__quickLinks__secondCard__imageContainer">
+                <img src={Sales} alt="sales" />
+              </Box>
             </Box>
 
-            <Box className="dashboard__body__left__quickLinks__thirdCard">
-              <Typography
-                className="dashboard__body__left__quickLinks__thirdCard__title"
-                onClick={() => navigate("inventory-management/mrp")}
-              >
-                Manage the inventory
-              </Typography>
+            <Box
+              className="dashboard__body__left__quickLinks__thirdCard"
+              onClick={() => navigate("inventory-management/mrp")}
+            >
+              <Box className="dashboard__body__left__quickLinks__thirdCard__left">
+                <Typography className="dashboard__body__left__quickLinks__thirdCard__left__title">
+                  Manage the inventory
+                </Typography>
+
+                <Box className="dashboard__body__left__quickLinks__thirdCard__left__arrow">
+                  <KeyboardDoubleArrowRight />
+                </Box>
+              </Box>
+
+              <Box className="dashboard__body__left__quickLinks__thirdCard__imageContainer">
+                <img src={Inventory} alt="inventory" />
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -260,7 +296,6 @@ function Dashboard() {
       </Box>
     </Box>
   );
-  // <div>Fresh morning {fullName || "user"}!</div>;
 }
 
 export default Dashboard;
