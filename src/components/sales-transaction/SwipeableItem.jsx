@@ -1,4 +1,4 @@
-import { Add, Cancel, Check, Close, Info, Remove } from "@mui/icons-material";
+import { Add, Check, Close, Info, Remove } from "@mui/icons-material";
 import {
   Box,
   IconButton,
@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import useDisclosure from "../../hooks/useDisclosure";
 import { NumericFormat } from "react-number-format";

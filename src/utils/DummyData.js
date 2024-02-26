@@ -391,53 +391,103 @@ export const dummyDataset = [
   },
 ];
 
-// export const dummyDataset = [
-//   {
-//     amount: 620000.5,
-//     month: "Jan",
-//   },
-//   {
-//     amount: 750200.75,
-//     month: "Feb",
-//   },
-//   {
-//     amount: 880500.3,
-//     month: "Mar",
-//   },
-//   {
-//     amount: 705000.25,
-//     month: "Apr",
-//   },
-//   {
-//     amount: 910000.8,
-//     month: "May",
-//   },
-//   {
-//     amount: 550300.4,
-//     month: "June",
-//   },
-//   {
-//     amount: 965000.6,
-//     month: "July",
-//   },
-//   {
-//     amount: 820000.9,
-//     month: "Aug",
-//   },
-//   {
-//     amount: 705600.2,
-//     month: "Sept",
-//   },
-//   {
-//     amount: 757800.45,
-//     month: "Oct",
-//   },
-//   {
-//     amount: 862500.7,
-//     month: "Nov",
-//   },
-//   {
-//     amount: 1000000.0,
-//     month: "Dec",
-//   },
-// ];
+export const dummyInventoryData = [
+  {
+    id: 1,
+    itemCode: "52319",
+    itemDescription: "Rapsarap Chicken Nuggets 200g",
+    totalStock: 100,
+    nearExpiry: 20,
+  },
+  {
+    id: 2,
+    itemCode: "74562",
+    itemDescription: "Rapsarap Potato Chips 150g",
+    totalStock: 80,
+    nearExpiry: 15,
+  },
+  {
+    id: 3,
+    itemCode: "89234",
+    itemDescription: "Rapsarap Chocolate Bars 100g",
+    totalStock: 120,
+    nearExpiry: 25,
+  },
+  {
+    id: 4,
+    itemCode: "31678",
+    itemDescription: "Rapsarap Granola 300g",
+    totalStock: 150,
+    nearExpiry: 30,
+  },
+  {
+    id: 5,
+    itemCode: "45791",
+    itemDescription: "Rapsarap Popcorn 250g",
+    totalStock: 90,
+    nearExpiry: 10,
+  },
+  {
+    id: 6,
+    itemCode: "62453",
+    itemDescription: "Rapsarap Mixed Fruit Jam 400g",
+    totalStock: 110,
+    nearExpiry: 18,
+  },
+  {
+    id: 7,
+    itemCode: "10987",
+    itemDescription: "Rapsarap Mixed Nuts 180g",
+    totalStock: 70,
+    nearExpiry: 12,
+  },
+  {
+    id: 8,
+    itemCode: "23564",
+    itemDescription: "Rapsarap Cheese Crackers 120g",
+    totalStock: 95,
+    nearExpiry: 22,
+  },
+  {
+    id: 9,
+    itemCode: "78901",
+    itemDescription: "Rapsarap Caramel Popcorn 200g",
+    totalStock: 120,
+    nearExpiry: 15,
+  },
+  // {
+  //   id: 10,
+  //   itemCode: "45623",
+  //   itemDescription: "Rapsarap Almond Chocolate Bars 150g",
+  //   totalStock: 80,
+  //   nearExpiry: 10,
+  // },
+  // {
+  //   id: 11,
+  //   itemCode: "98765",
+  //   itemDescription: "Rapsarap Honey Roasted Peanuts 250g",
+  //   totalStock: 110,
+  //   nearExpiry: 18,
+  // },
+  // {
+  //   id: 12,
+  //   itemCode: "34567",
+  //   itemDescription: "Rapsarap Blueberry Jam 300g",
+  //   totalStock: 130,
+  //   nearExpiry: 25,
+  // },
+  // {
+  //   id: 13,
+  //   itemCode: "87654",
+  //   itemDescription: "Rapsarap Trail Mix 200g",
+  //   totalStock: 75,
+  //   nearExpiry: 12,
+  // },
+  // {
+  //   id: 14,
+  //   itemCode: "23456",
+  //   itemDescription: "Rapsarap Onion Rings 180g",
+  //   totalStock: 85,
+  //   nearExpiry: 15,
+  // },
+];
