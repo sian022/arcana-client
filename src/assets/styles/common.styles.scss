@@ -231,6 +231,7 @@
   flex-direction: column;
   flex: 1;
   gap: 40px;
+  height: 100%;
 
   &__banner {
     background: linear-gradient(to right, #544d91, #243448);
@@ -247,9 +248,12 @@
   &__navigators {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-auto-rows: 160px;
     gap: 15px;
-    max-height: 380px;
+    // max-height: 380px;
+    height: calc(100% - 190px);
     overflow: auto;
+    margin-bottom: -30px;
 
     &__item {
       cursor: pointer;

@@ -219,3 +219,20 @@ export const handleCatchErrorMessageTest = (error) => {
     return "An unexpected error occurred";
   }
 };
+
+export const transformName = (fullName) => {
+  const parts = fullName.split(", ");
+  const lastName = parts[0];
+  const firstName = parts[1];
+
+  // Extract initials from the first name
+  const initials = firstName
+    ?.split(" ")
+    .map((name) => (name[0] ? name[0] + "." : ""))
+    .join(" ");
+
+  // Construct the transformed name
+  const transformedName = `${lastName}${initials ? ", " + initials : ""}`;
+
+  return transformedName;
+};

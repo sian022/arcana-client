@@ -11,8 +11,12 @@ import {
 } from "@mui/icons-material";
 import { BarChart } from "@mui/x-charts";
 import { dummyDataset, dummyInventoryData } from "../utils/DummyData";
+import { useNavigate } from "react-router-dom";
+import { transformName } from "../utils/CustomFunctions";
 
 function Dashboard() {
+  //Hooks
+  const navigate = useNavigate();
   const fullName = useSelector((state) => state.login.fullname);
 
   const valueFormatter = (value) =>
@@ -24,6 +28,22 @@ function Dashboard() {
   return (
     <Box className="dashboard">
       <Box className="dashboard__top">
+        <Box className="dashboard__top__greetingCard">
+          <Typography className="dashboard__top__greetingCard__greeting">
+            Fresh morning!
+          </Typography>
+
+          <Box className="dashboard__top__greetingCard__content">
+            <Typography className="dashboard__top__greetingCard__content__name">
+              {transformName(fullName) || "user"}
+            </Typography>
+
+            <Typography className="dashboard__top__greetingCard__content__message">
+              Here&apos;s what&apos;s happening today
+            </Typography>
+          </Box>
+        </Box>
+
         <Box className="dashboard__top__firstCard">
           <Box className="dashboard__top__firstCard__title">
             <Box className="dashboard__top__firstCard__title__icon">
@@ -112,8 +132,6 @@ function Dashboard() {
             </Box>
           </Box>
         </Box>
-
-        <Box className="dashboard__top__thirdCard">Something</Box>
       </Box>
 
       <Box className="dashboard__body">
@@ -147,47 +165,96 @@ function Dashboard() {
           </Box>
 
           <Box className="dashboard__body__left__quickLinks">
-            <Box className="dashboard__body__left__quickLinks__firstCard">
-              Go to Customer Registration
+            <Box
+              className="dashboard__body__left__quickLinks__firstCard"
+              onClick={() => navigate("customer-registration/registration")}
+            >
+              <Typography className="dashboard__body__left__quickLinks__firstCard__title">
+                Register a customer
+              </Typography>
             </Box>
 
-            <Box className="dashboard__body__left__quickLinks__secondCard">
-              Go to Sales Management
+            <Box
+              className="dashboard__body__left__quickLinks__secondCard"
+              onClick={() => navigate("sales-management/sales-transaction")}
+            >
+              <Typography className="dashboard__body__left__quickLinks__secondCard__title">
+                Create a sales order
+              </Typography>
             </Box>
 
             <Box className="dashboard__body__left__quickLinks__thirdCard">
-              Go to Inventory
+              <Typography
+                className="dashboard__body__left__quickLinks__thirdCard__title"
+                onClick={() => navigate("inventory-management/mrp")}
+              >
+                Manage the inventory
+              </Typography>
             </Box>
           </Box>
         </Box>
 
         <Box className="dashboard__body__widget">
           <Typography className="dashboard__body__widget__title">
-            Inventory
+            Near Expiry Overview
           </Typography>
 
           <Box className="dashboard__body__widget__content">
-            {dummyInventoryData.map((item) => (
-              <Box
-                key={item.id}
-                className="dashboard__body__widget__content__item"
-              >
-                <Tooltip
-                  title={item.itemDescription}
-                  sx={{ cursor: "pointer" }}
+            {dummyInventoryData
+              .sort((a, b) => {
+                const ratioA = (a.nearExpiry / a.totalStock) * 100;
+                const ratioB = (b.nearExpiry / b.totalStock) * 100;
+
+                return ratioB - ratioA;
+              })
+              .map((item) => (
+                <Box
+                  key={item.id}
+                  className="dashboard__body__widget__content__item"
                 >
-                  <Box className="dashboard__body__widget__content__item__label">
-                    <Typography className="dashboard__body__widget__content__item__label__text">
-                      {item.itemCode}
-                    </Typography>
+                  <Tooltip
+                    title={item.itemDescription}
+                    sx={{ cursor: "pointer" }}
+                    placement="top"
+                    PopperProps={{
+                      popperOptions: {
+                        modifiers: [
+                          {
+                            name: "offset",
+                            options: {
+                              offset: [-2, -5],
+                            },
+                          },
+                        ],
+                      },
+                    }}
+                  >
+                    <Box className="dashboard__body__widget__content__item__label">
+                      <Typography className="dashboard__body__widget__content__item__label__text">
+                        {item.itemCode}
+                      </Typography>
 
-                    <Info fontSize="" sx={{ color: "gray" }} />
-                  </Box>
-                </Tooltip>
+                      <Info fontSize="" sx={{ color: "gray" }} />
+                    </Box>
+                  </Tooltip>
 
-                <Box className="dashboard__body__widget__content__item__value" />
-              </Box>
-            ))}
+                  <Tooltip
+                    title={`${item.nearExpiry} over ${item.totalStock} stocks are near expiry`}
+                    placement="top"
+                  >
+                    <Box className="dashboard__body__widget__content__item__full">
+                      <Box
+                        className="dashboard__body__widget__content__item__full__fill"
+                        sx={{
+                          width: `${
+                            (item.nearExpiry / item.totalStock) * 100
+                          }%`,
+                        }}
+                      />
+                    </Box>
+                  </Tooltip>
+                </Box>
+              ))}
           </Box>
         </Box>
       </Box>

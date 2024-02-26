@@ -455,13 +455,13 @@ export const dummyInventoryData = [
     totalStock: 120,
     nearExpiry: 15,
   },
-  // {
-  //   id: 10,
-  //   itemCode: "45623",
-  //   itemDescription: "Rapsarap Almond Chocolate Bars 150g",
-  //   totalStock: 80,
-  //   nearExpiry: 10,
-  // },
+  {
+    id: 10,
+    itemCode: "45623",
+    itemDescription: "Rapsarap Almond Chocolate Bars 150g",
+    totalStock: 80,
+    nearExpiry: 10,
+  },
   // {
   //   id: 11,
   //   itemCode: "98765",
