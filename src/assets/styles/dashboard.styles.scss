@@ -1,0 +1,334 @@
+@import "./index.styles.scss";
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  padding-bottom: 20px;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &__top {
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    height: 25%;
+
+    &__firstCard {
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+        0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+      border: 1px solid #dee2e6;
+      background-color: white;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      &__title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 35%;
+
+        &__icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: lighten(gray, 42%);
+          color: $secondary;
+          border-radius: 25%;
+          padding: 5px;
+        }
+
+        & p {
+          font-size: max(0.95rem, 1vw);
+          color: gray;
+        }
+      }
+
+      &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        height: 65%;
+
+        & &__mainContent {
+          font-size: max(1.5rem, 2vw);
+          font-weight: 600;
+        }
+
+        &__subContent {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          &__percent {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            & &__icon {
+              font-size: max(0.95rem, 1vw);
+              color: $primary;
+              position: relative;
+              bottom: 1px;
+            }
+
+            & &__number {
+              font-size: max(0.95rem, 1vw);
+            }
+          }
+
+          & &__difference {
+            font-size: max(0.95rem, 1vw);
+            color: gray;
+          }
+        }
+      }
+    }
+
+    &__secondCard {
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+        0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+      border: 1px solid #dee2e6;
+      background-color: white;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      &__title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 35%;
+
+        &__icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: lighten(gray, 42%);
+          color: $secondary;
+          border-radius: 25%;
+          padding: 5px;
+        }
+
+        & p {
+          font-size: max(0.95rem, 1vw);
+          color: gray;
+        }
+      }
+
+      &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        height: 65%;
+
+        & &__mainContent {
+          font-size: max(1.5rem, 2vw);
+          font-weight: 600;
+        }
+
+        &__subContent {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          &__percent {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            & &__icon {
+              font-size: max(0.95rem, 1vw);
+              color: $primary;
+              position: relative;
+              bottom: 1px;
+            }
+
+            & &__number {
+              font-size: max(0.95rem, 1vw);
+            }
+          }
+
+          & &__difference {
+            font-size: max(0.95rem, 1vw);
+            color: gray;
+          }
+        }
+      }
+    }
+
+    &__thirdCard {
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+        0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+      border: 1px solid #dee2e6;
+      background-color: white;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      &__title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 35%;
+
+        &__icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: lighten(gray, 42%);
+          color: $secondary;
+          border-radius: 25%;
+          padding: 5px;
+        }
+
+        & p {
+          font-size: max(0.95rem, 1vw);
+          color: gray;
+        }
+      }
+
+      &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        height: 65%;
+
+        & &__mainContent {
+          font-size: max(1.5rem, 2vw);
+          font-weight: 600;
+        }
+
+        &__subContent {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          &__percent {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            & &__icon {
+              font-size: max(0.95rem, 1vw);
+              color: $primary;
+              position: relative;
+              bottom: 1px;
+            }
+
+            & &__number {
+              font-size: max(0.95rem, 1vw);
+            }
+          }
+
+          & &__difference {
+            font-size: max(0.95rem, 1vw);
+            color: gray;
+          }
+        }
+      }
+    }
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    height: 75%;
+
+    &__left {
+      grid-column: span 3;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      &__chart {
+        background-color: #fff;
+        padding: 20px;
+        grid-column: span 3;
+        box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+          0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+        border: 1px solid #dee2e6;
+        background-color: white;
+        border-radius: 5px;
+        height: 67%;
+
+        &__header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 10px;
+
+          & p {
+            font-size: 1.1rem;
+            font-weight: 600;
+          }
+        }
+      }
+
+      &__quickLinks {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+        height: 33%;
+
+        &__firstCard {
+          background-color: #fff;
+          padding: 20px;
+          box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+            0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+          border: 1px solid #dee2e6;
+          background-color: white;
+          border-radius: 5px;
+        }
+
+        &__secondCard {
+          background-color: #fff;
+          padding: 20px;
+          box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+            0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+          border: 1px solid #dee2e6;
+          background-color: white;
+          border-radius: 5px;
+        }
+
+        &__thirdCard {
+          background-color: #fff;
+          padding: 20px;
+          box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+            0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+          border: 1px solid #dee2e6;
+          background-color: white;
+          border-radius: 5px;
+        }
+      }
+    }
+
+    &__widget {
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
+        0 4px 6px -5px hsla(0, 0%, 8%, 0.05);
+      border: 1px solid #dee2e6;
+      background-color: white;
+      border-radius: 5px;
+      height: 100%;
+    }
+  }
+}

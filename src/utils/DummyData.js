@@ -339,3 +339,105 @@ export const dummyTableData = [
   //   actions: "own",
   // },
 ];
+
+export const dummyDataset = [
+  {
+    amount: 65000.75,
+    month: "Jan",
+  },
+  {
+    amount: 70000.5,
+    month: "Feb",
+  },
+  {
+    amount: 80000.25,
+    month: "Mar",
+  },
+  {
+    amount: 65000.8,
+    month: "Apr",
+  },
+  {
+    amount: 90000.4,
+    month: "May",
+  },
+  {
+    amount: 60000.6,
+    month: "June",
+  },
+  {
+    amount: 95000.3,
+    month: "July",
+  },
+  {
+    amount: 80000.9,
+    month: "Aug",
+  },
+  {
+    amount: 70000.2,
+    month: "Sept",
+  },
+  {
+    amount: 75000.45,
+    month: "Oct",
+  },
+  {
+    amount: 85000.7,
+    month: "Nov",
+  },
+  {
+    amount: 100000.0,
+    month: "Dec",
+  },
+];
+
+// export const dummyDataset = [
+//   {
+//     amount: 620000.5,
+//     month: "Jan",
+//   },
+//   {
+//     amount: 750200.75,
+//     month: "Feb",
+//   },
+//   {
+//     amount: 880500.3,
+//     month: "Mar",
+//   },
+//   {
+//     amount: 705000.25,
+//     month: "Apr",
+//   },
+//   {
+//     amount: 910000.8,
+//     month: "May",
+//   },
+//   {
+//     amount: 550300.4,
+//     month: "June",
+//   },
+//   {
+//     amount: 965000.6,
+//     month: "July",
+//   },
+//   {
+//     amount: 820000.9,
+//     month: "Aug",
+//   },
+//   {
+//     amount: 705600.2,
+//     month: "Sept",
+//   },
+//   {
+//     amount: 757800.45,
+//     month: "Oct",
+//   },
+//   {
+//     amount: 862500.7,
+//     month: "Nov",
+//   },
+//   {
+//     amount: 1000000.0,
+//     month: "Dec",
+//   },
+// ];
