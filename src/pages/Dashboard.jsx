@@ -23,11 +23,24 @@ function Dashboard() {
   const navigate = useNavigate();
   const fullName = useSelector((state) => state.login.fullname);
 
-  const valueFormatter = (value) =>
+  //Functions
+  const valueFormatterSeries = (value) =>
     `₱${value?.toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionsDigits: 2,
     })}`;
+
+  const valueFormatterTick = (value) => {
+    if (value >= 1e9) {
+      return (value / 1e9).toFixed(1) + "B";
+    } else if (value >= 1e6) {
+      return (value / 1e6).toFixed(1) + "M";
+    } else if (value >= 1e3) {
+      return (value / 1e3).toFixed(1) + "K";
+    } else {
+      return value.toString();
+    }
+  };
 
   return (
     <Box className="dashboard">
@@ -165,8 +178,12 @@ function Dashboard() {
             <BarChart
               dataset={dummyDataset}
               xAxis={[{ scaleType: "band", dataKey: "month" }]}
-              series={[{ dataKey: "amount", valueFormatter }]}
+              yAxis={[{ valueFormatter: valueFormatterTick }]}
+              series={[
+                { dataKey: "amount", valueFormatter: valueFormatterSeries },
+              ]}
               colors={["#544d91", "#243448"]}
+              // skipAnimation
             />
           </Box>
 
