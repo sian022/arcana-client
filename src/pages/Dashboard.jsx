@@ -138,15 +138,15 @@ function Dashboard() {
 
             <Box className="dashboard__top__thirdCard__content__subContent">
               <Box className="dashboard__top__thirdCard__content__subContent__percent">
-                <ArrowUpward className="dashboard__top__thirdCard__content__subContent__percent__iconUp" />
+                <Info className="dashboard__top__thirdCard__content__subContent__percent__iconDown" />
 
                 <Typography className="dashboard__top__thirdCard__content__subContent__percent__number">
-                  26%
+                  4
                 </Typography>
               </Box>
 
               <Typography className="dashboard__top__thirdCard__content__subContent__difference">
-                +200 today
+                overdue payments
               </Typography>
             </Box>
           </Box>
