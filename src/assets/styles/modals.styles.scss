@@ -1003,9 +1003,95 @@
 
 //Sales Transaction
 .cashoutModal {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  // display: grid;
+  // grid-template-columns: 1fr 1fr;
+  // gap: 20px;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
+
+  &__businessInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    &__business {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    &__owner {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+  }
+
+  &__transactionInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    & &__title {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    &__costBreakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      &__item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        & &__label {
+          font-weight: 500;
+        }
+
+        & &__value {
+          font-weight: 500;
+          color: gray;
+        }
+
+        &__labelDiscount {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+
+          & &__label {
+            font-weight: 500;
+          }
+        }
+      }
+
+      &__net {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        & &__label {
+          font-weight: 500;
+        }
+
+        & &__value {
+          font-weight: 500;
+          color: $primary;
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  &__input {
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
 .viewAttachmentModal {

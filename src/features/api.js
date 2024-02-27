@@ -13,6 +13,6 @@ export const api = createApi({
       );
     },
   }),
-  tagTypes: ["Dashboard"],
+  tagTypes: ["Clients POS", "Sales Transaction"],
   endpoints: () => ({}),
 });

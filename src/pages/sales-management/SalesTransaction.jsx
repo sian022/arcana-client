@@ -454,7 +454,7 @@ function SalesTransaction() {
                   ) : (
                     fields.map((orderItem, index) => (
                       <SwipeableItem
-                        key={index}
+                        key={orderItem.id}
                         setValue={(newValue) =>
                           setValue(
                             `items[${index}].quantity`,

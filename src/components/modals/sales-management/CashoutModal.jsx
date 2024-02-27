@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import CommonModalForm from "../../CommonModalForm";
 import { Controller, useForm } from "react-hook-form";
 import { cashoutSchema } from "../../../schema/schema";
-import { Box, TextField } from "@mui/material";
+import { Box, Divider, TextField, Typography } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
 import useSnackbar from "../../../hooks/useSnackbar";
@@ -72,6 +72,23 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     onClose();
   };
 
+  //Temp Constants
+  const specialDiscount = 0.1;
+  const discount = 0.09;
+
+  const specialDiscountAmount = useMemo(
+    () => total * specialDiscount,
+    [specialDiscount, total]
+  );
+
+  const discountAmount = useMemo(() => total * discount, [discount, total]);
+
+  const netSales = useMemo(
+    () => total - discountAmount - specialDiscountAmount,
+    [total, discountAmount, specialDiscountAmount]
+  );
+
+  //UseEffect
   useEffect(() => {
     if (open) {
       setTimeout(() => {
@@ -85,13 +102,150 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
       <CommonModalForm
         onSubmit={onConfirmOpen}
         title="Cashout"
-        width="800px"
+        // width="800px"
+        width="600px"
         disableSubmit={!isValid || !isDirty}
         {...props}
         onClose={handleClose}
       >
         <Box className="cashoutModal">
-          {/* <Typography>Business Info</Typography> */}
+          <Box className="cashoutModal__businessInfo">
+            <Box className="cashoutModal__businessInfo__business">
+              <Typography fontWeight="500" fontSize="1.1rem">
+                Business Name:
+              </Typography>
+
+              <Typography fontSize="1.1rem">
+                {orderData?.clientId?.businessName}
+              </Typography>
+            </Box>
+
+            <Box className="cashoutModal__businessInfo__owner">
+              <Typography fontWeight="500" fontSize="1.1rem">
+                Owner&apos;s Name:
+              </Typography>
+
+              <Typography fontSize="1.1rem">
+                {orderData?.clientId?.ownersName}
+              </Typography>
+            </Box>
+
+            {/* {`${orderData?.clientId?.businessName} - ${orderData?.clientId?.ownersName}`} */}
+          </Box>
+
+          <Box className="cashoutModal__transactionInfo">
+            <Typography className="cashoutModal__transactionInfo__title">
+              Sales Amount
+            </Typography>
+
+            <Box className="cashoutModal__transactionInfo__costBreakdown">
+              <Box className="cashoutModal__transactionInfo__costBreakdown__item">
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__label">
+                  Amount Due
+                </Typography>
+
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
+                  ₱
+                  {total?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionsDigits: 2,
+                  })}
+                </Typography>
+              </Box>
+
+              <Box className="cashoutModal__transactionInfo__costBreakdown__item">
+                <Box className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount">
+                  <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__label">
+                    Discount
+                  </Typography>
+
+                  <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
+                    (
+                    {(discount * 100)?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionsDigits: 2,
+                    })}
+                    %)
+                  </Typography>
+                </Box>
+
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
+                  {!discountAmount
+                    ? "N/A"
+                    : `-₱${discountAmount?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionsDigits: 2,
+                      })}`}
+                </Typography>
+              </Box>
+
+              <Box className="cashoutModal__transactionInfo__costBreakdown__item">
+                <Box className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount">
+                  <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__label">
+                    Special Discount
+                  </Typography>
+
+                  <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
+                    (
+                    {(specialDiscount * 100)?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionsDigits: 2,
+                    })}
+                    %)
+                  </Typography>
+                </Box>
+
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
+                  {!specialDiscountAmount
+                    ? "N/A"
+                    : `-₱${specialDiscountAmount?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionsDigits: 2,
+                      })}`}
+                </Typography>
+              </Box>
+
+              <Divider sx={{ my: "10px" }} />
+
+              <Box className="cashoutModal__transactionInfo__costBreakdown__net">
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__net__label">
+                  Net of Sales
+                </Typography>
+
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__net__value">
+                  ₱
+                  {netSales?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionsDigits: 2,
+                  })}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+
+          <Box className="cashoutModal__input">
+            <Controller
+              name="chargeInvoiceNo"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  label="Charge Invoice No."
+                  size="small"
+                  autoComplete="off"
+                  type="number"
+                  {...field}
+                  inputRef={chargeInvoiceRef}
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  helperText={errors?.payee?.message}
+                  error={errors?.payee}
+                />
+              )}
+            />
+          </Box>
+        </Box>
+
+        {/* <Box className="cashoutModal">
           <TextField
             label="Business Name - Owner's Name"
             size="small"
@@ -106,8 +260,6 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             }}
           />
 
-          {/* <Typography>Sales Info</Typography> */}
-
           <NumericFormat
             sx={{
               "& .MuiInputBase-root": {
@@ -120,7 +272,10 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             size="small"
             customInput={TextField}
             autoComplete="off"
-            value={total}
+            value={total?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionsDigits: 2,
+            })}
             thousandSeparator=","
             allowNegative={false}
             allowLeadingZeros={false}
@@ -141,7 +296,10 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             size="small"
             customInput={TextField}
             autoComplete="off"
-            value={total}
+            value={netSales?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionsDigits: 2,
+            })}
             thousandSeparator=","
             allowNegative={false}
             allowLeadingZeros={false}
@@ -162,7 +320,10 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             size="small"
             customInput={TextField}
             autoComplete="off"
-            value={10}
+            value={(specialDiscount * 100)?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionsDigits: 2,
+            })}
             thousandSeparator=","
             allowNegative={false}
             allowLeadingZeros={false}
@@ -183,7 +344,10 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             size="small"
             customInput={TextField}
             autoComplete="off"
-            value={139.75}
+            value={specialDiscountAmount?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionsDigits: 2,
+            })}
             thousandSeparator=","
             allowNegative={false}
             allowLeadingZeros={false}
@@ -204,7 +368,10 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             size="small"
             customInput={TextField}
             autoComplete="off"
-            value={10 + "%"}
+            value={(discount * 100)?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionsDigits: 2,
+            })}
             thousandSeparator=","
             allowNegative={false}
             allowLeadingZeros={false}
@@ -225,7 +392,10 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             size="small"
             customInput={TextField}
             autoComplete="off"
-            value={139.75}
+            value={discountAmount?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionsDigits: 2,
+            })}
             thousandSeparator=","
             allowNegative={false}
             allowLeadingZeros={false}
@@ -254,7 +424,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
               />
             )}
           />
-        </Box>
+        </Box> */}
       </CommonModalForm>
 
       <CommonDialog

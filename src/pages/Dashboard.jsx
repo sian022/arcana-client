@@ -28,8 +28,6 @@ function Dashboard() {
   // RTK Query
   const { data, isFetching } = useGetDashboardDataQuery();
 
-  console.log(data);
-
   //Functions
   const valueFormatterSeries = (value) =>
     `₱${value?.toLocaleString(undefined, {

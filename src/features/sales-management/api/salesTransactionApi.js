@@ -1,20 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const salesTransactionApi = createApi({
-  reducerPath: "salesTransactionApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["Clients", "Sales Transaction"],
-
+const salesTransactionApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllClientsForPOS: builder.query({
       query: (params) => ({
@@ -22,7 +8,7 @@ export const salesTransactionApi = createApi({
         method: "GET",
         params,
       }),
-      providesTags: ["Clients"],
+      providesTags: ["Clients POS"],
       transformResponse: (response) => response.value,
     }),
 

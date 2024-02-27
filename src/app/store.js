@@ -34,7 +34,6 @@ import { otherExpensesApi } from "../features/setup/api/otherExpensesApi";
 import { otherExpensesRegApi } from "../features/otherExpenses/api/otherExpensesRegApi";
 import { priceModeSetupApi } from "../features/setup/api/priceModeSetupApi";
 import { priceModeItemsApi } from "../features/setup/api/priceModeItemsApi";
-import { salesTransactionApi } from "../features/sales-management/api/salesTransactionApi";
 import { specialDiscountApi } from "../features/special-discount/api/specialDiscountApi";
 import { rdfSmsApi } from "../features/misc/api/rdfSmsApi";
 import { advancePaymentApi } from "../features/sales-management/api/advancePaymentApi";
@@ -77,7 +76,6 @@ export const store = configureStore({
     [otherExpensesRegApi.reducerPath]: otherExpensesRegApi.reducer,
     [priceModeSetupApi.reducerPath]: priceModeSetupApi.reducer,
     [priceModeItemsApi.reducerPath]: priceModeItemsApi.reducer,
-    [salesTransactionApi.reducerPath]: salesTransactionApi.reducer,
     [specialDiscountApi.reducerPath]: specialDiscountApi.reducer,
     [rdfSmsApi.reducerPath]: rdfSmsApi.reducer,
     [advancePaymentApi.reducerPath]: advancePaymentApi.reducer,
@@ -113,7 +111,6 @@ export const store = configureStore({
       otherExpensesRegApi.middleware,
       priceModeSetupApi.middleware,
       priceModeItemsApi.middleware,
-      salesTransactionApi.middleware,
       specialDiscountApi.middleware,
       rdfSmsApi.middleware,
       advancePaymentApi.middleware,
