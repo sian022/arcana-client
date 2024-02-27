@@ -57,9 +57,19 @@
           }
         }
 
-        & &__message {
-          color: gray;
-          font-size: max(1rem, 1.05vw);
+        &__messageContainer {
+          position: relative;
+          height: calc(max(1.4rem, 1.7vw) + 16px);
+
+          & &__message {
+            color: gray;
+            font-size: max(1rem, 1.05vw);
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            position: absolute;
+            width: 100%;
+          }
         }
       }
     }

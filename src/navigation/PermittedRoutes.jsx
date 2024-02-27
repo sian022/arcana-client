@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { navigationData } from "./navigationData";
 import { useLocation } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
+import AccessDenied from "../pages/AccessDenied";
 
 const PermittedRoutes = () => {
   const { pathname } = useLocation();
@@ -36,7 +36,7 @@ const PermittedRoutes = () => {
     return <MainLayout />;
   }
 
-  return <div>You are not permitted to access this page!</div>;
+  return <AccessDenied />;
 };
 
 export default PermittedRoutes;

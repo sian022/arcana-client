@@ -57,9 +57,11 @@ function Dashboard() {
               </Typography>
             </Box>
 
-            <Typography className="dashboard__top__greetingCard__content__message">
-              Here&apos;s what&apos;s happening today
-            </Typography>
+            <Box className="dashboard__top__greetingCard__content__messageContainer">
+              <Typography className="dashboard__top__greetingCard__content__messageContainer__message">
+                Here&apos;s what&apos;s happening
+              </Typography>
+            </Box>
           </Box>
         </Box>
 
