@@ -6,21 +6,16 @@ import { Box, Divider, TextField, Typography } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
 import useSnackbar from "../../../hooks/useSnackbar";
-import CommonDialog from "../../CommonDialog";
-import useDisclosure from "../../../hooks/useDisclosure";
+import useConfirm from "../../../hooks/useConfirm";
+import { useCreateSalesTransactionMutation } from "../../../features/sales-management/api/salesTransactionApi";
+import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 
 function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   const { onClose, open } = props;
 
+  //Hooks
+  const confirm = useConfirm();
   const snackbar = useSnackbar();
-
-  //Disclosures
-  const {
-    isOpen: isConfirmOpen,
-    onOpen: onConfirmOpen,
-    onClose: onConfirmClose,
-  } = useDisclosure();
-
   const chargeInvoiceRef = useRef();
 
   //React Hook Form
@@ -35,12 +30,15 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     defaultValues: cashoutSchema.defaultValues,
   });
 
+  //RTK Query
+  const [createSalesTransaction] = useCreateSalesTransactionMutation();
+
   //Functions
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const transformedOrderData = {
       clientId: orderData?.clientId?.id,
       items: orderData?.items?.map((item) => ({
-        itemId: item?.itemId?.id,
+        itemId: item?.itemId?.itemId,
         quantity: item?.quantity,
       })),
     };
@@ -48,22 +46,23 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     const combinedData = { ...transformedOrderData, ...data };
 
     try {
-      console.log(combinedData);
+      await confirm({
+        children: <>Confirm cashout of transaction?</>,
+        question: true,
+        callback: () => createSalesTransaction(combinedData).unwrap(),
+      });
+
       resetTransaction();
       handleClose();
-      onConfirmClose();
+
       snackbar({
         message: "Transaction successfully added!",
         variant: "success",
       });
     } catch (error) {
-      console.log(error);
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error adding transaction", variant: "error" });
+      if (error?.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
-      onConfirmClose();
     }
   };
 
@@ -73,8 +72,8 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   };
 
   //Temp Constants
-  const specialDiscount = 0.1;
-  const discount = 0.09;
+  const specialDiscount = 0.09;
+  const discount = 0.05;
 
   const specialDiscountAmount = useMemo(
     () => total * specialDiscount,
@@ -98,154 +97,151 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   }, [open]);
 
   return (
-    <>
-      <CommonModalForm
-        onSubmit={onConfirmOpen}
-        title="Cashout"
-        // width="800px"
-        width="600px"
-        disableSubmit={!isValid || !isDirty}
-        {...props}
-        onClose={handleClose}
-      >
-        <Box className="cashoutModal">
-          <Box className="cashoutModal__businessInfo">
-            <Box className="cashoutModal__businessInfo__business">
-              <Typography fontWeight="500" fontSize="1.1rem">
-                Business Name:
-              </Typography>
-
-              <Typography fontSize="1.1rem">
-                {orderData?.clientId?.businessName}
-              </Typography>
-            </Box>
-
-            <Box className="cashoutModal__businessInfo__owner">
-              <Typography fontWeight="500" fontSize="1.1rem">
-                Owner&apos;s Name:
-              </Typography>
-
-              <Typography fontSize="1.1rem">
-                {orderData?.clientId?.ownersName}
-              </Typography>
-            </Box>
-
-            {/* {`${orderData?.clientId?.businessName} - ${orderData?.clientId?.ownersName}`} */}
-          </Box>
-
-          <Box className="cashoutModal__transactionInfo">
-            <Typography className="cashoutModal__transactionInfo__title">
-              Sales Amount
+    <CommonModalForm
+      onSubmit={handleSubmit(onSubmit)}
+      title="Cashout"
+      // width="800px"
+      width="600px"
+      disableSubmit={!isValid || !isDirty}
+      {...props}
+      onClose={handleClose}
+    >
+      <Box className="cashoutModal">
+        <Box className="cashoutModal__businessInfo">
+          <Box className="cashoutModal__businessInfo__business">
+            <Typography fontWeight="500" fontSize="1.05rem">
+              Business Name:
             </Typography>
 
-            <Box className="cashoutModal__transactionInfo__costBreakdown">
-              <Box className="cashoutModal__transactionInfo__costBreakdown__item">
-                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__label">
-                  Amount Due
-                </Typography>
-
-                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
-                  ₱
-                  {total?.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionsDigits: 2,
-                  })}
-                </Typography>
-              </Box>
-
-              <Box className="cashoutModal__transactionInfo__costBreakdown__item">
-                <Box className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount">
-                  <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__label">
-                    Discount
-                  </Typography>
-
-                  <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
-                    (
-                    {(discount * 100)?.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionsDigits: 2,
-                    })}
-                    %)
-                  </Typography>
-                </Box>
-
-                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
-                  {!discountAmount
-                    ? "N/A"
-                    : `-₱${discountAmount?.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionsDigits: 2,
-                      })}`}
-                </Typography>
-              </Box>
-
-              <Box className="cashoutModal__transactionInfo__costBreakdown__item">
-                <Box className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount">
-                  <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__label">
-                    Special Discount
-                  </Typography>
-
-                  <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
-                    (
-                    {(specialDiscount * 100)?.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionsDigits: 2,
-                    })}
-                    %)
-                  </Typography>
-                </Box>
-
-                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
-                  {!specialDiscountAmount
-                    ? "N/A"
-                    : `-₱${specialDiscountAmount?.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionsDigits: 2,
-                      })}`}
-                </Typography>
-              </Box>
-
-              <Divider sx={{ my: "10px" }} />
-
-              <Box className="cashoutModal__transactionInfo__costBreakdown__net">
-                <Typography className="cashoutModal__transactionInfo__costBreakdown__net__label">
-                  Net of Sales
-                </Typography>
-
-                <Typography className="cashoutModal__transactionInfo__costBreakdown__net__value">
-                  ₱
-                  {netSales?.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionsDigits: 2,
-                  })}
-                </Typography>
-              </Box>
-            </Box>
+            <Typography fontSize="1.05rem">
+              {orderData?.clientId?.businessName}
+            </Typography>
           </Box>
 
-          <Box className="cashoutModal__input">
-            <Controller
-              name="chargeInvoiceNo"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <TextField
-                  label="Charge Invoice No."
-                  size="small"
-                  autoComplete="off"
-                  type="number"
-                  {...field}
-                  inputRef={chargeInvoiceRef}
-                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                  helperText={errors?.payee?.message}
-                  error={errors?.payee}
-                />
-              )}
-            />
+          <Box className="cashoutModal__businessInfo__owner">
+            <Typography fontWeight="500" fontSize="1.05rem">
+              Owner&apos;s Name:
+            </Typography>
+
+            <Typography fontSize="1.05rem">
+              {orderData?.clientId?.ownersName}
+            </Typography>
+          </Box>
+
+          {/* {`${orderData?.clientId?.businessName} - ${orderData?.clientId?.ownersName}`} */}
+        </Box>
+
+        <Box className="cashoutModal__transactionInfo">
+          <Typography className="cashoutModal__transactionInfo__title">
+            Sales Amount
+          </Typography>
+
+          <Box className="cashoutModal__transactionInfo__costBreakdown">
+            <Box className="cashoutModal__transactionInfo__costBreakdown__item">
+              <Typography className="cashoutModal__transactionInfo__costBreakdown__item__label">
+                Amount Due
+              </Typography>
+
+              <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
+                ₱
+                {total?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionsDigits: 2,
+                })}
+              </Typography>
+            </Box>
+
+            <Box className="cashoutModal__transactionInfo__costBreakdown__item">
+              <Box className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount">
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__label">
+                  Discount
+                </Typography>
+
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
+                  {discount &&
+                    `(${(discount * 100)?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionsDigits: 2,
+                    })}%)`}
+                </Typography>
+              </Box>
+
+              <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
+                {!discountAmount
+                  ? "N/A"
+                  : `-₱${discountAmount?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionsDigits: 2,
+                    })}`}
+              </Typography>
+            </Box>
+
+            <Box className="cashoutModal__transactionInfo__costBreakdown__item">
+              <Box className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount">
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__label">
+                  Special Discount
+                </Typography>
+
+                <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
+                  {specialDiscount &&
+                    `(${(specialDiscount * 100)?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionsDigits: 2,
+                    })}%)`}
+                </Typography>
+              </Box>
+
+              <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
+                {!specialDiscountAmount
+                  ? "N/A"
+                  : `-₱${specialDiscountAmount?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionsDigits: 2,
+                    })}`}
+              </Typography>
+            </Box>
+
+            <Divider sx={{ my: "10px" }} />
+
+            <Box className="cashoutModal__transactionInfo__costBreakdown__net">
+              <Typography className="cashoutModal__transactionInfo__costBreakdown__net__label">
+                Net of Sales
+              </Typography>
+
+              <Typography className="cashoutModal__transactionInfo__costBreakdown__net__value">
+                ₱
+                {netSales?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionsDigits: 2,
+                })}
+              </Typography>
+            </Box>
           </Box>
         </Box>
 
-        {/* <Box className="cashoutModal">
+        <Box className="cashoutModal__input">
+          <Controller
+            name="chargeInvoiceNo"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                label="Charge Invoice No."
+                size="small"
+                autoComplete="off"
+                type="number"
+                {...field}
+                inputRef={chargeInvoiceRef}
+                onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                helperText={errors?.payee?.message}
+                error={errors?.payee}
+              />
+            )}
+          />
+        </Box>
+      </Box>
+
+      {/* <Box className="cashoutModal">
           <TextField
             label="Business Name - Owner's Name"
             size="small"
@@ -425,17 +421,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             )}
           />
         </Box> */}
-      </CommonModalForm>
-
-      <CommonDialog
-        open={isConfirmOpen}
-        onYes={handleSubmit(onSubmit)}
-        onClose={onConfirmClose}
-        question
-      >
-        Confirm cashout of transaction?
-      </CommonDialog>
-    </>
+    </CommonModalForm>
   );
 }
 

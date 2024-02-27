@@ -128,7 +128,7 @@ function Dashboard() {
               </Box>
 
               <Typography className="dashboard__top__secondCard__content__subContent__difference">
-                -200 today
+                +20 today
               </Typography>
             </Box>
           </Box>

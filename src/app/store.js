@@ -14,7 +14,6 @@ import { termDaysApi } from "../features/setup/api/termDaysApi";
 import { locationApi } from "../features/user-management/api/locationApi";
 import { departmentApi } from "../features/user-management/api/departmentApi";
 import { companyApi } from "../features/user-management/api/companyApi";
-import { userRoleApi } from "../features/user-management/api/userRoleApi";
 import { userAccountApi } from "../features/user-management/api/userAccountApi";
 import { selectedRowSlice } from "../features/misc/reducers/selectedRowSlice";
 import { selectedStoreTypeSlice } from "../features/prospect/reducers/selectedStoreTypeSlice";
@@ -27,7 +26,6 @@ import { userConfigApi } from "../features/authentication/api/userConfigApi";
 import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
 import { disclosureSlice } from "../features/misc/reducers/disclosureSlice";
 import { approverApi } from "../features/user-management/api/approverApi";
-import { notificationApi } from "../features/notification/api/notificationApi";
 import { phLocationsApi } from "../features/location/api/phLocationsApi";
 import { clusterApi } from "../features/setup/api/clusterApi";
 import { otherExpensesApi } from "../features/setup/api/otherExpensesApi";
@@ -61,7 +59,6 @@ export const store = configureStore({
     [locationApi.reducerPath]: locationApi.reducer,
     [departmentApi.reducerPath]: departmentApi.reducer,
     [companyApi.reducerPath]: companyApi.reducer,
-    [userRoleApi.reducerPath]: userRoleApi.reducer,
     [userAccountApi.reducerPath]: userAccountApi.reducer,
     [approverApi.reducerPath]: approverApi.reducer,
     [prospectApi.reducerPath]: prospectApi.reducer,
@@ -69,7 +66,6 @@ export const store = configureStore({
     [sedarApi.reducerPath]: sedarApi.reducer,
     [userConfigApi.reducerPath]: userConfigApi.reducer,
     [listingFeeApi.reducerPath]: listingFeeApi.reducer,
-    [notificationApi.reducerPath]: notificationApi.reducer,
     [phLocationsApi.reducerPath]: phLocationsApi.reducer,
     [clusterApi.reducerPath]: clusterApi.reducer,
     [otherExpensesApi.reducerPath]: otherExpensesApi.reducer,
@@ -96,7 +92,6 @@ export const store = configureStore({
       locationApi.middleware,
       departmentApi.middleware,
       companyApi.middleware,
-      userRoleApi.middleware,
       userAccountApi.middleware,
       approverApi.middleware,
       prospectApi.middleware,
@@ -104,7 +99,6 @@ export const store = configureStore({
       sedarApi.middleware,
       userConfigApi.middleware,
       listingFeeApi.middleware,
-      notificationApi.middleware,
       phLocationsApi.middleware,
       clusterApi.middleware,
       otherExpensesApi.middleware,

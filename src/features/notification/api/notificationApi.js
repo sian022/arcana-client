@@ -1,19 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const notificationApi = createApi({
-  reducerPath: "notificationApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["Notification"],
+export const notificationApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getNotifications: builder.query({
       query: (params) => ({

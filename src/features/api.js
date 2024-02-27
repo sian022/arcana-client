@@ -13,6 +13,6 @@ export const api = createApi({
       );
     },
   }),
-  tagTypes: ["Clients POS", "Sales Transaction"],
+  tagTypes: ["Notification"],
   endpoints: () => ({}),
 });

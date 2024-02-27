@@ -44,7 +44,8 @@
 
         &__nameContainer {
           position: relative;
-          height: calc(max(1.4rem, 1.7vw) + 16px);
+          // height: calc(max(1.4rem, 1.7vw) + 16px);
+          height: max(1.4rem, 1.7vw);
 
           & &__name {
             font-size: max(1.4rem, 1.7vw);
@@ -59,7 +60,9 @@
 
         &__messageContainer {
           position: relative;
-          height: calc(max(1.4rem, 1.7vw) + 16px);
+          // height: calc(max(1.4rem, 1.7vw) + 16px);
+          height: max(1.4rem, 1.7vw);
+          margin-top: 8px;
 
           & &__message {
             color: gray;
