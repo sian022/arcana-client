@@ -8,22 +8,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import SecondaryButton from "../../SecondaryButton";
-import {
-  AddAPhoto,
-  Assignment,
-  Business,
-  CameraAlt,
-  Create,
-  PermIdentity,
-} from "@mui/icons-material";
+import React from "react";
 import { useSelector } from "react-redux";
-import useDisclosure from "../../../hooks/useDisclosure";
-import ViewPhotoModal from "../ViewPhotoModal";
-import NoData from "../../../assets/images/no-data.jpg";
 import { useGetFreebiesByClientIdQuery } from "../../../features/registration/api/registrationApi";
 import FreebiesTabSkeleton from "../../skeletons/FreebiesTabSkeleton";
+import NoRecordsFound from "../../../assets/images/NoRecordsFound.svg";
 
 function FreebiesTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -31,7 +20,7 @@ function FreebiesTab() {
   //Disclosures
 
   //RTK Query
-  const { data, error, isLoading } = useGetFreebiesByClientIdQuery({
+  const { data, isLoading } = useGetFreebiesByClientIdQuery({
     id: selectedRowData?.id,
   });
 
@@ -118,15 +107,18 @@ function FreebiesTab() {
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: "column",
+                  justifyContent: "center",
                   alignItems: "center",
-                  margin: "auto",
+                  height: "300px",
+                  width: "300px",
                 }}
               >
-                <img src={NoData} alt="no-data" style={{ width: "400px" }} />
-                <Typography fontSize="18px" fontWeight={500}>
-                  No Freebies Found
-                </Typography>
+                <img
+                  src={NoRecordsFound}
+                  alt="no-data"
+                  width="300px"
+                  style={{ position: "relative", top: "15%" }}
+                />
               </Box>
             )}
           </Box>

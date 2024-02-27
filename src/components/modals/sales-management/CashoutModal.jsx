@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import CommonModalForm from "../../CommonModalForm";
 import { Controller, useForm } from "react-hook-form";
 import { cashoutSchema } from "../../../schema/schema";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NumericFormat } from "react-number-format";
 import useSnackbar from "../../../hooks/useSnackbar";
@@ -27,12 +27,8 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   const {
     handleSubmit,
     formState: { errors, isValid, isDirty },
-    register,
-    setValue,
     reset,
     control,
-    watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(cashoutSchema.schema),
     mode: "onSubmit",

@@ -8,20 +8,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
-import SecondaryButton from "../../SecondaryButton";
-import {
-  AddAPhoto,
-  Assignment,
-  Business,
-  CameraAlt,
-  Create,
-  PermIdentity,
-} from "@mui/icons-material";
+import React, { useMemo } from "react";
+
 import { useSelector } from "react-redux";
-import useDisclosure from "../../../hooks/useDisclosure";
-import ViewPhotoModal from "../ViewPhotoModal";
-import NoData from "../../../assets/images/no-data.jpg";
+import NoRecordsFound from "../../../assets/images/NoRecordsFound.svg";
 import { useGetListingFeeByClientIdQuery } from "../../../features/registration/api/registrationApi";
 import ListingFeeTabSkeleton from "../../skeletons/ListingFeeTabSkeleton";
 
@@ -32,7 +22,7 @@ function ListingFeeTab() {
   //Disclosures
 
   //RTK Query
-  const { data, error, isLoading } = useGetListingFeeByClientIdQuery({
+  const { data, isLoading } = useGetListingFeeByClientIdQuery({
     id: selectedRowData?.id,
   });
 
@@ -196,15 +186,18 @@ function ListingFeeTab() {
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: "column",
+                  justifyContent: "center",
                   alignItems: "center",
-                  margin: "auto",
+                  height: "300px",
+                  width: "300px",
                 }}
               >
-                <img src={NoData} alt="no-data" style={{ width: "400px" }} />
-                <Typography fontSize="18px" fontWeight={500}>
-                  No Listing Fee Found
-                </Typography>
+                <img
+                  src={NoRecordsFound}
+                  alt="no-data"
+                  width="300px"
+                  style={{ position: "relative", top: "15%" }}
+                />
               </Box>
             )}
           </Box>

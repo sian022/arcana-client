@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
-import NoData from "../../../assets/images/no-data.jpg";
+import NoRecordsFound from "../../../assets/images/NoRecordsFound.svg";
 import { useGetOtherExpensesByClientIdQuery } from "../../../features/registration/api/registrationApi";
 import OtherExpensesTabSkeleton from "../../skeletons/OtherExpensesTabSkeleton";
 
@@ -21,7 +21,7 @@ function OtherExpensesTab() {
   //Disclosures
 
   //RTK Query
-  const { data, error, isLoading } = useGetOtherExpensesByClientIdQuery({
+  const { data, isLoading } = useGetOtherExpensesByClientIdQuery({
     id: selectedRowData?.id,
   });
 
@@ -171,15 +171,18 @@ function OtherExpensesTab() {
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: "column",
+                  justifyContent: "center",
                   alignItems: "center",
-                  margin: "auto",
+                  height: "300px",
+                  width: "300px",
                 }}
               >
-                <img src={NoData} alt="no-data" style={{ width: "400px" }} />
-                <Typography fontSize="18px" fontWeight={500}>
-                  No Other Expenses Found
-                </Typography>
+                <img
+                  src={NoRecordsFound}
+                  alt="no-data"
+                  width="300px"
+                  style={{ position: "relative", top: "15%" }}
+                />
               </Box>
             )}
           </Box>
