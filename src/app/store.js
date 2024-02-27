@@ -38,6 +38,7 @@ import { salesTransactionApi } from "../features/sales-management/api/salesTrans
 import { specialDiscountApi } from "../features/special-discount/api/specialDiscountApi";
 import { rdfSmsApi } from "../features/misc/api/rdfSmsApi";
 import { advancePaymentApi } from "../features/sales-management/api/advancePaymentApi";
+import { api } from "../features/api";
 
 export const store = configureStore({
   reducer: {
@@ -48,6 +49,7 @@ export const store = configureStore({
     badge: badgeSlice.reducer,
     regularRegistration: regularRegistrationSlice.reducer,
     disclosure: disclosureSlice.reducer,
+    [api.reducerPath]: api.reducer,
     [loginApi.reducerPath]: loginApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,
@@ -83,6 +85,7 @@ export const store = configureStore({
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
+      api.middleware,
       loginApi.middleware,
       productsApi.middleware,
       productCategoryApi.middleware,

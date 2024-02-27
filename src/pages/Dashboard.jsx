@@ -17,11 +17,18 @@ import { transformName } from "../utils/CustomFunctions";
 import Register from "../assets/images/Register.svg";
 import Sales from "../assets/images/Sales.svg";
 import Inventory from "../assets/images/Inventory.svg";
+import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
+import { useGetDashboardDataQuery } from "../features/dashboard/api/dashboardApi";
 
 function Dashboard() {
   //Hooks
   const navigate = useNavigate();
   const fullName = useSelector((state) => state.login.fullname);
+
+  // RTK Query
+  const { data, isFetching } = useGetDashboardDataQuery();
+
+  console.log(data);
 
   //Functions
   const valueFormatterSeries = (value) =>
@@ -41,6 +48,10 @@ function Dashboard() {
       return value.toString();
     }
   };
+
+  if (isFetching) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <Box className="dashboard">
