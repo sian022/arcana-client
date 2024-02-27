@@ -95,14 +95,26 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
           <TextField
             label="Business Name - Owner's Name"
             size="small"
-            disabled
+            readOnly
             value={`${orderData?.clientId?.businessName} - ${orderData?.clientId?.ownersName}`}
-            sx={{ gridColumn: "span 2" }}
+            sx={{
+              gridColumn: "span 2",
+              "& .MuiInputBase-root": {
+                backgroundColor: "#f1f1f1",
+              },
+              pointerEvents: "none",
+            }}
           />
 
           {/* <Typography>Sales Info</Typography> */}
 
           <NumericFormat
+            sx={{
+              "& .MuiInputBase-root": {
+                backgroundColor: "#f1f1f1",
+              },
+              pointerEvents: "none",
+            }}
             label="Amount Due (₱)"
             type="text"
             size="small"
@@ -113,11 +125,17 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             allowNegative={false}
             allowLeadingZeros={false}
             decimalScale={2}
-            disabled
+            readOnly
             prefix="₱"
           />
 
           <NumericFormat
+            sx={{
+              "& .MuiInputBase-root": {
+                backgroundColor: "#f1f1f1",
+              },
+              pointerEvents: "none",
+            }}
             label="Net of Sales (₱)"
             type="text"
             size="small"
@@ -128,11 +146,17 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             allowNegative={false}
             allowLeadingZeros={false}
             decimalScale={2}
-            disabled
+            readOnly
             prefix="₱"
           />
 
           <NumericFormat
+            sx={{
+              "& .MuiInputBase-root": {
+                backgroundColor: "#f1f1f1",
+              },
+              pointerEvents: "none",
+            }}
             label="Special Discount (%)"
             type="text"
             size="small"
@@ -143,11 +167,17 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             allowNegative={false}
             allowLeadingZeros={false}
             decimalScale={2}
-            disabled
+            readOnly
             suffix="%"
           />
 
           <NumericFormat
+            sx={{
+              "& .MuiInputBase-root": {
+                backgroundColor: "#f1f1f1",
+              },
+              pointerEvents: "none",
+            }}
             label="Special Discount Amount (₱)"
             type="text"
             size="small"
@@ -158,11 +188,17 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             allowNegative={false}
             allowLeadingZeros={false}
             decimalScale={2}
-            disabled
+            readOnly
             prefix="₱"
           />
 
           <NumericFormat
+            sx={{
+              "& .MuiInputBase-root": {
+                backgroundColor: "#f1f1f1",
+              },
+              pointerEvents: "none",
+            }}
             label="Discount (%)"
             type="text"
             size="small"
@@ -173,11 +209,17 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             allowNegative={false}
             allowLeadingZeros={false}
             decimalScale={2}
-            disabled
+            readOnly
             suffix="%"
           />
 
           <NumericFormat
+            sx={{
+              "& .MuiInputBase-root": {
+                backgroundColor: "#f1f1f1",
+              },
+              pointerEvents: "none",
+            }}
             label="Discount Amount (₱)"
             type="text"
             size="small"
@@ -188,7 +230,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             allowNegative={false}
             allowLeadingZeros={false}
             decimalScale={2}
-            disabled
+            readOnly
             prefix="₱"
           />
 
