@@ -13,6 +13,6 @@ export const api = createApi({
       );
     },
   }),
-  tagTypes: ["Notification"],
+  // tagTypes: ["Notification"],
   endpoints: () => ({}),
 });

@@ -4,7 +4,6 @@ import { Controller, useForm } from "react-hook-form";
 import { cashoutSchema } from "../../../schema/schema";
 import { Box, Divider, TextField, Typography } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { NumericFormat } from "react-number-format";
 import useSnackbar from "../../../hooks/useSnackbar";
 import useConfirm from "../../../hooks/useConfirm";
 import { useCreateSalesTransactionMutation } from "../../../features/sales-management/api/salesTransactionApi";
