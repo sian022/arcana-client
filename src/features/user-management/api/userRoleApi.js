@@ -1,7 +1,7 @@
 import { api } from "../../api";
 
 const userRoleApi = api
-  .enhanceEndpoints({ addTagTypes: ["User Role"] })
+  .enhanceEndpoints({ addTagTypes: ["User Role", "Notification"] })
   .injectEndpoints({
     endpoints: (builder) => ({
       postUserRole: builder.mutation({
@@ -28,7 +28,7 @@ const userRoleApi = api
           method: "PUT",
           body: body,
         }),
-        invalidatesTags: ["User Role"],
+        invalidatesTags: ["User Role", "Notification"],
       }),
       patchUserRoleStatus: builder.mutation({
         query: (id) => ({
