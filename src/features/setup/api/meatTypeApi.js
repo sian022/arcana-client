@@ -1,55 +1,44 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const meatTypeApi = createApi({
-  reducerPath: "meatTypeApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["Meat Type"],
-  endpoints: (builder) => ({
-    postMeatType: builder.mutation({
-      query: (body) => ({
-        url: "/MeatType/AddNewMeatType",
-        method: "POST",
-        body: body,
+const meatTypeApi = api
+  .enhanceEndpoints({ addTagTypes: ["Meat Type"] })
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      postMeatType: builder.mutation({
+        query: (body) => ({
+          url: "/MeatType/AddNewMeatType",
+          method: "POST",
+          body: body,
+        }),
+        invalidatesTags: ["Meat Type"],
       }),
-      invalidatesTags: ["Meat Type"],
-    }),
-    getAllMeatTypes: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/MeatType/GetMeatType",
-        method: "GET",
+      getAllMeatTypes: builder.query({
+        query: (params) => ({
+          params: params,
+          url: "/MeatType/GetMeatType",
+          method: "GET",
+        }),
+        providesTags: ["Meat Type"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
       }),
-      providesTags: ["Meat Type"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-    putMeatType: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `/MeatType/UpdateMeatType/${id}`,
-        method: "PUT",
-        body: body,
+      putMeatType: builder.mutation({
+        query: ({ id, ...body }) => ({
+          url: `/MeatType/UpdateMeatType/${id}`,
+          method: "PUT",
+          body: body,
+        }),
+        invalidatesTags: ["Meat Type"],
       }),
-      invalidatesTags: ["Meat Type"],
-    }),
-    patchMeatTypeStatus: builder.mutation({
-      query: (id) => ({
-        url: `/MeatType/UpdateMeatTypeStatus/${id}`,
-        method: "PATCH",
+      patchMeatTypeStatus: builder.mutation({
+        query: (id) => ({
+          url: `/MeatType/UpdateMeatTypeStatus/${id}`,
+          method: "PATCH",
+        }),
+        invalidatesTags: ["Meat Type"],
       }),
-      invalidatesTags: ["Meat Type"],
     }),
-  }),
-});
+  });
 
 export const {
   useGetAllMeatTypesQuery,

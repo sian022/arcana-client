@@ -24,11 +24,8 @@ import { useGetAllEmployeesQuery } from "../../features/user-management/api/seda
 import { Person } from "@mui/icons-material";
 import { useGetAllUserRolesQuery } from "../../features/user-management/api/userRoleApi";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  clusterApi,
-  useGetAllClustersQuery,
-} from "../../features/setup/api/clusterApi";
+import { useSelector } from "react-redux";
+import { useGetAllClustersQuery } from "../../features/setup/api/clusterApi";
 import ControlledAutocompleteMultiple from "../../components/ControlledAutocompleteMultiple";
 import PageHeaderFilterAdd from "../../components/PageHeaderFilterAdd";
 import useSnackbar from "../../hooks/useSnackbar";
@@ -46,7 +43,6 @@ function UserAccount() {
   const [roleFilter, setRoleFilter] = useState("");
 
   // Hooks
-  const dispatch = useDispatch();
   const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const confirm = useConfirm();
@@ -134,7 +130,6 @@ function UserAccount() {
 
       onDrawerClose();
       reset();
-      dispatch(clusterApi.util.invalidateTags(["Cluster"]));
     } catch (error) {
       console.log(error);
       snackbar({ message: handleCatchErrorMessage(error), variant: "error" });

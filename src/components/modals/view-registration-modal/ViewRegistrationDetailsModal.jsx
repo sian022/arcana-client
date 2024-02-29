@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CommonModal from "../../CommonModal";
 import {
   Box,
@@ -11,10 +11,7 @@ import {
 import PersonalInfoTab from "./PersonalInfoTab";
 import TermsAndConditionsTab from "./TermsAndConditionsTab";
 import AttachmentsTab from "./AttachmentsTab";
-
-import SecondaryButton from "../../SecondaryButton";
 import DangerButton from "../../DangerButton";
-import AccentButton from "../../AccentButton";
 import useDisclosure from "../../../hooks/useDisclosure";
 import { useDispatch, useSelector } from "react-redux";
 import CommonDialog from "../../CommonDialog";
@@ -28,20 +25,12 @@ import SuccessButton from "../../SuccessButton";
 import ListingFeeTab from "./ListingFeeTab";
 import FreebiesTab from "./FreebiesTab";
 import { notificationApi } from "../../../features/notification/api/notificationApi";
-import { listingFeeApi } from "../../../features/listing-fee/api/listingFeeApi";
 import OtherExpensesTab from "./OtherExpensesTab";
 import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 
-function ViewRegistrationDetailsModal({
-  approval,
-  onRegisterOpen,
-  editMode,
-  setEditMode,
-  clientStatus,
-  ...props
-}) {
-  const { onClose, ...noOnClose } = props;
+function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
+  const { onClose } = props;
 
   const [reason, setReason] = useState("");
   const [confirmReason, setConfirmReason] = useState(false);
@@ -268,7 +257,6 @@ function ViewRegistrationDetailsModal({
 
       snackbar({ message: "Client rejected successfully", variant: "success" });
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
-      dispatch(listingFeeApi.util.invalidateTags(["Listing Fee"]));
     } catch (error) {
       if (error.function !== "sendMessage") {
         return snackbar({
@@ -283,7 +271,6 @@ function ViewRegistrationDetailsModal({
         variant: "warning",
       });
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
-      dispatch(listingFeeApi.util.invalidateTags(["Listing Fee"]));
     }
 
     handleRejectConfirmClose();

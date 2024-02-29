@@ -1,19 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const uomApi = createApi({
-  reducerPath: "uomApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["UOM"],
+const uomApi = api.enhanceEndpoints({ addTagTypes: ["UOM"] }).injectEndpoints({
   endpoints: (builder) => ({
     postUom: builder.mutation({
       query: (body) => ({

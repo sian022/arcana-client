@@ -42,7 +42,6 @@ import {
   convertToTitleCase,
   handleCatchErrorMessage,
 } from "../../../utils/CustomFunctions";
-import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import DangerButton from "../../../components/DangerButton";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -50,7 +49,6 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import SuccessButton from "../../../components/SuccessButton";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
-import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
@@ -243,8 +241,6 @@ function RegisterRegularForm({ open, onClose }) {
       termsAndConditions["terms"] !== 1 && (await addAttachmentsSubmit());
       setIsAllApiLoading(false);
 
-      dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
-
       // debounce(onRedirectListingFeeOpen(), 2000);
       await sendMessage({
         message: `Fresh morning ${
@@ -255,7 +251,6 @@ function RegisterRegularForm({ open, onClose }) {
 
       onClose();
       handleResetForms();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
 
       snackbar({
         message: "Client registered successfully",
@@ -278,7 +273,6 @@ function RegisterRegularForm({ open, onClose }) {
       });
       onClose();
       handleResetForms();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
 
     onConfirmClose();

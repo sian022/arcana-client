@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -7,11 +7,9 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { priceModeSetupSchema } from "../../schema/schema";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Settings } from "@mui/icons-material";
 import {
   usePutPriceModeMutation,
@@ -21,7 +19,6 @@ import {
 } from "../../features/setup/api/priceModeSetupApi";
 import ViewProductsByPriceModeModal from "../../components/modals/ViewProductsByPriceModeModal";
 import useSnackbar from "../../hooks/useSnackbar";
-import { priceModeItemsApi } from "../../features/setup/api/priceModeItemsApi";
 
 function PriceModeSetup() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -35,7 +32,6 @@ function PriceModeSetup() {
   const snackbar = useSnackbar();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const dispatch = useDispatch();
 
   // Drawer Disclosures
   const {
@@ -72,7 +68,6 @@ function PriceModeSetup() {
     register,
     setValue,
     reset,
-    getValues,
   } = useForm({
     resolver: yupResolver(priceModeSetupSchema.schema),
     mode: "onChange",
@@ -82,7 +77,7 @@ function PriceModeSetup() {
   //RTK Query
   const [postPriceMode, { isLoading: isAddLoading }] =
     usePostPriceModeMutation();
-  const { data, isLoading, isFetching } = useGetAllPriceModeQuery({
+  const { data, isFetching } = useGetAllPriceModeQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -134,7 +129,6 @@ function PriceModeSetup() {
         message: `Price Mode ${status ? "archived" : "restored"} successfully`,
         variant: "success",
       });
-      dispatch(priceModeItemsApi.util.invalidateTags(["Price Mode Items"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         snackbar({ message: error?.data?.error?.message, variant: "error" });

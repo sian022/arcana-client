@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
-  CircularProgress,
   IconButton,
   Input,
   Table,
@@ -16,16 +15,10 @@ import {
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
 import rdfLogo from "../../assets/images/RDF-Logo.png";
-import {
-  Attachment,
-  CameraAlt,
-  Close,
-  PhotoCamera,
-  Visibility,
-} from "@mui/icons-material";
+import { Attachment, Close, Visibility } from "@mui/icons-material";
 import useDisclosure from "../../hooks/useDisclosure";
 import SignatureCanvasModal from "./SignatureCanvasModal";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import moment from "moment";
 import { usePutReleaseProspectMutation } from "../../features/prospect/api/prospectApi";
 import { base64ToBlob, debounce } from "../../utils/CustomFunctions";
@@ -36,11 +29,9 @@ import ViewPhotoModal from "./ViewPhotoModal";
 import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
 import { DirectReleaseContext } from "../../context/DirectReleaseContext";
 import SuccessButton from "../SuccessButton";
-import { notificationApi } from "../../features/notification/api/notificationApi";
 
-function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
+function ReleaseFreebieModal({ direct, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
-  const { open, ...noOpenProps } = otherProps;
 
   const [signature, setSignature] = useState("");
   const [photoProof, setPhotoProof] = useState(null);
@@ -57,8 +48,6 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
   const freebiesDirect = useSelector(
     (state) => state.regularRegistration.value.directFreebie.freebies
   );
-
-  const dispatch = useDispatch();
 
   const {
     signatureDirect,
@@ -141,7 +130,6 @@ function ReleaseFreebieModal({ direct, onRedirect, ...otherProps }) {
       setSnackbarMessage("Freebie released successfully");
       debounce(onRedirectRegisterOpen(), 2000);
       onSuccessOpen();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);

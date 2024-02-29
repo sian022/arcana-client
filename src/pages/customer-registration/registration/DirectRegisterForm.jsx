@@ -20,7 +20,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
-  registrationApi,
   useLazyGetAttachmentsByClientIdQuery,
   useLazyGetTermsByClientIdQuery,
   usePostDirectRegistrationMutation,
@@ -45,7 +44,6 @@ import {
   handleCatchErrorMessage,
   shallowEqual,
 } from "../../../utils/CustomFunctions";
-import { prospectApi } from "../../../features/prospect/api/prospectApi";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import DangerButton from "../../../components/DangerButton";
@@ -294,7 +292,6 @@ function DirectRegisterForm({
               }
             : {}),
         }).unwrap();
-        dispatch(registrationApi.util.invalidateTags(["TermsById"]));
 
         termsAndConditions["terms"] !== 1 &&
           (await addAttachmentsSubmit(response?.value?.id));
@@ -336,7 +333,6 @@ function DirectRegisterForm({
           (await addAttachmentsSubmit(response?.value?.id));
       }
       setIsAllApiLoading(false);
-      dispatch(prospectApi.util.invalidateTags(["Prospecting"]));
 
       if (editMode) {
         clientStatus === "Rejected" &&
@@ -466,7 +462,6 @@ function DirectRegisterForm({
         // id: clientId,
         formData,
       }).unwrap();
-      dispatch(registrationApi.util.invalidateTags(["AttachmentsById"]));
     } else {
       await putAddAttachmentsForDirect({
         // id: selectedRowData?.id,

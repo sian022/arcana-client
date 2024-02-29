@@ -1,63 +1,52 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const discountTypeApi = createApi({
-  reducerPath: "discountTypeApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["Discount Type"],
-  endpoints: (builder) => ({
-    postDiscountType: builder.mutation({
-      query: (body) => ({
-        url: "/VariableDiscount/AddNewVariableDiscount",
-        method: "POST",
-        body: body,
+const discountTypeApi = api
+  .enhanceEndpoints({ addTagTypes: ["DIscount Type"] })
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      postDiscountType: builder.mutation({
+        query: (body) => ({
+          url: "/VariableDiscount/AddNewVariableDiscount",
+          method: "POST",
+          body: body,
+        }),
+        invalidatesTags: ["Discount Type"],
       }),
-      invalidatesTags: ["Discount Type"],
-    }),
-    getAllDiscountTypes: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/VariableDiscount/GetVariableDiscount",
-        method: "GET",
+      getAllDiscountTypes: builder.query({
+        query: (params) => ({
+          params: params,
+          url: "/VariableDiscount/GetVariableDiscount",
+          method: "GET",
+        }),
+        providesTags: ["Discount Type"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
       }),
-      providesTags: ["Discount Type"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-    putDiscountType: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `/VariableDiscount/UpdateVariableDiscount/${id}`,
-        method: "PUT",
-        body: body,
+      putDiscountType: builder.mutation({
+        query: ({ id, ...body }) => ({
+          url: `/VariableDiscount/UpdateVariableDiscount/${id}`,
+          method: "PUT",
+          body: body,
+        }),
+        invalidatesTags: ["Discount Type"],
       }),
-      invalidatesTags: ["Discount Type"],
-    }),
-    patchDiscountTypeStatus: builder.mutation({
-      query: (id) => ({
-        url: `/VariableDiscount/UpdateVariableDiscountStatus/${id}`,
-        method: "PATCH",
+      patchDiscountTypeStatus: builder.mutation({
+        query: (id) => ({
+          url: `/VariableDiscount/UpdateVariableDiscountStatus/${id}`,
+          method: "PATCH",
+        }),
+        invalidatesTags: ["Discount Type"],
       }),
-      invalidatesTags: ["Discount Type"],
-    }),
 
-    deleteVariableDiscount: builder.mutation({
-      query: (id) => ({
-        url: `/VariableDiscount/DeleteVariableDiscount/${id}`,
-        method: "DELETE",
+      deleteVariableDiscount: builder.mutation({
+        query: (id) => ({
+          url: `/VariableDiscount/DeleteVariableDiscount/${id}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Discount Type"],
       }),
-      invalidatesTags: ["Discount Type"],
     }),
-  }),
-});
+  });
 
 export const {
   usePostDiscountTypeMutation,

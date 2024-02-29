@@ -13,6 +13,5 @@ export const api = createApi({
       );
     },
   }),
-  tagTypes: ["Notification"],
   endpoints: () => ({}),
 });

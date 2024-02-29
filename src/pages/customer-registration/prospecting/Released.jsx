@@ -1,8 +1,7 @@
-import { Box, TextField, Typography, debounce } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import {
   useGetAllApprovedProspectsQuery,
-  useGetAllReleasedProspectsQuery,
   usePatchVoidProspectMutation,
 } from "../../../features/prospect/api/prospectApi";
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
@@ -13,13 +12,11 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import RegisterRegularForm from "./RegisterRegularForm";
 import PrintFreebiesModal from "../../../components/modals/PrintFreebiesModal";
 import CommonDialog from "../../../components/CommonDialog";
-import { notificationApi } from "../../../features/notification/api/notificationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
 import SearchVoidMixin from "../../../components/mixins/SearchVoidMixin";
 
 function Released() {
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
@@ -72,9 +69,9 @@ function Released() {
   } = useDisclosure();
 
   //RTK Query
-  const { data, isLoading, isFetching } = useGetAllApprovedProspectsQuery({
+  const { data, isFetching } = useGetAllApprovedProspectsQuery({
     Search: search,
-    Status: status,
+    Status: true,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
@@ -90,18 +87,13 @@ function Released() {
     usePatchVoidProspectMutation();
 
   //Misc Functions
-  const debouncedSetSearch = debounce((value) => {
-    setSearch(value);
-  }, 200);
 
   const onVoidSubmit = async () => {
     try {
       await patchVoidProspect(selectedRowData?.id).unwrap();
       onVoidClose();
-      snackbar({ message: `Prospect voided successfully`, message: "success" });
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
+      snackbar({ message: `Prospect voided successfully`, variant: "success" });
     } catch (error) {
-      console.log(error);
       if (error?.data?.error?.message) {
         snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
@@ -189,7 +181,8 @@ function Released() {
           sx={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
         >
           <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
-            To confirm, type "{selectedRowData?.businessName}" in the box below
+            To confirm, type &quot;{selectedRowData?.businessName}&quot; in the
+            box below
           </Typography>
           <TextField
             size="small"

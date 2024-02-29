@@ -1,71 +1,60 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const approverApi = createApi({
-  reducerPath: "approverApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["Approver"],
-  endpoints: (builder) => ({
-    getAllApprovers: builder.query({
-      query: () => ({
-        url: "/Approvers/GetAllApprovers",
-        method: "GET",
+const approverApi = api
+  .enhanceEndpoints({ addTagTypes: ["Approver"] })
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      getAllApprovers: builder.query({
+        query: () => ({
+          url: "/Approvers/GetAllApprovers",
+          method: "GET",
+        }),
+        providesTags: ["Approver"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
       }),
-      providesTags: ["Approver"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
 
-    addApproversPerModule: builder.mutation({
-      query: (body) => ({
-        url: "/Approvers/AssignApprover",
-        method: "POST",
-        body,
+      addApproversPerModule: builder.mutation({
+        query: (body) => ({
+          url: "/Approvers/AssignApprover",
+          method: "POST",
+          body,
+        }),
+        invalidatesTags: ["Approver"],
       }),
-      invalidatesTags: ["Approver"],
-    }),
 
-    getApproversPerModule: builder.query({
-      query: () => ({
-        url: "/Approver/GetApproversPerModules",
-        method: "GET",
+      getApproversPerModule: builder.query({
+        query: () => ({
+          url: "/Approver/GetApproversPerModules",
+          method: "GET",
+        }),
+        providesTags: ["Approver"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
       }),
-      providesTags: ["Approver"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
 
-    getApproversByModule: builder.query({
-      query: (params) => ({
-        url: "/Approver/GetApproverByModule",
-        method: "GET",
-        params,
+      getApproversByModule: builder.query({
+        query: (params) => ({
+          url: "/Approver/GetApproverByModule",
+          method: "GET",
+          params,
+        }),
+        providesTags: ["Approver"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
       }),
-      providesTags: ["Approver"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
 
-    putUpdateApproversPerModule: builder.mutation({
-      query: ({ moduleName, ...body }) => ({
-        url: `/Approver/UpdateApproversPerModule`,
-        method: "PUT",
-        params: { moduleName },
-        body,
+      putUpdateApproversPerModule: builder.mutation({
+        query: ({ moduleName, ...body }) => ({
+          url: `/Approver/UpdateApproversPerModule`,
+          method: "PUT",
+          params: { moduleName },
+          body,
+        }),
+        invalidatesTags: ["Approver"],
       }),
-      invalidatesTags: ["Approver"],
     }),
-  }),
-});
+  });
 
 export const {
   useGetAllApproversQuery,

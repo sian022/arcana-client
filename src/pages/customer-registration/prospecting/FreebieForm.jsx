@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   requestFreebiesSchema,
   requestFreebiesDirectSchema,
 } from "../../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { Box, IconButton, TextField } from "@mui/material";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
-import { Add, Cancel } from "@mui/icons-material";
+import { Cancel } from "@mui/icons-material";
 import {
   usePostRequestFreebiesMutation,
   usePutFreebiesInformationMutation,
@@ -23,16 +23,9 @@ import CommonDialog from "../../../components/CommonDialog";
 import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
 import { debounce } from "../../../utils/CustomFunctions";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
-import {
-  resetFreebies,
-  setFreebies,
-} from "../../../features/registration/reducers/regularRegistrationSlice";
+import { setFreebies } from "../../../features/registration/reducers/regularRegistrationSlice";
 import useSnackbar from "../../../hooks/useSnackbar";
-import {
-  DirectReleaseContext,
-  DirectReleaseProvider,
-} from "../../../context/DirectReleaseContext";
-import { notificationApi } from "../../../features/notification/api/notificationApi";
+import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 
 function FreebieForm({
   isFreebieFormOpen,
@@ -94,12 +87,10 @@ function FreebieForm({
   const {
     handleSubmit,
     formState: { errors, isValid, isDirty },
-    register,
     setValue,
     reset,
     control,
     watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(
       direct ? requestFreebiesDirectSchema.schema : requestFreebiesSchema.schema
@@ -162,7 +153,6 @@ function FreebieForm({
       handleDrawerClose();
       debounce(onRedirectReleaseOpen(), 2000);
       onSuccessOpen();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
@@ -317,8 +307,7 @@ function FreebieForm({
               }}
               loading={isProductDataLoading}
               disableClearable
-              // isOptionEqualToValue={(option, value) => option.id === value.id}
-              isOptionEqualToValue={(option, value) => true}
+              isOptionEqualToValue={() => true}
               renderInput={(params) => (
                 <TextField
                   {...params}

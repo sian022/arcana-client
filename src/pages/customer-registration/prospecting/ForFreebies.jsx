@@ -31,7 +31,6 @@ import FreebieForm from "./FreebieForm";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import TertiaryButton from "../../../components/TertiaryButton";
 import SuccessButton from "../../../components/SuccessButton";
-import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
 import DangerButton from "../../../components/DangerButton";
 
@@ -191,7 +190,6 @@ function ForFreebies() {
 
       reset();
       onSuccessOpen();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);
@@ -213,7 +211,6 @@ function ForFreebies() {
         `Prospect ${status ? "archived" : "restored"} successfully`
       );
       onSuccessOpen();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);

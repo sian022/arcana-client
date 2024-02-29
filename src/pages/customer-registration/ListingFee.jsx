@@ -20,7 +20,6 @@ import {
   notificationApi,
   usePatchReadNotificationMutation,
 } from "../../features/notification/api/notificationApi";
-import { registrationApi } from "../../features/registration/api/registrationApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function ListingFee() {
@@ -135,7 +134,6 @@ function ListingFee() {
         variant: "success",
       });
       dispatch(notificationApi.util.invalidateTags(["Notification"]));
-      dispatch(registrationApi.util.invalidateTags(["Clients For Listing"]));
       onDeleteClose();
     } catch (error) {
       snackbar({ message: handleCatchErrorMessage(error), variant: "error" });

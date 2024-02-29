@@ -1,55 +1,44 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const storeTypeApi = createApi({
-  reducerPath: "storeTypeApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["Store Type"],
-  endpoints: (builder) => ({
-    postStoreType: builder.mutation({
-      query: (body) => ({
-        url: "/StoreType/AddNewStoreType",
-        method: "POST",
-        body: body,
+const storeTypeApi = api
+  .enhanceEndpoints({ addTagTypes: ["Store Type"] })
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      postStoreType: builder.mutation({
+        query: (body) => ({
+          url: "/StoreType/AddNewStoreType",
+          method: "POST",
+          body: body,
+        }),
+        invalidatesTags: ["Store Type"],
       }),
-      invalidatesTags: ["Store Type"],
-    }),
-    getAllStoreTypes: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/StoreType/GetAllStoreTypes",
-        method: "GET",
+      getAllStoreTypes: builder.query({
+        query: (params) => ({
+          params: params,
+          url: "/StoreType/GetAllStoreTypes",
+          method: "GET",
+        }),
+        providesTags: ["Store Type"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
       }),
-      providesTags: ["Store Type"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-    putStoreType: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `/StoreType/UpdateStoreType/${id}`,
-        method: "PUT",
-        body: body,
+      putStoreType: builder.mutation({
+        query: ({ id, ...body }) => ({
+          url: `/StoreType/UpdateStoreType/${id}`,
+          method: "PUT",
+          body: body,
+        }),
+        invalidatesTags: ["Store Type"],
       }),
-      invalidatesTags: ["Store Type"],
-    }),
-    patchStoreTypeStatus: builder.mutation({
-      query: (id) => ({
-        url: `/StoreType/UpdateStoreTypeStatus/${id}`,
-        method: "PATCH",
+      patchStoreTypeStatus: builder.mutation({
+        query: (id) => ({
+          url: `/StoreType/UpdateStoreTypeStatus/${id}`,
+          method: "PATCH",
+        }),
+        invalidatesTags: ["Store Type"],
       }),
-      invalidatesTags: ["Store Type"],
     }),
-  }),
-});
+  });
 
 export const {
   usePostStoreTypeMutation,

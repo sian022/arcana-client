@@ -1,55 +1,44 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const productCategoryApi = createApi({
-  reducerPath: "productCategoryApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["Product Category"],
-  endpoints: (builder) => ({
-    postProductCategory: builder.mutation({
-      query: (body) => ({
-        url: "/ProductCategory/AddNewProductCategory",
-        method: "POST",
-        body: body,
+const productCategoryApi = api
+  .enhanceEndpoints({ addTagTypes: ["Product Category"] })
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      postProductCategory: builder.mutation({
+        query: (body) => ({
+          url: "/ProductCategory/AddNewProductCategory",
+          method: "POST",
+          body: body,
+        }),
+        invalidatesTags: ["Product Category"],
       }),
-      invalidatesTags: ["Product Category"],
-    }),
-    getAllProductCategory: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/ProductCategory/GetProductCategory",
-        method: "GET",
+      getAllProductCategory: builder.query({
+        query: (params) => ({
+          params: params,
+          url: "/ProductCategory/GetProductCategory",
+          method: "GET",
+        }),
+        providesTags: ["Product Category"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
       }),
-      providesTags: ["Product Category"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-    putProductCategory: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `/ProductCategory/UpdateProductCategory/${id}`,
-        method: "PUT",
-        body: body,
+      putProductCategory: builder.mutation({
+        query: ({ id, ...body }) => ({
+          url: `/ProductCategory/UpdateProductCategory/${id}`,
+          method: "PUT",
+          body: body,
+        }),
+        invalidatesTags: ["Product Category"],
       }),
-      invalidatesTags: ["Product Category"],
-    }),
-    patchProductCategoryStatus: builder.mutation({
-      query: (id) => ({
-        url: `/ProductCategory/UpdateProductCategoryStatus/${id}`,
-        method: "PATCH",
+      patchProductCategoryStatus: builder.mutation({
+        query: (id) => ({
+          url: `/ProductCategory/UpdateProductCategoryStatus/${id}`,
+          method: "PATCH",
+        }),
+        invalidatesTags: ["Product Category"],
       }),
-      invalidatesTags: ["Product Category"],
     }),
-  }),
-});
+  });
 
 export const {
   useGetAllProductCategoryQuery,

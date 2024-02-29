@@ -22,13 +22,7 @@ import {
   toggleSidebar,
   toggleSidebarSmallScreen,
 } from "../features/misc/reducers/disclosureSlice";
-import { registrationApi } from "../features/registration/api/registrationApi";
-import { listingFeeApi } from "../features/listing-fee/api/listingFeeApi";
-import { prospectApi } from "../features/prospect/api/prospectApi";
-import { notificationApi } from "../features/notification/api/notificationApi";
 import moment from "moment";
-import { clusterApi } from "../features/setup/api/clusterApi";
-import { specialDiscountApi } from "../features/special-discount/api/specialDiscountApi";
 
 function Header() {
   const dispatch = useDispatch();
@@ -66,16 +60,6 @@ function Header() {
     sessionStorage.removeItem("fullname");
     sessionStorage.removeItem("permissions");
 
-    dispatch(registrationApi.util.resetApiState());
-    dispatch(listingFeeApi.util.resetApiState());
-    dispatch(prospectApi.util.resetApiState());
-    dispatch(notificationApi.util.resetApiState());
-    dispatch(clusterApi.util.resetApiState());
-    dispatch(specialDiscountApi.util.resetApiState());
-
-    // sessionStorage.removeItem("token");
-    // sessionStorage.removeItem("fullname");
-    // sessionStorage.removeItem("permissions");
     navigate("/login");
   };
 

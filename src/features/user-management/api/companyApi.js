@@ -1,55 +1,44 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { decryptString } from "../../../utils/CustomFunctions";
+import { api } from "../../api";
 
-export const companyApi = createApi({
-  reducerPath: "companyApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASEURL,
-    prepareHeaders: (headers) => {
-      headers.set("Accept", "application/json");
-      headers.set(
-        "Authorization",
-        `Bearer ${decryptString(sessionStorage.getItem("token"))}`
-      );
-    },
-  }),
-  tagTypes: ["Company"],
-  endpoints: (builder) => ({
-    postCompany: builder.mutation({
-      query: (body) => ({
-        url: "/Company/AddNewCompany",
-        method: "POST",
-        body: body,
+const companyApi = api
+  .enhanceEndpoints({ addTagTypes: ["Company"] })
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      postCompany: builder.mutation({
+        query: (body) => ({
+          url: "/Company/AddNewCompany",
+          method: "POST",
+          body: body,
+        }),
+        invalidatesTags: ["Company"],
       }),
-      invalidatesTags: ["Company"],
-    }),
-    getAllCompanies: builder.query({
-      query: (params) => ({
-        params: params,
-        url: "/Company/GetAllCompanies",
-        method: "GET",
+      getAllCompanies: builder.query({
+        query: (params) => ({
+          params: params,
+          url: "/Company/GetAllCompanies",
+          method: "GET",
+        }),
+        providesTags: ["Company"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
       }),
-      providesTags: ["Company"],
-      transformResponse: (response) => response.value,
-      transformErrorResponse: (response) => response.value,
-    }),
-    putCompany: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `/Company/UpdateCompany/${id}`,
-        method: "PUT",
-        body: body,
+      putCompany: builder.mutation({
+        query: ({ id, ...body }) => ({
+          url: `/Company/UpdateCompany/${id}`,
+          method: "PUT",
+          body: body,
+        }),
+        invalidatesTags: ["Company"],
       }),
-      invalidatesTags: ["Company"],
-    }),
-    patchCompanyStatus: builder.mutation({
-      query: (id) => ({
-        url: `/Company/UpdateCompanyStatus/${id}`,
-        method: "PATCH",
+      patchCompanyStatus: builder.mutation({
+        query: (id) => ({
+          url: `/Company/UpdateCompanyStatus/${id}`,
+          method: "PATCH",
+        }),
+        invalidatesTags: ["Company"],
       }),
-      invalidatesTags: ["Company"],
     }),
-  }),
-});
+  });
 
 export const {
   usePostCompanyMutation,

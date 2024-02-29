@@ -1,30 +1,24 @@
 import { Box, TextField, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import { Link } from "@mui/icons-material";
 import CommonTable from "../../components/CommonTable";
 import { useGetAllPriceModeQuery } from "../../features/setup/api/priceModeSetupApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import useDisclosure from "../../hooks/useDisclosure";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { priceModeItemSchema } from "../../schema/schema";
-import { useDispatch, useSelector } from "react-redux";
-import SecondaryButton from "../../components/SecondaryButton";
+import { useSelector } from "react-redux";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
-import {
-  productsApi,
-  useLazyGetAllProductsQuery,
-} from "../../features/setup/api/productsApi";
+import { useLazyGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { NumericFormat } from "react-number-format";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import CommonDialog from "../../components/CommonDialog";
 import {
   useDeletePriceModeItemMutation,
   useGetAllItemsByPriceModeIdQuery,
   usePostItemsToPriceModeMutation,
-  useUpdatePriceModeItemStatusMutation,
 } from "../../features/setup/api/priceModeItemsApi";
 import CommonDrawer from "../../components/CommonDrawer";
 import PriceChangeDrawer from "../../components/drawers/PriceChangeDrawer";
@@ -32,13 +26,11 @@ import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
 
 function PriceModeManagement() {
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-  const dispatch = useDispatch();
   const snackbar = useSnackbar();
 
   //Disclosures
@@ -61,12 +53,6 @@ function PriceModeManagement() {
   } = useDisclosure();
 
   const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
@@ -75,11 +61,9 @@ function PriceModeManagement() {
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid, isDirty },
-    register,
+    formState: { isValid, isDirty },
     setValue,
     reset,
-    getValues,
     control,
     watch,
   } = useForm({
@@ -97,8 +81,6 @@ function PriceModeManagement() {
     });
   const [postItemsToPriceMode, { isLoading: isTaggingLoading }] =
     usePostItemsToPriceModeMutation();
-  const [updatePriceModeItemStatus, { isLoading: isArchiveLoading }] =
-    useUpdatePriceModeItemStatusMutation();
   const [deletePriceModeItem, { isLoading: isDeleteLoading }] =
     useDeletePriceModeItemMutation();
 
@@ -147,7 +129,6 @@ function PriceModeManagement() {
 
     try {
       await postItemsToPriceMode(transformedData).unwrap();
-      dispatch(productsApi.util.resetApiState());
 
       handleDrawerClose();
       snackbar({
@@ -166,23 +147,6 @@ function PriceModeManagement() {
     }
   };
 
-  const handleArchive = async () => {
-    try {
-      await updatePriceModeItemStatus({
-        id: selectedRowData?.priceModeItemId,
-      }).unwrap();
-      snackbar({ message: "Item archived successfully", variant: "success" });
-      onArchiveClose();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error archiving item", variant: "error" });
-      }
-      onArchiveClose();
-    }
-  };
-
   const handleDelete = async () => {
     try {
       await deletePriceModeItem({
@@ -190,7 +154,6 @@ function PriceModeManagement() {
       }).unwrap();
       snackbar({ message: "Item deleted successfully", variant: "success" });
       onDeleteClose();
-      dispatch(productsApi.util.resetApiState());
     } catch (error) {
       if (error?.data?.error?.message) {
         snackbar({ message: error?.data?.error?.message, variant: "error" });
@@ -219,7 +182,7 @@ function PriceModeManagement() {
         { preferCacheValue: true }
       );
     }
-  }, [watch("priceModeId")]);
+  }, [watch("priceModeId"), triggerProducts, watch]);
 
   useEffect(() => {
     setCount(priceModeItemsData?.totalCount);
@@ -227,7 +190,7 @@ function PriceModeManagement() {
 
   useEffect(() => {
     setPage(0);
-  }, [status, search, rowsPerPage]);
+  }, [search, rowsPerPage]);
 
   return (
     <>
@@ -285,7 +248,7 @@ function PriceModeManagement() {
           // }
           disableClearable
           loading={isPriceModeFetching}
-          isOptionEqualToValue={(option, value) => true}
+          isOptionEqualToValue={() => true}
           renderInput={(params) => (
             <TextField {...params} size="small" label="Price Mode" />
           )}
@@ -306,7 +269,7 @@ function PriceModeManagement() {
           disabled={!watch("priceModeId")}
           disableClearable
           loading={isProductFetching}
-          isOptionEqualToValue={(option, value) => true}
+          isOptionEqualToValue={() => true}
           renderInput={(params) => (
             <TextField {...params} size="small" label="Product Code" />
           )}
