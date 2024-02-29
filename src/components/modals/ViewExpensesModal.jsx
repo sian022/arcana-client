@@ -17,10 +17,9 @@ import { Close } from "@mui/icons-material";
 import DangerButton from "../DangerButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import useSnackbar from "../../hooks/useSnackbar";
 import SuccessButton from "../SuccessButton";
-import { notificationApi } from "../../features/notification/api/notificationApi";
 import {
   usePutApproveExpensesMutation,
   usePutRejectExpensesMutation,
@@ -36,8 +35,6 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
   const [totalAmount, setTotalAmount] = useState(0);
 
   const snackbar = useSnackbar();
-
-  const dispatch = useDispatch();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -123,7 +120,6 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
 
       onApproveConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error.function !== "sendMessage") {
         return snackbar({
@@ -139,7 +135,6 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
       });
       onApproveConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -163,7 +158,6 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
 
       handleRejectConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error.function !== "sendMessage") {
         snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
@@ -176,7 +170,6 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
       });
       handleRejectConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 

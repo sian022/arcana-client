@@ -1,7 +1,7 @@
 import { api } from "../../api";
 
 const otherExpensesRegApi = api
-  .enhanceEndpoints({ addTagTypes: ["Expenses"] })
+  .enhanceEndpoints({ addTagTypes: ["Expenses", "Notification"] })
   .injectEndpoints({
     endpoints: (builder) => ({
       postExpenses: builder.mutation({
@@ -31,17 +31,8 @@ const otherExpensesRegApi = api
           url: `/Expenses/ApproveExpense/${id}`,
           method: "PUT",
         }),
-        invalidatesTags: ["Expenses"],
+        invalidatesTags: ["Expenses", "Notification"],
       }),
-
-      // putRejectExpenses: builder.mutation({
-      //   query: ({ id, ...body }) => ({
-      //     url: `/Expenses/RejectExpenses/${id}`,
-      //     method: "PUT",
-      //     body: body,
-      //   }),
-      //   invalidatesTags: ["Expenses"],
-      // }),
 
       putRejectExpenses: builder.mutation({
         query: ({ id, ...body }) => ({
@@ -50,7 +41,7 @@ const otherExpensesRegApi = api
           body: body,
           // params: { id },
         }),
-        invalidatesTags: ["Expenses"],
+        invalidatesTags: ["Expenses", "Notification"],
       }),
 
       putUpdateExpenses: builder.mutation({

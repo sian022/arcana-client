@@ -1,7 +1,9 @@
 import { api } from "../../api";
 
 const listingFeeApi = api
-  .enhanceEndpoints({ addTagTypes: ["Listing Fee", "Clients For Listing"] })
+  .enhanceEndpoints({
+    addTagTypes: ["Listing Fee", "Clients For Listing", "Notification"],
+  })
   .injectEndpoints({
     endpoints: (builder) => ({
       postListingFee: builder.mutation({
@@ -10,7 +12,7 @@ const listingFeeApi = api
           url: "/ListingFee/AddNewListingFee",
           method: "POST",
         }),
-        invalidatesTags: ["Listing Fee"],
+        invalidatesTags: ["Listing Fee", "Notification"],
         transformResponse: (response) => response.value,
         transformErrorResponse: (response) => ({
           function: "postListingFee",
@@ -34,17 +36,8 @@ const listingFeeApi = api
           url: `/ListingFee/ApproveListingFee/${id}`,
           method: "PUT",
         }),
-        invalidatesTags: ["Listing Fee"],
+        invalidatesTags: ["Listing Fee", "Notification"],
       }),
-
-      // putRejectListingFee: builder.mutation({
-      //   query: ({ id, ...body }) => ({
-      //     url: `/ListingFee/RejectListingFee/${id}`,
-      //     method: "PUT",
-      //     body: body,
-      //   }),
-      //   invalidatesTags: ["Listing Fee"],
-      // }),
 
       putRejectListingFee: builder.mutation({
         query: ({ id, ...body }) => ({
@@ -52,7 +45,7 @@ const listingFeeApi = api
           method: "PUT",
           body: body,
         }),
-        invalidatesTags: ["Listing Fee"],
+        invalidatesTags: ["Listing Fee", "Notification"],
       }),
 
       putUpdateListingFee: builder.mutation({
@@ -62,7 +55,7 @@ const listingFeeApi = api
           body: body,
           params: params,
         }),
-        invalidatesTags: ["Listing Fee", "Clients For Listing"],
+        invalidatesTags: ["Listing Fee", "Clients For Listing", "Notification"],
       }),
 
       deleteCancelListingFee: builder.mutation({
@@ -70,7 +63,7 @@ const listingFeeApi = api
           url: `/ListingFee/${id}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["Listing Fee", "Clients For Listing"],
+        invalidatesTags: ["Listing Fee", "Clients For Listing", "Notification"],
       }),
 
       getListingFeeApprovalHistoriesById: builder.query({

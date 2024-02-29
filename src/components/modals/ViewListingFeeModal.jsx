@@ -17,14 +17,13 @@ import { Close } from "@mui/icons-material";
 import DangerButton from "../DangerButton";
 import CommonDialog from "../CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   usePutApproveListingFeeMutation,
   usePutRejectListingFeeMutation,
 } from "../../features/listing-fee/api/listingFeeApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import SuccessButton from "../SuccessButton";
-import { notificationApi } from "../../features/notification/api/notificationApi";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
@@ -42,8 +41,6 @@ function ViewListingFeeModal({
   const [totalAmount, setTotalAmount] = useState(0);
 
   const snackbar = useSnackbar();
-
-  const dispatch = useDispatch();
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -131,7 +128,6 @@ function ViewListingFeeModal({
 
       onApproveConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error.function !== "sendMessage") {
         return snackbar({
@@ -147,7 +143,6 @@ function ViewListingFeeModal({
       });
       onApproveConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -170,7 +165,6 @@ function ViewListingFeeModal({
       });
       handleRejectConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error.function !== "sendMessage") {
         snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
@@ -183,7 +177,6 @@ function ViewListingFeeModal({
       });
       handleRejectConfirmClose();
       onClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 

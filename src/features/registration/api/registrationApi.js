@@ -56,7 +56,7 @@ const registrationApi = api
           method: "POST",
           body: body,
         }),
-        invalidatesTags: ["Registration", "Prospecting"],
+        invalidatesTags: ["Registration", "Prospecting", "Notification"],
       }),
 
       putUpdateClientInformation: builder.mutation({
@@ -65,7 +65,7 @@ const registrationApi = api
           method: "PUT",
           body: body,
         }),
-        invalidatesTags: ["Registration", "TermsById"],
+        invalidatesTags: ["Registration", "TermsById", "Notification"],
       }),
 
       putAddAttachments: builder.mutation({
@@ -108,30 +108,13 @@ const registrationApi = api
         invalidatesTags: ["Registration", "Prospecting", "Notification"],
       }),
 
-      // putApproveRegistration: builder.mutation({
-      //   query: ({ id }) => ({
-      //     url: `/RegularClients/ApproveForRegularRegistration/${id}`,
-      //     method: "PUT",
-      //   }),
-      //   invalidatesTags: ["Registration"],
-      // }),
-
       putApproveClient: builder.mutation({
         query: ({ id }) => ({
           url: `/RegularClients/ApproveClientRegistration/${id}`,
           method: "PUT",
         }),
-        invalidatesTags: ["Registration"],
+        invalidatesTags: ["Registration", "Notification"],
       }),
-
-      // putRejectRegistration: builder.mutation({
-      //   query: ({ id, ...body }) => ({
-      //     url: `/RegularClients/RejectRegularRegistration/${id}`,
-      //     method: "PUT",
-      //     body: body,
-      //   }),
-      //   invalidatesTags: ["Registration"],
-      // }),
 
       putRejectClient: builder.mutation({
         query: ({ id, ...body }) => ({
@@ -139,7 +122,7 @@ const registrationApi = api
           method: "PUT",
           body: body,
         }),
-        invalidatesTags: ["Registration", "Listing Fee"],
+        invalidatesTags: ["Registration", "Listing Fee", "Notification"],
       }),
 
       patchUpdateRegistrationStatus: builder.mutation({

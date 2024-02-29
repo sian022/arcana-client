@@ -2,7 +2,7 @@ import { api } from "../../api";
 
 const specialDiscountApi = api
   .enhanceEndpoints({
-    addTagTypes: ["Special Discount", "ApprovalHistoryById"],
+    addTagTypes: ["Special Discount", "ApprovalHistoryById", "Notification"],
   })
   .injectEndpoints({
     endpoints: (builder) => ({
@@ -13,7 +13,7 @@ const specialDiscountApi = api
           method: "POST",
           body: body,
         }),
-        invalidatesTags: ["Special Discount"],
+        invalidatesTags: ["Special Discount", "Notification"],
         transformResponse: (response) => response.value,
       }),
 
@@ -34,7 +34,7 @@ const specialDiscountApi = api
           method: "PUT",
           body: body,
         }),
-        invalidatesTags: ["Special Discount"],
+        invalidatesTags: ["Special Discount", "Notification"],
         transformResponse: (response) => response.value,
       }),
 
@@ -43,7 +43,7 @@ const specialDiscountApi = api
           url: `/special-discount/void/${id}`,
           method: "PUT",
         }),
-        invalidatesTags: ["Special Discount"],
+        invalidatesTags: ["Special Discount", "Notification"],
       }),
 
       cancelSpecialDiscount: builder.mutation({
@@ -51,7 +51,7 @@ const specialDiscountApi = api
           url: `/special-discount/${id}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["Special Discount"],
+        invalidatesTags: ["Special Discount", "Notification"],
       }),
 
       //Approvals

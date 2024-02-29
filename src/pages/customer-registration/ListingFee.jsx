@@ -13,13 +13,10 @@ import {
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
-import {
-  notificationApi,
-  usePatchReadNotificationMutation,
-} from "../../features/notification/api/notificationApi";
+import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function ListingFee() {
@@ -35,7 +32,6 @@ function ListingFee() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const { notifications, isNotificationFetching } = useContext(AppContext);
-  const dispatch = useDispatch();
 
   //Disclosures
   const {
@@ -133,7 +129,6 @@ function ListingFee() {
         message: "Listing Fee cancelled successfully",
         variant: "success",
       });
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
       onDeleteClose();
     } catch (error) {
       snackbar({ message: handleCatchErrorMessage(error), variant: "error" });

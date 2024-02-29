@@ -31,7 +31,6 @@ import AddSearchMixin from "../../../components/mixins/AddSearchMixin";
 import CancelFreebiesModal from "../../../components/modals/CancelFreebiesModal";
 import TertiaryButton from "../../../components/TertiaryButton";
 import SuccessButton from "../../../components/SuccessButton";
-import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { PatternFormat } from "react-number-format";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import DangerButton from "../../../components/DangerButton";
@@ -186,7 +185,6 @@ function ForReleasing() {
 
       reset();
       onSuccessOpen();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error?.data?.error?.message) {
         setSnackbarMessage(error?.data?.error?.message);

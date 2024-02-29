@@ -20,7 +20,6 @@ import {
   usePutUpdateListingFeeMutation,
 } from "../../features/listing-fee/api/listingFeeApi";
 import { NumericFormat } from "react-number-format";
-import { notificationApi } from "../../features/notification/api/notificationApi";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import useSnackbar from "../../hooks/useSnackbar";
@@ -175,7 +174,6 @@ function ListingFeeDrawer({
         }).unwrap();
       }
 
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
       handleDrawerClose();
       onSuccessOpen();
     } catch (error) {
@@ -188,7 +186,6 @@ function ListingFeeDrawer({
           "Listing fee requested successfully but failed to send message to approver.",
         variant: "warning",
       });
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
       handleDrawerClose();
     }
 

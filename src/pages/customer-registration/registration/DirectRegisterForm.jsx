@@ -53,7 +53,6 @@ import moment from "moment";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
 import SuccessButton from "../../../components/SuccessButton";
-import { notificationApi } from "../../../features/notification/api/notificationApi";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
@@ -359,8 +358,6 @@ function DirectRegisterForm({
       onConfirmClose();
       onClose();
       handleResetForms();
-
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       setIsAllApiLoading(false);
       onConfirmClose();
@@ -385,7 +382,6 @@ function DirectRegisterForm({
       onConfirmClose();
       onClose();
       handleResetForms();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 

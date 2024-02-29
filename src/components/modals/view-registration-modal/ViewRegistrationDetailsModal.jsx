@@ -13,7 +13,7 @@ import TermsAndConditionsTab from "./TermsAndConditionsTab";
 import AttachmentsTab from "./AttachmentsTab";
 import DangerButton from "../../DangerButton";
 import useDisclosure from "../../../hooks/useDisclosure";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import CommonDialog from "../../CommonDialog";
 import { Close } from "@mui/icons-material";
 import {
@@ -24,7 +24,6 @@ import useSnackbar from "../../../hooks/useSnackbar";
 import SuccessButton from "../../SuccessButton";
 import ListingFeeTab from "./ListingFeeTab";
 import FreebiesTab from "./FreebiesTab";
-import { notificationApi } from "../../../features/notification/api/notificationApi";
 import OtherExpensesTab from "./OtherExpensesTab";
 import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
@@ -60,8 +59,6 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
   const messageReceiverMessageRejected = `${selectedRowData?.businessName}'s registration request has been rejected.`;
 
   const snackbar = useSnackbar();
-
-  const dispatch = useDispatch();
 
   //Disclosures
   const {
@@ -217,7 +214,6 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
 
       onApproveConfirmClose();
       handleClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error.function !== "sendMessage") {
         return snackbar({
@@ -233,7 +229,6 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
       });
       onApproveConfirmClose();
       handleClose();
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
   };
 
@@ -256,7 +251,6 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
       }).unwrap();
 
       snackbar({ message: "Client rejected successfully", variant: "success" });
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     } catch (error) {
       if (error.function !== "sendMessage") {
         return snackbar({
@@ -270,7 +264,6 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
           "Registration rejected successfully but failed to send message.",
         variant: "warning",
       });
-      dispatch(notificationApi.util.invalidateTags(["Notification"]));
     }
 
     handleRejectConfirmClose();
@@ -282,7 +275,7 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
       ...viewedTabs,
       [activeTab]: true,
     });
-  }, [activeTab]);
+  }, [activeTab, viewedTabs]);
 
   return (
     <>
