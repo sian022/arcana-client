@@ -14,8 +14,13 @@ import { RemoveCircleOutline } from "@mui/icons-material";
 import { NumericFormat } from "react-number-format";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllProductsQuery } from "../../../features/setup/api/productsApi";
-import { useState } from "react";
-import { setIsAgree } from "../../../features/registration/reducers/regularRegistrationSlice";
+import { useEffect, useState } from "react";
+import {
+  resetListingFeeForRegistration,
+  setIsAgree,
+  setIsListingFeeValid,
+  setListingFeeForRegistration,
+} from "../../../features/registration/reducers/regularRegistrationSlice";
 
 function ListingFeeClient() {
   const [totalAmount, setTotalAmount] = useState(0);
@@ -56,6 +61,11 @@ function ListingFeeClient() {
     useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
 
   //Functions
+  const handleReset = () => {
+    reset();
+    dispatch(resetListingFeeForRegistration());
+  };
+
   const handleRecalculateTotalAmount = () => {
     let total = 0;
     watch("listingItems").forEach((item) => {
@@ -67,6 +77,19 @@ function ListingFeeClient() {
 
     setTotalAmount(total);
   };
+
+  //UseEffect
+  useEffect(() => {
+    dispatch(setIsListingFeeValid(isValid));
+  }, [isValid, dispatch]);
+
+  useEffect(() => {
+    if (watch("listingItems")) {
+      const listingItems = [...watch("listingItems")];
+      console.log(listingItems);
+      dispatch(setListingFeeForRegistration(listingItems));
+    }
+  }, [dispatch, watch("listingItems"), watch]);
 
   return (
     <Box className="listingFeeClient">

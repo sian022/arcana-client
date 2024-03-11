@@ -83,6 +83,12 @@ function RegisterRegularForm({ open, onClose }) {
   const termsAndConditions = useSelector(
     (state) => state.regularRegistration.value.termsAndConditions
   );
+  const isAgree = useSelector(
+    (state) => state.regularRegistration.value.isAgree
+  );
+  const isListingFeeValid = useSelector(
+    (state) => state.regularRegistration.value.listingFeeForRegistration.isValid
+  );
 
   //Disclosures
   const {
@@ -196,7 +202,7 @@ function RegisterRegularForm({ open, onClose }) {
 
     {
       label: "Listing Fee",
-      isValid: true,
+      isValid: isAgree && isListingFeeValid,
       icon: <Payment />,
       disabled: false,
     },
@@ -205,6 +211,10 @@ function RegisterRegularForm({ open, onClose }) {
   navigators[1].disabled = !navigators[0].isValid;
   if (navigators?.length > 3) {
     navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
+    navigators[3].disabled =
+      !navigators[0].isValid ||
+      !navigators[1].isValid ||
+      !navigators[2].isValid;
   }
 
   //RTK Query
