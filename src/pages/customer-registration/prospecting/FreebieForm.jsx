@@ -106,6 +106,7 @@ function FreebieForm({
     name: "freebies",
   });
 
+  console.log(watch());
   //RTK Query
   const [postRequestFreebies, { isLoading: isRequestLoading }] =
     usePostRequestFreebiesMutation();
@@ -260,7 +261,7 @@ function FreebieForm({
     if (direct && freebiesDirect?.length === 0) {
       reset();
     }
-  }, [isFreebieFormOpen]);
+  }, [isFreebieFormOpen, freebiesDirect, direct, reset, setValue]);
 
   // useEffect(() => {
   //   if (direct) {

@@ -271,11 +271,11 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
   };
 
   useEffect(() => {
-    setViewedTabs({
-      ...viewedTabs,
+    setViewedTabs((prev) => ({
+      ...prev,
       [activeTab]: true,
-    });
-  }, [activeTab, viewedTabs]);
+    }));
+  }, [activeTab]);
 
   return (
     <>

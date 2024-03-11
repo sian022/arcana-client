@@ -88,3 +88,5 @@ export const {
   //Approval History
   useLazyGetListingFeeApprovalHistoriesByIdQuery,
 } = listingFeeApi;
+
+export default listingFeeApi;

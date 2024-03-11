@@ -385,7 +385,6 @@ function DirectRegisterForm({
     }
   };
 
-  console.log(selectedRowData);
   const addAttachmentsSubmit = async (clientId) => {
     const formData = new FormData();
     let attachmentsObject = null;
@@ -1275,7 +1274,7 @@ function DirectRegisterForm({
                         option.storeTypeName?.toUpperCase()
                       }
                       disableClearable
-                      isLoading={isStoreTypeLoading}
+                      loading={isStoreTypeLoading}
                       // value={storeTypeData?.storeTypes?.find(
                       //   (store) => store.storeTypeName === selectedStoreType
                       // )}
