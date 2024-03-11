@@ -106,7 +106,6 @@ function FreebieForm({
     name: "freebies",
   });
 
-  console.log(watch());
   //RTK Query
   const [postRequestFreebies, { isLoading: isRequestLoading }] =
     usePostRequestFreebiesMutation();

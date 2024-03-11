@@ -47,7 +47,7 @@ function ListingFeeClient() {
     resolver: yupResolver(listingFeeForRegistrationSchema.schema),
     mode: "onChange",
     defaultValues: {
-      listingItems: listingFeesForRegistration,
+      listingItems: listingFeesForRegistration || [],
     },
   });
 
@@ -62,8 +62,8 @@ function ListingFeeClient() {
 
   //Functions
   const handleReset = () => {
-    reset();
     dispatch(resetListingFeeForRegistration());
+    reset();
   };
 
   const handleRecalculateTotalAmount = () => {
@@ -83,13 +83,25 @@ function ListingFeeClient() {
     dispatch(setIsListingFeeValid(isValid));
   }, [isValid, dispatch]);
 
+  // useEffect(() => {
+  //   const listingItems = [...watch("listingItems")];
+
+  //   if (listingItems) {
+  //     dispatch(setListingFeeForRegistration([]));
+  //   }
+  // }, [dispatch, watch]);
+
   useEffect(() => {
-    if (watch("listingItems")) {
-      const listingItems = [...watch("listingItems")];
-      console.log(listingItems);
-      dispatch(setListingFeeForRegistration(listingItems));
-    }
-  }, [dispatch, watch("listingItems"), watch]);
+    handleRecalculateTotalAmount();
+
+    return () => {
+      const onSubmit = (data) => {
+        dispatch(setListingFeeForRegistration(data.listingItems));
+      };
+
+      handleSubmit(onSubmit)();
+    };
+  }, [dispatch, handleSubmit, watch]);
 
   return (
     <Box className="listingFeeClient">
@@ -112,7 +124,7 @@ function ListingFeeClient() {
           }}
         >
           <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
-            Product Information
+            Listing Fee
           </Typography>
         </Box>
 
@@ -132,26 +144,13 @@ function ListingFeeClient() {
               getOptionLabel={(option) => option.itemCode || ""}
               getOptionDisabled={(option) => {
                 const listingFees = watch("listingItems");
-                // const isListingFeeRepeating = listingFees.some(
-                //   (item) => item?.itemId?.itemCode === option.itemCode
-                // );
-
                 const isListingFeeRepeating = Array.isArray(listingFees)
                   ? listingFees.some(
                       (item) => item?.itemId?.itemCode === option.itemCode
                     )
                   : false;
 
-                const selectedClientData = watch("clientId");
-
-                const isListingFeeRepeatingBackend =
-                  selectedClientData?.listingFees?.some((item) =>
-                    item?.listingItems?.some(
-                      (item) => item?.itemCode === option.itemCode
-                    )
-                  );
-
-                return isListingFeeRepeating || isListingFeeRepeatingBackend;
+                return isListingFeeRepeating;
               }}
               disableClearable
               loading={isProductLoading}

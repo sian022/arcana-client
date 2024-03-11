@@ -59,7 +59,6 @@ export const regularRegistrationSlice = createSlice({
       state.value.directFreebie.freebies = [];
     },
     setListingFeeForRegistration: (state, action) => {
-      console.log("action.payload", action.payload);
       state.value.listingFeeForRegistration.listingItems = action.payload;
     },
     resetListingFeeForRegistration: (state) => {

@@ -1212,7 +1212,6 @@ function RegisterRegularForm({ open, onClose }) {
               ? "commonDrawer__actionsNoMarginBottom"
               : "commonDrawer__actionsSpread"
           }
-          Register
         >
           {activeTab !== "Personal Info" && (
             <DangerButton onClick={handleBack}>Back</DangerButton>
