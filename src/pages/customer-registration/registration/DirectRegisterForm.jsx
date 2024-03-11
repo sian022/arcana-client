@@ -521,7 +521,7 @@ function DirectRegisterForm({
       <Box
         className={
           termsAndConditions["terms"] === 1
-            ? "register__headersTwoTabs"
+            ? "register__headersThreeTabs"
             : "register__headers"
         }
       >

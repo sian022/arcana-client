@@ -16,6 +16,7 @@ import {
   Check,
   Close,
   Gavel,
+  Payment,
   Person,
   PushPin,
 } from "@mui/icons-material";
@@ -53,6 +54,7 @@ import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
 import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
+import ListingFeeClient from "./ListingFeeClient";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -144,7 +146,7 @@ function RegisterRegularForm({ open, onClose }) {
     },
 
     {
-      label: "Terms and Conditions",
+      label: "Terms & Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
         if (
           key === "fixedDiscount" &&
@@ -191,10 +193,17 @@ function RegisterRegularForm({ open, onClose }) {
       icon: <Attachment />,
       disabled: false,
     },
+
+    {
+      label: "Listing Fee",
+      isValid: true,
+      icon: <Payment />,
+      disabled: false,
+    },
   ].filter(Boolean);
 
   navigators[1].disabled = !navigators[0].isValid;
-  if (navigators?.length > 2) {
+  if (navigators?.length > 3) {
     navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
   }
 
@@ -408,7 +417,7 @@ function RegisterRegularForm({ open, onClose }) {
   //Misc Functions
   const handleNext = async () => {
     if (activeTab === "Personal Info") {
-      setActiveTab("Terms and Conditions");
+      setActiveTab("Terms & Conditions");
 
       try {
         await postValidateClient({
@@ -425,16 +434,34 @@ function RegisterRegularForm({ open, onClose }) {
         }
         return;
       }
-    } else if (activeTab === "Terms and Conditions") {
+    } else if (
+      activeTab === "Terms & Conditions" &&
+      termsAndConditions["terms"] === 1
+    ) {
+      setActiveTab("Listing Fee");
+    } else if (
+      activeTab === "Terms & Conditions" &&
+      termsAndConditions["terms"] !== 1
+    ) {
       setActiveTab("Attachments");
     }
   };
 
   const handleBack = () => {
-    if (activeTab === "Terms and Conditions") {
+    if (activeTab === "Terms & Conditions") {
       setActiveTab("Personal Info");
     } else if (activeTab === "Attachments") {
-      setActiveTab("Terms and Conditions");
+      setActiveTab("Terms & Conditions");
+    } else if (
+      activeTab === "Listing Fee" &&
+      termsAndConditions["terms"] === 1
+    ) {
+      setActiveTab("Terms & Conditions");
+    } else if (
+      activeTab === "Listing Fee" &&
+      termsAndConditions["terms"] !== 1
+    ) {
+      setActiveTab("Attachments");
     }
   };
 
@@ -450,7 +477,7 @@ function RegisterRegularForm({ open, onClose }) {
         return true;
       }
     } else if (
-      activeTab === "Terms and Conditions" &&
+      activeTab === "Terms & Conditions" &&
       navigators[1].isValid === false
     ) {
       return true;
@@ -468,7 +495,7 @@ function RegisterRegularForm({ open, onClose }) {
       <Box
         className={
           termsAndConditions["terms"] === 1
-            ? "register__headersTwoTabs"
+            ? "register__headersThreeTabs"
             : "register__headers"
         }
       >
@@ -1161,11 +1188,13 @@ function RegisterRegularForm({ open, onClose }) {
           </Box>
         )}
 
-        {activeTab === "Terms and Conditions" && (
+        {activeTab === "Terms & Conditions" && (
           <TermsAndConditions storeType={watch("storeTypeId")?.storeTypeName} />
         )}
 
         {activeTab === "Attachments" && <Attachments />}
+
+        {activeTab === "Listing Fee" && <ListingFeeClient />}
 
         <Box
           className={
@@ -1179,36 +1208,45 @@ function RegisterRegularForm({ open, onClose }) {
             <DangerButton onClick={handleBack}>Back</DangerButton>
           )}
 
-          {(activeTab === "Personal Info" ||
-            (activeTab === "Terms and Conditions" &&
-              termsAndConditions["terms"] !== 1)) && (
-            <SuccessButton onClick={handleNext} disabled={handleDisableNext()}>
-              {isValidateClientLoading ? (
-                <>
-                  <CircularProgress size="20px" color="white" />
-                </>
-              ) : (
-                "Next"
-              )}
-            </SuccessButton>
-          )}
+          {
+            // (activeTab === "Personal Info" ||
+            //   (activeTab === "Terms & Conditions" &&
+            //     termsAndConditions["terms"] !== 1))
+            activeTab !== "Listing Fee" && (
+              <SuccessButton
+                onClick={handleNext}
+                disabled={handleDisableNext()}
+              >
+                {isValidateClientLoading ? (
+                  <>
+                    <CircularProgress size="20px" color="white" />
+                  </>
+                ) : (
+                  "Next"
+                )}
+              </SuccessButton>
+            )
+          }
 
-          {((termsAndConditions["terms"] === 1 &&
-            activeTab === "Terms and Conditions") ||
-            activeTab === "Attachments") && (
-            <SuccessButton
-              onClick={onConfirmOpen}
-              disabled={
-                termsAndConditions["terms"] === 1
-                  ? navigators.some(
-                      (obj) => obj.isValid === false && obj.label !== ""
-                    )
-                  : navigators.some((obj) => obj.isValid === false)
-              }
-            >
-              Register
-            </SuccessButton>
-          )}
+          {
+            // ((termsAndConditions["terms"] === 1 &&
+            //   activeTab === "Terms & Conditions") ||
+            //   activeTab === "Attachments") &&
+            activeTab === "Listing Fee" && (
+              <SuccessButton
+                onClick={onConfirmOpen}
+                disabled={
+                  termsAndConditions["terms"] === 1
+                    ? navigators.some(
+                        (obj) => obj.isValid === false && obj.label !== ""
+                      )
+                    : navigators.some((obj) => obj.isValid === false)
+                }
+              >
+                Register
+              </SuccessButton>
+            )
+          }
         </Box>
       </CommonDrawer>
 

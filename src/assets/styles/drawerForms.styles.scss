@@ -7,17 +7,17 @@
   gap: 10px;
   flex: 1;
 
-  &__headersTwoTabs {
+  &__headersThreeTabs {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
   }
 
   &__headers {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
 
     &__item {
@@ -30,6 +30,9 @@
         color: white;
         font-weight: bold;
         font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         @media (max-width: 525px) {
           display: none;
@@ -431,6 +434,7 @@
   flex-direction: column;
   gap: 10px;
   flex: 1;
+  position: relative;
 }
 
 //Others

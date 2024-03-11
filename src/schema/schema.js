@@ -528,6 +528,22 @@ export const requestListingFeeSchema = {
   },
 };
 
+export const listingFeeForRegistrationSchema = {
+  schema: yup.object({
+    listingItems: yup.array().of(
+      yup.object({
+        itemId: yup.object().required("Product Code is required"),
+        sku: yup.number().required("SKU is required"),
+        unitCost: yup.string().required("Unit Cost is required"),
+        // quantity: yup.number().required("Quantity is required"),
+      })
+    ),
+  }),
+  defaultValues: {
+    listingItems: [],
+  },
+};
+
 export const approversSchema = {
   schema: yup.object({
     moduleName: yup.object().required("Module is required"),
