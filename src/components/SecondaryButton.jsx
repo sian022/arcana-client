@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import React from "react";
 
 function SecondaryButton({ medium, children, ...otherProps }) {
   return (

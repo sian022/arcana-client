@@ -426,7 +426,7 @@
   }
 }
 
-.listingFee {
+.listingFeeClient {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -434,8 +434,6 @@
 }
 
 //Others
-
-//Wild Cards
 .overlay {
   background: rgba(0, 0, 0, 0.4);
   pointer-events: none;

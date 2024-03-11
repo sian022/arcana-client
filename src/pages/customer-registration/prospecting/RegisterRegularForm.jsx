@@ -513,15 +513,17 @@ function RegisterRegularForm({ open, onClose }) {
 
   //UseEffects
   useEffect(() => {
-    setValue("clientId", selectedRowData?.id);
-    setValue(
-      "storeTypeId",
-      storeTypeData?.storeTypes?.find(
-        (store) => store.storeTypeName === selectedRowData?.storeType
-      )
-    );
-    setValue("emailAddress", selectedRowData?.emailAddress);
-  }, [open]);
+    if (open) {
+      setValue("clientId", selectedRowData?.id);
+      setValue(
+        "storeTypeId",
+        storeTypeData?.storeTypes?.find(
+          (store) => store.storeTypeName === selectedRowData?.storeType
+        )
+      );
+      setValue("emailAddress", selectedRowData?.emailAddress);
+    }
+  }, [open, selectedRowData, storeTypeData, setValue]);
 
   const handleSameAsOwnersAddress = () => {
     setSameAsOwnersAddress((prev) => !prev);
@@ -551,7 +553,7 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   useEffect(() => {
-    if (!!includeAuthorizedRepresentative) {
+    if (includeAuthorizedRepresentative) {
       setRequirementsMode("representative");
     }
 
@@ -560,13 +562,13 @@ function RegisterRegularForm({ open, onClose }) {
       setValue("authorizedRepresentativePosition", "");
       setRequirementsMode("owner");
     }
-  }, [includeAuthorizedRepresentative]);
+  }, [includeAuthorizedRepresentative, setValue, setRequirementsMode]);
 
   useEffect(() => {
     if (clusterData && open) {
       setValue("clusterId", clusterData?.cluster?.[0]);
     }
-  }, [open]);
+  }, [open, clusterData, setValue]);
 
   useEffect(() => {
     if (priceModeData && open) {
@@ -577,7 +579,7 @@ function RegisterRegularForm({ open, onClose }) {
         )
       );
     }
-  }, [open, priceModeData]);
+  }, [open, priceModeData, setValue]);
 
   return (
     <>
@@ -604,7 +606,7 @@ function RegisterRegularForm({ open, onClose }) {
             <Box className="register__firstRow">
               <Box className="register__firstRow__customerInformation">
                 <Typography className="register__title">
-                  Customer's Information
+                  Customer&apos;s Information
                 </Typography>
                 <Box className="register__firstRow__customerInformation__row">
                   <TextField
@@ -663,6 +665,7 @@ function RegisterRegularForm({ open, onClose }) {
                         onValueChange={(e) => {
                           onChange(e.value);
                         }}
+                        inputRef={ref}
                         onBlur={onBlur}
                         value={value || ""}
                         // required
@@ -705,7 +708,7 @@ function RegisterRegularForm({ open, onClose }) {
                   <Controller
                     control={control}
                     name={"phoneNumber"}
-                    render={({ field: { onChange, onBlur, value, ref } }) => {
+                    render={({ field: { onChange, onBlur } }) => {
                       const formattedValue =
                         selectedRowData?.phoneNumber?.replace(/-/g, "");
                       let format = "###-###-####";
@@ -756,7 +759,7 @@ function RegisterRegularForm({ open, onClose }) {
             <Box className="register__secondRow">
               <Box className="register__secondRow">
                 <Typography className="register__title">
-                  Owner's Address
+                  Owner&apos;s Address
                 </Typography>
                 <Box className="register__secondRow">
                   <Box className="register__secondRow__content">
@@ -905,7 +908,7 @@ function RegisterRegularForm({ open, onClose }) {
                   }}
                 />
                 <Typography variant="subtitle2">
-                  Same as owner's address
+                  Same as owner&apos;s address
                 </Typography>
               </Box>
 
@@ -1087,7 +1090,7 @@ function RegisterRegularForm({ open, onClose }) {
                 <Checkbox
                   sx={{ ml: "10px" }}
                   checked={includeAuthorizedRepresentative}
-                  onChange={(e) => {
+                  onChange={() => {
                     setIncludeAuthorizedRepresentative((prev) => !prev);
                   }}
                 />

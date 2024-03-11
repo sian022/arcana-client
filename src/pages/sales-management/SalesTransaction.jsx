@@ -14,7 +14,12 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import SecondaryButton from "../../components/SecondaryButton";
-import { KeyboardDoubleArrowRight, Tune } from "@mui/icons-material";
+import {
+  KeyboardDoubleArrowRight,
+  NoPhotography,
+  ShoppingCartCheckout,
+  Tune,
+} from "@mui/icons-material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { salesTransactionSchema } from "../../schema/schema";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -32,7 +37,7 @@ import UnderConstruction from "../../assets/images/under-construction.svg";
 import { useGetAllClientsForPOSQuery } from "../../features/sales-management/api/salesTransactionApi";
 import { useGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
 import NoImage from "../../assets/images/NoImage.png";
-// import SisigSample from "../../assets/images/SisigSample.png";
+import SisigSample from "../../assets/images/SisigSample.png";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");
@@ -318,7 +323,10 @@ function SalesTransaction() {
                         }}
                       >
                         <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__imageWrapper">
-                          <img src={NoImage} alt="no-img" />
+                          {/* <img src={NoImg} alt="no-img" /> */}
+                          <NoPhotography
+                            sx={{ fontSize: "100px", color: "#7D8B99" }}
+                          />
                         </Box>
                         <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__labels">
                           <Typography
@@ -511,6 +519,7 @@ function SalesTransaction() {
                     size="large"
                     disabled={!isValid}
                     onClick={onCashoutOpen}
+                    endIcon={<ShoppingCartCheckout />}
                   >
                     Cashout
                   </SecondaryButton>
