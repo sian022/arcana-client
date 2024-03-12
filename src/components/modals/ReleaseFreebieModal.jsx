@@ -28,7 +28,6 @@ import CommonDialog from "../CommonDialog";
 import ViewPhotoModal from "./ViewPhotoModal";
 import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
 import { DirectReleaseContext } from "../../context/DirectReleaseContext";
-import SuccessButton from "../SuccessButton";
 
 function ReleaseFreebieModal({ direct, ...otherProps }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -487,7 +486,7 @@ function ReleaseFreebieModal({ direct, ...otherProps }) {
           >
             Close
           </DangerButton>
-          <SuccessButton
+          <SecondaryButton
             onClick={onConfirmOpen}
             disabled={
               direct
@@ -496,7 +495,7 @@ function ReleaseFreebieModal({ direct, ...otherProps }) {
             }
           >
             {direct ? "Save" : "Release"}
-          </SuccessButton>
+          </SecondaryButton>
         </Box>
       </CommonModal>
 

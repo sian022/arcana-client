@@ -6,11 +6,9 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import React from "react";
 import SecondaryButton from "./SecondaryButton";
 import DangerButton from "./DangerButton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import SuccessButton from "./SuccessButton";
 
 function CommonDrawer({
   onClose,
@@ -83,7 +81,7 @@ function CommonDrawer({
                 Close
               </DangerButton>
 
-              <SuccessButton
+              <SecondaryButton
                 onClick={onSubmit}
                 disabled={disableSubmit || isLoading}
               >
@@ -92,7 +90,7 @@ function CommonDrawer({
                 ) : (
                   <>{submitLabel || "Submit"}</>
                 )}
-              </SuccessButton>
+              </SecondaryButton>
             </Box>
           )}
         </Box>

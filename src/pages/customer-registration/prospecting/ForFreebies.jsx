@@ -30,9 +30,9 @@ import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import TertiaryButton from "../../../components/TertiaryButton";
-import SuccessButton from "../../../components/SuccessButton";
 import { PatternFormat } from "react-number-format";
 import DangerButton from "../../../components/DangerButton";
+import SecondaryButton from "../../../components/SecondaryButton";
 
 function ForFreebies() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -708,12 +708,12 @@ function ForFreebies() {
             </TertiaryButton>
           )}
 
-          <SuccessButton
+          <SecondaryButton
             onClick={onConfirmOpen}
             disabled={!isValid || (drawerMode === "edit" && !editMode)}
           >
             Submit
-          </SuccessButton>
+          </SecondaryButton>
         </Box>
       </CommonDrawer>
 
