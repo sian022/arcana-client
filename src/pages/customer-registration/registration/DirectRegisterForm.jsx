@@ -35,6 +35,7 @@ import Attachments from "../prospecting/Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
 import {
   resetFreebies,
+  resetListingFeeForRegistration,
   resetTermsAndConditions,
   setWholeTermsAndConditions,
 } from "../../../features/registration/reducers/regularRegistrationSlice";
@@ -513,6 +514,7 @@ function DirectRegisterForm({
 
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
+    dispatch(resetListingFeeForRegistration());
     dispatch(resetFreebies());
     setEditMode(false);
     setActiveTab("Personal Info");

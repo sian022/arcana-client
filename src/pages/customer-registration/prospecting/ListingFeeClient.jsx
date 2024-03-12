@@ -1,11 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Box,
-  Checkbox,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { listingFeeForRegistrationSchema } from "../../../schema/schema";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,10 +8,8 @@ import { RemoveCircleOutline } from "@mui/icons-material";
 import { NumericFormat } from "react-number-format";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllProductsQuery } from "../../../features/setup/api/productsApi";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  resetListingFeeForRegistration,
-  setIsAgree,
   setIsListingFeeValid,
   setListingFeeForRegistration,
 } from "../../../features/registration/reducers/regularRegistrationSlice";
@@ -31,16 +23,13 @@ function ListingFeeClient() {
     (state) =>
       state.regularRegistration.value.listingFeeForRegistration.listingItems
   );
-  const isAgree = useSelector(
-    (state) => state.regularRegistration.value.isAgree
-  );
 
   //React Hook Form
   const {
     handleSubmit,
     formState: { errors, isValid },
     setValue,
-    reset,
+    // reset,
     control,
     watch,
   } = useForm({
@@ -61,12 +50,7 @@ function ListingFeeClient() {
     useGetAllProductsQuery({ Status: true, page: 1, pageSize: 1000 });
 
   //Functions
-  const handleReset = () => {
-    dispatch(resetListingFeeForRegistration());
-    reset();
-  };
-
-  const handleRecalculateTotalAmount = () => {
+  const handleRecalculateTotalAmount = useCallback(() => {
     let total = 0;
     watch("listingItems").forEach((item) => {
       const unitCost = parseFloat(item.unitCost);
@@ -76,20 +60,12 @@ function ListingFeeClient() {
     });
 
     setTotalAmount(total);
-  };
+  }, [watch]);
 
   //UseEffect
   useEffect(() => {
     dispatch(setIsListingFeeValid(isValid));
   }, [isValid, dispatch]);
-
-  // useEffect(() => {
-  //   const listingItems = [...watch("listingItems")];
-
-  //   if (listingItems) {
-  //     dispatch(setListingFeeForRegistration([]));
-  //   }
-  // }, [dispatch, watch]);
 
   useEffect(() => {
     handleRecalculateTotalAmount();
@@ -101,33 +77,34 @@ function ListingFeeClient() {
 
       handleSubmit(onSubmit)();
     };
-  }, [dispatch, handleSubmit, watch]);
+  }, [dispatch, handleSubmit, watch, handleRecalculateTotalAmount]);
 
   return (
-    <Box className="listingFeeClient">
+    <Box className="feesClient__listingFeeClient">
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+          Listing Fee
+        </Typography>
+      </Box>
+
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           gap: "10px",
+          pt: "2px",
           // maxHeight: "310px",
-          maxHeight: "80%",
+          maxHeight: "60%",
           overflowX: "hidden",
           overflowY: "auto",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
-            Listing Fee
-          </Typography>
-        </Box>
-
         {fields.map((item, index) => (
           <Box
             key={item.id}
@@ -284,23 +261,12 @@ function ListingFeeClient() {
         <SecondaryButton
           sx={{ width: "150px" }}
           onClick={() => {
-            // fields.length < 5
-            //   ? append({ itemId: null, unitCost: null })
-            //   : handleListingFeeError();
             append({
               itemId: null,
               sku: 1,
               unitCost: null,
             });
           }}
-          // disabled={
-          //   !watch("listingItems")[watch("listingItems")?.length - 1]
-          //     ?.itemId ||
-          //   watch("listingItems")[watch("listingItems")?.length - 1]
-          //     ?.unitCost == null ||
-          //   watch("listingItems")[watch("listingItems")?.length - 1]
-          //     ?.unitCost == undefined
-          // }
           disabled={!isValid}
         >
           Add Product
@@ -332,7 +298,7 @@ function ListingFeeClient() {
         </Box>
       </Box>
 
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           gap: "5px",
@@ -348,7 +314,7 @@ function ListingFeeClient() {
           onChange={(e) => dispatch(setIsAgree(e.target.checked))}
         />
         <Typography>I agree to the terms and conditions</Typography>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

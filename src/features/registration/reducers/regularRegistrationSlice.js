@@ -26,6 +26,10 @@ export const regularRegistrationSlice = createSlice({
         listingItems: [],
         isValid: false,
       },
+      expensesForRegistration: {
+        expenses: [],
+        isValid: false,
+      },
       isAgree: false,
     },
   },
@@ -69,6 +73,12 @@ export const regularRegistrationSlice = createSlice({
         isValid: false,
       };
     },
+    setExpensesForRegistration: (state, action) => {
+      state.value.expensesForRegistration.expenses = action.payload;
+    },
+    resetExpensesForRegistration: (state) => {
+      state.value.expensesForRegistration = { expenses: [], isValid: false };
+    },
     setIsAgree: (state, action) => {
       state.value.isAgree = action.payload;
     },
@@ -86,6 +96,8 @@ export const {
   setWholeTermsAndConditions,
   setListingFeeForRegistration,
   resetListingFeeForRegistration,
+  setExpensesForRegistration,
+  resetExpensesForRegistration,
   setIsAgree,
   setIsListingFeeValid,
 } = regularRegistrationSlice.actions;

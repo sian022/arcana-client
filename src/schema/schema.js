@@ -631,6 +631,20 @@ export const requestExpensesSchema = {
   },
 };
 
+export const expensesForRegistrationSchema = {
+  schema: yup.object({
+    expenses: yup.array().of(
+      yup.object({
+        otherExpenseId: yup.object().required("Expense Type is required"),
+        amount: yup.string().required("Amount is required"),
+      })
+    ),
+  }),
+  defaultValues: {
+    expenses: [],
+  },
+};
+
 export const advancePaymentSchema = {
   schema: yup.object({
     clientId: yup.object().required("Business Name is required"),

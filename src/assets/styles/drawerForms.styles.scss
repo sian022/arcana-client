@@ -429,12 +429,31 @@
   }
 }
 
-.listingFeeClient {
+.feesClient {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   flex: 1;
-  position: relative;
+  overflow: hidden;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &__listingFeeClient {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    height: 50%;
+  }
+
+  &__otherExpensesClient {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    height: 50%;
+  }
 }
 
 //Others

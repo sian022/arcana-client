@@ -157,7 +157,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
   }, [termsAndConditions["terms"]]);
 
   useEffect(() => {
-    if (termsAndConditions["freezer"]) {
+    if (!termsAndConditions["freezer"]) {
       dispatch(
         setTermsAndConditions({ property: "freezerAssetTag", value: "" })
       );
@@ -180,38 +180,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               position: "relative",
             }}
           >
-            {termsAndConditions["freezer"] && (
-              <TextField
-                label="Asset Tag"
-                onChange={(e) =>
-                  dispatch(
-                    setTermsAndConditions({
-                      property: "freezerAssetTag",
-                      value: e.target.value,
-                    })
-                  )
-                }
-                value={termsAndConditions["freezerAssetTag"]}
-                required
-                sx={{
-                  position: "absolute",
-                  left: "-90px",
-                  width: "160px",
-                  "& .MuiInputBase-root": {
-                    height: "30px",
-                  },
-                  "& .MuiInputLabel-outlined ": {
-                    padding: ".3rem !important",
-                    transform: "translate(6px, -1px)  !important",
-                  },
-                  "& .MuiInputLabel-shrink ": {
-                    padding: ".3rem !important",
-                    transform: "translate(9px, -14px) scale(0.8) !important",
-                  },
-                }}
-              />
-            )}
-
             <RadioGroup
               row
               className="terms__column__item__choices"
@@ -229,6 +197,40 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               <FormControlLabel value={false} control={<Radio />} label="No" />
             </RadioGroup>
           </Box>
+
+          {termsAndConditions["freezer"] && (
+            <TextField
+              label="Asset Tag"
+              onChange={(e) =>
+                dispatch(
+                  setTermsAndConditions({
+                    property: "freezerAssetTag",
+                    value: e.target.value,
+                  })
+                )
+              }
+              value={termsAndConditions["freezerAssetTag"]}
+              required
+              sx={{
+                // position: "absolute",
+                // left: "-90px",
+                right: "6px",
+                margin: "auto",
+                width: "200px",
+                "& .MuiInputBase-root": {
+                  height: "30px",
+                },
+                "& .MuiInputLabel-outlined ": {
+                  padding: ".3rem !important",
+                  transform: "translate(6px, -1px)  !important",
+                },
+                "& .MuiInputLabel-shrink ": {
+                  padding: ".3rem !important",
+                  transform: "translate(9px, -14px) scale(0.8) !important",
+                },
+              }}
+            />
+          )}
         </Box>
         <Box className="terms__column__item">
           <Box className="terms__column__item__title">

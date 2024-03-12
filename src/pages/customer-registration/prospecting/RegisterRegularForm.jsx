@@ -37,7 +37,10 @@ import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "./TermsAndConditions";
 import Attachments from "./Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
-import { resetTermsAndConditions } from "../../../features/registration/reducers/regularRegistrationSlice";
+import {
+  resetListingFeeForRegistration,
+  resetTermsAndConditions,
+} from "../../../features/registration/reducers/regularRegistrationSlice";
 import {
   base64ToBlob,
   convertToTitleCase,
@@ -48,7 +51,6 @@ import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeA
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import SuccessButton from "../../../components/SuccessButton";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
@@ -56,6 +58,7 @@ import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/p
 import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 import ListingFeeClient from "./ListingFeeClient";
 import SecondaryButton from "../../../components/SecondaryButton";
+import OtherExpensesClient from "./OtherExpensesClient";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -416,6 +419,7 @@ function RegisterRegularForm({ open, onClose }) {
 
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
+    dispatch(resetListingFeeForRegistration());
     setActiveTab("Personal Info");
   };
 
@@ -644,7 +648,6 @@ function RegisterRegularForm({ open, onClose }) {
                     label="Owner's Name"
                     size="small"
                     autoComplete="off"
-                    // required
                     className="register__textField"
                     disabled
                     value={selectedRowData?.ownersName ?? ""}
@@ -654,9 +657,7 @@ function RegisterRegularForm({ open, onClose }) {
                     label="Email Address"
                     size="small"
                     autoComplete="off"
-                    // required
                     className="register__textField"
-                    // value={selectedRowData?.emailAddress ?? ""}
                     {...register("emailAddress")}
                   />
                 </Box>
@@ -1198,7 +1199,12 @@ function RegisterRegularForm({ open, onClose }) {
 
         {activeTab === "Attachments" && <Attachments />}
 
-        {activeTab === "Listing Fee" && <ListingFeeClient />}
+        {activeTab === "Listing Fee" && (
+          <Box className="feesClient">
+            <ListingFeeClient />
+            <OtherExpensesClient />
+          </Box>
+        )}
 
         <Box
           className={
@@ -1290,7 +1296,7 @@ function RegisterRegularForm({ open, onClose }) {
             ? selectedRowData?.businessName
             : "client"}
         </span>{" "}
-        as a regular customer? <br />
+        registration as a regular customer? <br />
         <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
           (Fields will be reset)
         </span>

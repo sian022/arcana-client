@@ -34,7 +34,10 @@ function CommonDrawer({
 
   return (
     <Drawer anchor="right" sx={{ zIndex: zIndex && zIndex }} {...otherProps}>
-      <Box sx={{ display: "flex", flex: 1 }} className={className}>
+      <Box
+        sx={{ display: "flex", flex: 1, overflow: "hidden" }}
+        className={className}
+      >
         {navigators && (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             {navigators.map((item, i) => (
