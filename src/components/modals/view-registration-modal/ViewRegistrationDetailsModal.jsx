@@ -284,8 +284,8 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
   return (
     <>
       <CommonModal
-        // width="800px"
-        width={clientStatus === "Approved" ? "900px" : "800px"}
+        width="900px"
+        // width={clientStatus === "Approved" ? "900px" : "800px"}
         height="680px"
         // height="700px"
         disablePadding

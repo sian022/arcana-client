@@ -730,7 +730,8 @@ function DirectRegisterForm({
       // Terms and Conditions
       dispatch(
         setWholeTermsAndConditions({
-          freezer: termsData?.freezer,
+          freezer: termsData?.freezer ? true : false,
+          freezerAssetTag: termsData?.freezer ? termsData?.freezer : "",
           typeOfCustomer: termsData?.typeOfCustomer,
           directDelivery: termsData?.directDelivery,
           bookingCoverageId: parseInt(

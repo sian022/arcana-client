@@ -201,6 +201,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           {termsAndConditions["freezer"] && (
             <TextField
               label="Asset Tag"
+              type="number"
               onChange={(e) =>
                 dispatch(
                   setTermsAndConditions({

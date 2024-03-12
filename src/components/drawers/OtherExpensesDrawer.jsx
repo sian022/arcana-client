@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
@@ -92,10 +92,9 @@ function OtherExpensesDrawer({
   //RTK Query
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsQuery({
-      Status: true,
       PageNumber: 1,
       PageSize: 1000,
-      IncludeRejected: editMode ? editMode : "",
+      RegistrationStatus: "Approved",
     });
 
   const { data: expensesData, isLoading: isExpensesLoading } =
@@ -110,13 +109,6 @@ function OtherExpensesDrawer({
 
   //Drawer Functions
   const onExpensesSubmit = async (data) => {
-    // if (hasDuplicateItemCodes(watch("expenses"))) {
-    //   setSnackbarMessage("No duplicate expenses allowed");
-    //   onErrorOpen();
-    //   onConfirmSubmitClose();
-    //   return;
-    // }
-
     try {
       let response;
 
@@ -125,6 +117,7 @@ function OtherExpensesDrawer({
           id: selectedRowData?.id,
           expenses: data.expenses.map((expense) => ({
             otherExpenseId: expense.otherExpenseId.id,
+            remarks: expense.remarks,
             amount: expense.amount,
             id: expense.id || 0,
           })),
@@ -135,8 +128,8 @@ function OtherExpensesDrawer({
           clientId: data.clientId.id,
           expenses: data.expenses.map((expense) => ({
             otherExpenseId: expense.otherExpenseId.id,
+            remarks: expense.remarks,
             amount: expense.amount,
-            // clientId: data.clientId.id,
           })),
         }).unwrap();
 
@@ -202,7 +195,7 @@ function OtherExpensesDrawer({
     onErrorOpen();
   };
 
-  const handleRecalculateTotalAmount = () => {
+  const handleRecalculateTotalAmount = useCallback(() => {
     let total = 0;
     watch("expenses")?.forEach((item) => {
       const amount = parseInt(item.amount);
@@ -212,7 +205,7 @@ function OtherExpensesDrawer({
     });
 
     setTotalAmount(total);
-  };
+  }, [watch]);
 
   const resetExpenses = (clientId) => {
     remove();
@@ -228,19 +221,6 @@ function OtherExpensesDrawer({
   };
 
   //UseEffects
-
-  useEffect(() => {
-    if (redirect && clientData) {
-      const foundItem = clientData?.regularClient?.find(
-        (item) =>
-          item.businessName === selectedRowData?.businessName &&
-          item.ownersName === selectedRowData?.ownersName
-      );
-      setValue("clientId", foundItem);
-      setValue("customerName", foundItem?.ownersName);
-    }
-  }, [isExpensesOpen, clientData]);
-
   useEffect(() => {
     if (editMode && isExpensesOpen && clientData) {
       const foundItem = clientData?.regularClient?.find(
@@ -252,16 +232,24 @@ function OtherExpensesDrawer({
         "expenses",
         selectedRowData?.expenses?.map((item) => ({
           otherExpenseId: expensesData?.otherExpenses?.find(
-            // (expense) => expense.id === item.otherExpenseId
             (expense) => expense.expenseType === item.expenseType
           ),
+          remarks: item.remarks,
           amount: item.amount,
           id: item.id || 0,
         }))
       );
       handleRecalculateTotalAmount();
     }
-  }, [isExpensesOpen, clientData]);
+  }, [
+    isExpensesOpen,
+    clientData,
+    editMode,
+    expensesData,
+    handleRecalculateTotalAmount,
+    selectedRowData,
+    setValue,
+  ]);
 
   return (
     <>
@@ -269,7 +257,7 @@ function OtherExpensesDrawer({
         drawerHeader={editMode ? "Update Other Expenses" : "Add Other Expenses"}
         open={isExpensesOpen}
         onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
-        width="600px"
+        width="1000px"
         disableSubmit={!isValid || totalAmount < 0}
         onSubmit={onConfirmSubmitOpen}
       >
@@ -402,7 +390,26 @@ function OtherExpensesDrawer({
                       // required
                       helperText={errors?.otherExpenseId?.message}
                       error={errors?.otherExpenseId}
-                      sx={{ width: "300px" }}
+                      sx={{ width: "400px" }}
+                    />
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name={`expenses[${index}].remarks`}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Remarks"
+                      type="text"
+                      size="small"
+                      autoComplete="off"
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
+                      onBlur={onBlur}
+                      value={value || ""}
+                      inputRef={ref}
+                      sx={{ flex: 1 }}
+                      disabled={!watch("clientId")}
                     />
                   )}
                 />
@@ -410,7 +417,7 @@ function OtherExpensesDrawer({
                 <Controller
                   control={control}
                   name={`expenses[${index}].amount`}
-                  render={({ field: { onChange, onBlur, value } }) => (
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
                     <NumericFormat
                       label="Amount"
                       type="text"
@@ -423,12 +430,12 @@ function OtherExpensesDrawer({
                       }}
                       onBlur={onBlur}
                       value={value || ""}
-                      // ref={ref}
-                      // required
+                      inputRef={ref}
                       thousandSeparator=","
                       allowNegative={false}
                       allowLeadingZeros={false}
                       disabled={!watch("clientId")}
+                      sx={{ width: "180px" }}
                     />
                   )}
                 />

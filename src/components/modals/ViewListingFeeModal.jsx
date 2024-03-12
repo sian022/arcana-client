@@ -260,20 +260,56 @@ function ViewListingFeeModal({
           <Box className="viewListingFeeModal__table">
             <TableContainer
               sx={{
-                maxHeight: "290px",
+                maxHeight: "300px",
                 overflow: "auto",
                 width: "815px",
                 borderRadius: "10px",
+                border: "1px solid #e0e0e0",
               }}
             >
               <Table>
-                <TableHead>
+                <TableHead
+                  sx={{
+                    bgcolor: "white !important",
+                    color: "black !important",
+                  }}
+                >
                   <TableRow>
-                    <TableCell>Item Code</TableCell>
-                    <TableCell>Item Description</TableCell>
-                    <TableCell>UOM</TableCell>
-                    <TableCell>SKU</TableCell>
-                    <TableCell>Unit Cost</TableCell>
+                    <TableCell
+                      sx={{
+                        color: "black !important",
+                      }}
+                    >
+                      Item Code
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "black !important",
+                      }}
+                    >
+                      Item Description
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "black !important",
+                      }}
+                    >
+                      UOM
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "black !important",
+                      }}
+                    >
+                      SKU
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "black !important",
+                      }}
+                    >
+                      Unit Cost
+                    </TableCell>
                   </TableRow>
                 </TableHead>
 

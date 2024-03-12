@@ -33,7 +33,7 @@ function TermsAndConditionsTab() {
                 Freezer:
               </Typography>
               <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-                {data?.freezer ? data.freezer : null}
+                {data?.freezer ? data.freezer : "N/A"}
               </Typography>
             </Box>
 

@@ -255,33 +255,53 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
           <Box className="viewExpensesModal__table">
             <TableContainer
               sx={{
-                maxHeight: "290px",
+                maxHeight: "300px",
                 overflow: "auto",
                 width: "815px",
                 borderRadius: "10px",
+                border: "1px solid #e0e0e0",
               }}
             >
               <Table>
-                <TableHead>
+                <TableHead
+                  sx={{
+                    bgcolor: "white !important",
+                    color: "black !important",
+                  }}
+                >
                   <TableRow>
                     {/* <TableCell>ID</TableCell> */}
-                    <TableCell>Expense Type</TableCell>
-                    <TableCell>Amount</TableCell>
+                    <TableCell
+                      sx={{
+                        color: "black !important",
+                      }}
+                    >
+                      Expense Type
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "black !important",
+                      }}
+                    >
+                      Remarks
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "black !important",
+                      }}
+                    >
+                      Amount
+                    </TableCell>
                   </TableRow>
                 </TableHead>
 
                 <TableBody>
-                  {/* <TableRow>
-                    <TableCell>{selectedRowData?.id}</TableCell>
-                    <TableCell>{selectedRowData?.expenseType}</TableCell>
-                    <TableCell>
-                      ₱ {selectedRowData?.amount?.toLocaleString()}
-                    </TableCell>
-                  </TableRow> */}
                   {selectedRowData?.expenses?.map((item, index) => (
                     <TableRow key={index}>
-                      {/* <TableCell>{item.id}</TableCell> */}
                       <TableCell>{item.expenseType?.toUpperCase()}</TableCell>
+                      <TableCell>
+                        {item.remarks?.toUpperCase() || "N/A"}{" "}
+                      </TableCell>
                       <TableCell>₱ {item.amount?.toLocaleString()}</TableCell>
                     </TableRow>
                   ))}
