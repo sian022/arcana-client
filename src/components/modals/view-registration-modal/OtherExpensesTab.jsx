@@ -87,6 +87,9 @@ function OtherExpensesTab() {
                           Expense Type
                         </TableCell>
                         <TableCell sx={{ color: "black !important" }}>
+                          Remarks
+                        </TableCell>
+                        <TableCell sx={{ color: "black !important" }}>
                           Amount
                         </TableCell>
                         <TableCell sx={{ color: "black !important" }}>
@@ -104,6 +107,7 @@ function OtherExpensesTab() {
                           {item?.expenses?.map((expense) => (
                             <TableRow key={expense.id}>
                               <TableCell>{expense.expenseType}</TableCell>
+                              <TableCell>{expense.remarks || "N/A"}</TableCell>
                               <TableCell>
                                 ₱ {expense.amount?.toLocaleString()}
                               </TableCell>
@@ -163,7 +167,7 @@ function OtherExpensesTab() {
                     Total Amount
                   </Typography>
                   <Typography sx={{ fontSize: "1rem" }}>
-                    ₱ {totalAmount?.toLocaleString()}
+                    ₱{totalAmount?.toLocaleString()}
                   </Typography>
                 </Box>
               </Box>

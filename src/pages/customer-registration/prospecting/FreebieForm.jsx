@@ -8,7 +8,6 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import CommonDrawer from "../../../components/CommonDrawer";
 import { Box, IconButton, TextField } from "@mui/material";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
-import { Cancel } from "@mui/icons-material";
 import {
   usePostRequestFreebiesMutation,
   usePutFreebiesInformationMutation,
@@ -26,6 +25,7 @@ import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice
 import { setFreebies } from "../../../features/registration/reducers/regularRegistrationSlice";
 import useSnackbar from "../../../hooks/useSnackbar";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
+import { RemoveCircleOutline } from "@mui/icons-material";
 
 function FreebieForm({
   isFreebieFormOpen,
@@ -250,7 +250,14 @@ function FreebieForm({
         setValue("clientId", null);
       };
     }
-  }, [isFreebieFormOpen]);
+  }, [
+    isFreebieFormOpen,
+    clientId,
+    direct,
+    selectedRowData,
+    setValue,
+    updateFreebies,
+  ]);
 
   useEffect(() => {
     if (direct && freebiesDirect?.length > 0) {
@@ -402,7 +409,7 @@ function FreebieForm({
                     remove(index);
               }}
             >
-              <Cancel sx={{ fontSize: "30px" }} />
+              <RemoveCircleOutline sx={{ fontSize: "30px" }} />
             </IconButton>
           </Box>
         ))}

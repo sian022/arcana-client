@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Divider,
   IconButton,
   InputAdornment,
   Skeleton,
@@ -12,7 +13,14 @@ import {
   Typography,
 } from "@mui/material";
 import "../../../assets/styles/drawerForms.styles.scss";
-import { Attachment, Check, Close, Gavel, Person } from "@mui/icons-material";
+import {
+  Attachment,
+  Check,
+  Close,
+  Gavel,
+  Payment,
+  Person,
+} from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { directRegisterPersonalSchema } from "../../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
@@ -53,13 +61,24 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import { useGetAllTermDaysQuery } from "../../../features/setup/api/termDaysApi";
-import SuccessButton from "../../../components/SuccessButton";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { PatternFormat } from "react-number-format";
 import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 import RegisterClientFormSkeleton from "../../../components/skeletons/RegisterClientFormSkeleton";
 import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
 import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
+import SecondaryButton from "../../../components/SecondaryButton";
+import ListingFeeClient from "../prospecting/ListingFeeClient";
+import OtherExpensesClient from "../prospecting/OtherExpensesClient";
+import AgreeTermsModal from "../../../components/modals/registration/AgreeTermsModal";
+import {
+  usePostListingFeeMutation,
+  usePutUpdateListingFeeMutation,
+} from "../../../features/listing-fee/api/listingFeeApi";
+import {
+  usePostExpensesMutation,
+  usePutUpdateExpensesMutation,
+} from "../../../features/otherExpenses/api/otherExpensesRegApi";
 
 function DirectRegisterForm({
   open,
@@ -79,8 +98,8 @@ function DirectRegisterForm({
 
   const snackbar = useSnackbar();
 
-  const [latitude, setLatitude] = useState(15.0944152);
-  const [longitude, setLongitude] = useState(120.6075827);
+  // const [latitude, setLatitude] = useState(15.0944152);
+  // const [longitude, setLongitude] = useState(120.6075827);
   const [activeTab, setActiveTab] = useState("Personal Info");
   const [sameAsOwnersAddress, setSameAsOwnersAddress] = useState(false);
   const [includeAuthorizedRepresentative, setIncludeAuthorizedRepresentative] =
@@ -104,6 +123,20 @@ function DirectRegisterForm({
   const freebiesDirect = useSelector(
     (state) => state.regularRegistration.value.directFreebie.freebies
   );
+  const listingFees = useSelector(
+    (state) =>
+      state.regularRegistration.value.listingFeeForRegistration.listingItems
+  );
+  const expenses = useSelector(
+    (state) => state.regularRegistration.value.expensesForRegistration.expenses
+  );
+
+  const isListingFeeValid = useSelector(
+    (state) => state.regularRegistration.value.listingFeeForRegistration.isValid
+  );
+  const isExpensesValid = useSelector(
+    (state) => state.regularRegistration.value.expensesForRegistration.isValid
+  );
 
   //Disclosures
   const {
@@ -112,11 +145,11 @@ function DirectRegisterForm({
     onClose: onConfirmClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isPinLocationOpen,
-    onOpen: onPinLocationOpen,
-    onClose: onPinLocationClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isPinLocationOpen,
+  //   onOpen: onPinLocationOpen,
+  //   onClose: onPinLocationClose,
+  // } = useDisclosure();
 
   const {
     isOpen: isCancelConfirmOpen,
@@ -158,7 +191,7 @@ function DirectRegisterForm({
     },
 
     {
-      label: "Terms and Conditions",
+      label: "Terms & Conditions",
       isValid: Object.keys(termsAndConditions).every((key) => {
         if (
           key === "fixedDiscount" &&
@@ -168,6 +201,10 @@ function DirectRegisterForm({
           termsAndConditions["variableDiscount"] === false
         ) {
           return false;
+        }
+
+        if (!termsAndConditions["freezer"] && key === "freezerAssetTag") {
+          return true;
         }
 
         if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
@@ -205,6 +242,13 @@ function DirectRegisterForm({
       icon: <Attachment />,
       disabled: false,
     },
+
+    {
+      label: "Costs and Fees",
+      isValid: isListingFeeValid && isExpensesValid,
+      icon: <Payment />,
+      disabled: false,
+    },
   ].filter(Boolean);
 
   navigators[1].disabled = !editMode && activeTab === "Personal Info";
@@ -213,14 +257,17 @@ function DirectRegisterForm({
   }
 
   //RTK Query
-
   const [postDirectRegistration] = usePostDirectRegistrationMutation();
   const [putAddAttachmentsForDirect] = usePutAddAttachmentsForDirectMutation();
+  const [postListingFee] = usePostListingFeeMutation();
+  const [postExpenses] = usePostExpensesMutation();
   const [sendMessage, { isLoading: isSendMessageLoading }] =
     useSendMessageMutation();
 
   const [putUpdateClientInformation] = usePutUpdateClientInformationMutation();
   const [putUpdateClientAttachments] = usePutUpdateClientAttachmentsMutation();
+  const [putUpdateListingFee] = usePutUpdateListingFeeMutation();
+  const [putUpdateExpenses] = usePutUpdateExpensesMutation();
 
   const [putReleaseFreebies] = usePutReleaseFreebiesMutation();
 
@@ -276,7 +323,7 @@ function DirectRegisterForm({
 
         termDaysId: termsAndConditions?.termDaysId?.id,
         termsId: termsAndConditions?.terms,
-        freezer: freezerAssetTag,
+        freezer: freezer ? freezerAssetTag : null,
       };
 
       let response;
@@ -294,9 +341,6 @@ function DirectRegisterForm({
               }
             : {}),
         }).unwrap();
-
-        termsAndConditions["terms"] !== 1 &&
-          (await addAttachmentsSubmit(response?.value?.id));
       } else {
         response = await postDirectRegistration({
           ...transformedData,
@@ -330,10 +374,14 @@ function DirectRegisterForm({
           setSignatureDirect(null);
           dispatch(resetFreebies());
         }
-
-        termsAndConditions["terms"] !== 1 &&
-          (await addAttachmentsSubmit(response?.value?.id));
       }
+
+      listingFees && listingFees?.length > 0 && (await addListingFee());
+      expenses && expenses?.length > 0 && (await addExpenses());
+
+      termsAndConditions["terms"] !== 1 &&
+        (await addAttachmentsSubmit(response?.value?.id));
+
       setIsAllApiLoading(false);
 
       if (editMode) {
@@ -469,6 +517,59 @@ function DirectRegisterForm({
     }
   };
 
+  const addListingFee = async () => {
+    const totalAmount = listingFees.reduce(
+      (acc, listingItem) => acc + listingItem.unitCost,
+      0
+    );
+
+    if (editMode) {
+      await postListingFee({
+        clientId: selectedRowData?.id,
+        total: totalAmount,
+        listingItems: listingFees.map((listingItem) => ({
+          itemId: listingItem.itemId.id,
+          sku: listingItem.sku,
+          unitCost: listingItem.unitCost,
+        })),
+      }).unwrap();
+    } else {
+      await putUpdateListingFee({
+        id: selectedRowData?.id,
+        params: { listingFeeId: selectedRowData?.listingFeeId },
+        total: totalAmount,
+        listingItems: listingFees.map((listingItem) => ({
+          itemId: listingItem.itemId.id,
+          sku: listingItem.sku,
+          unitCost: listingItem.unitCost,
+        })),
+      }).unwrap();
+    }
+  };
+
+  const addExpenses = async () => {
+    if (editMode) {
+      await putUpdateExpenses({
+        id: selectedRowData?.id,
+        expenses: expenses.map((expense) => ({
+          otherExpenseId: expense.otherExpenseId.id,
+          remarks: expense.remarks,
+          amount: expense.amount,
+          id: expense.id || 0,
+        })),
+      });
+    } else {
+      await postExpenses({
+        clientId: selectedRowData?.id,
+        expenses: expenses.map((expense) => ({
+          otherExpenseId: expense.otherExpenseId.id,
+          remarks: expense.remarks,
+          amount: expense.amount,
+        })),
+      }).unwrap();
+    }
+  };
+
   const handleDrawerClose = () => {
     onClose();
     onCancelConfirmClose();
@@ -597,7 +698,7 @@ function DirectRegisterForm({
         }
       }
 
-      setActiveTab("Terms and Conditions");
+      setActiveTab("Terms & Conditions");
       dispatch(
         setSelectedRow({
           id: selectedRowData?.id,
@@ -608,16 +709,36 @@ function DirectRegisterForm({
           dateOfBirth: getValues().dateOfBirth.format("YYYY-MM-DD"),
         })
       );
-    } else if (activeTab === "Terms and Conditions") {
+    } else if (
+      activeTab === "Terms & Conditions" &&
+      termsAndConditions["terms"] === 1
+    ) {
+      setActiveTab("Costs and Fees");
+    } else if (
+      activeTab === "Terms & Conditions" &&
+      termsAndConditions["terms"] !== 1
+    ) {
       setActiveTab("Attachments");
+    } else if (activeTab === "Attachments") {
+      setActiveTab("Costs and Fees");
     }
   };
 
   const handleBack = () => {
-    if (activeTab === "Terms and Conditions") {
+    if (activeTab === "Terms & Conditions") {
       setActiveTab("Personal Info");
     } else if (activeTab === "Attachments") {
-      setActiveTab("Terms and Conditions");
+      setActiveTab("Terms & Conditions");
+    } else if (
+      activeTab === "Costs and Fees" &&
+      termsAndConditions["terms"] === 1
+    ) {
+      setActiveTab("Terms & Conditions");
+    } else if (
+      activeTab === "Costs and Fees" &&
+      termsAndConditions["terms"] !== 1
+    ) {
+      setActiveTab("Attachments");
     }
   };
 
@@ -633,9 +754,11 @@ function DirectRegisterForm({
         return true;
       }
     } else if (
-      activeTab === "Terms and Conditions" &&
+      activeTab === "Terms & Conditions" &&
       navigators[1].isValid === false
     ) {
+      return true;
+    } else if (activeTab === "Attachments" && navigators[2].isValid === false) {
       return true;
     }
 
@@ -727,7 +850,7 @@ function DirectRegisterForm({
         setIncludeAuthorizedRepresentative(true);
       }
 
-      // Terms and Conditions
+      // Terms & Conditions
       dispatch(
         setWholeTermsAndConditions({
           freezer: termsData?.freezer ? true : false,
@@ -818,23 +941,40 @@ function DirectRegisterForm({
         });
       }
     }
-  }, [open, termDaysData, termsData, attachmentsData]);
+  }, [
+    open,
+    termDaysData,
+    termsData,
+    attachmentsData,
+    clusterData,
+    dispatch,
+    editMode,
+    priceModeData,
+    selectedRowData,
+    setOwnersRequirements,
+    setOwnersRequirementsIsLink,
+    setRepresentativeRequirements,
+    setRepresentativeRequirementsIsLink,
+    setRequirementsMode,
+    setValue,
+    storeTypeData,
+  ]);
 
   useEffect(() => {
-    if (!!includeAuthorizedRepresentative) {
+    if (includeAuthorizedRepresentative) {
       setRequirementsMode("representative");
     } else if (!includeAuthorizedRepresentative) {
       setValue("authorizedRepresentative", "");
       setValue("authorizedRepresentativePosition", "");
       setRequirementsMode("owner");
     }
-  }, [includeAuthorizedRepresentative]);
+  }, [includeAuthorizedRepresentative, setRequirementsMode, setValue]);
 
   useEffect(() => {
     if (!editMode && clusterData && open) {
       setValue("clusterId", clusterData?.cluster?.[0]);
     }
-  }, [open, clusterData]);
+  }, [open, clusterData, editMode, setValue]);
 
   useEffect(() => {
     if (!editMode && priceModeData && open) {
@@ -845,7 +985,7 @@ function DirectRegisterForm({
         )
       );
     }
-  }, [open, priceModeData]);
+  }, [open, priceModeData, editMode, setValue]);
 
   useEffect(() => {
     if (editMode) {
@@ -856,7 +996,7 @@ function DirectRegisterForm({
         { preferCacheValue: true }
       );
     }
-  }, [open]);
+  }, [open, editMode, selectedRowData, triggerAttachments, triggerTerms]);
 
   return (
     <>
@@ -894,7 +1034,7 @@ function DirectRegisterForm({
                 <Box className="register__firstRow">
                   <Box className="register__firstRow__customerInformation">
                     <Typography className="register__title">
-                      Customer's Information
+                      Customer&apos;s Information
                     </Typography>
 
                     <Box className="register__firstRow__customerInformation__row">
@@ -1037,6 +1177,7 @@ function DirectRegisterForm({
                               customInput={TextField}
                               autoComplete="off"
                               allowNegative={false}
+                              inputRef={ref}
                               decimalScale={0}
                               valueIsNumericString
                               onValueChange={(e) => {
@@ -1065,7 +1206,7 @@ function DirectRegisterForm({
                 <Box className="register__secondRow">
                   <Box className="register__secondRow">
                     <Typography className="register__title">
-                      Owner's Address
+                      Owner&apos;s Address
                     </Typography>
                     <Box className="register__secondRow">
                       <Box className="register__secondRow__content">
@@ -1330,7 +1471,7 @@ function DirectRegisterForm({
                       }
                     />
                     <Typography variant="subtitle2">
-                      Same as owner's address
+                      Same as owner&apos;s address
                     </Typography>
                   </Box>
 
@@ -1545,7 +1686,7 @@ function DirectRegisterForm({
                     <Checkbox
                       sx={{ ml: "10px" }}
                       checked={includeAuthorizedRepresentative}
-                      onChange={(e) => {
+                      onChange={() => {
                         setIncludeAuthorizedRepresentative((prev) => !prev);
                       }}
                     />
@@ -1639,7 +1780,7 @@ function DirectRegisterForm({
               </Box>
             )}
 
-            {activeTab === "Terms and Conditions" && (
+            {activeTab === "Terms & Conditions" && (
               <TermsAndConditions
                 direct
                 editMode={editMode}
@@ -1648,6 +1789,14 @@ function DirectRegisterForm({
             )}
 
             {activeTab === "Attachments" && <Attachments />}
+
+            {activeTab === "Costs and Fees" && (
+              <Box className="feesClient">
+                <ListingFeeClient />
+                <Divider variant="inset" />
+                <OtherExpensesClient />
+              </Box>
+            )}
 
             <Box
               className={
@@ -1660,10 +1809,11 @@ function DirectRegisterForm({
                 <DangerButton onClick={handleBack}>Back</DangerButton>
               )}
 
-              {(activeTab === "Personal Info" ||
-                (activeTab === "Terms and Conditions" &&
-                  termsAndConditions["terms"] !== 1)) && (
-                <SuccessButton
+              {activeTab !== "Costs and Fees" && (
+                // (activeTab === "Personal Info" ||
+                //   (activeTab === "Terms & Conditions" &&
+                //     termsAndConditions["terms"] !== 1))
+                <SecondaryButton
                   onClick={handleNext}
                   disabled={handleDisableNext()}
                 >
@@ -1674,13 +1824,14 @@ function DirectRegisterForm({
                   ) : (
                     "Next"
                   )}
-                </SuccessButton>
+                </SecondaryButton>
               )}
 
-              {((termsAndConditions["terms"] === 1 &&
-                activeTab === "Terms and Conditions") ||
-                activeTab === "Attachments") && (
-                <SuccessButton
+              {activeTab === "Costs and Fees" && (
+                // ((termsAndConditions["terms"] === 1 &&
+                //   activeTab === "Terms & Conditions") ||
+                //   activeTab === "Attachments")
+                <SecondaryButton
                   onClick={onConfirmOpen}
                   disabled={
                     termsAndConditions["terms"] === 1
@@ -1691,7 +1842,7 @@ function DirectRegisterForm({
                   }
                 >
                   {editMode ? "Update" : "Register"}
-                </SuccessButton>
+                </SecondaryButton>
               )}
             </Box>
           </>
@@ -1707,11 +1858,17 @@ function DirectRegisterForm({
         onClose={onPinLocationClose}
       /> */}
 
+      <AgreeTermsModal
+        open={isConfirmOpen && !editMode}
+        onClose={onConfirmClose}
+        onRegister={handleSubmit(onSubmit)}
+        isLoading={isAllApiLoading || isSendMessageLoading}
+      />
+
       <CommonDialog
-        open={isConfirmOpen}
+        open={isConfirmOpen && editMode}
         onYes={handleSubmit(onSubmit)}
         onClose={onConfirmClose}
-        // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
         isLoading={isAllApiLoading || isSendMessageLoading}
         question
       >

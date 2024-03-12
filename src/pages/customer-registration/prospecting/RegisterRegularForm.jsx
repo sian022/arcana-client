@@ -488,6 +488,8 @@ function RegisterRegularForm({ open, onClose }) {
       termsAndConditions["terms"] !== 1
     ) {
       setActiveTab("Attachments");
+    } else if (activeTab === "Attachments") {
+      setActiveTab("Costs and Fees");
     }
   };
 
@@ -524,6 +526,8 @@ function RegisterRegularForm({ open, onClose }) {
       activeTab === "Terms & Conditions" &&
       navigators[1].isValid === false
     ) {
+      return true;
+    } else if (activeTab === "Attachments" && navigators[2].isValid === false) {
       return true;
     }
   };
