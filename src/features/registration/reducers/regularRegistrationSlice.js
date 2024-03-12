@@ -25,10 +25,12 @@ export const regularRegistrationSlice = createSlice({
       listingFeeForRegistration: {
         listingItems: [],
         isValid: false,
+        total: null,
       },
       expensesForRegistration: {
         expenses: [],
         isValid: false,
+        total: null,
       },
       isAgree: false,
     },
@@ -65,25 +67,35 @@ export const regularRegistrationSlice = createSlice({
       state.value.directFreebie.freebies = [];
     },
     setListingFeeForRegistration: (state, action) => {
-      state.value.listingFeeForRegistration.listingItems = action.payload;
+      const listingFees = action.payload;
+      state.value.listingFeeForRegistration.listingItems = listingFees;
+      state.value.listingFeeForRegistration.total = 0;
     },
     resetListingFeeForRegistration: (state) => {
       state.value.listingFeeForRegistration = {
         listingItems: [],
         isValid: false,
+        total: null,
       };
     },
     setExpensesForRegistration: (state, action) => {
       state.value.expensesForRegistration.expenses = action.payload;
     },
     resetExpensesForRegistration: (state) => {
-      state.value.expensesForRegistration = { expenses: [], isValid: false };
+      state.value.expensesForRegistration = {
+        expenses: [],
+        isValid: false,
+        total: null,
+      };
     },
     setIsAgree: (state, action) => {
       state.value.isAgree = action.payload;
     },
     setIsListingFeeValid: (state, action) => {
       state.value.listingFeeForRegistration.isValid = action.payload;
+    },
+    setIsExpensesValid: (state, action) => {
+      state.value.expensesForRegistration.isValid = action.payload;
     },
   },
 });
@@ -100,6 +112,7 @@ export const {
   resetExpensesForRegistration,
   setIsAgree,
   setIsListingFeeValid,
+  setIsExpensesValid,
 } = regularRegistrationSlice.actions;
 
 export default regularRegistrationSlice.reducer;

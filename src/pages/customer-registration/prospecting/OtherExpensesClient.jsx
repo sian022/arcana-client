@@ -2,18 +2,23 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { expensesForRegistrationSchema } from "../../../schema/schema";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllOtherExpensesQuery } from "../../../features/setup/api/otherExpensesApi";
 import SecondaryButton from "../../../components/SecondaryButton";
 import { NumericFormat } from "react-number-format";
-import { Remove, RemoveCircleOutline } from "@mui/icons-material";
-import { useState } from "react";
+import { RemoveCircleOutline } from "@mui/icons-material";
+import { useCallback, useEffect, useState } from "react";
+import {
+  setExpensesForRegistration,
+  setIsExpensesValid,
+} from "../../../features/registration/reducers/regularRegistrationSlice";
 
 function OtherExpensesClient() {
   const [totalAmount, setTotalAmount] = useState(0);
 
   //Hooks
+  const dispatch = useDispatch();
   const expensesForRegistration = useSelector(
     (state) => state.regularRegistration.value.expensesForRegistration.expenses
   );
@@ -22,8 +27,6 @@ function OtherExpensesClient() {
   const {
     handleSubmit,
     formState: { errors, isValid },
-    setValue,
-    // reset,
     control,
     watch,
   } = useForm({
@@ -44,7 +47,7 @@ function OtherExpensesClient() {
     useGetAllOtherExpensesQuery({ Status: true, page: 1, pageSize: 1000 });
 
   //Functions
-  const handleRecalculateTotalAmount = () => {
+  const handleRecalculateTotalAmount = useCallback(() => {
     let total = 0;
     watch("expenses")?.forEach((item) => {
       const amount = parseInt(item.amount);
@@ -54,7 +57,24 @@ function OtherExpensesClient() {
     });
 
     setTotalAmount(total);
-  };
+  }, [watch]);
+
+  //UseEffect
+  useEffect(() => {
+    dispatch(setIsExpensesValid(isValid));
+  }, [isValid, dispatch]);
+
+  useEffect(() => {
+    handleRecalculateTotalAmount();
+
+    return () => {
+      const onSubmit = (data) => {
+        dispatch(setExpensesForRegistration(data.expenses));
+      };
+
+      handleSubmit(onSubmit)();
+    };
+  }, [dispatch, handleSubmit, watch, handleRecalculateTotalAmount]);
 
   return (
     <Box className="feesClient__otherExpensesClient">
@@ -177,9 +197,8 @@ function OtherExpensesClient() {
           sx={{ width: "150px" }}
           onClick={() => {
             append({
-              itemId: null,
-              sku: 1,
-              unitCost: null,
+              otherExpenseId: null,
+              amount: null,
             });
           }}
           disabled={!isValid}

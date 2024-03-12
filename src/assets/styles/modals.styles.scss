@@ -1372,3 +1372,32 @@
     // }
   }
 }
+
+//Registration
+.agreeTermsModal {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0 10px;
+
+  & &__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  & &__list {
+    margin-left: 20px;
+  }
+
+  &__checkAgree {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  &__registerButton {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

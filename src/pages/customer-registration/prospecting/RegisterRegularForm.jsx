@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Divider,
   IconButton,
   InputAdornment,
   TextField,
@@ -18,7 +19,6 @@ import {
   Gavel,
   Payment,
   Person,
-  PushPin,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { regularRegisterSchema } from "../../../schema/schema";
@@ -33,7 +33,6 @@ import {
   usePutRegisterClientMutation,
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
-import PinLocationModal from "../../../components/modals/PinLocationModal";
 import TermsAndConditions from "./TermsAndConditions";
 import Attachments from "./Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
@@ -59,6 +58,9 @@ import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 import ListingFeeClient from "./ListingFeeClient";
 import SecondaryButton from "../../../components/SecondaryButton";
 import OtherExpensesClient from "./OtherExpensesClient";
+import AgreeTermsModal from "../../../components/modals/registration/AgreeTermsModal";
+import { usePostListingFeeMutation } from "../../../features/listing-fee/api/listingFeeApi";
+import { usePostExpensesMutation } from "../../../features/otherExpenses/api/otherExpensesRegApi";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -72,8 +74,8 @@ function RegisterRegularForm({ open, onClose }) {
 
   const snackbar = useSnackbar();
 
-  const [latitude, setLatitude] = useState(15.0944152);
-  const [longitude, setLongitude] = useState(120.6075827);
+  // const [latitude, setLatitude] = useState(15.0944152);
+  // const [longitude, setLongitude] = useState(120.6075827);
   const [activeTab, setActiveTab] = useState("Personal Info");
   const [sameAsOwnersAddress, setSameAsOwnersAddress] = useState(false);
   const [includeAuthorizedRepresentative, setIncludeAuthorizedRepresentative] =
@@ -87,11 +89,19 @@ function RegisterRegularForm({ open, onClose }) {
   const termsAndConditions = useSelector(
     (state) => state.regularRegistration.value.termsAndConditions
   );
-  const isAgree = useSelector(
-    (state) => state.regularRegistration.value.isAgree
+  const listingFees = useSelector(
+    (state) =>
+      state.regularRegistration.value.listingFeeForRegistration.listingItems
   );
+  const expenses = useSelector(
+    (state) => state.regularRegistration.value.expensesForRegistration.expenses
+  );
+
   const isListingFeeValid = useSelector(
     (state) => state.regularRegistration.value.listingFeeForRegistration.isValid
+  );
+  const isExpensesValid = useSelector(
+    (state) => state.regularRegistration.value.expensesForRegistration.isValid
   );
 
   //Disclosures
@@ -101,29 +111,17 @@ function RegisterRegularForm({ open, onClose }) {
     onClose: onConfirmClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isPinLocationOpen,
-    onOpen: onPinLocationOpen,
-    onClose: onPinLocationClose,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isPinLocationOpen,
+  //   onOpen: onPinLocationOpen,
+  //   onClose: onPinLocationClose,
+  // } = useDisclosure();
 
   const {
     isOpen: isCancelConfirmOpen,
     onOpen: onCancelConfirmOpen,
     onClose: onCancelConfirmClose,
   } = useDisclosure();
-
-  // const {
-  //   isOpen: isRedirectListingFeeOpen,
-  //   onOpen: onRedirectListingFeeOpen,
-  //   onClose: onRedirectListingFeeClose,
-  // } = useDisclosure();
-
-  // const {
-  //   isOpen: isListingFeeOpen,
-  //   onOpen: onListingFeeOpen,
-  //   onClose: onListingFeeClose,
-  // } = useDisclosure();
 
   // React Hook Form
   const {
@@ -140,6 +138,8 @@ function RegisterRegularForm({ open, onClose }) {
     mode: "onChange",
     defaultValues: regularRegisterSchema.defaultValues,
   });
+
+  console.log(listingFees);
 
   //Constants
   const navigators = [
@@ -208,16 +208,16 @@ function RegisterRegularForm({ open, onClose }) {
     },
 
     {
-      label: "Listing Fee",
-      isValid: isAgree && isListingFeeValid,
+      label: "Costs and Fees",
+      isValid: isListingFeeValid && isExpensesValid,
       icon: <Payment />,
       disabled: false,
     },
   ].filter(Boolean);
 
   navigators[1].disabled = !navigators[0].isValid;
+  navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
   if (navigators?.length > 3) {
-    navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
     navigators[3].disabled =
       !navigators[0].isValid ||
       !navigators[1].isValid ||
@@ -228,6 +228,8 @@ function RegisterRegularForm({ open, onClose }) {
   const [putRegisterClient] = usePutRegisterClientMutation();
   const [putAddAttachments] = usePutAddAttachmentsMutation();
   const [putAddTermsAndConditions] = usePutAddTermsAndCondtionsMutation();
+  const [postListingFee] = usePostListingFeeMutation();
+  const [postExpenses] = usePostExpensesMutation();
 
   const { data: storeTypeData } = useGetAllStoreTypesQuery({
     Status: true,
@@ -287,7 +289,7 @@ function RegisterRegularForm({ open, onClose }) {
       setIsAllApiLoading(false);
 
       if (error.function !== "sendMessage") {
-        return snackbar({
+        snackbar({
           message: handleCatchErrorMessage(error),
           variant: "error",
         });
@@ -306,7 +308,7 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   const addTermsAndConditions = async () => {
-    const { freezer, freezerAssetTag, ...otherTerms } = termsAndConditions;
+    const { freezerAssetTag, ...otherTerms } = termsAndConditions;
 
     let updatedTermsAndConditions = { ...otherTerms, freezer: freezerAssetTag };
 
@@ -374,6 +376,24 @@ function RegisterRegularForm({ open, onClose }) {
       id: selectedRowData?.id,
       formData,
     }).unwrap();
+  };
+
+  const addListingFee = async () => {
+    try {
+      const response = await postListingFee({
+        clientId: data.clientId.id,
+        total: totalAmount,
+        listingItems: data.listingItems.map((listingItem) => ({
+          itemId: listingItem.itemId.id,
+          sku: listingItem.sku,
+          unitCost: listingItem.unitCost,
+        })),
+      }).unwrap();
+
+      setSnackbarMessage(
+        `Listing Fee ${editMode ? "updated" : "added"} successfully`
+      );
+    } catch (error) {}
   };
 
   const handleDrawerClose = () => {
@@ -446,7 +466,7 @@ function RegisterRegularForm({ open, onClose }) {
       activeTab === "Terms & Conditions" &&
       termsAndConditions["terms"] === 1
     ) {
-      setActiveTab("Listing Fee");
+      setActiveTab("Costs and Fees");
     } else if (
       activeTab === "Terms & Conditions" &&
       termsAndConditions["terms"] !== 1
@@ -461,12 +481,12 @@ function RegisterRegularForm({ open, onClose }) {
     } else if (activeTab === "Attachments") {
       setActiveTab("Terms & Conditions");
     } else if (
-      activeTab === "Listing Fee" &&
+      activeTab === "Costs and Fees" &&
       termsAndConditions["terms"] === 1
     ) {
       setActiveTab("Terms & Conditions");
     } else if (
-      activeTab === "Listing Fee" &&
+      activeTab === "Costs and Fees" &&
       termsAndConditions["terms"] !== 1
     ) {
       setActiveTab("Attachments");
@@ -492,11 +512,6 @@ function RegisterRegularForm({ open, onClose }) {
     }
   };
 
-  // const handleRedirectListingFeeYes = () => {
-  //   onRedirectListingFeeClose();
-  //   onListingFeeOpen();
-  // };
-
   //Constant JSX
   const customRibbonContent = (
     <Box sx={{ display: "flex", flex: 1, gap: "10px" }}>
@@ -517,9 +532,6 @@ function RegisterRegularForm({ open, onClose }) {
             onClick={() => {
               setActiveTab(item.label);
             }}
-            // sx={{
-            //   bgcolor: item.disabled ? "primary.main" : "accent.main",
-            // }}
             disabled={item.disabled}
           >
             {item.isValid && (
@@ -538,7 +550,6 @@ function RegisterRegularForm({ open, onClose }) {
       </Box>
       <IconButton
         sx={{ color: "white !important" }}
-        // onClick={onCancelConfirmOpen}
         onClick={isDirty ? onCancelConfirmOpen : handleDrawerClose}
       >
         <Close />
@@ -620,15 +631,10 @@ function RegisterRegularForm({ open, onClose }) {
     <>
       <CommonDrawer
         drawerHeader="Register as Regular"
-        open={
-          open
-          // true
-        }
+        open={open}
         paddingSmall
-        // onClose={onCancelConfirmOpen}
         onClose={isDirty ? onCancelConfirmOpen : handleDrawerClose}
         width="1000px"
-        // noRibbon
         removeButtons
         customRibbonContent={customRibbonContent}
         submitLabel={"Register"}
@@ -670,8 +676,7 @@ function RegisterRegularForm({ open, onClose }) {
                   control={control}
                   name={"tinNumber"}
                   render={({ field: { onChange, onBlur, value, ref } }) => {
-                    const formattedValue = value.replace(/-/g, ""); // Remove existing dashes
-                    // let format = "###-###-###-###";
+                    const formattedValue = value.replace(/-/g, "");
                     let format = "###-###-###";
 
                     if (formattedValue.length <= 3) {
@@ -679,9 +684,6 @@ function RegisterRegularForm({ open, onClose }) {
                     } else if (formattedValue.length <= 6) {
                       format = "###-####";
                     }
-                    //  else if (formattedValue.length <= 9) {
-                    //   format = "###-###-####";
-                    // }
 
                     return (
                       <PatternFormat
@@ -700,7 +702,6 @@ function RegisterRegularForm({ open, onClose }) {
                         inputRef={ref}
                         onBlur={onBlur}
                         value={value || ""}
-                        // required
                         helperText={errors?.tinNumber?.message}
                         error={!!errors?.tinNumber}
                       />
@@ -769,7 +770,6 @@ function RegisterRegularForm({ open, onClose }) {
                           }}
                           onBlur={onBlur}
                           value={selectedRowData?.phoneNumber ?? ""}
-                          // required
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
@@ -799,7 +799,6 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Unit No."
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.houseNumber ?? ""}
@@ -808,7 +807,6 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Street Name"
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.streetName ?? ""}
@@ -817,7 +815,6 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Barangay"
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.barangayName ?? ""}
@@ -829,7 +826,6 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Municipality/City"
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.city ?? ""}
@@ -838,7 +834,6 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Province"
                       size="small"
                       autoComplete="off"
-                      // required
                       className="register__textField"
                       disabled
                       value={selectedRowData?.ownersAddress?.province ?? ""}
@@ -857,7 +852,6 @@ function RegisterRegularForm({ open, onClose }) {
                   label="Business Name"
                   size="small"
                   autoComplete="off"
-                  // required
                   className="register__textField"
                   disabled
                   value={selectedRowData?.businessName ?? ""}
@@ -877,16 +871,9 @@ function RegisterRegularForm({ open, onClose }) {
                     option.storeTypeName?.toUpperCase()
                   }
                   disableClearable
-                  // value={storeTypeData?.storeTypes?.find(
-                  //   (store) => store.storeTypeName === selectedStoreType
-                  // )}
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
                   }
-                  // defaultValue={storeTypeData?.storeTypes?.find(
-                  //   (store) =>
-                  //     store.storeTypeName === selectedRowData?.storeType
-                  // )}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -898,31 +885,6 @@ function RegisterRegularForm({ open, onClose }) {
                     />
                   )}
                 />
-
-                {/* <Autocomplete
-                  options={storeTypeData?.storeTypes}
-                  getOptionLabel={(option) => option.storeTypeName}
-                  disableClearable
-                  // value={storeTypeData?.storeTypes?.find(
-                  //   (store) =>
-                  //     store.storeTypeName === selectedRowData?.storeType
-                  // )}
-                  defaultValue={storeTypeData?.storeTypes?.find(
-                    (store) =>
-                      store.storeTypeName === selectedRowData?.storeType
-                  )}
-                  // disabled
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      label="Business Type"
-                      required
-                      helperText={errors?.storeTypeId?.message}
-                      error={errors?.storeTypeId}
-                    />
-                  )}
-                /> */}
               </Box>
             </Box>
 
@@ -1199,9 +1161,10 @@ function RegisterRegularForm({ open, onClose }) {
 
         {activeTab === "Attachments" && <Attachments />}
 
-        {activeTab === "Listing Fee" && (
+        {activeTab === "Costs and Fees" && (
           <Box className="feesClient">
             <ListingFeeClient />
+            <Divider variant="inset" />
             <OtherExpensesClient />
           </Box>
         )}
@@ -1221,7 +1184,7 @@ function RegisterRegularForm({ open, onClose }) {
             // (activeTab === "Personal Info" ||
             //   (activeTab === "Terms & Conditions" &&
             //     termsAndConditions["terms"] !== 1))
-            activeTab !== "Listing Fee" && (
+            activeTab !== "Costs and Fees" && (
               <SecondaryButton
                 onClick={handleNext}
                 disabled={handleDisableNext()}
@@ -1241,7 +1204,7 @@ function RegisterRegularForm({ open, onClose }) {
             // ((termsAndConditions["terms"] === 1 &&
             //   activeTab === "Terms & Conditions") ||
             //   activeTab === "Attachments") &&
-            activeTab === "Listing Fee" && (
+            activeTab === "Costs and Fees" && (
               <SecondaryButton
                 onClick={onConfirmOpen}
                 disabled={
@@ -1268,22 +1231,12 @@ function RegisterRegularForm({ open, onClose }) {
         onClose={onPinLocationClose}
       /> */}
 
-      <CommonDialog
+      <AgreeTermsModal
         open={isConfirmOpen}
-        onYes={handleSubmit(onSubmit)}
         onClose={onConfirmClose}
-        // isLoading={isRegisterLoading || isAttachmentsLoading || isTermsLoading}
+        onRegister={handleSubmit(onSubmit)}
         isLoading={isAllApiLoading || isSendMessageLoading}
-        question
-      >
-        Confirm registration of{" "}
-        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          {selectedRowData?.businessName
-            ? selectedRowData?.businessName
-            : "client"}
-        </span>{" "}
-        as a regular customer?
-      </CommonDialog>
+      />
 
       <CommonDialog
         open={isCancelConfirmOpen}

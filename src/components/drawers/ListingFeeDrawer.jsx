@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
-import { Cancel, RemoveCircleOutline } from "@mui/icons-material";
+import { RemoveCircleOutline } from "@mui/icons-material";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
@@ -229,7 +229,7 @@ function ListingFeeDrawer({
     return false;
   }
 
-  const handleRecalculateTotalAmount = () => {
+  const handleRecalculateTotalAmount = useCallback(() => {
     let total = 0;
     watch("listingItems").forEach((item) => {
       const unitCost = parseFloat(item.unitCost);
@@ -239,7 +239,7 @@ function ListingFeeDrawer({
     });
 
     setTotalAmount(total);
-  };
+  }, [watch]);
 
   const resetListingFee = (clientId) => {
     remove();
@@ -265,7 +265,7 @@ function ListingFeeDrawer({
       setValue("clientId", foundItem);
       setValue("customerName", foundItem?.ownersName);
     }
-  }, [isListingFeeOpen, clientData]);
+  }, [isListingFeeOpen, clientData, redirect, selectedRowData, setValue]);
 
   useEffect(() => {
     if (editMode && isListingFeeOpen && clientData) {
@@ -290,7 +290,15 @@ function ListingFeeDrawer({
 
       handleRecalculateTotalAmount();
     }
-  }, [isListingFeeOpen, clientData]);
+  }, [
+    isListingFeeOpen,
+    clientData,
+    editMode,
+    productData,
+    selectedRowData,
+    setValue,
+    handleRecalculateTotalAmount,
+  ]);
 
   return (
     <>
@@ -635,7 +643,6 @@ function ListingFeeDrawer({
         open={isConfirmSubmitOpen}
         onClose={onConfirmSubmitClose}
         onYes={handleSubmit(onListingFeeSubmit)}
-        // isLoading={updateListingFee ? isUpdateLoading : isAddLoading}
         isLoading={
           editMode
             ? listingFeeStatus === "Rejected"

@@ -467,14 +467,6 @@ function OtherExpensesDrawer({
                 amount: null,
               });
             }}
-            // disabled={
-            //   !watch("expenses")[watch("expenses")?.length - 1]
-            //     ?.otherExpenseId ||
-            //   watch("expenses")[watch("expenses")?.length - 1]?.amount ==
-            //     null ||
-            //   watch("expenses")[watch("expenses")?.length - 1]?.amount ==
-            //     undefined
-            // }
             disabled={!isValid}
           >
             Add Expense
