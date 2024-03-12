@@ -29,6 +29,8 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import CommonDialog from "../../../components/CommonDialog";
 import {
   useLazyGetAttachmentsByClientIdQuery,
+  useLazyGetListingFeeByClientIdQuery,
+  useLazyGetOtherExpensesByClientIdQuery,
   useLazyGetTermsByClientIdQuery,
   usePostDirectRegistrationMutation,
   usePostValidateClientMutation,
@@ -42,10 +44,14 @@ import TermsAndConditions from "../prospecting/TermsAndConditions";
 import Attachments from "../prospecting/Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
 import {
+  resetExpensesForRegistration,
   resetFreebies,
   resetListingFeeForRegistration,
   resetTermsAndConditions,
+  setExpensesForRegistration,
+  setListingFeeForRegistration,
   setWholeTermsAndConditions,
+  toggleFeesToStore,
 } from "../../../features/registration/reducers/regularRegistrationSlice";
 import {
   base64ToBlob,
@@ -79,6 +85,8 @@ import {
   usePostExpensesMutation,
   usePutUpdateExpensesMutation,
 } from "../../../features/otherExpenses/api/otherExpensesRegApi";
+import { useGetAllProductsQuery } from "../../../features/setup/api/productsApi";
+import { useGetAllOtherExpensesQuery } from "../../../features/setup/api/otherExpensesApi";
 
 function DirectRegisterForm({
   open,
@@ -285,18 +293,35 @@ function DirectRegisterForm({
       Page: 1,
       PageSize: 1000,
     });
+  const { data: productData } = useGetAllProductsQuery({
+    Status: true,
+    page: 1,
+    pageSize: 1000,
+  });
+  const { data: expensesDataChoices } = useGetAllOtherExpensesQuery({
+    Status: true,
+    page: 1,
+    pageSize: 1000,
+  });
 
   const [postValidateClient, { isLoading: isValidateClientLoading }] =
     usePostValidateClientMutation();
 
-  //Fetch Terms and Attachments
+  //Fetch Terms, Attachments, Listing Fee, and OtherExpenses
   const [triggerTerms, { data: termsData, isLoading: isTermsDataLoading }] =
     useLazyGetTermsByClientIdQuery();
-
   const [
     triggerAttachments,
     { data: attachmentsData, isLoading: isAttachmentsDataLoading },
   ] = useLazyGetAttachmentsByClientIdQuery();
+  const [
+    triggerListingFee,
+    { data: listingFeeData, isLoading: isListingFeeLoading },
+  ] = useLazyGetListingFeeByClientIdQuery();
+  const [
+    triggerExpenses,
+    { data: expensesData, isLoading: isExpensesLoading },
+  ] = useLazyGetOtherExpensesByClientIdQuery();
 
   const { data: priceModeData, isLoading: isPriceModeLoading } =
     useGetAllPriceModeForClientsQuery();
@@ -376,8 +401,12 @@ function DirectRegisterForm({
         }
       }
 
-      listingFees && listingFees?.length > 0 && (await addListingFee());
-      expenses && expenses?.length > 0 && (await addExpenses());
+      listingFees &&
+        listingFees?.length > 0 &&
+        (await addListingFee(response?.value?.id));
+      expenses &&
+        expenses?.length > 0 &&
+        (await addExpenses(response?.value?.id));
 
       termsAndConditions["terms"] !== 1 &&
         (await addAttachmentsSubmit(response?.value?.id));
@@ -517,16 +546,17 @@ function DirectRegisterForm({
     }
   };
 
-  const addListingFee = async () => {
+  const addListingFee = async (clientId) => {
     const totalAmount = listingFees.reduce(
       (acc, listingItem) => acc + listingItem.unitCost,
       0
     );
 
     if (editMode) {
-      await postListingFee({
-        clientId: selectedRowData?.id,
-        total: totalAmount,
+      await putUpdateListingFee({
+        id: selectedRowData?.id,
+        params: { listingFeeId: selectedRowData?.listingFeeId },
+        total: parseInt(totalAmount),
         listingItems: listingFees.map((listingItem) => ({
           itemId: listingItem.itemId.id,
           sku: listingItem.sku,
@@ -534,10 +564,9 @@ function DirectRegisterForm({
         })),
       }).unwrap();
     } else {
-      await putUpdateListingFee({
-        id: selectedRowData?.id,
-        params: { listingFeeId: selectedRowData?.listingFeeId },
-        total: totalAmount,
+      await postListingFee({
+        clientId,
+        total: parseInt(totalAmount),
         listingItems: listingFees.map((listingItem) => ({
           itemId: listingItem.itemId.id,
           sku: listingItem.sku,
@@ -547,10 +576,10 @@ function DirectRegisterForm({
     }
   };
 
-  const addExpenses = async () => {
+  const addExpenses = async (clientId) => {
     if (editMode) {
       await putUpdateExpenses({
-        id: selectedRowData?.id,
+        id: clientId,
         expenses: expenses.map((expense) => ({
           otherExpenseId: expense.otherExpenseId.id,
           remarks: expense.remarks,
@@ -560,7 +589,7 @@ function DirectRegisterForm({
       });
     } else {
       await postExpenses({
-        clientId: selectedRowData?.id,
+        clientId: clientId,
         expenses: expenses.map((expense) => ({
           otherExpenseId: expense.otherExpenseId.id,
           remarks: expense.remarks,
@@ -616,6 +645,7 @@ function DirectRegisterForm({
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
     dispatch(resetListingFeeForRegistration());
+    dispatch(resetExpensesForRegistration());
     dispatch(resetFreebies());
     setEditMode(false);
     setActiveTab("Personal Info");
@@ -631,7 +661,10 @@ function DirectRegisterForm({
         }
       >
         {navigators.map((item, i) => {
-          return isTermsDataLoading || isAttachmentsDataLoading ? (
+          return isTermsDataLoading ||
+            isAttachmentsDataLoading ||
+            isListingFeeLoading ||
+            isExpensesLoading ? (
             <Skeleton sx={{ transform: "none" }} />
           ) : (
             <Button
@@ -798,8 +831,10 @@ function DirectRegisterForm({
     }
   };
 
-  //UseEffects
+  console.log(productData?.items);
+  console.log(listingFeeData?.listingFees?.[0]?.listingItems);
 
+  //UseEffects
   useEffect(() => {
     if (editMode) {
       //Personal Info
@@ -940,6 +975,35 @@ function DirectRegisterForm({
           photoIdOwner: true,
         });
       }
+
+      // Listing Fee
+      dispatch(
+        setListingFeeForRegistration(
+          listingFeeData?.listingFees?.[0]?.listingItems?.map((item) => ({
+            itemId: productData?.items?.find(
+              (product) => product.id === item.id
+            ),
+            itemDescription: item.itemDescription,
+            uom: item.uom,
+            sku: item.sku,
+            unitCost: item.unitCost,
+          }))
+        )
+      );
+
+      // Other Expenses
+      dispatch(
+        setExpensesForRegistration(
+          expensesData?.expenses?.[0]?.expenses?.map((item) => ({
+            otherExpenseId: expensesDataChoices?.otherExpenses?.find(
+              (expense) => expense.expenseType === item.expenseType
+            ),
+            remarks: item.remarks,
+            amount: item.amount,
+            id: item.id || 0,
+          }))
+        )
+      );
     }
   }, [
     open,
@@ -958,6 +1022,10 @@ function DirectRegisterForm({
     setRequirementsMode,
     setValue,
     storeTypeData,
+    listingFeeData,
+    productData,
+    expensesData,
+    expensesDataChoices,
   ]);
 
   useEffect(() => {
@@ -995,8 +1063,21 @@ function DirectRegisterForm({
         { id: selectedRowData?.id },
         { preferCacheValue: true }
       );
+      triggerListingFee(
+        { id: selectedRowData?.id },
+        { preferCacheValue: true }
+      );
+      triggerExpenses({ id: selectedRowData?.id }, { preferCacheValue: true });
     }
-  }, [open, editMode, selectedRowData, triggerAttachments, triggerTerms]);
+  }, [
+    open,
+    editMode,
+    selectedRowData,
+    triggerAttachments,
+    triggerTerms,
+    triggerListingFee,
+    triggerExpenses,
+  ]);
 
   return (
     <>
@@ -1832,7 +1913,10 @@ function DirectRegisterForm({
                 //   activeTab === "Terms & Conditions") ||
                 //   activeTab === "Attachments")
                 <SecondaryButton
-                  onClick={onConfirmOpen}
+                  onClick={() => {
+                    dispatch(toggleFeesToStore());
+                    onConfirmOpen();
+                  }}
                   disabled={
                     termsAndConditions["terms"] === 1
                       ? navigators.some(

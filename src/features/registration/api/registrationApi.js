@@ -247,7 +247,9 @@ export const {
   useLazyGetAttachmentsByClientIdQuery,
   useGetFreebiesByClientIdQuery,
   useGetListingFeeByClientIdQuery,
+  useLazyGetListingFeeByClientIdQuery,
   useGetOtherExpensesByClientIdQuery,
+  useLazyGetOtherExpensesByClientIdQuery,
 
   //Approval History
   useLazyGetClientApprovalHistoryByIdQuery,
