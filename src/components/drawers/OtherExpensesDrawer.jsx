@@ -4,7 +4,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
-import { Cancel } from "@mui/icons-material";
+import { RemoveCircleOutline } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
 import ErrorSnackbar from "../ErrorSnackbar";
@@ -12,10 +12,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import SuccessSnackbar from "../SuccessSnackbar";
 import CommonDialog from "../CommonDialog";
 import { requestExpensesSchema } from "../../schema/schema";
-import {
-  useGetAllClientsForListingFeeQuery,
-  useGetAllClientsQuery,
-} from "../../features/registration/api/registrationApi";
+import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import { NumericFormat } from "react-number-format";
 import { useGetAllOtherExpensesQuery } from "../../features/setup/api/otherExpensesApi";
 import {
@@ -447,7 +444,7 @@ function OtherExpensesDrawer({
                   }}
                   tabIndex={-1}
                 >
-                  <Cancel sx={{ fontSize: "30px" }} />
+                  <RemoveCircleOutline sx={{ fontSize: "30px" }} />
                 </IconButton>
               </Box>
             ))}

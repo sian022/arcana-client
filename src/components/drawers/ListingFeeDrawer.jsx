@@ -4,7 +4,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
-import { Cancel } from "@mui/icons-material";
+import { Cancel, RemoveCircleOutline } from "@mui/icons-material";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
@@ -564,7 +564,7 @@ function ListingFeeDrawer({
                   }}
                   tabIndex={-1}
                 >
-                  <Cancel sx={{ fontSize: "30px" }} />
+                  <RemoveCircleOutline sx={{ fontSize: "30px" }} />
                 </IconButton>
               </Box>
             ))}
