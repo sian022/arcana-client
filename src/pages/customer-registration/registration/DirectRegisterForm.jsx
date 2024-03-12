@@ -258,7 +258,8 @@ function DirectRegisterForm({
     try {
       setIsAllApiLoading(true);
 
-      const { terms, ...noTerms } = termsAndConditions;
+      const { terms, freezer, freezerAssetTag, ...noTerms } =
+        termsAndConditions;
 
       const transformedData = {
         ...data,
@@ -274,6 +275,7 @@ function DirectRegisterForm({
 
         termDaysId: termsAndConditions?.termDaysId?.id,
         termsId: termsAndConditions?.terms,
+        freezer: freezerAssetTag,
       };
 
       let response;

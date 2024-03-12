@@ -6,6 +6,7 @@ export const regularRegistrationSlice = createSlice({
     value: {
       termsAndConditions: {
         freezer: null,
+        freezerAssetTag: "",
         typeOfCustomer: null,
         directDelivery: null,
         bookingCoverageId: null,
@@ -39,6 +40,7 @@ export const regularRegistrationSlice = createSlice({
     resetTermsAndConditions: (state) => {
       state.value.termsAndConditions = {
         freezer: null,
+        freezerAssetTag: "",
         typeOfCustomer: null,
         directDelivery: null,
         bookingCoverageId: null,

@@ -55,6 +55,7 @@ import { useGetAllClustersQuery } from "../../../features/setup/api/clusterApi";
 import { useGetAllPriceModeForClientsQuery } from "../../../features/setup/api/priceModeSetupApi";
 import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 import ListingFeeClient from "./ListingFeeClient";
+import SecondaryButton from "../../../components/SecondaryButton";
 
 function RegisterRegularForm({ open, onClose }) {
   const dispatch = useDispatch();
@@ -141,7 +142,6 @@ function RegisterRegularForm({ open, onClose }) {
   const navigators = [
     {
       label: "Personal Info",
-      // isValid: isValid,
       isValid: includeAuthorizedRepresentative
         ? watch("authorizedRepresentative") &&
           watch("authorizedRepresentativePosition") &&
@@ -162,6 +162,10 @@ function RegisterRegularForm({ open, onClose }) {
           termsAndConditions["variableDiscount"] === false
         ) {
           return false;
+        }
+
+        if (!termsAndConditions["freezer"] && key === "freezerAssetTag") {
+          return true;
         }
 
         if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
@@ -245,7 +249,6 @@ function RegisterRegularForm({ open, onClose }) {
   const onSubmit = async (data) => {
     const transformedData = {
       ...data,
-      // dateOfBirth: moment(data?.dateOfBirth).format("YYYY-MM-DD"),
       storeTypeId: data?.storeTypeId?.id,
       clusterId: data?.clusterId.id,
       priceModeId: data?.priceModeId?.id,
@@ -256,11 +259,13 @@ function RegisterRegularForm({ open, onClose }) {
       const registerResponse = await putRegisterClient(
         transformedData
       ).unwrap();
+
       await addTermsAndConditions();
+
       termsAndConditions["terms"] !== 1 && (await addAttachmentsSubmit());
+
       setIsAllApiLoading(false);
 
-      // debounce(onRedirectListingFeeOpen(), 2000);
       await sendMessage({
         message: `Fresh morning ${
           registerResponse?.currentApprover || "approver"
@@ -298,19 +303,9 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   const addTermsAndConditions = async () => {
-    let updatedTermsAndConditions = { ...termsAndConditions };
+    const { freezer, freezerAssetTag, ...otherTerms } = termsAndConditions;
 
-    // if (termsAndConditions["fixedDiscount"].discountPercentage === "") {
-    //   updatedTermsAndConditions = {
-    //     ...termsAndConditions,
-    //     fixedDiscount: {
-    //       ...termsAndConditions["fixedDiscount"],
-    //       discountPercentage: null,
-    //     },
-    //   };
-    // }
-
-    // dispatch(setTermsAndConditions(updatedTermsAndConditions));
+    let updatedTermsAndConditions = { ...otherTerms, freezer: freezerAssetTag };
 
     if (updatedTermsAndConditions.termDaysId) {
       updatedTermsAndConditions.termDaysId =
@@ -427,8 +422,6 @@ function RegisterRegularForm({ open, onClose }) {
   //Misc Functions
   const handleNext = async () => {
     if (activeTab === "Personal Info") {
-      setActiveTab("Terms & Conditions");
-
       try {
         await postValidateClient({
           clientId: selectedRowData?.id,
@@ -436,6 +429,7 @@ function RegisterRegularForm({ open, onClose }) {
           fullName: watch("ownersName"),
           businessTypeId: watch("storeTypeId")?.id,
         }).unwrap();
+        setActiveTab("Terms & Conditions");
       } catch (error) {
         if (error?.data?.error?.message) {
           snackbar({ message: error?.data?.error?.message, variant: "error" });
@@ -1222,7 +1216,7 @@ function RegisterRegularForm({ open, onClose }) {
             //   (activeTab === "Terms & Conditions" &&
             //     termsAndConditions["terms"] !== 1))
             activeTab !== "Listing Fee" && (
-              <SuccessButton
+              <SecondaryButton
                 onClick={handleNext}
                 disabled={handleDisableNext()}
               >
@@ -1233,7 +1227,7 @@ function RegisterRegularForm({ open, onClose }) {
                 ) : (
                   "Next"
                 )}
-              </SuccessButton>
+              </SecondaryButton>
             )
           }
 
@@ -1242,7 +1236,7 @@ function RegisterRegularForm({ open, onClose }) {
             //   activeTab === "Terms & Conditions") ||
             //   activeTab === "Attachments") &&
             activeTab === "Listing Fee" && (
-              <SuccessButton
+              <SecondaryButton
                 onClick={onConfirmOpen}
                 disabled={
                   termsAndConditions["terms"] === 1
@@ -1253,7 +1247,7 @@ function RegisterRegularForm({ open, onClose }) {
                 }
               >
                 Register
-              </SuccessButton>
+              </SecondaryButton>
             )
           }
         </Box>

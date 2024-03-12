@@ -107,29 +107,13 @@ function TermsAndConditions({ direct, editMode, storeType }) {
         })
       );
     }
-  }, [termsAndConditions["terms"], termsAndConditions["variableDiscount"]]);
+  }, [
+    termsAndConditions["terms"],
+    termsAndConditions["variableDiscount"],
+    dispatch,
+  ]);
 
   useEffect(() => {
-    // if (!direct) {
-    //   dispatch(
-    //     setTermsAndConditions({
-    //       property: "typeOfCustomer",
-    //       value:
-    //         // selectedRowData?.storeType === "Dealer" ? "Dealer" : "Retailer",
-    //         storeType.storeType === "Dealer" ? "Dealer" : "Retailer",
-    //     })
-    //   );
-    // }
-
-    // if (direct && storeType) {
-    //   dispatch(
-    //     setTermsAndConditions({
-    //       property: "typeOfCustomer",
-    //       value: storeType === "Dealer" ? "Dealer" : "Retailer",
-    //     })
-    //   );
-    // }
-
     if (storeType) {
       dispatch(
         setTermsAndConditions({
@@ -138,7 +122,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
         })
       );
     }
-  }, []);
+  }, [dispatch, storeType]);
 
   const handleCheckboxChange = (modeOfPaymentId) => {
     // Check if the modeOfPaymentId is already in the array
@@ -172,6 +156,14 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     }
   }, [termsAndConditions["terms"]]);
 
+  useEffect(() => {
+    if (termsAndConditions["freezer"]) {
+      dispatch(
+        setTermsAndConditions({ property: "freezerAssetTag", value: "" })
+      );
+    }
+  }, [termsAndConditions["freezer"], dispatch]);
+
   return (
     <Box className="terms">
       <Box className="terms__column">
@@ -179,22 +171,64 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           <Box className="terms__column__item__title">
             <Typography>Freezer</Typography>
           </Box>
-          <RadioGroup
-            row
-            className="terms__column__item__choices"
-            value={termsAndConditions["freezer"]}
-            onChange={(e) => {
-              dispatch(
-                setTermsAndConditions({
-                  property: "freezer",
-                  value: e.target.value === "true" ? true : false,
-                })
-              );
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "relative",
             }}
           >
-            <FormControlLabel value={true} control={<Radio />} label="Yes" />
-            <FormControlLabel value={false} control={<Radio />} label="No" />
-          </RadioGroup>
+            {termsAndConditions["freezer"] && (
+              <TextField
+                label="Asset Tag"
+                onChange={(e) =>
+                  dispatch(
+                    setTermsAndConditions({
+                      property: "freezerAssetTag",
+                      value: e.target.value,
+                    })
+                  )
+                }
+                value={termsAndConditions["freezerAssetTag"]}
+                required
+                sx={{
+                  position: "absolute",
+                  left: "-90px",
+                  width: "160px",
+                  "& .MuiInputBase-root": {
+                    height: "30px",
+                  },
+                  "& .MuiInputLabel-outlined ": {
+                    padding: ".3rem !important",
+                    transform: "translate(6px, -1px)  !important",
+                  },
+                  "& .MuiInputLabel-shrink ": {
+                    padding: ".3rem !important",
+                    transform: "translate(9px, -14px) scale(0.8) !important",
+                  },
+                }}
+              />
+            )}
+
+            <RadioGroup
+              row
+              className="terms__column__item__choices"
+              value={termsAndConditions["freezer"]}
+              onChange={(e) => {
+                dispatch(
+                  setTermsAndConditions({
+                    property: "freezer",
+                    value: e.target.value === "true" ? true : false,
+                  })
+                );
+              }}
+            >
+              <FormControlLabel value={true} control={<Radio />} label="Yes" />
+              <FormControlLabel value={false} control={<Radio />} label="No" />
+            </RadioGroup>
+          </Box>
         </Box>
         <Box className="terms__column__item">
           <Box className="terms__column__item__title">
