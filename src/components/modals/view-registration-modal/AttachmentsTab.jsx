@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import SecondaryButton from "../../SecondaryButton";
 import {
   AddAPhoto,
@@ -33,7 +33,7 @@ function AttachmentsTab() {
   } = useDisclosure();
 
   //RTK Query
-  const { data, error, isLoading } = useGetAttachmentsByClientIdQuery({
+  const { data, isLoading } = useGetAttachmentsByClientIdQuery({
     id: selectedRowData?.id,
   });
 
@@ -56,7 +56,7 @@ function AttachmentsTab() {
           <Typography className="viewRegistrationModal__attachments__header__label">
             Requested by:{" "}
           </Typography>
-          <Typography>{selectedRowData?.requestedBy}</Typography>
+          <Typography>{selectedRowData?.requestor}</Typography>
         </Box>
 
         {isLoading ? (

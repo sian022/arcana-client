@@ -44,7 +44,7 @@ function ListingFeeTab() {
           <Typography className="viewRegistrationModal__listingFee__header__label">
             Requested by:{" "}
           </Typography>
-          <Typography>{selectedRowData?.requestedBy}</Typography>
+          <Typography>{selectedRowData?.requestor}</Typography>
         </Box>
 
         {isLoading ? (

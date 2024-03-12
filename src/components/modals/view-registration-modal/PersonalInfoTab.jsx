@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material";
 import moment from "moment";
-import React from "react";
 import { useSelector } from "react-redux";
 import { formatPhoneNumber } from "../../../utils/CustomFunctions";
 
@@ -14,12 +13,12 @@ function PersonalInfoTab() {
         <Typography className="viewRegistrationModal__personalInfo__header__label">
           Requested by:{" "}
         </Typography>
-        <Typography>{selectedRowData?.requestedBy}</Typography>
+        <Typography>{selectedRowData?.requestor}</Typography>
       </Box>
 
       <Box className="viewRegistrationModal__personalInfo__content">
         <Typography className="viewRegistrationModal__personalInfo__content__title">
-          Customer's Information
+          Customer&apos;s Information
         </Typography>
         <Box className="viewRegistrationModal__personalInfo__content__fields">
           <Box className="viewRegistrationModal__personalInfo__content__fields__item">
@@ -62,7 +61,7 @@ function PersonalInfoTab() {
 
           <Box className="viewRegistrationModal__personalInfo__content__fields__item">
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__label">
-              Owner's Address:
+              Owner&apos;s Address:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
               {`${
