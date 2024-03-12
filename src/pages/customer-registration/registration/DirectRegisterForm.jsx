@@ -831,9 +831,6 @@ function DirectRegisterForm({
     }
   };
 
-  console.log(productData?.items);
-  console.log(listingFeeData?.listingFees?.[0]?.listingItems);
-
   //UseEffects
   useEffect(() => {
     if (editMode) {
