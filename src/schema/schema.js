@@ -617,6 +617,7 @@ export const requestExpensesSchema = {
       yup.object({
         otherExpenseId: yup.object().required("Expense Type is required"),
         amount: yup.string().required("Amount is required"),
+        remarks: yup.string(),
       })
     ),
   }),
@@ -626,6 +627,7 @@ export const requestExpensesSchema = {
       {
         otherExpenseId: null,
         amount: null,
+        remarks: "",
       },
     ],
   },
@@ -637,6 +639,7 @@ export const expensesForRegistrationSchema = {
       yup.object({
         otherExpenseId: yup.object().required("Expense Type is required"),
         amount: yup.string().required("Amount is required"),
+        remarks: yup.string(),
       })
     ),
   }),

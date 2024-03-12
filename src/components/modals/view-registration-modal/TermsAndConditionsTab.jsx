@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
 import { useSelector } from "react-redux";
 import { useGetTermsByClientIdQuery } from "../../../features/registration/api/registrationApi";
 import TermsAndConditionsTabSkeleton from "../../skeletons/TermsAndConditionsTabSkeleton";
@@ -8,7 +7,7 @@ function TermsAndConditionsTab() {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //RTK Query
-  const { data, error, isLoading } = useGetTermsByClientIdQuery({
+  const { data, isLoading } = useGetTermsByClientIdQuery({
     id: selectedRowData?.id,
   });
 
@@ -34,7 +33,7 @@ function TermsAndConditionsTab() {
                 Freezer:
               </Typography>
               <Typography className="viewRegistrationModal__termsAndConditions__content__fields__item__value">
-                {data?.freezer ? "Yes" : "No"}
+                {data?.freezer ? data.freezer : null}
               </Typography>
             </Box>
 

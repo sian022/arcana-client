@@ -23,6 +23,9 @@ function ListingFeeClient() {
     (state) =>
       state.regularRegistration.value.listingFeeForRegistration.listingItems
   );
+  const toggleFees = useSelector(
+    (state) => state.regularRegistration.value.toggleFees
+  );
 
   //React Hook Form
   const {
@@ -78,6 +81,14 @@ function ListingFeeClient() {
       handleSubmit(onSubmit)();
     };
   }, [dispatch, handleSubmit, watch, handleRecalculateTotalAmount]);
+
+  useEffect(() => {
+    const onSubmit = (data) => {
+      dispatch(setListingFeeForRegistration(data.listingItems));
+    };
+
+    handleSubmit(onSubmit)();
+  }, [toggleFees, dispatch, handleSubmit]);
 
   return (
     <Box className="feesClient__listingFeeClient">

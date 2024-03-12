@@ -37,8 +37,10 @@ import TermsAndConditions from "./TermsAndConditions";
 import Attachments from "./Attachments";
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
 import {
+  resetExpensesForRegistration,
   resetListingFeeForRegistration,
   resetTermsAndConditions,
+  toggleFeesToStore,
 } from "../../../features/registration/reducers/regularRegistrationSlice";
 import {
   base64ToBlob,
@@ -138,8 +140,6 @@ function RegisterRegularForm({ open, onClose }) {
     mode: "onChange",
     defaultValues: regularRegisterSchema.defaultValues,
   });
-
-  console.log(listingFees);
 
   //Constants
   const navigators = [
@@ -266,6 +266,8 @@ function RegisterRegularForm({ open, onClose }) {
       ).unwrap();
 
       await addTermsAndConditions();
+      listingFees && listingFees?.length > 0 && (await addListingFee());
+      expenses && expenses?.length > 0 && (await addExpenses());
 
       termsAndConditions["terms"] !== 1 && (await addAttachmentsSubmit());
 
@@ -308,9 +310,12 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   const addTermsAndConditions = async () => {
-    const { freezerAssetTag, ...otherTerms } = termsAndConditions;
+    const { freezer, freezerAssetTag, ...otherTerms } = termsAndConditions;
 
-    let updatedTermsAndConditions = { ...otherTerms, freezer: freezerAssetTag };
+    let updatedTermsAndConditions = {
+      ...otherTerms,
+      freezer: freezer ? freezerAssetTag : null,
+    };
 
     if (updatedTermsAndConditions.termDaysId) {
       updatedTermsAndConditions.termDaysId =
@@ -379,21 +384,31 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   const addListingFee = async () => {
-    try {
-      const response = await postListingFee({
-        clientId: data.clientId.id,
-        total: totalAmount,
-        listingItems: data.listingItems.map((listingItem) => ({
-          itemId: listingItem.itemId.id,
-          sku: listingItem.sku,
-          unitCost: listingItem.unitCost,
-        })),
-      }).unwrap();
+    const totalAmount = listingFees.reduce(
+      (acc, listingItem) => acc + listingItem.unitCost,
+      0
+    );
 
-      setSnackbarMessage(
-        `Listing Fee ${editMode ? "updated" : "added"} successfully`
-      );
-    } catch (error) {}
+    await postListingFee({
+      clientId: selectedRowData?.id,
+      total: totalAmount,
+      listingItems: listingFees.map((listingItem) => ({
+        itemId: listingItem.itemId.id,
+        sku: listingItem.sku,
+        unitCost: listingItem.unitCost,
+      })),
+    }).unwrap();
+  };
+
+  const addExpenses = async () => {
+    await postExpenses({
+      clientId: selectedRowData?.id,
+      expenses: expenses.map((expense) => ({
+        otherExpenseId: expense.otherExpenseId.id,
+        remarks: expense.remarks,
+        amount: expense.amount,
+      })),
+    }).unwrap();
   };
 
   const handleDrawerClose = () => {
@@ -440,6 +455,7 @@ function RegisterRegularForm({ open, onClose }) {
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
     dispatch(resetListingFeeForRegistration());
+    dispatch(resetExpensesForRegistration());
     setActiveTab("Personal Info");
   };
 
@@ -1206,7 +1222,10 @@ function RegisterRegularForm({ open, onClose }) {
             //   activeTab === "Attachments") &&
             activeTab === "Costs and Fees" && (
               <SecondaryButton
-                onClick={onConfirmOpen}
+                onClick={() => {
+                  onConfirmOpen();
+                  dispatch(toggleFeesToStore());
+                }}
                 disabled={
                   termsAndConditions["terms"] === 1
                     ? navigators.some(

@@ -9,11 +9,13 @@ import {
 import CommonModal from "../../CommonModal";
 import { useEffect, useState } from "react";
 import SecondaryButton from "../../SecondaryButton";
+import { useSelector } from "react-redux";
 
 function AgreeTermsModal({ onRegister, isLoading, ...props }) {
   const { open } = props;
 
   //Hooks
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const [isAgree, setIsAgree] = useState(false);
 
@@ -24,7 +26,12 @@ function AgreeTermsModal({ onRegister, isLoading, ...props }) {
   }, [open]);
 
   return (
-    <CommonModal width="600px" {...props} closeTopRight>
+    <CommonModal
+      width="600px"
+      disableCloseTopRight={isLoading}
+      {...props}
+      closeTopRight
+    >
       <Box className="agreeTermsModal">
         <Typography className="agreeTermsModal__title">
           Agreement Terms
@@ -34,8 +41,8 @@ function AgreeTermsModal({ onRegister, isLoading, ...props }) {
           <ListItem sx={{ display: "list-item" }}>
             <Typography>
               This form serves as an official agreement between RDF Feed,
-              Livestock & Foods Inc. and Smaxs. Both parties agree to follow all
-              terms stated above this contract.
+              Livestock & Foods Inc. and {selectedRowData?.businessName}. Both
+              parties agree to follow all terms stated above this contract.
             </Typography>
           </ListItem>
 
@@ -68,12 +75,12 @@ function AgreeTermsModal({ onRegister, isLoading, ...props }) {
 
         <Box className="agreeTermsModal__registerButton">
           <SecondaryButton
-            disabled={!isAgree}
+            disabled={!isAgree || isLoading}
             size="medium"
             onClick={onRegister}
             sx={{ width: "100%", mt: 1 }}
           >
-            {isLoading ? <CircularProgress /> : "Register Client"}
+            {isLoading ? <CircularProgress size="20px" /> : "Register Client"}
           </SecondaryButton>
         </Box>
       </Box>

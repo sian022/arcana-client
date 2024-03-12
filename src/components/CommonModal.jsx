@@ -1,6 +1,5 @@
 import { Close } from "@mui/icons-material";
 import { Box, IconButton, Modal } from "@mui/material";
-import React from "react";
 
 function CommonModal({
   customRibbonContent,
@@ -13,6 +12,7 @@ function CommonModal({
   maxHeight,
   closeTopRight,
   customOnClose,
+  disableCloseTopRight,
   ...otherProps
 }) {
   const { onClose, ...noOnCloseProps } = otherProps;
@@ -41,7 +41,10 @@ function CommonModal({
               top: "20px",
             }}
           >
-            <IconButton onClick={customOnClose ? customOnClose : onClose}>
+            <IconButton
+              onClick={customOnClose ? customOnClose : onClose}
+              disabled={disableCloseTopRight}
+            >
               <Close />
             </IconButton>
           </Box>

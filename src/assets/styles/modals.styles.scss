@@ -286,6 +286,12 @@
     grid-template-columns: 1fr 1fr 1fr;
   }
 
+  &__headersFour {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
   &__headersFive {
     flex: 1;
     display: grid;

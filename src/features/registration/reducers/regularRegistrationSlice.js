@@ -25,14 +25,13 @@ export const regularRegistrationSlice = createSlice({
       listingFeeForRegistration: {
         listingItems: [],
         isValid: false,
-        total: null,
       },
       expensesForRegistration: {
         expenses: [],
         isValid: false,
-        total: null,
       },
       isAgree: false,
+      toggleFees: false,
     },
   },
   reducers: {
@@ -67,9 +66,7 @@ export const regularRegistrationSlice = createSlice({
       state.value.directFreebie.freebies = [];
     },
     setListingFeeForRegistration: (state, action) => {
-      const listingFees = action.payload;
-      state.value.listingFeeForRegistration.listingItems = listingFees;
-      state.value.listingFeeForRegistration.total = 0;
+      state.value.listingFeeForRegistration.listingItems = action.payload;
     },
     resetListingFeeForRegistration: (state) => {
       state.value.listingFeeForRegistration = {
@@ -97,6 +94,9 @@ export const regularRegistrationSlice = createSlice({
     setIsExpensesValid: (state, action) => {
       state.value.expensesForRegistration.isValid = action.payload;
     },
+    toggleFeesToStore: (state) => {
+      state.value.toggleFees = !state.value.toggleFees;
+    },
   },
 });
 
@@ -113,6 +113,7 @@ export const {
   setIsAgree,
   setIsListingFeeValid,
   setIsExpensesValid,
+  toggleFeesToStore,
 } = regularRegistrationSlice.actions;
 
 export default regularRegistrationSlice.reducer;

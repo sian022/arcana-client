@@ -21,12 +21,12 @@ import {
   usePutRejectClientMutation,
 } from "../../../features/registration/api/registrationApi";
 import useSnackbar from "../../../hooks/useSnackbar";
-import SuccessButton from "../../SuccessButton";
 import ListingFeeTab from "./ListingFeeTab";
 import FreebiesTab from "./FreebiesTab";
 import OtherExpensesTab from "./OtherExpensesTab";
 import { useSendMessageMutation } from "../../../features/misc/api/rdfSmsApi";
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
+import SecondaryButton from "../../SecondaryButton";
 
 function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
   const { onClose } = props;
@@ -89,17 +89,15 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
   navigators[4].disabled = approval && !viewedTabs["Freebies"];
   navigators[5].disabled = approval && !viewedTabs["Listing Fee"];
 
-  if (clientStatus !== "Approved") {
-    for (let i = navigators.length - 1; i >= 3; i--) {
-      navigators.splice(i, 1);
-    }
-  }
+  // if (clientStatus !== "Approved") {
+  //   for (let i = navigators.length - 1; i >= 3; i--) {
+  //     navigators.splice(i, 1);
+  //   }
+  // }
 
   if (selectedRowData?.terms === "COD") {
     navigators.splice(2, 1);
   }
-
-  // if(selectedRowData?.terms)
 
   //RTK Query
   const [putApproveClient, { isLoading: isApproveLoading }] =
@@ -126,14 +124,20 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
     <Box sx={{ display: "flex", flex: 1, gap: "10px", alignItems: "center" }}>
       <Box
         className={
-          clientStatus !== "Approved" && selectedRowData?.terms === "COD"
-            ? "viewRegistrationModal__headersTwo"
-            : clientStatus !== "Approved" && selectedRowData?.terms !== "COD"
-            ? "viewRegistrationModal__headersThree"
-            : clientStatus === "Approved" && selectedRowData?.terms === "COD"
+          selectedRowData?.terms === "COD"
             ? "viewRegistrationModal__headersFive"
             : "viewRegistrationModal__headers"
         }
+        // Removing freebies, listing fee, and other expenses in approval
+        // className={
+        //   clientStatus !== "Approved" && selectedRowData?.terms === "COD"
+        //     ? "viewRegistrationModal__headersThree"
+        //     : clientStatus !== "Approved" && selectedRowData?.terms !== "COD"
+        //     ? "viewRegistrationModal__headersFour"
+        //     : clientStatus === "Approved" && selectedRowData?.terms === "COD"
+        //     ? "viewRegistrationModal__headersFive"
+        //     : "viewRegistrationModal__headers"
+        // }
       >
         {navigators.map((item, i) => (
           <Button
@@ -340,7 +344,7 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                   </AccentButton>
                 )} */}
               {activeTab !== navigators[navigators?.length - 1]?.label && (
-                <SuccessButton onClick={handleNext}>Next</SuccessButton>
+                <SecondaryButton onClick={handleNext}>Next</SecondaryButton>
               )}
               {/* </Box> */}
               {activeTab ===
@@ -360,9 +364,9 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                         Reject
                       </DangerButton>
 
-                      <SuccessButton onClick={onApproveConfirmOpen}>
+                      <SecondaryButton onClick={onApproveConfirmOpen}>
                         Approve
-                      </SuccessButton>
+                      </SecondaryButton>
                     </Box>
                   </>
                 )}

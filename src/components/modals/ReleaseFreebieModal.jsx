@@ -125,7 +125,7 @@ function ReleaseFreebieModal({ direct, ...otherProps }) {
       }).unwrap();
 
       onClose();
-      onConfirmClose();
+
       setSnackbarMessage("Freebie released successfully");
       debounce(onRedirectRegisterOpen(), 2000);
       onSuccessOpen();
@@ -138,6 +138,8 @@ function ReleaseFreebieModal({ direct, ...otherProps }) {
 
       onErrorOpen();
     }
+
+    onConfirmClose();
   };
 
   const handleReleaseSave = () => {
@@ -234,15 +236,6 @@ function ReleaseFreebieModal({ direct, ...otherProps }) {
                     address?.city ? `, ${address.city}` : ""
                   }${address?.province ? `, ${address.province}` : ""}`}
                 </Typography>
-
-                {/* <Typography>
-                  <span>Address: </span>
-                  {`#${address?.houseNumber || ""} ${
-                    address?.streetName || ""
-                  } ${address?.barangayName || ""}, ${address?.city || ""}, ${
-                    address?.province || ""
-                  }`}
-                </Typography> */}
               </Box>
               <Box>
                 <Typography>

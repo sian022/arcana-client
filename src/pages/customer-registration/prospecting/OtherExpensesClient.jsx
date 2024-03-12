@@ -22,6 +22,9 @@ function OtherExpensesClient() {
   const expensesForRegistration = useSelector(
     (state) => state.regularRegistration.value.expensesForRegistration.expenses
   );
+  const toggleFees = useSelector(
+    (state) => state.regularRegistration.value.toggleFees
+  );
 
   //React Hook Form
   const {
@@ -75,6 +78,14 @@ function OtherExpensesClient() {
       handleSubmit(onSubmit)();
     };
   }, [dispatch, handleSubmit, watch, handleRecalculateTotalAmount]);
+
+  useEffect(() => {
+    const onSubmit = (data) => {
+      dispatch(setExpensesForRegistration(data.expenses));
+    };
+
+    handleSubmit(onSubmit)();
+  }, [toggleFees, dispatch, handleSubmit]);
 
   return (
     <Box className="feesClient__otherExpensesClient">
@@ -141,7 +152,25 @@ function OtherExpensesClient() {
                   // required
                   helperText={errors?.otherExpenseId?.message}
                   error={errors?.otherExpenseId}
-                  sx={{ width: "730px" }}
+                  sx={{ width: "400px" }}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name={`expenses[${index}].remarks`}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <TextField
+                  label="Remarks"
+                  type="text"
+                  size="small"
+                  autoComplete="off"
+                  onChange={(e) => onChange(e.target.value.toUpperCase())}
+                  onBlur={onBlur}
+                  value={value || ""}
+                  inputRef={ref}
+                  sx={{ flex: 1 }}
                 />
               )}
             />
@@ -166,6 +195,7 @@ function OtherExpensesClient() {
                   allowNegative={false}
                   allowLeadingZeros={false}
                   prefix="₱"
+                  sx={{ width: "180px" }}
                 />
               )}
             />
@@ -199,6 +229,7 @@ function OtherExpensesClient() {
             append({
               otherExpenseId: null,
               amount: null,
+              remarks: "",
             });
           }}
           disabled={!isValid}
