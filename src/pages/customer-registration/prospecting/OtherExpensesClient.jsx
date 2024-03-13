@@ -65,7 +65,7 @@ function OtherExpensesClient() {
   //UseEffect
   useEffect(() => {
     dispatch(setIsExpensesValid(isValid));
-  }, [isValid, dispatch]);
+  }, [isValid, dispatch, toggleFees]);
 
   useEffect(() => {
     handleRecalculateTotalAmount();

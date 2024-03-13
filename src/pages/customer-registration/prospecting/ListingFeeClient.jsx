@@ -68,7 +68,7 @@ function ListingFeeClient() {
   //UseEffect
   useEffect(() => {
     dispatch(setIsListingFeeValid(isValid));
-  }, [isValid, dispatch]);
+  }, [isValid, dispatch, toggleFees]);
 
   useEffect(() => {
     handleRecalculateTotalAmount();

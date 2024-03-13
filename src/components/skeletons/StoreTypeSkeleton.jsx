@@ -1,12 +1,12 @@
-import React from "react";
-import { Box, Typography, Button, Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 
 function StoreTypeSkeleton() {
   return (
     <Box className="prospectingStoreList">
       <Skeleton
         width="350px"
-        height="500px"
+        // height="500px"
+        height="100%"
         sx={{ borderRadius: "30px", transform: "none" }}
       />
 

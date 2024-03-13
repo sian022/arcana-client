@@ -26,7 +26,7 @@ function PersonalInfoTab() {
               Name:
             </Typography>
             <Typography className="viewRegistrationModal__personalInfo__content__fields__item__value">
-              <div>{selectedRowData?.ownersName}</div>
+              {selectedRowData?.ownersName}
             </Typography>
           </Box>
 

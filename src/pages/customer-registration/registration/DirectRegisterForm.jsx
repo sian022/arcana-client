@@ -49,6 +49,8 @@ import {
   resetListingFeeForRegistration,
   resetTermsAndConditions,
   setExpensesForRegistration,
+  setIsExpensesValid,
+  setIsListingFeeValid,
   setListingFeeForRegistration,
   setWholeTermsAndConditions,
   toggleFeesToStore,
@@ -178,10 +180,8 @@ function DirectRegisterForm({
     clearErrors,
   } = useForm({
     resolver: yupResolver(directRegisterPersonalSchema.schema),
-    // resolver: yupResolver(regularRegisterSchema.schema),
     mode: "onSubmit",
     defaultValues: directRegisterPersonalSchema.defaultValues,
-    // defaultValues: regularRegisterSchema.defaultValues,
   });
 
   //Constants
@@ -411,8 +411,6 @@ function DirectRegisterForm({
       termsAndConditions["terms"] !== 1 &&
         (await addAttachmentsSubmit(response?.value?.id));
 
-      setIsAllApiLoading(false);
-
       if (editMode) {
         clientStatus === "Rejected" &&
           (await sendMessage({
@@ -434,14 +432,7 @@ function DirectRegisterForm({
         message: `Client ${editMode ? "updated" : "registered"}  successfully`,
         variant: "success",
       });
-
-      onConfirmClose();
-      onClose();
-      handleResetForms();
     } catch (error) {
-      setIsAllApiLoading(false);
-      onConfirmClose();
-
       //Reset Direct Freebies
       setPhotoProofDirect(null);
       setSignatureDirect(null);
@@ -459,10 +450,12 @@ function DirectRegisterForm({
           "Client registered successfully but failed to send message to approver.",
         variant: "warning",
       });
-      onConfirmClose();
-      onClose();
-      handleResetForms();
     }
+
+    onConfirmClose();
+    setIsAllApiLoading(false);
+    onClose();
+    handleResetForms();
   };
 
   const addAttachmentsSubmit = async (clientId) => {
@@ -560,7 +553,7 @@ function DirectRegisterForm({
         listingItems: listingFees.map((listingItem) => ({
           itemId: listingItem.itemId.id,
           sku: listingItem.sku,
-          unitCost: listingItem.unitCost,
+          unitCost: parseFloat(listingItem.unitCost),
         })),
       }).unwrap();
     } else {
@@ -570,7 +563,7 @@ function DirectRegisterForm({
         listingItems: listingFees.map((listingItem) => ({
           itemId: listingItem.itemId.id,
           sku: listingItem.sku,
-          unitCost: listingItem.unitCost,
+          unitCost: parseFloat(listingItem.unitCost),
         })),
       }).unwrap();
     }
@@ -583,7 +576,7 @@ function DirectRegisterForm({
         expenses: expenses.map((expense) => ({
           otherExpenseId: expense.otherExpenseId.id,
           remarks: expense.remarks,
-          amount: expense.amount,
+          amount: parseFloat(expense.amount),
           id: expense.id || 0,
         })),
       });
@@ -593,7 +586,7 @@ function DirectRegisterForm({
         expenses: expenses.map((expense) => ({
           otherExpenseId: expense.otherExpenseId.id,
           remarks: expense.remarks,
-          amount: expense.amount,
+          amount: parseFloat(expense.amount),
         })),
       }).unwrap();
     }
@@ -665,7 +658,7 @@ function DirectRegisterForm({
             isAttachmentsDataLoading ||
             isListingFeeLoading ||
             isExpensesLoading ? (
-            <Skeleton sx={{ transform: "none" }} />
+            <Skeleton key={i} sx={{ transform: "none" }} />
           ) : (
             <Button
               key={i}
@@ -978,7 +971,7 @@ function DirectRegisterForm({
         setListingFeeForRegistration(
           listingFeeData?.listingFees?.[0]?.listingItems?.map((item) => ({
             itemId: productData?.items?.find(
-              (product) => product.id === item.id
+              (product) => product.itemCode === item.itemCode
             ),
             itemDescription: item.itemDescription,
             uom: item.uom,
@@ -987,6 +980,7 @@ function DirectRegisterForm({
           }))
         )
       );
+      dispatch(setIsListingFeeValid(true));
 
       // Other Expenses
       dispatch(
@@ -1001,6 +995,7 @@ function DirectRegisterForm({
           }))
         )
       );
+      dispatch(setIsExpensesValid(true));
     }
   }, [
     open,
@@ -1135,7 +1130,7 @@ function DirectRegisterForm({
                             value={value}
                             inputRef={ref}
                             helperText={errors?.ownersName?.message}
-                            error={errors?.ownersName}
+                            error={!!errors?.ownersName}
                           />
                         )}
                       />
@@ -1148,7 +1143,7 @@ function DirectRegisterForm({
                         className="register__textField"
                         {...register("emailAddress")}
                         helperText={errors?.emailAddress?.message}
-                        error={errors?.emailAddress}
+                        error={!!errors?.emailAddress}
                       />
                     </Box>
                   </Box>
@@ -1183,9 +1178,7 @@ function DirectRegisterForm({
                             size="small"
                             customInput={TextField}
                             autoComplete="off"
-                            allowNegative={false}
                             valueIsNumericString
-                            decimalScale={0}
                             inputRef={ref}
                             onValueChange={(e) => {
                               onChange(e.value);
@@ -1215,13 +1208,8 @@ function DirectRegisterForm({
                               slotProps={{
                                 textField: { size: "small", required: true },
                               }}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  helperText={errors?.birthDate?.message}
-                                  error={errors?.birthDate}
-                                />
-                              )}
+                              helperText={errors?.birthDate?.message}
+                              error={!!errors?.birthDate}
                               minDate={moment().subtract(117, "years")}
                               maxDate={moment().subtract(18, "years")}
                             />
@@ -1254,9 +1242,7 @@ function DirectRegisterForm({
                               size="small"
                               customInput={TextField}
                               autoComplete="off"
-                              allowNegative={false}
                               inputRef={ref}
-                              decimalScale={0}
                               valueIsNumericString
                               onValueChange={(e) => {
                                 onChange(e.value);
@@ -1305,20 +1291,10 @@ function DirectRegisterForm({
                               helperText={
                                 errors?.ownersAddress?.houseNumber?.message
                               }
-                              error={errors?.ownersAddress?.houseNumber}
+                              error={!!errors?.ownersAddress?.houseNumber}
                             />
                           )}
                         />
-                        {/* <TextField
-                      label="Unit No."
-                      size="small"
-                      autoComplete="off"
-                      // required
-                      className="register__textField"
-                      {...register("ownersAddress.houseNumber")}
-                      helperText={errors?.ownersAddress?.houseNumber?.message}
-                      error={errors?.ownersAddress?.houseNumber}
-                    /> */}
 
                         <Controller
                           name="ownersAddress.streetName"
@@ -1337,20 +1313,10 @@ function DirectRegisterForm({
                               helperText={
                                 errors?.ownersAddress?.streetName?.message
                               }
-                              error={errors?.ownersAddress?.streetName}
+                              error={!!errors?.ownersAddress?.streetName}
                             />
                           )}
                         />
-                        {/* <TextField
-                      label="Street Name"
-                      size="small"
-                      autoComplete="off"
-                      // required
-                      className="register__textField"
-                      {...register("ownersAddress.streetName")}
-                      helperText={errors?.ownersAddress?.streetName?.message}
-                      error={errors?.ownersAddress?.streetName}
-                    /> */}
 
                         <Controller
                           name="ownersAddress.barangayName"
@@ -1371,20 +1337,10 @@ function DirectRegisterForm({
                               helperText={
                                 errors?.ownersAddress?.barangayName?.message
                               }
-                              error={errors?.ownersAddress?.barangayName}
+                              error={!!errors?.ownersAddress?.barangayName}
                             />
                           )}
                         />
-                        {/* <TextField
-                      label="Barangay"
-                      size="small"
-                      autoComplete="off"
-                      required
-                      className="register__textField"
-                      {...register("ownersAddress.barangayName")}
-                      helperText={errors?.ownersAddress?.barangayName?.message}
-                      error={errors?.ownersAddress?.barangayName}
-                    /> */}
                       </Box>
                       <Box className="register__secondRow__content">
                         <Controller
@@ -1404,20 +1360,10 @@ function DirectRegisterForm({
                                 field.onChange(e.target.value.toUpperCase())
                               }
                               helperText={errors?.ownersAddress?.city?.message}
-                              error={errors?.ownersAddress?.city}
+                              error={!!errors?.ownersAddress?.city}
                             />
                           )}
                         />
-                        {/* <TextField
-                      label="Municipality/City"
-                      size="small"
-                      autoComplete="off"
-                      required
-                      className="register__textField"
-                      {...register("ownersAddress.city")}
-                      helperText={errors?.ownersAddress?.city?.message}
-                      error={errors?.ownersAddress?.city}
-                    /> */}
 
                         <Controller
                           name="ownersAddress.province"
@@ -1438,20 +1384,10 @@ function DirectRegisterForm({
                               helperText={
                                 errors?.ownersAddress?.province?.message
                               }
-                              error={errors?.ownersAddress?.province}
+                              error={!!errors?.ownersAddress?.province}
                             />
                           )}
                         />
-                        {/* <TextField
-                      label="Province"
-                      size="small"
-                      autoComplete="off"
-                      required
-                      className="register__textField"
-                      // {...register("ownersAddress.province")}
-                      helperText={errors?.ownersAddress?.province?.message}
-                      error={errors?.ownersAddress?.province}
-                    /> */}
                       </Box>
                     </Box>
                   </Box>
@@ -1480,7 +1416,7 @@ function DirectRegisterForm({
                           value={value}
                           inputRef={ref}
                           helperText={errors?.businessName?.message}
-                          error={errors?.businessName}
+                          error={!!errors?.businessName}
                         />
                       )}
                     />
@@ -1512,7 +1448,7 @@ function DirectRegisterForm({
                           label="Business Type"
                           required
                           helperText={errors?.storeTypeId?.message}
-                          error={errors?.storeTypeId}
+                          error={!!errors?.storeTypeId}
                         />
                       )}
                     />
@@ -1574,7 +1510,7 @@ function DirectRegisterForm({
                           helperText={
                             errors?.businessAddress?.houseNumber?.message
                           }
-                          error={errors?.businessAddress?.houseNumber}
+                          error={!!errors?.businessAddress?.houseNumber}
                         />
                       )}
                     />
@@ -1588,12 +1524,11 @@ function DirectRegisterForm({
                           label="Street Name"
                           size="small"
                           autoComplete="off"
-                          // required
                           className="register__textField"
                           helperText={
                             errors?.businessAddress?.streetName?.message
                           }
-                          error={errors?.businessAddress?.streetName}
+                          error={!!errors?.businessAddress?.streetName}
                           onChange={(e) =>
                             onChange(e.target.value.toUpperCase())
                           }
@@ -1618,7 +1553,7 @@ function DirectRegisterForm({
                           helperText={
                             errors?.businessAddress?.barangayName?.message
                           }
-                          error={errors?.businessAddress?.barangayName}
+                          error={!!errors?.businessAddress?.barangayName}
                           onChange={(e) =>
                             onChange(e.target.value.toUpperCase())
                           }
@@ -1643,7 +1578,7 @@ function DirectRegisterForm({
                           required
                           className="register__textField"
                           helperText={errors?.businessAddress?.city?.message}
-                          error={errors?.businessAddress?.city}
+                          error={!!errors?.businessAddress?.city}
                           onChange={(e) =>
                             onChange(e.target.value.toUpperCase())
                           }
@@ -1668,7 +1603,7 @@ function DirectRegisterForm({
                           helperText={
                             errors?.businessAddress?.province?.message
                           }
-                          error={errors?.businessAddress?.province}
+                          error={!!errors?.businessAddress?.province}
                           onChange={(e) =>
                             onChange(e.target.value.toUpperCase())
                           }
@@ -1708,21 +1643,10 @@ function DirectRegisterForm({
                           label="Cluster"
                           required
                           helperText={errors?.clusterId?.message}
-                          error={errors?.clusterId}
+                          error={!!errors?.clusterId}
                         />
                       )}
                     />
-                    {/* <TextField
-                  label="Cluster Type"
-                  size="small"
-                  autoComplete="off"
-                  type="number"
-                  required
-                  className="register__textField"
-                  {...register("cluster")}
-                  helperText={errors?.cluster?.message}
-                  error={errors?.cluster}
-                /> */}
                   </Box>
 
                   <Box className="register__thirdRow__column">
@@ -1749,7 +1673,7 @@ function DirectRegisterForm({
                           label="Price Mode"
                           required
                           helperText={errors?.priceModeId?.message}
-                          error={errors?.priceModeId}
+                          error={!!errors?.priceModeId}
                         />
                       )}
                     />
@@ -1796,7 +1720,7 @@ function DirectRegisterForm({
                             helperText={
                               errors?.authorizedRepresentative?.message
                             }
-                            error={errors?.authorizedRepresentative}
+                            error={!!errors?.authorizedRepresentative}
                           />
                         )}
                       />
@@ -1823,35 +1747,10 @@ function DirectRegisterForm({
                             helperText={
                               errors?.authorizedRepresentativePosition?.message
                             }
-                            error={errors?.authorizedRepresentativePosition}
+                            error={!!errors?.authorizedRepresentativePosition}
                           />
                         )}
                       />
-
-                      {/* <TextField
-                    label="Full Name"
-                    size="small"
-                    autoComplete="off"
-                    required={includeAuthorizedRepresentative}
-                    disabled={!includeAuthorizedRepresentative}
-                    className="register__textField"
-                    {...register("authorizedRepresentative")}
-                    helperText={errors?.authorizedRepresentative?.message}
-                    error={errors?.authorizedRepresentative}
-                  />
-                  <TextField
-                    label="Position"
-                    size="small"
-                    autoComplete="off"
-                    required={includeAuthorizedRepresentative}
-                    disabled={!includeAuthorizedRepresentative}
-                    className="register__textField"
-                    {...register("authorizedRepresentativePosition")}
-                    helperText={
-                      errors?.authorizedRepresentativePosition?.message
-                    }
-                    error={errors?.authorizedRepresentativePosition}
-                  /> */}
                     </Box>
                   </Box>
                 </Box>
@@ -1948,8 +1847,8 @@ function DirectRegisterForm({
 
       <CommonDialog
         open={isConfirmOpen && editMode}
-        onYes={handleSubmit(onSubmit)}
         onClose={onConfirmClose}
+        onYes={handleSubmit(onSubmit)}
         isLoading={isAllApiLoading || isSendMessageLoading}
         question
       >

@@ -258,11 +258,7 @@ function DirectRegistration() {
 
       <ViewRegistrationDetailsModal
         open={isViewOpen}
-        // open={true}
         onClose={onViewClose}
-        onRegisterOpen={onRegisterOpen}
-        editMode={editMode}
-        setEditMode={setEditMode}
         clientStatus={clientStatus}
       />
 
