@@ -17,7 +17,7 @@ const listingFeeApi = api
           url: "/ListingFee/AddNewListingFee",
           method: "POST",
         }),
-        invalidatesTags: ["Listing Fee", "Notification"],
+        invalidatesTags: ["Listing Fee", "ListingFeeById", "Notification"],
         transformResponse: (response) => response.value,
         transformErrorResponse: (response) => ({
           function: "postListingFee",

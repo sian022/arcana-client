@@ -64,6 +64,7 @@ function CommonTable({
   status,
   lesserCompact,
   lessCompact,
+  lowerCompact,
   compact,
   expanded,
   percentageArray,
@@ -94,6 +95,8 @@ function CommonTable({
             ? "calc(100vh - 282px)"
             : lessCompact
             ? "calc(100vh - 290px)"
+            : lowerCompact
+            ? "calc(100vh - 310px)"
             : compact
             ? "calc(100vh - 330px)"
             : null,
@@ -173,6 +176,8 @@ function CommonTable({
             ? "calc(100vh - 282px)"
             : lessCompact
             ? "calc(100vh - 290px)"
+            : lowerCompact
+            ? "calc(100vh - 310px)"
             : compact
             ? "calc(100vh - 330px)"
             : null,

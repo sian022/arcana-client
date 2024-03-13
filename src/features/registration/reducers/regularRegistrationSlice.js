@@ -72,7 +72,6 @@ export const regularRegistrationSlice = createSlice({
       state.value.listingFeeForRegistration = {
         listingItems: [],
         isValid: false,
-        total: null,
       };
     },
     setExpensesForRegistration: (state, action) => {
@@ -82,7 +81,6 @@ export const regularRegistrationSlice = createSlice({
       state.value.expensesForRegistration = {
         expenses: [],
         isValid: false,
-        total: null,
       };
     },
     setIsAgree: (state, action) => {

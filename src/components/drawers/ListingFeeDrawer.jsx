@@ -132,7 +132,7 @@ function ListingFeeDrawer({
           // freebieRequestId: data.freebieRequestId,
           params: { listingFeeId: selectedRowData?.listingFeeId },
           total: totalAmount,
-          listingItems: data.listingItems.map((listingItem) => ({
+          listingItems: data.listingItems?.map((listingItem) => ({
             itemId: listingItem.itemId.id,
             sku: listingItem.sku,
             unitCost: listingItem.unitCost,
@@ -144,7 +144,7 @@ function ListingFeeDrawer({
         response = await postListingFee({
           clientId: data.clientId.id,
           total: totalAmount,
-          listingItems: data.listingItems.map((listingItem) => ({
+          listingItems: data.listingItems?.map((listingItem) => ({
             itemId: listingItem.itemId.id,
             sku: listingItem.sku,
             unitCost: listingItem.unitCost,
@@ -231,7 +231,7 @@ function ListingFeeDrawer({
 
   const handleRecalculateTotalAmount = useCallback(() => {
     let total = 0;
-    watch("listingItems").forEach((item) => {
+    watch("listingItems")?.forEach((item) => {
       const unitCost = parseFloat(item.unitCost);
       if (!isNaN(unitCost)) {
         total += unitCost;
@@ -277,7 +277,7 @@ function ListingFeeDrawer({
       setValue("customerName", foundItem?.ownersName);
       setValue(
         "listingItems",
-        selectedRowData?.listingItems.map((item) => ({
+        selectedRowData?.listingItems?.map((item) => ({
           itemId: productData?.items?.find(
             (product) => product.id === item.itemId
           ),
@@ -395,7 +395,7 @@ function ListingFeeDrawer({
               </Typography>
             </Box>
 
-            {fields.map((item, index) => (
+            {fields?.map((item, index) => (
               <Box
                 key={item.id}
                 sx={{

@@ -1,29 +1,22 @@
-import {
-  Autocomplete,
-  Box,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { approversSchema, companySchema } from "../../schema/schema";
-import CommonDialog from "../../components/CommonDialog";
+import { approversSchema } from "../../schema/schema";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import {
-  Cancel,
   HowToVote,
   KeyboardArrowDown,
   KeyboardArrowUp,
+  RemoveCircleOutline,
 } from "@mui/icons-material";
 import {
   useAddApproversPerModuleMutation,
@@ -37,12 +30,10 @@ import { navigationData } from "../../navigation/navigationData";
 
 function Approver() {
   const [drawerMode, setDrawerMode] = useState("add");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [count, setCount] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -52,12 +43,6 @@ function Approver() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
   } = useDisclosure();
 
   const {
@@ -99,29 +84,16 @@ function Approver() {
   const [parent] = useAutoAnimate();
 
   //RTK Query
-  const { data, isLoading, isFetching } = useGetAllApproversQuery();
+  const { data, isLoading } = useGetAllApproversQuery();
 
   const [addApproversPerModule, { isLoading: isAddApproversLoading }] =
     useAddApproversPerModuleMutation();
   const {
     data: approversPerModuleData,
-    isLoading: isApproversPerModuleLoading,
     isFetching: isApproversPerModuleFetching,
   } = useGetApproversPerModuleQuery();
   const [putUpdateApproversPerModule, { isLoading: isUpdateApproversLoading }] =
     usePutUpdateApproversPerModuleMutation();
-
-  // const [postApprover, { isLoading: isAddLoading }] = usePostApproverMutation();
-  // const { data, isLoading, isFetching } = useGetAllCompaniesQuery({
-  //   Search: search,
-  //   Status: status,
-  //   PageNumber: page + 1,
-  //   PageSize: rowsPerPage,
-  // });
-  // const [putApprover, { isLoading: isUpdateLoading }] =
-  //   usePutApproverMutation();
-  // const [patchApproverStatus, { isLoading: isArchiveLoading }] =
-  //   usePatchApproverStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -164,25 +136,6 @@ function Approver() {
     }
   };
 
-  const onArchiveSubmit = async () => {
-    try {
-      await patchApproverStatus(selectedId).unwrap();
-      onArchiveClose();
-      setSnackbarMessage(
-        `Approver ${status ? "archived" : "restored"} successfully`
-      );
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving user account");
-      }
-
-      onErrorOpen();
-    }
-  };
-
   const handleAddOpen = () => {
     setDrawerMode("add");
     onDrawerOpen();
@@ -196,7 +149,6 @@ function Approver() {
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
 
   const handleApproverError = () => {
@@ -216,7 +168,7 @@ function Approver() {
     if (isDrawerOpen) {
       setValue("approvers[0].moduleName", selectedRowData?.moduleName);
     }
-  }, [isDrawerOpen]);
+  }, [isDrawerOpen, selectedRowData?.moduleName, setValue]);
 
   useEffect(() => {
     if (isDrawerOpen && drawerMode === "edit") {
@@ -242,7 +194,7 @@ function Approver() {
 
       setValue("approvers", editFields);
     }
-  }, [isDrawerOpen]);
+  }, [isDrawerOpen, approvalItem, data, drawerMode, selectedRowData, setValue]);
 
   return (
     <Box className="commonPageLayout">
@@ -311,7 +263,7 @@ function Approver() {
           }}
           disableClearable
           loading={isLoading}
-          isOptionEqualToValue={(option, value) => true}
+          isOptionEqualToValue={() => true}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -355,7 +307,7 @@ function Approver() {
                 disableClearable
                 disabled={!watch("moduleName")}
                 loading={isLoading}
-                isOptionEqualToValue={(option, value) => true}
+                isOptionEqualToValue={() => true}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -400,7 +352,7 @@ function Approver() {
                       remove(index);
                 }}
               >
-                <Cancel sx={{ fontSize: "30px" }} />
+                <RemoveCircleOutline sx={{ fontSize: "30px" }} />
               </IconButton>
             </Box>
           ))}
@@ -419,27 +371,12 @@ function Approver() {
               level: fields.length + 1,
             });
           }}
-          disabled={
-            !watch("approvers")[watch("approvers")?.length - 1]?.userId ||
-            !watch("moduleName")
-          }
+          disabled={!isValid}
         >
           Add Approver
         </SecondaryButton>
       </CommonDrawer>
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        // isLoading={isArchiveLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.companyName}
-        </span>
-        ?
-      </CommonDialog>
+
       <SuccessSnackbar
         open={isSuccessOpen}
         onClose={onSuccessClose}

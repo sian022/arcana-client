@@ -9,12 +9,12 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React from "react";
 
 function CommonTableSkeleton({
   columnCount,
   lesserCompact,
   lessCompact,
+  lowerCompact,
   compact,
   expanded,
   mt,
@@ -31,6 +31,8 @@ function CommonTableSkeleton({
             ? "calc(100vh - 282px)"
             : lessCompact
             ? "calc(100vh - 290px)"
+            : lowerCompact
+            ? "calc(100vh - 310px)"
             : compact
             ? "calc(100vh - 330px)"
             : null,

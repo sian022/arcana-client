@@ -1,6 +1,5 @@
 import { Box, TextField, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
-import PageHeaderAdd from "../../components/PageHeaderAdd";
 import { Link } from "@mui/icons-material";
 import CommonTable from "../../components/CommonTable";
 import { useGetAllPriceModeQuery } from "../../features/setup/api/priceModeSetupApi";
@@ -18,17 +17,23 @@ import CommonDialog from "../../components/CommonDialog";
 import {
   useDeletePriceModeItemMutation,
   useGetAllItemsByPriceModeIdQuery,
+  useLazyExportPricesQuery,
   usePostItemsToPriceModeMutation,
 } from "../../features/setup/api/priceModeItemsApi";
 import CommonDrawer from "../../components/CommonDrawer";
 import PriceChangeDrawer from "../../components/drawers/PriceChangeDrawer";
 import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
+import PageHeaderAddButtonSearch from "../../components/PageHeaderAddButtonSearch";
+import moment from "moment";
+import ExportPriceModal from "../../components/modals/ExportPriceModal";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function PriceModeManagement() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+  const [exportDateTime, setExportDateTime] = useState(moment());
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const snackbar = useSnackbar();
@@ -56,6 +61,12 @@ function PriceModeManagement() {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isExportOpen,
+    onOpen: onExportOpen,
+    onClose: onExportClose,
   } = useDisclosure();
 
   //React Hook Form
@@ -92,10 +103,12 @@ function PriceModeManagement() {
   const { data: priceModeItemsData, isFetching: isPriceModeItemsFetching } =
     useGetAllItemsByPriceModeIdQuery({
       Search: search,
-      Status: status,
       PageNumber: page + 1,
       PageSize: rowsPerPage,
     });
+
+  const [triggerExport, { data: exportData, isFetching: isExportFetching }] =
+    useLazyExportPricesQuery();
 
   // Constants
   const tableHeads = [
@@ -109,7 +122,6 @@ function PriceModeManagement() {
   ];
 
   const customOrderKeys = [
-    // "priceModeItemId",
     "itemCode",
     "itemDescription",
     "uom",
@@ -169,6 +181,18 @@ function PriceModeManagement() {
     reset();
   };
 
+  const onExport = async () => {
+    try {
+      await triggerExport({
+        date: moment(exportDateTime).format("YYYY-MM-DDTHH:mm:ss"),
+      }).unwrap();
+
+      console.log(exportData);
+    } catch (error) {
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+    }
+  };
+
   // UseEffect;
   useEffect(() => {
     if (watch("priceModeId")) {
@@ -195,7 +219,7 @@ function PriceModeManagement() {
   return (
     <>
       <Box className="commonPageLayout">
-        <PageHeaderAdd
+        <PageHeaderAddButtonSearch
           pageTitle={
             <>
               Price Mode Management <Link />
@@ -203,8 +227,9 @@ function PriceModeManagement() {
           }
           setSearch={setSearch}
           onOpen={onDrawerOpen}
-          // setStatus={setStatus}
           removeArchive
+          secondButtonTitle="Export"
+          secondButtonOnClick={onExportOpen}
         />
 
         {isPriceModeItemsFetching ? (
@@ -215,7 +240,6 @@ function PriceModeManagement() {
             onRemove={onDeleteOpen}
             onPriceChange={onPriceChangeOpen}
             onViewMoreConstant={onPriceDetailsOpen}
-            status={status}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
@@ -241,11 +265,6 @@ function PriceModeManagement() {
           control={control}
           options={priceModeData?.priceMode || []}
           getOptionLabel={(option) => option.priceModeCode || ""}
-          // getOptionDisabled={(option) =>
-          //   watch("priceModeItems")?.some(
-          //     (item) => item?.itemId?.itemCode === option.itemCode
-          //   )
-          // }
           disableClearable
           loading={isPriceModeFetching}
           isOptionEqualToValue={() => true}
@@ -354,25 +373,23 @@ function PriceModeManagement() {
         onClose={onPriceDetailsClose}
       />
 
+      <ExportPriceModal
+        open={isExportOpen}
+        onClose={onExportClose}
+        onExport={onExport}
+        dateTime={exportDateTime}
+        setDateTime={setExportDateTime}
+        isExportLoading={isExportFetching}
+      />
+
       <CommonDialog
         open={isDeleteOpen}
         onClose={onDeleteClose}
-        question={!status}
         onYes={handleDelete}
         isLoading={isDeleteLoading}
       >
         Are you sure you want to remove this item?
       </CommonDialog>
-
-      {/* <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        question={!status}
-        onYes={handleArchive}
-        isLoading={isArchiveLoading}
-      >
-        Are you sure you want to {status ? "archive" : "restore"} this item?
-      </CommonDialog> */}
     </>
   );
 }

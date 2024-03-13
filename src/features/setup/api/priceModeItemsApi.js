@@ -24,6 +24,14 @@ const priceModeItemsApi = api
         transformErrorResponse: (response) => response.value,
       }),
 
+      exportPrices: builder.query({
+        query: (params) => ({
+          params: params,
+          url: "/price/export",
+          method: "GET",
+        }),
+      }),
+
       updatePriceModeItemStatus: builder.mutation({
         query: ({ id }) => ({
           url: `/price-change-items/${id}/archive`,
@@ -89,4 +97,5 @@ export const {
   usePostPriceChangeMutation,
   usePostAddPriceChangeMutation,
   useDeletePriceChangeMutation,
+  useLazyExportPricesQuery,
 } = priceModeItemsApi;

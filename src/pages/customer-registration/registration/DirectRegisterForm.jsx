@@ -670,8 +670,8 @@ function DirectRegisterForm({
 
     setRequirementsMode(null);
     dispatch(resetTermsAndConditions());
-    dispatch(resetListingFeeForRegistration());
-    dispatch(resetExpensesForRegistration());
+    // dispatch(resetListingFeeForRegistration());
+    // dispatch(resetExpensesForRegistration());
     dispatch(resetFreebies());
     setEditMode(false);
     setActiveTab("Personal Info");
@@ -1107,6 +1107,15 @@ function DirectRegisterForm({
     triggerExpenses,
   ]);
 
+  useEffect(() => {
+    if (open && !editMode) {
+      dispatch(resetListingFeeForRegistration());
+      dispatch(resetExpensesForRegistration());
+    }
+  }, [editMode, open, dispatch]);
+
+  console.log(expenses);
+
   return (
     <>
       <CommonDrawer
@@ -1293,6 +1302,7 @@ function DirectRegisterForm({
                                   </InputAdornment>
                                 ),
                               }}
+                              prefix="+63"
                               className="register__textField"
                               helperText={errors?.phoneNumber?.message}
                               error={!!errors?.phoneNumber}

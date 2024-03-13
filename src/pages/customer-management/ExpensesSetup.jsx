@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -77,7 +77,7 @@ function ExpensesSetup() {
   //RTK Query
   const [postOtherExpenses, { isLoading: isAddLoading }] =
     usePostOtherExpensesMutation();
-  const { data, isLoading, isFetching } = useGetAllOtherExpensesQuery({
+  const { data, isFetching } = useGetAllOtherExpensesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,

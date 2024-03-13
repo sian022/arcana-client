@@ -2,8 +2,10 @@ import { Box, Checkbox, Paper, TextField, Typography } from "@mui/material";
 import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
 import { debounce } from "../utils/CustomFunctions";
+import TertiaryButton from "./TertiaryButton";
+import { FileDownload } from "@mui/icons-material";
 
-function PageHeaderAdd({
+function PageHeaderAddButtonSearch({
   onOpen,
   pageTitle,
   setStatus,
@@ -11,6 +13,8 @@ function PageHeaderAdd({
   removeAdd,
   removeArchive,
   searchPlaceholder,
+  secondButtonTitle,
+  secondButtonOnClick,
 }) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
@@ -26,7 +30,17 @@ function PageHeaderAdd({
               Add
             </SecondaryButton>
           )}
+
+          <TertiaryButton
+            // variant="outlined"
+            // sx={{ color: "tertiary.main !important" }}
+            endIcon={<FileDownload />}
+            onClick={secondButtonOnClick}
+          >
+            {secondButtonTitle || "Button"}
+          </TertiaryButton>
         </Box>
+
         <Box className="pageHeader__right">
           {!removeArchive && (
             <>
@@ -38,6 +52,7 @@ function PageHeaderAdd({
               <Typography variant="subtitle2">Archived</Typography>{" "}
             </>
           )}
+
           <TextField
             type="search"
             size="small"
@@ -54,4 +69,4 @@ function PageHeaderAdd({
   );
 }
 
-export default PageHeaderAdd;
+export default PageHeaderAddButtonSearch;

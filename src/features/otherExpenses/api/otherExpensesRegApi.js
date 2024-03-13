@@ -12,7 +12,7 @@ const otherExpensesRegApi = api
           url: "/Expenses/AddNewExpenses",
           method: "POST",
         }),
-        invalidatesTags: ["Expenses"],
+        invalidatesTags: ["Expenses", "OtherExpensesById", "Notification"],
         transformResponse: (response) => response.value,
         transformErrorResponse: (response) => response.value,
       }),
@@ -60,7 +60,7 @@ const otherExpensesRegApi = api
           url: `/Expenses/VoidExpenseRequest/${id}`,
           method: "PATCH",
         }),
-        invalidatesTags: ["Expenses"],
+        invalidatesTags: ["Expenses", "Notification"],
       }),
 
       getExpensesApprovalHistoryById: builder.query({

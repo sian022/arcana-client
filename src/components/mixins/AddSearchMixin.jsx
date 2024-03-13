@@ -1,12 +1,4 @@
-import {
-  Box,
-  Checkbox,
-  Paper,
-  TextField,
-  Typography,
-  debounce,
-} from "@mui/material";
-import React from "react";
+import { Box, TextField, debounce } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 
 function AddSearchMixin({ addTitle, onAddOpen, setSearch }) {
