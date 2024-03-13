@@ -401,15 +401,18 @@ function DirectRegisterForm({
         }
       }
 
+      const clientId = editMode ? selectedRowData?.id : response?.value?.id;
+
       listingFees &&
-        listingFees?.length > 0 &&
-        (await addListingFee(response?.value?.id));
+        (listingFees?.length > 0 || listingFeeData?.listingFees?.length > 0) &&
+        (await addListingFee(clientId));
+
       expenses &&
-        expenses?.length > 0 &&
-        (await addExpenses(response?.value?.id));
+        (expenses?.length > 0 || expensesData?.expenses?.length > 0) &&
+        (await addExpenses(clientId));
 
       termsAndConditions["terms"] !== 1 &&
-        (await addAttachmentsSubmit(response?.value?.id));
+        (await addAttachmentsSubmit(clientId));
 
       if (editMode) {
         clientStatus === "Rejected" &&
@@ -432,6 +435,9 @@ function DirectRegisterForm({
         message: `Client ${editMode ? "updated" : "registered"}  successfully`,
         variant: "success",
       });
+
+      onClose();
+      handleResetForms();
     } catch (error) {
       //Reset Direct Freebies
       setPhotoProofDirect(null);
@@ -439,23 +445,23 @@ function DirectRegisterForm({
       dispatch(resetFreebies());
 
       if (error.function !== "sendMessage") {
-        return snackbar({
+        snackbar({
           message: handleCatchErrorMessage(error),
           variant: "error",
         });
+      } else {
+        snackbar({
+          message:
+            "Client registered successfully but failed to send message to approver.",
+          variant: "warning",
+        });
+        onClose();
+        handleResetForms();
       }
-
-      snackbar({
-        message:
-          "Client registered successfully but failed to send message to approver.",
-        variant: "warning",
-      });
     }
 
     onConfirmClose();
     setIsAllApiLoading(false);
-    onClose();
-    handleResetForms();
   };
 
   const addAttachmentsSubmit = async (clientId) => {
@@ -546,16 +552,30 @@ function DirectRegisterForm({
     );
 
     if (editMode) {
-      await putUpdateListingFee({
-        id: selectedRowData?.id,
-        params: { listingFeeId: selectedRowData?.listingFeeId },
-        total: parseInt(totalAmount),
-        listingItems: listingFees.map((listingItem) => ({
-          itemId: listingItem.itemId.id,
-          sku: listingItem.sku,
-          unitCost: parseFloat(listingItem.unitCost),
-        })),
-      }).unwrap();
+      //Check if there is a listing fee request
+      if (listingFeeData?.listingFees?.length > 0) {
+        await putUpdateListingFee({
+          id: selectedRowData?.id,
+          params: { listingFeeId: listingFeeData?.listingFees?.[0]?.id },
+          total: parseInt(totalAmount),
+          listingItems: listingFees.map((listingItem) => ({
+            itemId: listingItem.itemId.id,
+            sku: listingItem.sku,
+            unitCost: parseFloat(listingItem.unitCost),
+          })),
+        }).unwrap();
+      } else {
+        //If there is no listing fee request
+        await postListingFee({
+          clientId,
+          total: parseInt(totalAmount),
+          listingItems: listingFees.map((listingItem) => ({
+            itemId: listingItem.itemId.id,
+            sku: listingItem.sku,
+            unitCost: parseFloat(listingItem.unitCost),
+          })),
+        }).unwrap();
+      }
     } else {
       await postListingFee({
         clientId,
@@ -571,15 +591,28 @@ function DirectRegisterForm({
 
   const addExpenses = async (clientId) => {
     if (editMode) {
-      await putUpdateExpenses({
-        id: clientId,
-        expenses: expenses.map((expense) => ({
-          otherExpenseId: expense.otherExpenseId.id,
-          remarks: expense.remarks,
-          amount: parseFloat(expense.amount),
-          id: expense.id || 0,
-        })),
-      });
+      //Check if there is an expense request
+      if (expensesData?.expenses?.length > 0) {
+        await putUpdateExpenses({
+          id: expensesData?.expenses?.[0]?.id,
+          expenses: expenses.map((expense) => ({
+            otherExpenseId: expense.otherExpenseId.id,
+            remarks: expense.remarks,
+            amount: parseFloat(expense.amount),
+            id: expense.id || 0,
+          })),
+        });
+      } else {
+        //If there is no expense request
+        await postExpenses({
+          clientId: clientId,
+          expenses: expenses.map((expense) => ({
+            otherExpenseId: expense.otherExpenseId.id,
+            remarks: expense.remarks,
+            amount: parseFloat(expense.amount),
+          })),
+        }).unwrap();
+      }
     } else {
       await postExpenses({
         clientId: clientId,
@@ -733,6 +766,9 @@ function DirectRegisterForm({
             selectedRowData?.currentApproverPhoneNumber,
           ...getValues(),
           dateOfBirth: getValues().dateOfBirth.format("YYYY-MM-DD"),
+          clusterId: selectedRowData?.clusterId,
+          priceModeId: selectedRowData?.priceModeId,
+          storeType: selectedRowData?.storeType,
         })
       );
     } else if (

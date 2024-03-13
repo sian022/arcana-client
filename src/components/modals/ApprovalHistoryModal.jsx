@@ -112,7 +112,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
     if (!recentData) {
       return 1;
     } else if (status === "Rejected") {
-      return null;
+      return -1;
     } else if (updatedAtExists) {
       return 1;
     } else if (level && status === "Approved") {
@@ -205,7 +205,7 @@ function ApprovalHistoryModal({ variant = "registration", ...otherProps }) {
                     ? handleActiveStep(combinedOtherExpensesHistories?.[0])
                     : variant === "specialDiscount"
                     ? handleActiveStep(combinedSpecialDiscountHistories?.[0])
-                    : null
+                    : -1
                 }
               >
                 <Step>

@@ -2,7 +2,12 @@ import { api } from "../../api";
 
 const listingFeeApi = api
   .enhanceEndpoints({
-    addTagTypes: ["Listing Fee", "Clients For Listing", "Notification"],
+    addTagTypes: [
+      "Listing Fee",
+      "Clients For Listing",
+      "Notification",
+      "ListingFeeById",
+    ],
   })
   .injectEndpoints({
     endpoints: (builder) => ({
@@ -55,7 +60,12 @@ const listingFeeApi = api
           body: body,
           params: params,
         }),
-        invalidatesTags: ["Listing Fee", "Clients For Listing", "Notification"],
+        invalidatesTags: [
+          "Listing Fee",
+          "ListingFeeById",
+          "Clients For Listing",
+          "Notification",
+        ],
       }),
 
       deleteCancelListingFee: builder.mutation({

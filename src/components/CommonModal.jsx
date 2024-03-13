@@ -6,7 +6,9 @@ function CommonModal({
   disablePadding,
   paddingCustom,
   width,
+  overflow,
   ribbon,
+  ribbonPadding,
   children,
   height,
   maxHeight,
@@ -29,6 +31,7 @@ function CommonModal({
             : "30px",
           height: height && height,
           maxHeight: maxHeight && maxHeight,
+          overflow: overflow && overflow,
         }}
         className="commonModal"
       >
@@ -50,7 +53,10 @@ function CommonModal({
           </Box>
         )}
         {ribbon && (
-          <Box className="commonModal__ribbon">
+          <Box
+            className="commonModal__ribbon"
+            sx={{ padding: ribbonPadding && ribbonPadding }}
+          >
             {customRibbonContent && customRibbonContent}
           </Box>
         )}

@@ -96,11 +96,15 @@ function ListingFeeClient() {
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          // justifyContent: "space-between",
+          gap: "5px",
         }}
       >
         <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
           Listing Fee
+        </Typography>
+        <Typography sx={{ fontSize: "18px", fontWeight: "400", color: "gray" }}>
+          (Optional)
         </Typography>
       </Box>
 

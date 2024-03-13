@@ -285,13 +285,13 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
     <>
       <CommonModal
         width="900px"
-        // width={clientStatus === "Approved" ? "900px" : "800px"}
-        height="680px"
-        // height="700px"
+        // height="680px"
+        height="660px"
+        overflow="auto"
         disablePadding
         ribbon
         customRibbonContent={customRibbonContent}
-        // {...noOnClose}
+        ribbonPadding={"10px"}
         {...props}
       >
         <Box className="viewRegistrationModal">

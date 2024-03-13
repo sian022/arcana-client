@@ -1,7 +1,9 @@
 import { api } from "../../api";
 
 const otherExpensesRegApi = api
-  .enhanceEndpoints({ addTagTypes: ["Expenses", "Notification"] })
+  .enhanceEndpoints({
+    addTagTypes: ["Expenses", "OtherExpensesById", "Notification"],
+  })
   .injectEndpoints({
     endpoints: (builder) => ({
       postExpenses: builder.mutation({
@@ -50,7 +52,7 @@ const otherExpensesRegApi = api
           method: "PUT",
           body: body,
         }),
-        invalidatesTags: ["Expenses"],
+        invalidatesTags: ["Expenses", "OtherExpensesById", "Notification"],
       }),
 
       patchVoidExpenseRequest: builder.mutation({
