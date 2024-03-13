@@ -713,9 +713,7 @@ function RegisterRegularForm({ open, onClose }) {
                         size="small"
                         customInput={TextField}
                         autoComplete="off"
-                        allowNegative={false}
                         valueIsNumericString
-                        decimalScale={0}
                         onValueChange={(e) => {
                           onChange(e.value);
                         }}
@@ -744,13 +742,8 @@ function RegisterRegularForm({ open, onClose }) {
                           slotProps={{
                             textField: { size: "small", required: true },
                           }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              helperText={errors?.birthDate?.message}
-                              error={errors?.birthDate}
-                            />
-                          )}
+                          helperText={errors?.birthDate?.message}
+                          error={!!errors?.birthDate}
                           minDate={moment().subtract(117, "years")}
                           maxDate={moment().subtract(18, "years")}
                         />
@@ -782,9 +775,7 @@ function RegisterRegularForm({ open, onClose }) {
                           size="small"
                           customInput={TextField}
                           autoComplete="off"
-                          allowNegative={false}
                           valueIsNumericString
-                          decimalScale={0}
                           onValueChange={(e) => {
                             onChange(e.value);
                           }}
@@ -901,7 +892,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Business Type"
                       required
                       helperText={errors?.storeTypeId?.message}
-                      error={errors?.storeTypeId}
+                      error={!!errors?.storeTypeId}
                     />
                   )}
                 />
@@ -942,7 +933,7 @@ function RegisterRegularForm({ open, onClose }) {
                       value={value}
                       inputRef={ref}
                       helperText={errors?.houseNumber?.message}
-                      error={errors?.houseNumber}
+                      error={!!errors?.houseNumber}
                     />
                   )}
                 />
@@ -958,7 +949,7 @@ function RegisterRegularForm({ open, onClose }) {
                       autoComplete="off"
                       className="register__textField"
                       helperText={errors?.streetName?.message}
-                      error={errors?.streetName}
+                      error={!!errors?.streetName}
                       onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
@@ -979,7 +970,7 @@ function RegisterRegularForm({ open, onClose }) {
                       required
                       className="register__textField"
                       helperText={errors?.barangayName?.message}
-                      error={errors?.barangayName}
+                      error={!!errors?.barangayName}
                       onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
@@ -1002,7 +993,7 @@ function RegisterRegularForm({ open, onClose }) {
                       required
                       className="register__textField"
                       helperText={errors?.city?.message}
-                      error={errors?.city}
+                      error={!!errors?.city}
                       onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
@@ -1023,7 +1014,7 @@ function RegisterRegularForm({ open, onClose }) {
                       required
                       className="register__textField"
                       helperText={errors?.province?.message}
-                      error={errors?.province}
+                      error={!!errors?.province}
                       onChange={(e) => onChange(e.target.value.toUpperCase())}
                       onBlur={onBlur}
                       value={value}
@@ -1061,7 +1052,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Cluster"
                       required
                       helperText={errors?.clusterId?.message}
-                      error={errors?.clusterId}
+                      error={!!errors?.clusterId}
                     />
                   )}
                 />
@@ -1089,7 +1080,7 @@ function RegisterRegularForm({ open, onClose }) {
                       label="Price Mode"
                       required
                       helperText={errors?.priceModeId?.message}
-                      error={errors?.priceModeId}
+                      error={!!errors?.priceModeId}
                     />
                   )}
                 />
@@ -1123,7 +1114,7 @@ function RegisterRegularForm({ open, onClose }) {
                     className="register__textField"
                     {...register("authorizedRepresentative")}
                     helperText={errors?.authorizedRepresentative?.message}
-                    error={errors?.authorizedRepresentative}
+                    error={!!errors?.authorizedRepresentative}
                   /> */}
 
                   <Controller
@@ -1142,7 +1133,7 @@ function RegisterRegularForm({ open, onClose }) {
                         value={value}
                         inputRef={ref}
                         helperText={errors?.authorizedRepresentative?.message}
-                        error={errors?.authorizedRepresentative}
+                        error={!!errors?.authorizedRepresentative}
                       />
                     )}
                   />
@@ -1165,7 +1156,7 @@ function RegisterRegularForm({ open, onClose }) {
                         helperText={
                           errors?.authorizedRepresentativePosition?.message
                         }
-                        error={errors?.authorizedRepresentativePosition}
+                        error={!!errors?.authorizedRepresentativePosition}
                       />
                     )}
                   />

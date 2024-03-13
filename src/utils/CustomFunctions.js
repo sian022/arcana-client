@@ -175,9 +175,9 @@ export const formatPhoneNumber = (inputNumber) => {
     let formattedNumber =
       numberString.slice(0, 3) +
       "-" +
-      numberString.slice(3, 7) +
+      numberString.slice(3, 6) +
       "-" +
-      numberString.slice(7);
+      numberString.slice(6);
 
     return formattedNumber;
   } else {
