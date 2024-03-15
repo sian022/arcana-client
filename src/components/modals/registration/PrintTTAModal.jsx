@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   List,
   ListItem,
   Table,
@@ -13,9 +14,35 @@ import {
 import CommonModal from "../../CommonModal";
 import DangerButton from "../../DangerButton";
 import SecondaryButton from "../../SecondaryButton";
+import { useReactToPrint } from "react-to-print";
+import { useRef, useState } from "react";
+import RDFLogo from "../../../assets/images/RDF-Logo.png";
 
-function PrintTTAModal({ onPrint, ...props }) {
+function PrintTTAModal({ ...props }) {
   const { onClose } = props;
+
+  //States
+  const [isLoading, setIsLoading] = useState(false);
+
+  //Hooks
+  const printRef = useRef();
+
+  //Functions
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    onBeforeGetContent: () => {
+      setIsLoading(true);
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 500); // Delay to ensure the content is loaded before printing
+      });
+    },
+
+    onAfterPrint: () => {
+      setIsLoading(false);
+    },
+  });
 
   return (
     <CommonModal width="900px" closeTopRight {...props}>
@@ -24,7 +51,11 @@ function PrintTTAModal({ onPrint, ...props }) {
           Print Term Trade Agreement
         </Typography>
 
-        <Box className="printTTAModal__body">
+        <Box className="printTTAModal__body" ref={printRef}>
+          <Box className="printTTAModal__body__logo">
+            <img src={RDFLogo} alt="rdf-logo" />
+          </Box>
+
           <Typography className="printTTAModal__body__title">
             Special Agreement Between RDFFLFI and SMAXS
           </Typography>
@@ -60,7 +91,7 @@ function PrintTTAModal({ onPrint, ...props }) {
             <Box className="printTTAModal__body__tableContainer__productsAndOthers">
               <Table>
                 <TableBody>
-                  {Array.from({ length: 12 }).map((_, index) => (
+                  {Array.from({ length: 6 }).map((_, index) => (
                     <TableRow key={index}>
                       <TableCell
                         sx={{ borderRight: "1px solid #e0e0e0 !important" }}
@@ -424,7 +455,7 @@ function PrintTTAModal({ onPrint, ...props }) {
 
                   <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList">
                     <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item">
-                      <Typography>__________________________</Typography>
+                      <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__underline" />
 
                       <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__name">
                         DAN JERVY JIMENEZ
@@ -436,7 +467,7 @@ function PrintTTAModal({ onPrint, ...props }) {
                     </Box>
 
                     <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item">
-                      <Typography>________________________</Typography>
+                      <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__underline" />
 
                       <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__name">
                         ANTHONY LOZANO
@@ -448,7 +479,8 @@ function PrintTTAModal({ onPrint, ...props }) {
                     </Box>
 
                     <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item">
-                      <Typography>__________________________</Typography>
+                      <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__underline" />
+
                       <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__name">
                         ROBERT H.LO, DVM
                       </Typography>
@@ -466,7 +498,8 @@ function PrintTTAModal({ onPrint, ...props }) {
                   </Typography>
 
                   <Box className="printTTAModal__body__tableContainer__signatures__content__business__signature">
-                    <Typography>__________________________</Typography>
+                    <Box className="printTTAModal__body__tableContainer__signatures__content__business__signature__underline" />
+
                     <Typography className="printTTAModal__body__tableContainer__signatures__content__business__signature__name">
                       SMAXS
                     </Typography>
@@ -486,6 +519,7 @@ function PrintTTAModal({ onPrint, ...props }) {
                   pl: 2,
                   "& .MuiListItem-root": {
                     display: "list-item",
+                    marginBottom: "-14px",
                   },
                 }}
               >
@@ -519,7 +553,9 @@ function PrintTTAModal({ onPrint, ...props }) {
 
         <Box className="printTTAModal__actions">
           <DangerButton onClick={onClose}>Close</DangerButton>
-          <SecondaryButton onClick={onPrint}>Print</SecondaryButton>
+          <SecondaryButton onClick={handlePrint} disabled={isLoading}>
+            {isLoading ? <CircularProgress size="20px" /> : "Print"}
+          </SecondaryButton>
         </Box>
       </Box>
     </CommonModal>

@@ -1440,16 +1440,42 @@
     flex-direction: column;
     gap: 10px;
 
+    @media print {
+      margin: 10px;
+      gap: 0px;
+    }
+
+    &__logo {
+      display: none;
+
+      @media print {
+        display: flex;
+        justify-content: center;
+      }
+
+      & img {
+        width: 100px;
+      }
+    }
+
     & &__title {
       font-size: 1.2rem;
       font-weight: 500;
       text-align: center;
+
+      @media print {
+        font-size: 1rem;
+      }
     }
 
     & &__tableContainer {
       height: auto;
       border: 1px solid darken(#e9e9e9, 20%);
       max-height: 480px;
+
+      @media print {
+        overflow: hidden;
+      }
 
       @media (max-height: 710px) {
         max-height: 420px;
@@ -1487,6 +1513,12 @@
           display: flex;
           flex-direction: column;
           gap: 5px;
+
+          & p {
+            @media print {
+              font-size: 12px;
+            }
+          }
         }
       }
 
@@ -1526,6 +1558,10 @@
           & p {
             font-size: 0.9rem;
             text-align: center;
+
+            @media print {
+              font-size: 12px;
+            }
           }
         }
       }
@@ -1554,12 +1590,20 @@
           & p {
             font-size: 0.9rem;
             text-align: left;
+
+            @media print {
+              font-size: 12px;
+            }
           }
         }
       }
 
       &__fillerTableRow {
-        height: 22px;
+        height: 20px;
+
+        @media print {
+          height: 16px;
+        }
       }
 
       &__signatures {
@@ -1570,6 +1614,10 @@
 
         &__signedBy {
           font-size: 0.9rem;
+
+          @media print {
+            font-size: 12px;
+          }
         }
 
         &__content {
@@ -1581,34 +1629,59 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
 
             &__title {
               font-weight: 700;
+              font-size: 0.8rem;
+
+              @media print {
+                font-size: 12px;
+              }
             }
 
             &__signaturesList {
               display: flex;
-              align-items: center;
-              gap: 10px;
+              // align-items: center;
+              align-items: flex-start;
+              gap: 20px;
               justify-content: center;
 
               &__item {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                width: 200px;
+
+                @media print {
+                  width: 180px;
+                }
+
+                &__underline {
+                  width: 100%;
+                  height: 1px;
+                  background-color: black;
+                }
 
                 & p {
                   text-align: center;
                 }
 
                 &__name {
-                  font-size: 0.95rem;
+                  font-size: 0.8rem;
                   font-weight: 700;
+
+                  @media print {
+                    font-size: 12px;
+                  }
                 }
 
                 &__position {
-                  font-size: 0.9rem;
+                  font-size: 0.7rem;
+
+                  @media print {
+                    font-size: 12px;
+                  }
                 }
               }
             }
@@ -1618,24 +1691,48 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
 
             &__title {
+              font-size: 0.8rem;
               font-weight: 700;
+
+              @media print {
+                font-size: 12px;
+              }
             }
 
             &__signature {
               display: flex;
               flex-direction: column;
               align-items: center;
+              width: 200px;
+
+              @media print {
+                width: 180px;
+              }
+
+              &__underline {
+                width: 100%;
+                height: 1px;
+                background-color: black;
+              }
 
               &__name {
-                font-size: 0.95rem;
+                font-size: 0.8rem;
                 font-weight: 700;
+
+                @media print {
+                  font-size: 12px;
+                }
               }
 
               &__position {
-                font-size: 0.9rem;
+                font-size: 0.7rem;
+
+                @media print {
+                  font-size: 12px;
+                }
               }
             }
           }
@@ -1644,19 +1741,29 @@
 
       &__footer {
         border-top: 1px solid #e0e0e0;
-        margin: 0 30px;
+        padding: 0 30px;
 
         & p {
           font-size: 0.9rem;
+
+          @media print {
+            font-size: 12px;
+          }
         }
       }
 
       //Table Head Styles
       & th {
-        padding: 2px 10px;
-        // border: 2px solid #e0e0e0;
+        // padding: 2px 10px;
+        padding: 0;
         border-top: none;
         text-align: center;
+        white-space: normal;
+
+        @media print {
+          font-size: 12px !important;
+          line-height: 20px;
+        }
       }
 
       & th:first-of-type {
@@ -1685,9 +1792,12 @@
       }
 
       & td {
-        padding: 2px 10px;
-        // height: 18px;
-        // border: 2px solid #e0e0e0;
+        // padding: 2px 10px;
+        padding: 0 10px;
+        white-space: normal;
+        @media print {
+          font-size: 12px;
+        }
 
         & .labelValueGrid {
           display: grid;
