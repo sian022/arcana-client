@@ -46,6 +46,7 @@ function CommonTable({
   onVoid,
   onHistory,
   onDelete,
+  onPrintTTA,
   onPrintFreebies,
   onTagUserInCluster,
   onViewCluster,
@@ -411,6 +412,7 @@ function CommonTable({
                         onAddPriceChange={onAddPriceChange && onAddPriceChange}
                         onVoid={onVoid && onVoid}
                         onHistory={onHistory && onHistory}
+                        onPrintTTA={onPrintTTA && onPrintTTA}
                         onPrintFreebies={onPrintFreebies && onPrintFreebies}
                         onDelete={onDelete && onDelete}
                         onTagUserInCluster={

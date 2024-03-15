@@ -1,6 +1,4 @@
-import React from "react";
 import CommonModal from "../../CommonModal";
-import { useSelector } from "react-redux";
 import {
   Box,
   Table,
@@ -11,12 +9,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import UnderConstruction from "../../../assets/images/under-construction.svg";
 import FOLogo from "../../../assets/images/FO-Logo.png";
 import moment from "moment/moment";
 
 function ViewTransactionModal({ ...props }) {
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
+  // const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   return (
     <CommonModal closeTopRight {...props} width="1000px">

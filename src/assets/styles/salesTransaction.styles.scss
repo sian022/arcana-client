@@ -8,12 +8,19 @@
   height: 85vh;
 
   &__header {
-    height: 60px;
-    margin: 0 15px;
+    height: 45px;
+    margin: 0 10px;
     display: flex;
     align-items: center;
     gap: 10px;
     justify-content: space-between;
+
+    & &__title {
+      color: white;
+      font-size: 1.3rem;
+      // font-size: 1.5rem;
+      font-weight: 700;
+    }
 
     &__transactionsButton:hover {
       background-color: darken(#fff, 5%);
@@ -23,8 +30,8 @@
   &__body {
     display: flex;
     flex: 1;
-    margin: 0 15px;
-    padding: 15px;
+    margin: 0 10px;
+    padding: 10px;
     gap: 10px;
     background-color: #fdfdfd;
     border-radius: 5px;
@@ -341,11 +348,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 40px;
+    // height: 40px;
+    height: 10px;
     background-color: $primary;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    padding: 5px 15px;
+    padding: 0 10px;
     color: white;
   }
 }

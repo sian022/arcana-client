@@ -109,9 +109,10 @@ const registrationApi = api
       }),
 
       putApproveClient: builder.mutation({
-        query: ({ id }) => ({
+        query: ({ id, ...params }) => ({
           url: `/RegularClients/ApproveClientRegistration/${id}`,
           method: "PUT",
+          params,
         }),
         invalidatesTags: ["Registration", "Notification"],
       }),

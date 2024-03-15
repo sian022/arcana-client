@@ -18,6 +18,7 @@ import PrintFreebiesModal from "../../components/modals/PrintFreebiesModal";
 import { AppContext } from "../../context/AppContext";
 import SearchVoidFilterMixin from "../../components/mixins/SearchVoidFilterMixin";
 import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
+import PrintTTAModal from "../../components/modals/registration/PrintTTAModal";
 
 function DirectRegistration() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -60,6 +61,12 @@ function DirectRegistration() {
     isOpen: isHistoryOpen,
     onOpen: onHistoryOpen,
     onClose: onHistoryClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isPrintTTAOpen,
+    onOpen: onPrintTTAOpen,
+    onClose: onPrintTTAClose,
   } = useDisclosure();
 
   const {
@@ -239,6 +246,7 @@ function DirectRegistration() {
             // onArchive={onArchiveOpen}
             onVoid={clientStatus === "Rejected" && onVoidOpen}
             onPrintFreebies={onPrintOpen}
+            onPrintTTA={clientStatus === "Approved" && onPrintTTAOpen}
             disableActions={
               (!selectedRowData?.freebies ||
                 selectedRowData?.freebies?.length === 0) &&
@@ -261,6 +269,8 @@ function DirectRegistration() {
         onClose={onViewClose}
         clientStatus={clientStatus}
       />
+
+      <PrintTTAModal open={isPrintTTAOpen} onClose={onPrintTTAClose} />
 
       <CommonDialog
         open={isVoidOpen}

@@ -17,6 +17,8 @@ import { useSelector } from "react-redux";
 import CommonDialog from "../../CommonDialog";
 import { Close } from "@mui/icons-material";
 import {
+  useLazyGetListingFeeByClientIdQuery,
+  useLazyGetOtherExpensesByClientIdQuery,
   usePutApproveClientMutation,
   usePutRejectClientMutation,
 } from "../../../features/registration/api/registrationApi";
@@ -29,7 +31,7 @@ import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 import SecondaryButton from "../../SecondaryButton";
 
 function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
-  const { onClose } = props;
+  const { onClose, open } = props;
 
   const [reason, setReason] = useState("");
   const [confirmReason, setConfirmReason] = useState(false);
@@ -106,6 +108,11 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
     usePutRejectClientMutation();
   const [sendMessage, { isLoading: isSendMessageLoading }] =
     useSendMessageMutation();
+
+  const [triggerListingFee, { data: listingFeeData }] =
+    useLazyGetListingFeeByClientIdQuery();
+  const [triggerExpenses, { data: otherExpensesData }] =
+    useLazyGetOtherExpensesByClientIdQuery();
 
   //Handler Functions
   const handleClose = () => {
@@ -203,10 +210,17 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
   };
 
   const handleApprove = async () => {
+    console.log(listingFeeData?.listingFees?.[0]?.listingItems?.length > 0);
+    console.log(otherExpensesData?.expenses?.[0]?.expenses?.length > 0);
     try {
       await putApproveClient({
-        // id: selectedRowData?.id,
         id: selectedRowData?.requestId,
+        ...(listingFeeData?.listingFees?.[0]?.listingItems?.length > 0 && {
+          ListingFeeRequestId: listingFeeData?.listingFees?.[0]?.requestId,
+        }),
+        ...(otherExpensesData?.expenses?.[0]?.expenses?.length > 0 && {
+          OtherExpensesRequestId: otherExpensesData?.expenses?.[0]?.requestId,
+        }),
       }).unwrap();
 
       await sendMessage({
@@ -216,10 +230,10 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
 
       snackbar({ message: "Client approved successfully", variant: "success" });
 
-      onApproveConfirmClose();
       handleClose();
     } catch (error) {
       if (error.function !== "sendMessage") {
+        onApproveConfirmClose();
         return snackbar({
           message: handleCatchErrorMessage(error),
           variant: "error",
@@ -231,9 +245,10 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
           "Registration approved successfully but failed to send message.",
         variant: "warning",
       });
-      onApproveConfirmClose();
       handleClose();
     }
+
+    onApproveConfirmClose();
   };
 
   const handleRejectConfirmClose = () => {
@@ -280,6 +295,23 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
       [activeTab]: true,
     }));
   }, [activeTab]);
+
+  useEffect(() => {
+    if (open) {
+      triggerListingFee(
+        {
+          id: selectedRowData?.id,
+        },
+        { preferCacheValue: true }
+      );
+      triggerExpenses(
+        {
+          id: selectedRowData?.id,
+        },
+        { preferCacheValue: true }
+      );
+    }
+  }, [open, selectedRowData?.id, triggerListingFee, triggerExpenses]);
 
   return (
     <>

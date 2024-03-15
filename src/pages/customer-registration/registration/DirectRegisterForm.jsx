@@ -1120,8 +1120,6 @@ function DirectRegisterForm({
     }
   }, [editMode, open, dispatch]);
 
-  console.log(expenses);
-
   return (
     <>
       <CommonDrawer

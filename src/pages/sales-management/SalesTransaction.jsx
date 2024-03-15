@@ -23,9 +23,8 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import { salesTransactionSchema } from "../../schema/schema";
 import { useFieldArray, useForm } from "react-hook-form";
-import moment from "moment";
 import { debounce } from "../../utils/CustomFunctions";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import NoProductFound from "../../assets/images/NoProductFound.svg";
 import AddItemModal from "../../components/modals/sales-management/AddItemModal";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -46,11 +45,11 @@ function SalesTransaction() {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const [currentTime, setCurrentTime] = useState(
-    moment().format("M/D/YY h:m a")
-  );
+  // const [currentTime, setCurrentTime] = useState(
+  //   moment().format("M/D/YY h:m a")
+  // );
 
-  const fullName = useSelector((state) => state.login.fullname);
+  // const fullName = useSelector((state) => state.login.fullname);
 
   const dispatch = useDispatch();
   const filterRef = useRef();
@@ -137,14 +136,14 @@ function SalesTransaction() {
     }
   };
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(moment().format("M/D/YY h:m a"));
-    }, 1000); // Update every second
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setCurrentTime(moment().format("M/D/YY h:m a"));
+  //   }, 1000); // Update every second
 
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []); // Empty dependency array to run effect only once on mount
+  //   // Cleanup interval on component unmount
+  //   return () => clearInterval(intervalId);
+  // }, []); // Empty dependency array to run effect only once on mount
 
   useEffect(() => {
     setIsLoading(true);
@@ -165,53 +164,66 @@ function SalesTransaction() {
         ) : (
           <Box className="salesTransaction">
             <Box className="salesTransaction__header">
-              <Typography
-                color="white !important"
-                fontSize="1.4rem"
-                fontWeight="700"
-              >
+              <Typography className="salesTransaction__header__title">
                 Sales Transaction
               </Typography>
 
               <Button
                 color="white"
+                // color="secondary"
                 variant="contained"
                 className="salesTransaction__header__transactionsButton"
                 onClick={() => {
                   setTransactionsMode(true);
                   sessionStorage.setItem("transactionsMode", true);
                 }}
+                endIcon={<KeyboardDoubleArrowRight />}
+                size="small"
               >
-                Transactions List &nbsp; <KeyboardDoubleArrowRight />
+                Transactions List
               </Button>
             </Box>
 
+            {/* <Divider sx={{ mb: "15px" }} /> */}
+
             <Box className="salesTransaction__body">
               <Box className="salesTransaction__body__itemsForm">
-                <ControlledAutocomplete
-                  name={`clientId`}
-                  control={control}
-                  options={clientData || []}
-                  disabled={watch("items")?.length > 0}
-                  getOptionLabel={(option) =>
-                    option.businessName?.toUpperCase() +
-                      " - " +
-                      option.ownersName?.toUpperCase() || ""
+                <Tooltip
+                  title={
+                    watch("items")?.length > 0
+                      ? "Clear items first before changing client"
+                      : ""
                   }
-                  // disableClearable
-                  loading={isClientLoading}
-                  isOptionEqualToValue={() => true}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      // label="Business Name - Owner's Name"
-                      placeholder="Business Name - Owner's Name"
-                      helperText={errors?.clientId?.message}
-                      error={errors?.clientId}
-                    />
-                  )}
-                />
+                >
+                  <ControlledAutocomplete
+                    name={`clientId`}
+                    control={control}
+                    options={clientData || []}
+                    // disabled={watch("items")?.length > 0}
+                    readOnly={watch("items")?.length > 0}
+                    getOptionLabel={(option) =>
+                      option.businessName?.toUpperCase() +
+                        " - " +
+                        option.ownersName?.toUpperCase() || ""
+                    }
+                    // disableClearable
+                    loading={isClientLoading}
+                    isOptionEqualToValue={() => true}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        placeholder="Business Name - Owner's Name"
+                        sx={{
+                          pointerEvents:
+                            watch("items")?.length > 0 ? "none" : "auto",
+                        }}
+                        helperText={errors?.clientId?.message}
+                        error={!!errors?.clientId}
+                      />
+                    )}
+                  />
+                </Tooltip>
 
                 <Box className="salesTransaction__body__itemsForm__searchFilter">
                   <TextField
@@ -526,9 +538,9 @@ function SalesTransaction() {
             </Box>
 
             <Box className="salesTransaction__footer">
-              <Typography>User: {fullName}</Typography>
+              {/* <Typography>User: {fullName}</Typography>
 
-              <Typography>Date: {currentTime}</Typography>
+              <Typography>Date: {currentTime}</Typography> */}
             </Box>
           </Box>
         )}

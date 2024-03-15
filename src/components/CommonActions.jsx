@@ -37,6 +37,7 @@ function CommonActions({
   onUpdateFreebies,
   onCancelFreebies,
   onManageApprovers,
+  onPrintTTA,
   onPrintFreebies,
   onAddPriceChange,
   onVoid,
@@ -84,6 +85,8 @@ function CommonActions({
       onVoid();
     } else if (action === "history") {
       onHistory();
+    } else if (action === "printTTA") {
+      onPrintTTA();
     } else if (action === "printFreebies") {
       onPrintFreebies();
     } else if (action === "addPriceChange") {
@@ -410,6 +413,21 @@ function CommonActions({
           </MenuItem>
         )}
 
+        {onPrintTTA && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("printTTA");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("printTTA") : false
+            }
+          >
+            <Print />
+            Print TTA
+          </MenuItem>
+        )}
+
         {onPrintFreebies && (
           <MenuItem
             className="actionsMenuItem"
@@ -419,11 +437,6 @@ function CommonActions({
             disabled={
               disableActions ? disableActions?.includes("printFreebies") : false
             }
-            // title={
-            //   disableActions && disableActions?.includes("printFreebies")
-            //     ? "No freebies found"
-            //     : ""
-            // }
           >
             <Print />
             Print Freebies

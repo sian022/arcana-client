@@ -50,6 +50,15 @@ export const theme = createTheme({
   },
 
   components: {
+    MuiButton: {
+      variants: [
+        {
+          props: { size: "extraSmall" },
+          style: { fontSize: "12px", fontWeight: "500", padding: "4px 8px" },
+        },
+      ],
+    },
+
     MuiInputBase: {
       styleOverrides: {
         root: ({ ownerState }) => ({
