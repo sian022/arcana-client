@@ -77,7 +77,6 @@ function PrintTTAModal({ ...props }) {
   }, [open, selectedRowData, triggerTerms, triggerListingFee, triggerExpenses]);
 
   console.log(selectedRowData);
-
   return (
     <CommonModal width="900px" closeTopRight {...props}>
       <Box className="printTTAModal">
@@ -326,7 +325,7 @@ function PrintTTAModal({ ...props }) {
                         className="printTTAModal__body__tableContainer__contactItem__cell"
                         sx={{ fontWeight: "600" }}
                       >
-                        {selectedRowData?.requestedBy} - Channel Development
+                        {selectedRowData?.requestor} - Channel Development
                         Officer
                       </TableCell>
                     </TableRow>
@@ -339,7 +338,12 @@ function PrintTTAModal({ ...props }) {
 
                     <TableRow>
                       <TableCell className="printTTAModal__body__tableContainer__contactItem__cell">
-                        Contact Number: 0999-2231-940
+                        Contact Number:{" "}
+                        {selectedRowData?.requestorMobileNumber
+                          ? `0${formatPhoneNumber(
+                              selectedRowData?.requestorMobileNumber
+                            )}`
+                          : ""}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -435,8 +439,9 @@ function PrintTTAModal({ ...props }) {
                       <TableCell className="printTTAModal__body__tableContainer__customerInfoItem__cell">
                         Contact Number:{" "}
                         {selectedRowData?.phoneNumber
-                          ? `0
-                        ${formatPhoneNumber(selectedRowData?.phoneNumber)}`
+                          ? `0${formatPhoneNumber(
+                              selectedRowData?.phoneNumber
+                            )}`
                           : ""}
                       </TableCell>
                     </TableRow>
@@ -517,8 +522,9 @@ function PrintTTAModal({ ...props }) {
                       <TableCell className="printTTAModal__body__tableContainer__customerInfoItem__cell">
                         Contact Number:{" "}
                         {selectedRowData?.phoneNumber
-                          ? `0
-                        ${formatPhoneNumber(selectedRowData?.phoneNumber)}`
+                          ? `0${formatPhoneNumber(
+                              selectedRowData?.phoneNumber
+                            )}`
                           : ""}
                       </TableCell>
                     </TableRow>
