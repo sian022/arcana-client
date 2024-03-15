@@ -210,8 +210,6 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
   };
 
   const handleApprove = async () => {
-    console.log(listingFeeData?.listingFees?.[0]?.listingItems?.length > 0);
-    console.log(otherExpensesData?.expenses?.[0]?.expenses?.length > 0);
     try {
       await putApproveClient({
         id: selectedRowData?.requestId,
@@ -261,7 +259,13 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
     try {
       await putRejectClient({
         id: selectedRowData?.requestId,
-        reason,
+        body: { reason },
+        ...(listingFeeData?.listingFees?.[0]?.listingItems?.length > 0 && {
+          ListingFeeRequestId: listingFeeData?.listingFees?.[0]?.requestId,
+        }),
+        ...(otherExpensesData?.expenses?.[0]?.expenses?.length > 0 && {
+          OtherExpensesRequestId: otherExpensesData?.expenses?.[0]?.requestId,
+        }),
       }).unwrap();
 
       await sendMessage({

@@ -1490,6 +1490,11 @@
         }
       }
 
+      &__supportRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
       //Table Head Styles
       & th {
         padding: 2px 10px;

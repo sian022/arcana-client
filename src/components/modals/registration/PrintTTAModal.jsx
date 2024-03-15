@@ -58,7 +58,7 @@ function PrintTTAModal({ onPrint, ...props }) {
             <Box className="printTTAModal__body__tableContainer__productsAndOthers">
               <Table>
                 <TableBody>
-                  {Array.from({ length: 5 }).map((_, index) => (
+                  {Array.from({ length: 12 }).map((_, index) => (
                     <TableRow key={index}>
                       <TableCell
                         sx={{ borderRight: "1px solid #e0e0e0 !important" }}
@@ -72,6 +72,18 @@ function PrintTTAModal({ onPrint, ...props }) {
                       </TableCell>
                     </TableRow>
                   ))}
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        borderRight: "1px solid #e0e0e0 !important",
+                        textAlign: "center",
+                        textTransform: "uppercase",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Support
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
 
@@ -83,6 +95,33 @@ function PrintTTAModal({ onPrint, ...props }) {
                 <Typography>Discount - 5%</Typography>
               </Box>
             </Box>
+
+            <Table>
+              <TableBody>
+                <TableRow
+                  sx={{ borderTop: "1px solid #e0e0e0 !important" }}
+                  className="printTTAModal__body__tableContainer__supportRow"
+                >
+                  <TableCell
+                    sx={{ borderRight: "1px solid #e0e0e0 !important" }}
+                  >
+                    Mode of Payment
+                  </TableCell>
+                  <TableCell>
+                    1 up - 1 down (to be collected in 15 days)
+                  </TableCell>
+                </TableRow>
+
+                <TableRow className="printTTAModal__body__tableContainer__supportRow">
+                  <TableCell
+                    sx={{ borderRight: "1px solid #e0e0e0 !important" }}
+                  >
+                    Delivery Schedule
+                  </TableCell>
+                  <TableCell>Every Monday and Thursday</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </TableContainer>
         </Box>
 

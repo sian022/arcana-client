@@ -118,10 +118,11 @@ const registrationApi = api
       }),
 
       putRejectClient: builder.mutation({
-        query: ({ id, ...body }) => ({
+        query: ({ id, body, ...params }) => ({
           url: `/Clients/RejectClientRegistration/${id}`,
           method: "PUT",
-          body: body,
+          body,
+          params,
         }),
         invalidatesTags: ["Registration", "Listing Fee", "Notification"],
       }),
