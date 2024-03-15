@@ -1564,20 +1564,91 @@
 
       &__signatures {
         border-top: 1px solid #e0e0e0;
-        padding: 0px 5px;
+        padding: 0px 5px 10px;
+        display: flex;
+        flex-direction: column;
 
         &__signedBy {
           font-size: 0.9rem;
         }
 
-        &__rdf {
-        }
+        &__content {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
 
-        &__business {
+          &__rdf {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+
+            &__title {
+              font-weight: 700;
+            }
+
+            &__signaturesList {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              justify-content: center;
+
+              &__item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                & p {
+                  text-align: center;
+                }
+
+                &__name {
+                  font-size: 0.95rem;
+                  font-weight: 700;
+                }
+
+                &__position {
+                  font-size: 0.9rem;
+                }
+              }
+            }
+          }
+
+          &__business {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+
+            &__title {
+              font-weight: 700;
+            }
+
+            &__signature {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+
+              &__name {
+                font-size: 0.95rem;
+                font-weight: 700;
+              }
+
+              &__position {
+                font-size: 0.9rem;
+              }
+            }
+          }
         }
       }
 
       &__footer {
+        border-top: 1px solid #e0e0e0;
+        margin: 0 30px;
+
+        & p {
+          font-size: 0.9rem;
+        }
       }
 
       //Table Head Styles

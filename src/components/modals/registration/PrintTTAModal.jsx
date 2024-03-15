@@ -1,5 +1,7 @@
 import {
   Box,
+  List,
+  ListItem,
   Table,
   TableBody,
   TableCell,
@@ -414,9 +416,103 @@ function PrintTTAModal({ onPrint, ...props }) {
                 Signed by:
               </Typography>
 
-              <Box className="printTTAModal__body__tableContainer__signatures__rdf"></Box>
+              <Box className="printTTAModal__body__tableContainer__signatures__content">
+                <Box className="printTTAModal__body__tableContainer__signatures__content__rdf">
+                  <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__title">
+                    RDF FEED, LIVESTOCK & FOODS INC.
+                  </Typography>
 
-              <Box className="printTTAModal__body__tableContainer__signatures__business"></Box>
+                  <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList">
+                    <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item">
+                      <Typography>__________________________</Typography>
+
+                      <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__name">
+                        DAN JERVY JIMENEZ
+                      </Typography>
+
+                      <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__position">
+                        General Trade Distribution Head
+                      </Typography>
+                    </Box>
+
+                    <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item">
+                      <Typography>________________________</Typography>
+
+                      <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__name">
+                        ANTHONY LOZANO
+                      </Typography>
+
+                      <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__position">
+                        Sales & Marketing Director
+                      </Typography>
+                    </Box>
+
+                    <Box className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item">
+                      <Typography>__________________________</Typography>
+                      <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__name">
+                        ROBERT H.LO, DVM
+                      </Typography>
+
+                      <Typography className="printTTAModal__body__tableContainer__signatures__content__rdf__signaturesList__item__position">
+                        CEO
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+
+                <Box className="printTTAModal__body__tableContainer__signatures__content__business">
+                  <Typography className="printTTAModal__body__tableContainer__signatures__content__business__title">
+                    SMAXS
+                  </Typography>
+
+                  <Box className="printTTAModal__body__tableContainer__signatures__content__business__signature">
+                    <Typography>__________________________</Typography>
+                    <Typography className="printTTAModal__body__tableContainer__signatures__content__business__signature__name">
+                      SMAXS
+                    </Typography>
+
+                    <Typography className="printTTAModal__body__tableContainer__signatures__content__business__signature__position">
+                      Owner/Representative
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+
+            <Box className="printTTAModal__body__tableContainer__footer">
+              <List
+                sx={{
+                  listStyleType: "disc",
+                  pl: 2,
+                  "& .MuiListItem-root": {
+                    display: "list-item",
+                  },
+                }}
+              >
+                <ListItem>
+                  <Typography>
+                    This form serves as an official agreement between RDF Feed,
+                    Livestock & Foods Inc. and SMAXS. Both parties agree to
+                    follow all terms stated above this contract.
+                  </Typography>
+                </ListItem>
+
+                <ListItem>
+                  <Typography>
+                    All stipulations stated in this agreement shall be strictly
+                    adhered to and shall extend indefinitely until both parties
+                    agree to terminate or revise this agreement.
+                  </Typography>
+                </ListItem>
+
+                <ListItem>
+                  <Typography>
+                    Both parties shall keep the terms and conditions of this
+                    agreement confidential and shall not disclose this to any
+                    person.
+                  </Typography>
+                </ListItem>
+              </List>
             </Box>
           </TableContainer>
         </Box>
