@@ -1515,8 +1515,59 @@
           gap: 5px;
 
           & p {
+            font-size: 0.9rem;
             @media print {
               font-size: 12px;
+            }
+          }
+
+          &__invoiceDeduction {
+            max-width: 80%;
+            position: relative;
+
+            &__grouping {
+              height: 100%;
+              position: absolute;
+              right: 0;
+              top: 50%;
+              display: flex;
+              align-items: center;
+              gap: 5px;
+
+              &__bracket {
+                height: 100%;
+                width: 2px;
+                background-color: black;
+                position: relative;
+                border-top-left-radius: 50px; /* Adjust the radius to control the curvature */
+                border-bottom-left-radius: 50px;
+
+                &::before,
+                &::after {
+                  content: "";
+                  position: absolute;
+                  width: 0;
+                  border: 20px solid transparent;
+                }
+
+                &::before {
+                  border-right-color: black;
+                  border-top-color: black;
+                  top: 0;
+                  left: 0;
+                }
+
+                &::after {
+                  border-left-color: black;
+                  border-bottom-color: black;
+                  bottom: 0;
+                  right: 0;
+                }
+              }
+
+              &__label {
+                font-size: 0.9rem;
+              }
             }
           }
         }
