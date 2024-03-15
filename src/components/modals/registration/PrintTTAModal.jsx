@@ -85,7 +85,7 @@ function PrintTTAModal({ ...props }) {
           Print Term Trade Agreement
         </Typography>
 
-        {isListingFeeFetching || isExpensesFetching ? (
+        {isTermsFetching || isListingFeeFetching || isExpensesFetching ? (
           <Box
             sx={{
               display: "flex",
@@ -433,8 +433,11 @@ function PrintTTAModal({ ...props }) {
 
                     <TableRow>
                       <TableCell className="printTTAModal__body__tableContainer__customerInfoItem__cell">
-                        Contact Number: 0
-                        {formatPhoneNumber(selectedRowData?.phoneNumber)}
+                        Contact Number:{" "}
+                        {selectedRowData?.phoneNumber
+                          ? `0
+                        ${formatPhoneNumber(selectedRowData?.phoneNumber)}`
+                          : ""}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -512,8 +515,11 @@ function PrintTTAModal({ ...props }) {
 
                     <TableRow>
                       <TableCell className="printTTAModal__body__tableContainer__customerInfoItem__cell">
-                        Contact Number: 0
-                        {formatPhoneNumber(selectedRowData?.phoneNumber)}
+                        Contact Number:{" "}
+                        {selectedRowData?.phoneNumber
+                          ? `0
+                        ${formatPhoneNumber(selectedRowData?.phoneNumber)}`
+                          : ""}
                       </TableCell>
                     </TableRow>
                   </TableBody>

@@ -27,7 +27,7 @@ const priceModeItemsApi = api
       exportPrices: builder.query({
         query: (params) => ({
           params: params,
-          url: "/price/export",
+          url: "/price-change/export",
           method: "GET",
         }),
       }),

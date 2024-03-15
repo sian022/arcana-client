@@ -43,6 +43,7 @@ function ExportPriceModal({
                 size: "small",
               },
             }}
+            disableFuture
           />
         </LocalizationProvider>
 

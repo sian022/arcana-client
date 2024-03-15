@@ -17,7 +17,6 @@ import CommonDialog from "../../components/CommonDialog";
 import {
   useDeletePriceModeItemMutation,
   useGetAllItemsByPriceModeIdQuery,
-  useLazyExportPricesQuery,
   usePostItemsToPriceModeMutation,
 } from "../../features/setup/api/priceModeItemsApi";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -26,7 +25,11 @@ import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
 import PageHeaderAddButtonSearch from "../../components/PageHeaderAddButtonSearch";
 import moment from "moment";
 import ExportPriceModal from "../../components/modals/ExportPriceModal";
-import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import {
+  decryptString,
+  handleCatchErrorMessage,
+} from "../../utils/CustomFunctions";
+import axios from "axios";
 
 function PriceModeManagement() {
   const [search, setSearch] = useState("");
@@ -34,6 +37,7 @@ function PriceModeManagement() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [exportDateTime, setExportDateTime] = useState(moment());
+  const [isExportLoading, setIsExportLoading] = useState(false);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const snackbar = useSnackbar();
@@ -83,6 +87,28 @@ function PriceModeManagement() {
     defaultValues: priceModeItemSchema.defaultValues,
   });
 
+  //Axios
+  const exportPriceChanges = async () => {
+    const res = await axios.get(
+      `${
+        import.meta.env.VITE_BASEURL
+      }price-change/export?EffectivityDate=${moment(exportDateTime).format(
+        "YYYY-MM-DDTHH:mm:ss"
+      )}`,
+      {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${decryptString(
+            sessionStorage.getItem("token")
+          )}`,
+          "Content-Type": "application/json", // Example content type, adjust as necessary
+        },
+      }
+    );
+
+    return res.data;
+  };
+
   //RTK Query
   const { data: priceModeData, isFetching: isPriceModeFetching } =
     useGetAllPriceModeQuery({
@@ -106,9 +132,6 @@ function PriceModeManagement() {
       PageNumber: page + 1,
       PageSize: rowsPerPage,
     });
-
-  const [triggerExport, { data: exportData, isFetching: isExportFetching }] =
-    useLazyExportPricesQuery();
 
   // Constants
   const tableHeads = [
@@ -183,14 +206,31 @@ function PriceModeManagement() {
 
   const onExport = async () => {
     try {
-      await triggerExport({
-        date: moment(exportDateTime).format("YYYY-MM-DDTHH:mm:ss"),
-      }).unwrap();
+      setIsExportLoading(true);
 
-      console.log(exportData);
+      const excelData = await exportPriceChanges();
+
+      const excelBlob = new Blob([excelData], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const url = URL.createObjectURL(excelBlob);
+
+      const dateFormatted = moment(exportDateTime)
+        .format("MM-DD-yy")
+        .replace(/-/g, "")
+        .replace("20", "");
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Arcana_Prices_${dateFormatted}.xlsx`;
+      a.click();
     } catch (error) {
+      console.log(error);
       snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
+
+    setIsExportLoading(false);
   };
 
   // UseEffect;
@@ -379,7 +419,7 @@ function PriceModeManagement() {
         onExport={onExport}
         dateTime={exportDateTime}
         setDateTime={setExportDateTime}
-        isExportLoading={isExportFetching}
+        isExportLoading={isExportLoading}
       />
 
       <CommonDialog
