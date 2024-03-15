@@ -332,7 +332,8 @@ function PrintTTAModal({ ...props }) {
 
                     <TableRow>
                       <TableCell className="printTTAModal__body__tableContainer__contactItem__cell">
-                        Email Address: noelbaylon.rdf@gmail.com
+                        Email Address:
+                        {/* noelbaylon.rdf@gmail.com */}
                       </TableCell>
                     </TableRow>
 
