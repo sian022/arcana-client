@@ -36,8 +36,6 @@ import TransactionsList from "../../components/sales-transaction/TransactionsLis
 import UnderConstruction from "../../assets/images/under-construction.svg";
 import { useGetAllClientsForPOSQuery } from "../../features/sales-management/api/salesTransactionApi";
 import { useGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
-import NoImage from "../../assets/images/NoImage.png";
-import SisigSample from "../../assets/images/SisigSample.png";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");

@@ -4,7 +4,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
-import { RemoveCircleOutline } from "@mui/icons-material";
+import { Add, RemoveCircleOutline } from "@mui/icons-material";
 import { useGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
@@ -599,15 +599,8 @@ function ListingFeeDrawer({
                 unitCost: null,
               });
             }}
-            // disabled={
-            //   !watch("listingItems")[watch("listingItems")?.length - 1]
-            //     ?.itemId ||
-            //   watch("listingItems")[watch("listingItems")?.length - 1]
-            //     ?.unitCost == null ||
-            //   watch("listingItems")[watch("listingItems")?.length - 1]
-            //     ?.unitCost == undefined
-            // }
             disabled={!isValid}
+            endIcon={<Add />}
           >
             Add Product
           </SecondaryButton>

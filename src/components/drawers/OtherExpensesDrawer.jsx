@@ -4,7 +4,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
 import ControlledAutocomplete from "../ControlledAutocomplete";
-import { RemoveCircleOutline } from "@mui/icons-material";
+import { Add, RemoveCircleOutline } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import SecondaryButton from "../SecondaryButton";
 import ErrorSnackbar from "../ErrorSnackbar";
@@ -475,6 +475,7 @@ function OtherExpensesDrawer({
               });
             }}
             disabled={!isValid}
+            endIcon={<Add />}
           >
             Add Expense
           </SecondaryButton>

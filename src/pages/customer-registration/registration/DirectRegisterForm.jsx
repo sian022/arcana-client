@@ -260,8 +260,12 @@ function DirectRegisterForm({
   ].filter(Boolean);
 
   navigators[1].disabled = !editMode && activeTab === "Personal Info";
-  if (navigators?.length > 2) {
-    navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
+  navigators[2].disabled = !navigators[0].isValid || !navigators[1].isValid;
+  if (navigators?.length > 3) {
+    navigators[3].disabled =
+      !navigators[0].isValid ||
+      !navigators[1].isValid ||
+      !navigators[2].isValid;
   }
 
   //RTK Query
@@ -813,6 +817,8 @@ function DirectRegisterForm({
         (!watch("authorizedRepresentative") ||
           !watch("authorizedRepresentativePosition"))
       ) {
+        return true;
+      } else if (isValidateClientLoading) {
         return true;
       }
     } else if (

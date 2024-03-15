@@ -1,17 +1,16 @@
 import {
   Box,
   Checkbox,
-  Menu,
   MenuItem,
   Paper,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
 import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
 import { debounce } from "../utils/CustomFunctions";
+import { Add } from "@mui/icons-material";
 
 function PageHeaderFilterAdd({
   onOpen,
@@ -35,7 +34,11 @@ function PageHeaderFilterAdd({
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
           {!removeAdd && (
-            <SecondaryButton className="addRowButtons" onClick={onOpen}>
+            <SecondaryButton
+              className="addRowButtons"
+              onClick={onOpen}
+              endIcon={<Add />}
+            >
               Add
             </SecondaryButton>
           )}

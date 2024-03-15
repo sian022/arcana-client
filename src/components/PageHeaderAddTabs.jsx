@@ -1,6 +1,7 @@
 import { Box, Paper, Typography, Stack, Badge, Divider } from "@mui/material";
 import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
+import { Add } from "@mui/icons-material";
 
 function PageHeaderAddTabs({
   small,
@@ -27,6 +28,7 @@ function PageHeaderAddTabs({
           <SecondaryButton
             sx={{ height: largeButton && "50px" }}
             className="addRowButtons"
+            endIcon={<Add />}
             onClick={onOpen}
           >
             {addTitle}

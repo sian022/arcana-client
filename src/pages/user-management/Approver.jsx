@@ -13,6 +13,7 @@ import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import {
+  Add,
   HowToVote,
   KeyboardArrowDown,
   KeyboardArrowUp,
@@ -361,17 +362,14 @@ function Approver() {
         <SecondaryButton
           sx={{ width: "150px" }}
           onClick={() => {
-            // fields.length < 5
-            //   ? append({ itemId: null, unitCost: null })
-            //   : handleListingFeeError();
             append({
               userId: null,
-              // moduleName: "",
               moduleName: selectedRowData?.moduleName,
               level: fields.length + 1,
             });
           }}
           disabled={!isValid}
+          endIcon={<Add />}
         >
           Add Approver
         </SecondaryButton>

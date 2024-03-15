@@ -7,7 +7,7 @@ import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllOtherExpensesQuery } from "../../../features/setup/api/otherExpensesApi";
 import SecondaryButton from "../../../components/SecondaryButton";
 import { NumericFormat } from "react-number-format";
-import { RemoveCircleOutline } from "@mui/icons-material";
+import { Add, RemoveCircleOutline } from "@mui/icons-material";
 import { useCallback, useEffect, useState } from "react";
 import {
   setExpensesForRegistration,
@@ -237,6 +237,7 @@ function OtherExpensesClient() {
             });
           }}
           disabled={!isValid}
+          endIcon={<Add />}
         >
           Add Expense
         </SecondaryButton>

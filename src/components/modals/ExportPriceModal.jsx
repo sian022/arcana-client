@@ -30,7 +30,7 @@ function ExportPriceModal({
     >
       <Box className="exportPriceModal">
         <Typography className="exportPriceModal__title">
-          Export Prices
+          Export Price
         </Typography>
 
         <LocalizationProvider dateAdapter={AdapterMoment}>

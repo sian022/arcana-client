@@ -4,7 +4,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { listingFeeForRegistrationSchema } from "../../../schema/schema";
 import { useDispatch, useSelector } from "react-redux";
 import SecondaryButton from "../../../components/SecondaryButton";
-import { RemoveCircleOutline } from "@mui/icons-material";
+import { Add, RemoveCircleOutline } from "@mui/icons-material";
 import { NumericFormat } from "react-number-format";
 import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllProductsQuery } from "../../../features/setup/api/productsApi";
@@ -283,6 +283,7 @@ function ListingFeeClient() {
             });
           }}
           disabled={!isValid}
+          endIcon={<Add />}
         >
           Add Product
         </SecondaryButton>

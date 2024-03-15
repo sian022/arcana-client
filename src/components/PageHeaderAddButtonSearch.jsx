@@ -3,7 +3,7 @@ import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
 import { debounce } from "../utils/CustomFunctions";
 import TertiaryButton from "./TertiaryButton";
-import { FileDownload } from "@mui/icons-material";
+import { Add, FileDownload } from "@mui/icons-material";
 
 function PageHeaderAddButtonSearch({
   onOpen,
@@ -26,7 +26,11 @@ function PageHeaderAddButtonSearch({
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
           {!removeAdd && (
-            <SecondaryButton className="addRowButtons" onClick={onOpen}>
+            <SecondaryButton
+              className="addRowButtons"
+              onClick={onOpen}
+              endIcon={<Add />}
+            >
               Add
             </SecondaryButton>
           )}

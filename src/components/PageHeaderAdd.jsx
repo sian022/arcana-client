@@ -2,6 +2,7 @@ import { Box, Checkbox, Paper, TextField, Typography } from "@mui/material";
 import "../assets/styles/common.styles.scss";
 import SecondaryButton from "./SecondaryButton";
 import { debounce } from "../utils/CustomFunctions";
+import { Add } from "@mui/icons-material";
 
 function PageHeaderAdd({
   onOpen,
@@ -22,7 +23,11 @@ function PageHeaderAdd({
         <Box className="pageHeader__left">
           <Typography className="pageHeader__title">{pageTitle}</Typography>
           {!removeAdd && (
-            <SecondaryButton className="addRowButtons" onClick={onOpen}>
+            <SecondaryButton
+              className="addRowButtons"
+              onClick={onOpen}
+              endIcon={<Add />}
+            >
               Add
             </SecondaryButton>
           )}

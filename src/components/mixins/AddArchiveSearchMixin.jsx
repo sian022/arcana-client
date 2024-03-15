@@ -1,13 +1,6 @@
-import {
-  Box,
-  Checkbox,
-  Paper,
-  TextField,
-  Typography,
-  debounce,
-} from "@mui/material";
-import React from "react";
+import { Box, Checkbox, TextField, Typography, debounce } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
+import { Add } from "@mui/icons-material";
 
 function AddArchiveSearchMixin({ addTitle, onAddOpen, setStatus, setSearch }) {
   const debouncedSetSearch = debounce((value) => {
@@ -18,7 +11,11 @@ function AddArchiveSearchMixin({ addTitle, onAddOpen, setStatus, setSearch }) {
     // <Paper elevation={1}>
     <Box className="pageHeader" sx={{ mt: "-20px" }}>
       <Box className="pageHeader__left">
-        <SecondaryButton className="addRowButtons" onClick={onAddOpen}>
+        <SecondaryButton
+          className="addRowButtons"
+          onClick={onAddOpen}
+          endIcon={<Add />}
+        >
           Add {addTitle && addTitle}
         </SecondaryButton>
       </Box>
