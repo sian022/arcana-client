@@ -397,25 +397,6 @@ function OtherExpensesDrawer({
 
                 <Controller
                   control={control}
-                  name={`expenses[${index}].remarks`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="Remarks"
-                      type="text"
-                      size="small"
-                      autoComplete="off"
-                      onChange={(e) => onChange(e.target.value.toUpperCase())}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      inputRef={ref}
-                      sx={{ flex: 1 }}
-                      disabled={!watch("clientId")}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
                   name={`expenses[${index}].amount`}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
                     <NumericFormat
@@ -436,6 +417,25 @@ function OtherExpensesDrawer({
                       allowLeadingZeros={false}
                       disabled={!watch("clientId")}
                       sx={{ width: "180px" }}
+                    />
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name={`expenses[${index}].remarks`}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextField
+                      label="Remarks"
+                      type="text"
+                      size="small"
+                      autoComplete="off"
+                      onChange={(e) => onChange(e.target.value.toUpperCase())}
+                      onBlur={onBlur}
+                      value={value || ""}
+                      inputRef={ref}
+                      sx={{ flex: 1 }}
+                      disabled={!watch("clientId")}
                     />
                   )}
                 />
@@ -485,7 +485,7 @@ function OtherExpensesDrawer({
               display: "flex",
               mr: "50px",
               position: "absolute",
-              left: "180px",
+              left: "600px",
               gap: "23px",
             }}
           >

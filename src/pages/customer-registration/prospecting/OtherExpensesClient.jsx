@@ -163,24 +163,6 @@ function OtherExpensesClient() {
 
             <Controller
               control={control}
-              name={`expenses[${index}].remarks`}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <TextField
-                  label="Remarks"
-                  type="text"
-                  size="small"
-                  autoComplete="off"
-                  onChange={(e) => onChange(e.target.value.toUpperCase())}
-                  onBlur={onBlur}
-                  value={value || ""}
-                  inputRef={ref}
-                  sx={{ flex: 1 }}
-                />
-              )}
-            />
-
-            <Controller
-              control={control}
               name={`expenses[${index}].amount`}
               render={({ field: { onChange, onBlur, value } }) => (
                 <NumericFormat
@@ -200,6 +182,24 @@ function OtherExpensesClient() {
                   allowLeadingZeros={false}
                   prefix="₱"
                   sx={{ width: "180px" }}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name={`expenses[${index}].remarks`}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <TextField
+                  label="Remarks"
+                  type="text"
+                  size="small"
+                  autoComplete="off"
+                  onChange={(e) => onChange(e.target.value.toUpperCase())}
+                  onBlur={onBlur}
+                  value={value || ""}
+                  inputRef={ref}
+                  sx={{ flex: 1 }}
                 />
               )}
             />
