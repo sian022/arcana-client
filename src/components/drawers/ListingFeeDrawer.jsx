@@ -307,7 +307,7 @@ function ListingFeeDrawer({
         open={isListingFeeOpen}
         onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
         width="1000px"
-        disableSubmit={!isValid || totalAmount < 0}
+        disableSubmit={!isValid || totalAmount <= 0}
         onSubmit={onConfirmSubmitOpen}
         // zIndex={editMode && 1300}
       >

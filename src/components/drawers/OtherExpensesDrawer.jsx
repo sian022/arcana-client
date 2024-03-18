@@ -258,7 +258,7 @@ function OtherExpensesDrawer({
         open={isExpensesOpen}
         onClose={isDirty ? onConfirmCancelOpen : handleDrawerClose}
         width="1000px"
-        disableSubmit={!isValid || totalAmount < 0}
+        disableSubmit={!isValid || totalAmount <= 0}
         onSubmit={onConfirmSubmitOpen}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
