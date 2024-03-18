@@ -715,6 +715,20 @@ export const advancePaymentSchema = {
 };
 
 export const paymentTransactionSchema = {
+  schema: {
+    transactionIds: yup.array().of(yup.number()),
+    payments: yup
+      .array()
+      .of(yup.object())
+      .min(1, "At least one payment is required"),
+  },
+  defaultValues: {
+    transactionIds: [],
+    payments: [],
+  },
+};
+
+export const paymentSchema = {
   schema: yup.object({
     paymentType: yup.object().required("Payment Type is required"),
     amount: yup.number().required("Amount is required"),
