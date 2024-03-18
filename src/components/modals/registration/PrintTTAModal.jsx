@@ -694,7 +694,6 @@ function PrintTTAModal({ ...props }) {
 
                   <Box className="printTTAModal__body__tableContainer__signatures__content__business">
                     <Typography className="printTTAModal__body__tableContainer__signatures__content__business__title">
-                      {/* {selectedRowData?.businessName}{" "} */}
                       {selectedRowData?.businessName}
                     </Typography>
 
