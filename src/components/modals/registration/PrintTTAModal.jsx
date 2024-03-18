@@ -97,10 +97,10 @@ function PrintTTAModal({ ...props }) {
     let sum = 0;
     let totalItems = 0;
 
-    listingFees?.forEach((fee) => {
-      if (fee.status === "Approved") {
-        sum += fee.total;
-        totalItems += fee.listingItems.length;
+    listingFees?.forEach((request) => {
+      if (request.status === "Approved") {
+        sum += request.total;
+        totalItems += request.listingItems.length;
       }
     });
 
@@ -137,6 +137,8 @@ function PrintTTAModal({ ...props }) {
       triggerExpenses({ id: selectedRowData?.id }, { preferCacheValue: true });
     }
   }, [open, selectedRowData, triggerTerms, triggerListingFee, triggerExpenses]);
+
+  console.log(termsData);
 
   return (
     <CommonModal width="900px" closeTopRight {...props}>
@@ -246,17 +248,18 @@ function PrintTTAModal({ ...props }) {
                 <Box className="printTTAModal__body__tableContainer__productsAndOthers__others">
                   <Box className="printTTAModal__body__tableContainer__productsAndOthers__others__invoiceDeduction">
                     <Typography>
-                      Listing Fee -{" "}
-                      {`₱${
-                        calculateApprovedListingFees(
-                          listingFeeData?.listingFees
-                        ).sum
-                      } (₱${
-                        calculateApprovedListingFees(
-                          listingFeeData?.listingFees
-                        ).perSku
-                      } per SKU)`}
-                      {/* Listing Fee - 24,000 (2,000 per SKU) */}
+                      {calculateApprovedListingFees(listingFeeData?.listingFees)
+                        .sum <= 0
+                        ? ""
+                        : `Listing Fee - ₱${
+                            calculateApprovedListingFees(
+                              listingFeeData?.listingFees
+                            ).sum
+                          } (₱${
+                            calculateApprovedListingFees(
+                              listingFeeData?.listingFees
+                            ).perSku
+                          } per SKU)`}
                     </Typography>
 
                     {renderExpenses(expensesData)}
@@ -342,7 +345,9 @@ function PrintTTAModal({ ...props }) {
 
                     <TableCell className="printTTAModal__body__tableContainer__supportRow__cell">
                       Products will be served by Channel Development Officer
-                      directly delivered to {selectedRowData?.businessName}
+                      {termsData?.directDelivery
+                        ? ` directly delivered to ${selectedRowData?.businessName}`
+                        : ` not directly delivered to ${selectedRowData?.businessName}`}
                     </TableCell>
                   </TableRow>
 
