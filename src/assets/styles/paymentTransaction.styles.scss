@@ -77,7 +77,7 @@
         overflow: auto;
         height: calc(100% - 30px);
 
-        &__item {
+        & &__item {
           padding: 10px;
           height: 100px;
           cursor: pointer;
