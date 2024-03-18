@@ -2,7 +2,7 @@ import { Box, TextField, debounce } from "@mui/material";
 import SecondaryButton from "../SecondaryButton";
 import { Add } from "@mui/icons-material";
 
-function AddSearchMixin({ addTitle, onAddOpen, setSearch }) {
+function AddSearchMixin({ endIcon, title, addTitle, onAddOpen, setSearch }) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
@@ -14,9 +14,9 @@ function AddSearchMixin({ addTitle, onAddOpen, setSearch }) {
         <SecondaryButton
           className="addRowButtons"
           onClick={onAddOpen}
-          endIcon={<Add />}
+          endIcon={endIcon ? endIcon : <Add />}
         >
-          Add {addTitle && addTitle}
+          {title ? title : `Add ${addTitle && addTitle}}`}
         </SecondaryButton>
       </Box>
       <Box className="pageHeader__right">

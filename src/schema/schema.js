@@ -714,6 +714,70 @@ export const advancePaymentSchema = {
   },
 };
 
+export const paymentTransactionSchema = {
+  schema: yup.object({
+    paymentType: yup.object().required("Payment Type is required"),
+    amount: yup.number().required("Amount is required"),
+
+    //Cheque Validations
+    payee: yup.string().when("paymentType.label", {
+      is: "Cheque",
+      then: (schema) => schema.required("Payee is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    chequeDate: yup.date().when("paymentType.label", {
+      is: "Cheque",
+      then: (schema) => schema.required("Cheque date is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    bankName: yup.string().when("paymentType.label", {
+      is: "Cheque",
+      then: (schema) => schema.required("Bank name is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    chequeNumber: yup.string().when("paymentType.label", {
+      is: "Cheque",
+      then: (schema) => schema.required("Cheque number is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    dateReceived: yup.date().when("paymentType.label", {
+      is: "Cheque",
+      then: (schema) => schema.required("Date received is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    chequeAmount: yup.string().when("paymentType.label", {
+      is: "Cheque",
+      then: (schema) => schema.required("Cheque amount is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+
+    //Online
+    accountName: yup.string().when("paymentType.label", {
+      is: "Online",
+      then: (schema) => schema.required("Account name is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+
+    accountNumber: yup.string().when("paymentType.label", {
+      is: "Online",
+      then: (schema) => schema.required("Account number is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+  }),
+  defaultValues: {
+    paymentType: null,
+    amount: null,
+    payee: "",
+    chequeDate: null,
+    bankName: "",
+    chequeNumber: "",
+    dateReceived: null,
+    chequeAmount: "",
+    accountName: "",
+    accountNumber: "",
+  },
+};
+
 export const salesTransactionSchema = {
   schema: yup.object({
     clientId: yup.object().required("Business Name is required"),

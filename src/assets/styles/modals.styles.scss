@@ -1876,3 +1876,33 @@
     justify-content: flex-end;
   }
 }
+
+.paymentTransactionModal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    &__item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      & p {
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__otherFields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+}

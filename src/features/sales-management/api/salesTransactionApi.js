@@ -51,6 +51,14 @@ const salesTransactionApi = api
       }),
 
       //Payment
+      payTransaction: builder.mutation({
+        query: ({ id, ...body }) => ({
+          url: `/sales-transaction/payment${id}`,
+          method: "POST",
+          body,
+        }),
+      }),
+
       clearSalesTransaction: builder.mutation({
         query: (body) => ({
           url: "/sales-transaction/clear",
@@ -69,4 +77,5 @@ export const {
   useUploadCiAttachmentMutation,
   useClearSalesTransactionMutation,
   useCreateSalesTransactionMutation,
+  usePayTransactionMutation,
 } = salesTransactionApi;

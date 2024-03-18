@@ -27,8 +27,8 @@ export const paymentTypes = [
     value: "Offset",
   },
   {
-    label: "Adv. Payment",
-    value: "Adv. Payment",
+    label: "Advance Payment",
+    value: "Advance Payment",
   },
 ];
 
