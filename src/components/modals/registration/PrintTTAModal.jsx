@@ -64,6 +64,68 @@ function PrintTTAModal({ ...props }) {
     },
   });
 
+  const renderExpenses = (expensesData) => {
+    const expenseTotals = {};
+
+    expensesData?.expenses?.forEach((expenseRequest) => {
+      if (expenseRequest?.status === "Approved") {
+        expenseRequest?.expenses?.forEach((expense) => {
+          const { expenseType, amount } = expense;
+          if (expenseType in expenseTotals) {
+            expenseTotals[expenseType] += amount;
+          } else {
+            expenseTotals[expenseType] = amount;
+          }
+        });
+      }
+    });
+
+    return Object.entries(expenseTotals).map(
+      ([expenseType, totalAmount], index) => (
+        <Typography key={index}>
+          {expenseType} - ₱
+          {totalAmount?.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Typography>
+      )
+    );
+  };
+
+  const calculateApprovedListingFees = (listingFees) => {
+    let sum = 0;
+    let totalItems = 0;
+
+    listingFees?.forEach((fee) => {
+      if (fee.status === "Approved") {
+        sum += fee.total;
+        totalItems += fee.listingItems.length;
+      }
+    });
+
+    return {
+      sum: sum?.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+      perSku: (sum / totalItems)?.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    };
+  };
+
+  const calculateListingFeePosition = (i, j) => {
+    let position = 0;
+    for (let index = 0; index < i; index++) {
+      if (listingFeeData?.listingFees[index].status === "Approved") {
+        position += listingFeeData.listingFees[index].listingItems.length;
+      }
+    }
+    return position + j + 1;
+  };
+
   //UseEffect
   useEffect(() => {
     if (open) {
@@ -76,7 +138,6 @@ function PrintTTAModal({ ...props }) {
     }
   }, [open, selectedRowData, triggerTerms, triggerListingFee, triggerExpenses]);
 
-  console.log(selectedRowData);
   return (
     <CommonModal width="900px" closeTopRight {...props}>
       <Box className="printTTAModal">
@@ -141,20 +202,31 @@ function PrintTTAModal({ ...props }) {
               <Box className="printTTAModal__body__tableContainer__productsAndOthers">
                 <Table>
                   <TableBody>
-                    {Array.from({ length: 6 }).map((_, index) => (
-                      <TableRow key={index}>
-                        <TableCell
-                          sx={{ borderRight: "1px solid #e0e0e0 !important" }}
-                        >
-                          <Box className="printTTAModal__body__tableContainer__productsAndOthers__product">
-                            <span className="printTTAModal__body__tableContainer__productsAndOthers__product__number">
-                              {index + 1}.
-                            </span>{" "}
-                            Rapsarap Chicken Nuggets 200g
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {listingFeeData?.listingFees?.map(
+                      (listingFeeRequest, i) => {
+                        if (listingFeeRequest.status === "Approved") {
+                          return listingFeeRequest.listingItems.map(
+                            (listingItem, j) => (
+                              <TableRow key={listingItem.id}>
+                                <TableCell
+                                  sx={{
+                                    borderRight: "1px solid #e0e0e0 !important",
+                                  }}
+                                >
+                                  <Box className="printTTAModal__body__tableContainer__productsAndOthers__product">
+                                    <span className="printTTAModal__body__tableContainer__productsAndOthers__product__number">
+                                      {calculateListingFeePosition(i, j)}.
+                                    </span>{" "}
+                                    {listingItem.itemDescription}
+                                  </Box>
+                                </TableCell>
+                              </TableRow>
+                            )
+                          );
+                        }
+                        return null;
+                      }
+                    )}
 
                     <TableRow>
                       <TableCell
@@ -174,12 +246,20 @@ function PrintTTAModal({ ...props }) {
                 <Box className="printTTAModal__body__tableContainer__productsAndOthers__others">
                   <Box className="printTTAModal__body__tableContainer__productsAndOthers__others__invoiceDeduction">
                     <Typography>
-                      Listing Fee - 24,000 (2,000 per SKU)
+                      Listing Fee -{" "}
+                      {`₱${
+                        calculateApprovedListingFees(
+                          listingFeeData?.listingFees
+                        ).sum
+                      } (₱${
+                        calculateApprovedListingFees(
+                          listingFeeData?.listingFees
+                        ).perSku
+                      } per SKU)`}
+                      {/* Listing Fee - 24,000 (2,000 per SKU) */}
                     </Typography>
-                    <Typography>
-                      Electricty Allowance – 2,000 per month
-                    </Typography>
-                    <Typography>Vendors Fee - 10,000</Typography>
+
+                    {renderExpenses(expensesData)}
 
                     {/* <Box className="printTTAModal__body__tableContainer__productsAndOthers__others__invoiceDeduction__grouping">
                     <Box className="printTTAModal__body__tableContainer__productsAndOthers__others__invoiceDeduction__grouping__bracket" />
@@ -192,8 +272,13 @@ function PrintTTAModal({ ...props }) {
 
                   <Typography>
                     Discount -{" "}
-                    {termsData?.fixedDiscount
-                      ? termsData?.fixedDiscount
+                    {termsData?.fixedDiscount?.discountPercentage
+                      ? `${(
+                          termsData?.fixedDiscount?.discountPercentage * 100
+                        )?.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionsDigits: 2,
+                        })}%`
                       : "Variable"}
                   </Typography>
                 </Box>
@@ -609,6 +694,7 @@ function PrintTTAModal({ ...props }) {
 
                   <Box className="printTTAModal__body__tableContainer__signatures__content__business">
                     <Typography className="printTTAModal__body__tableContainer__signatures__content__business__title">
+                      {/* {selectedRowData?.businessName}{" "} */}
                       {selectedRowData?.businessName}
                     </Typography>
 

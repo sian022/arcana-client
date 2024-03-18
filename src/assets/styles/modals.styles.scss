@@ -1685,6 +1685,7 @@
             &__title {
               font-weight: 700;
               font-size: 0.8rem;
+              text-align: center;
 
               @media print {
                 font-size: 12px;
@@ -1721,6 +1722,7 @@
                 &__name {
                   font-size: 0.8rem;
                   font-weight: 700;
+                  text-align: center;
 
                   @media print {
                     font-size: 12px;
@@ -1729,6 +1731,7 @@
 
                 &__position {
                   font-size: 0.7rem;
+                  text-align: center;
 
                   @media print {
                     font-size: 12px;
@@ -1747,6 +1750,7 @@
             &__title {
               font-size: 0.8rem;
               font-weight: 700;
+              text-align: center;
 
               @media print {
                 font-size: 12px;
@@ -1772,6 +1776,7 @@
               &__name {
                 font-size: 0.8rem;
                 font-weight: 700;
+                text-align: center;
 
                 @media print {
                   font-size: 12px;
@@ -1780,6 +1785,7 @@
 
               &__position {
                 font-size: 0.7rem;
+                text-align: center;
 
                 @media print {
                   font-size: 12px;

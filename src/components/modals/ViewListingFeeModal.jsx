@@ -23,9 +23,9 @@ import {
   usePutRejectListingFeeMutation,
 } from "../../features/listing-fee/api/listingFeeApi";
 import useSnackbar from "../../hooks/useSnackbar";
-import SuccessButton from "../SuccessButton";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import SecondaryButton from "../SecondaryButton";
 
 function ViewListingFeeModal({
   // setEditMode,
@@ -369,9 +369,9 @@ function ViewListingFeeModal({
               Reject
             </DangerButton>
 
-            <SuccessButton onClick={onApproveConfirmOpen}>
+            <SecondaryButton onClick={onApproveConfirmOpen}>
               Approve
-            </SuccessButton>
+            </SecondaryButton>
           </Box>
         )}
         {/* {!approval && (

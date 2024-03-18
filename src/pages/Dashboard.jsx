@@ -194,7 +194,7 @@ function Dashboard() {
                 { dataKey: "amount", valueFormatter: valueFormatterSeries },
               ]}
               colors={["#544d91", "#243448"]}
-              // skipAnimation
+              skipAnimation
             />
           </Box>
 
