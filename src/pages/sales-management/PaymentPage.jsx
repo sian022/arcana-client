@@ -2,6 +2,7 @@ import { KeyboardDoubleArrowLeft } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
+  Checkbox,
   Divider,
   IconButton,
   TextField,
@@ -14,6 +15,9 @@ import SecondaryButton from "../../components/SecondaryButton";
 import useDisclosure from "../../hooks/useDisclosure";
 import { dummyPaymentData } from "../../utils/DummyData";
 import PaymentModalForm from "../../components/modals/sales-management/PaymentModalForm";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { paymentTransactionSchema } from "../../schema/schema";
 
 function PaymentPage({ setPaymentMode }) {
   const [client, setClient] = useState(null);
@@ -25,6 +29,25 @@ function PaymentPage({ setPaymentMode }) {
     onClose: onModalFormClose,
   } = useDisclosure();
 
+  //React Hook Form
+  const {
+    handleSubmit,
+    formState: { errors, isValid, isDirty },
+    setValue,
+    reset,
+    control,
+    watch,
+  } = useForm({
+    resolver: yupResolver(paymentTransactionSchema.schema),
+    mode: "onChange",
+    defaultValues: paymentTransactionSchema.defaultValues,
+  });
+
+  //Functions
+  const onSubmit = async (data) => {
+    console.log(data);
+  };
+
   //RTK Query
   const { data: clientData, isFetching: isClientFetching } =
     useGetAllClientsQuery({
@@ -34,6 +57,37 @@ function PaymentPage({ setPaymentMode }) {
     });
 
   //Functions
+  const handleTransactionClick = (transactionId) => {
+    const currentTransactionIds = watch("transactionIds") || [];
+    const transactionIndex = currentTransactionIds.indexOf(transactionId);
+
+    if (transactionIndex === -1) {
+      // If not already selected, add it to the array
+      setValue("transactionIds", [...currentTransactionIds, transactionId]);
+    } else {
+      // If already selected, remove it from the array
+      setValue(
+        "transactionIds",
+        currentTransactionIds.filter((id) => id !== transactionId)
+      );
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    const { checked } = e.target;
+
+    const allTransactionIds = dummyPaymentData.map(
+      (transaction) => transaction.transactionNo
+    );
+
+    if (checked) {
+      // If checkbox is checked, select all transaction IDs
+      setValue("transactionIds", allTransactionIds);
+    } else {
+      // If checkbox is unchecked, deselect all transaction IDs
+      setValue("transactionIds", []);
+    }
+  };
 
   return (
     <>
@@ -49,7 +103,9 @@ function PaymentPage({ setPaymentMode }) {
             </Typography>
           </Box>
         </Box>
+
         <Divider />
+
         <Box className="paymentPage__filters">
           <Autocomplete
             options={clientData?.regularClient || []}
@@ -86,13 +142,90 @@ function PaymentPage({ setPaymentMode }) {
 
         <Box className="paymentPage__body">
           <Box className="paymentPage__body__transactions">
+            <Box className="paymentPage__body__transactions__checkAll">
+              <Checkbox
+                onChange={handleSelectAll}
+                checked={
+                  watch("transactionIds")?.length === dummyPaymentData.length
+                }
+                indeterminate={
+                  watch("transactionIds").length > 0 &&
+                  watch("transactionIds").length !== dummyPaymentData.length
+                }
+              />
+
+              <Typography className="paymentPage__body__transactions__checkAll__label">
+                Select All
+              </Typography>
+            </Box>
+
             <Box className="paymentPage__body__transactions__transactionsList">
-              {dummyPaymentData.map((item, index) => (
+              {dummyPaymentData.map((item) => (
                 <Box
-                  key={index}
+                  key={item.transactionNo}
                   className="paymentPage__body__transactions__transactionsList__item"
+                  onClick={() => handleTransactionClick(item.transactionNo)}
+                  sx={{
+                    bgcolor: watch("transactionIds")?.includes(
+                      item.transactionNo
+                    )
+                      ? "primary.light"
+                      : "inherit",
+                  }}
                 >
-                  a
+                  <Typography className="paymentPage__body__transactions__transactionsList__item__date">
+                    {item.date}
+                  </Typography>
+
+                  <Box className="paymentPage__body__transactions__transactionsList__item__identifiers">
+                    <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber">
+                      <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber__label">
+                        Transaction Number:
+                      </Box>
+
+                      <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber__value">
+                        {item.transactionNo}
+                      </Box>
+                    </Box>
+
+                    <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber">
+                      <Typography className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber__label">
+                        Invoice Number:
+                      </Typography>
+
+                      <Typography className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber__value">
+                        {item.chargeInvoiceNo}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Divider variant="inset" />
+
+                  <Box className="paymentPage__body__transactions__transactionsList__item__numbers">
+                    <Box className="paymentPage__body__transactions__transactionsList__item__numbers__discount">
+                      <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__discount__label">
+                        Discount:
+                      </Typography>
+
+                      <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__discount__value">
+                        10.00%
+                      </Typography>
+                    </Box>
+
+                    <Box className="paymentPage__body__transactions__transactionsList__item__numbers__amount">
+                      <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__label">
+                        Amount:
+                      </Typography>
+
+                      <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__value">
+                        ₱
+                        {item.amount?.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionsDigits: 2,
+                        })}
+                      </Typography>
+                    </Box>
+                  </Box>
                 </Box>
               ))}
             </Box>

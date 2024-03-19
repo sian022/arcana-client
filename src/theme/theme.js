@@ -3,6 +3,7 @@ import { createTheme } from "@mui/material";
 const colorSchemes = {
   light: {
     primary: "#544d91",
+    primaryLight: "#EAE9F4",
     secondary: "#243448",
     tertiary: "#008080",
     accent: "#766bb9",
@@ -18,6 +19,7 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: colorSchemes.light.primary,
+      light: colorSchemes.light.primaryLight,
     },
     secondary: {
       main: colorSchemes.light.secondary,
