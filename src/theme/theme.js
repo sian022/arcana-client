@@ -68,7 +68,7 @@ export const theme = createTheme({
           backgroundColor: ownerState?.formControl?.required
             ? "#f3f1ff"
             : ownerState?.formControl?.disabled
-            ? "#EFEFEF"
+            ? "#f1f1f1"
             : "null",
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: colorSchemes.light.primary,

@@ -107,6 +107,25 @@ function PaymentPage({ setPaymentMode }) {
     watch("transactionIds")?.length !== dummyPaymentData.length;
 
   //Functions
+  const handleBack = async () => {
+    try {
+      if (watch("payments").length > 0) {
+        await confirm({
+          children:
+            "Are you sure you want to go back? All unsaved changes will be lost.",
+          question: true,
+          callback: () => setPaymentMode(false),
+        });
+      } else {
+        setPaymentMode(false);
+      }
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), type: "error" });
+      }
+    }
+  };
+
   const handleAddOpen = () => {
     setEditMode(false);
     onModalFormOpen();
@@ -194,7 +213,7 @@ function PaymentPage({ setPaymentMode }) {
       <Box className="paymentPage">
         <Box className="paymentPage__header">
           <Box className="paymentPage__header__left">
-            <IconButton onClick={() => setPaymentMode(false)}>
+            <IconButton onClick={handleBack}>
               <KeyboardDoubleArrowLeft sx={{ fontSize: "1.6rem" }} />
             </IconButton>
 

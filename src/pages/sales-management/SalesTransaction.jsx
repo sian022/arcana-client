@@ -189,6 +189,7 @@ function SalesTransaction() {
             <Box className="salesTransaction__body">
               <Box className="salesTransaction__body__itemsForm">
                 <Tooltip
+                  followCursor
                   title={
                     watch("items")?.length > 0
                       ? "Clear items first before changing client"
@@ -199,8 +200,7 @@ function SalesTransaction() {
                     name={`clientId`}
                     control={control}
                     options={clientData || []}
-                    // disabled={watch("items")?.length > 0}
-                    readOnly={watch("items")?.length > 0}
+                    disabled={watch("items")?.length > 0}
                     getOptionLabel={(option) =>
                       option.businessName?.toUpperCase() +
                         " - " +
