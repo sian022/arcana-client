@@ -9,9 +9,14 @@ import { paymentTypes } from "../../../utils/Constants";
 import { NumericFormat } from "react-number-format";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import useSnackbar from "../../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 
-function PaymentModalForm({ ...props }) {
+function PaymentModalForm({ appendPayment, updatePayment, ...props }) {
   const { open } = props;
+
+  //Hooks
+  const snackbar = useSnackbar();
 
   //React Hook Form
   const {
@@ -29,7 +34,12 @@ function PaymentModalForm({ ...props }) {
 
   //Functions
   const onSubmit = async (data) => {
-    console.log(data);
+    try {
+      console.log(data);
+      // appendPayment(data);
+    } catch (error) {
+      snackbar({ message: handleCatchErrorMessage(error), type: "error" });
+    }
   };
 
   //UseEffect

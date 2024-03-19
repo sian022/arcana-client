@@ -53,7 +53,8 @@
   &__body {
     // flex: 1;
     display: flex;
-    height: calc(100vh - 270px);
+    // height: calc(100vh - 270px);
+    height: calc(100vh - 240px);
     gap: 10px;
 
     &__transactions {
@@ -69,14 +70,36 @@
       border-radius: 5px;
       height: 100%;
 
-      &__checkAll {
+      &__header {
         display: flex;
-        gap: 5px;
+        justify-content: space-between;
         align-items: center;
 
-        & &__label {
-          font-size: 1.05rem;
-          font-weight: 400;
+        &__checkAll {
+          display: flex;
+          gap: 5px;
+          align-items: center;
+
+          & &__label {
+            font-size: 1.05rem;
+            font-weight: 400;
+          }
+        }
+
+        &__totalAmount {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          & &__label {
+            font-size: 1.1rem;
+          }
+
+          & &__value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: $primary;
+          }
         }
       }
 
@@ -86,7 +109,8 @@
         grid-auto-rows: 180px;
         gap: 10px;
         overflow: auto;
-        height: calc(100% - 30px);
+        // height: calc(100% - 30px);
+        height: 100%;
         padding-bottom: 1px;
 
         &__item {
@@ -116,15 +140,12 @@
               align-items: center;
 
               & &__label {
-                font-size: 1.02rem;
                 font-weight: 500;
-                line-height: 1.2;
               }
 
               & &__value {
                 font-size: 1.2rem;
                 font-weight: 500;
-                line-height: 1.2;
               }
             }
 
@@ -180,17 +201,48 @@
       border: 1px solid #dee2e6;
       background-color: white;
       border-radius: 5px;
-      // width: 300px;
+      padding: 10px;
+      height: 100%;
       width: 400px;
+
+      &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        & &__title {
+          font-size: 1.1rem;
+          font-weight: 600;
+        }
+      }
 
       &__totalAmount {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        & &__label {
+          font-size: 1.1rem;
+        }
+
+        & &__value {
+          font-size: 1.3rem;
+          font-weight: 600;
+          color: $primary;
+        }
       }
 
-      &__paymentsList {
+      &__body {
+        flex: 1;
         display: flex;
         flex-direction: column;
         gap: 10px;
+
+        &__paymentsList {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
       }
 
       &__footer {
@@ -198,10 +250,41 @@
         flex-direction: column;
         gap: 10px;
 
-        &__paymentTotals {
+        &__paymentsInfo {
           display: flex;
           flex-direction: column;
-          gap: 5px;
+
+          &__paymentTotal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            & &__label {
+              font-size: 1rem;
+            }
+
+            & &__value {
+              font-size: 1.1rem;
+              font-weight: 600;
+              color: $primary;
+            }
+          }
+
+          &__paymentBalance {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            & &__label {
+              font-size: 1rem;
+            }
+
+            & &__value {
+              font-size: 1.1rem;
+              font-weight: 600;
+              color: $primary;
+            }
+          }
         }
       }
     }

@@ -1,4 +1,4 @@
-import { KeyboardDoubleArrowLeft } from "@mui/icons-material";
+import { Add, KeyboardDoubleArrowLeft, Payment } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
@@ -9,18 +9,24 @@ import {
   Typography,
 } from "@mui/material";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
-import { useState } from "react";
-import DangerButton from "../../components/DangerButton";
+import { useMemo, useState } from "react";
 import SecondaryButton from "../../components/SecondaryButton";
 import useDisclosure from "../../hooks/useDisclosure";
 import { dummyPaymentData } from "../../utils/DummyData";
 import PaymentModalForm from "../../components/modals/sales-management/PaymentModalForm";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { paymentTransactionSchema } from "../../schema/schema";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function PaymentPage({ setPaymentMode }) {
   const [client, setClient] = useState(null);
+
+  //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
 
   // Disclosures
   const {
@@ -43,9 +49,31 @@ function PaymentPage({ setPaymentMode }) {
     defaultValues: paymentTransactionSchema.defaultValues,
   });
 
+  const {
+    fields: paymentFields,
+    append: appendPayment,
+    remove: removePayment,
+    update: updatePayment,
+  } = useFieldArray({
+    control,
+    name: "payments",
+  });
+
   //Functions
   const onSubmit = async (data) => {
-    console.log(data);
+    try {
+      await confirm({
+        children: "Are you sure you want to submit payments?",
+        question: true,
+        callback: () => console.log(data),
+      });
+
+      snackbar({ message: "Payments submitted successfully", type: "success" });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), type: "error" });
+      }
+    }
   };
 
   //RTK Query
@@ -88,6 +116,22 @@ function PaymentPage({ setPaymentMode }) {
       setValue("transactionIds", []);
     }
   };
+
+  const handleTotal = useMemo(() => {
+    const total = dummyPaymentData.reduce(
+      (acc, transaction) =>
+        acc +
+        (watch("transactionIds")?.includes(transaction.transactionNo)
+          ? transaction.amount
+          : 0),
+      0
+    );
+
+    return total?.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionsDigits: 2,
+    });
+  }, [watch("transactionIds"), watch]);
 
   return (
     <>
@@ -142,21 +186,33 @@ function PaymentPage({ setPaymentMode }) {
 
         <Box className="paymentPage__body">
           <Box className="paymentPage__body__transactions">
-            <Box className="paymentPage__body__transactions__checkAll">
-              <Checkbox
-                onChange={handleSelectAll}
-                checked={
-                  watch("transactionIds")?.length === dummyPaymentData.length
-                }
-                indeterminate={
-                  watch("transactionIds").length > 0 &&
-                  watch("transactionIds").length !== dummyPaymentData.length
-                }
-              />
+            <Box className="paymentPage__body__transactions__header">
+              <Box className="paymentPage__body__transactions__header__checkAll">
+                <Checkbox
+                  onChange={handleSelectAll}
+                  checked={
+                    watch("transactionIds")?.length === dummyPaymentData.length
+                  }
+                  indeterminate={
+                    watch("transactionIds")?.length > 0 &&
+                    watch("transactionIds")?.length !== dummyPaymentData.length
+                  }
+                />
 
-              <Typography className="paymentPage__body__transactions__checkAll__label">
-                Select All
-              </Typography>
+                <Typography className="paymentPage__body__transactions__checkAll__label">
+                  Select All
+                </Typography>
+              </Box>
+
+              <Box className="paymentPage__body__transactions__header__totalAmount">
+                <Typography className="paymentPage__body__transactions__header__totalAmount__label">
+                  Total Amount:
+                </Typography>
+
+                <Typography className="paymentPage__body__transactions__header__totalAmount__value">
+                  {"₱" + handleTotal}
+                </Typography>
+              </Box>
             </Box>
 
             <Box className="paymentPage__body__transactions__transactionsList">
@@ -230,17 +286,77 @@ function PaymentPage({ setPaymentMode }) {
               ))}
             </Box>
 
-            <Box className="paymentPage__body__transactions__actions">
+            {/* <Box className="paymentPage__body__transactions__actions">
               <DangerButton>Void</DangerButton>
               <SecondaryButton>Pay</SecondaryButton>
-            </Box>
+            </Box> */}
           </Box>
 
-          <Box className="paymentPage__body__payments"></Box>
+          <Box className="paymentPage__body__payments">
+            <Box className="paymentPage__body__payments__header">
+              <Typography className="paymentPage__body__payments__header__title">
+                Payments List
+              </Typography>
+
+              <SecondaryButton
+                onClick={onModalFormOpen}
+                endIcon={<Add />}
+                sx={{ width: "140px" }}
+              >
+                Add Payment
+              </SecondaryButton>
+            </Box>
+
+            <Divider />
+
+            <Box className="paymentPage__body__payments__body">
+              <Box className="paymentPage__body__payments__body__paymentsList"></Box>
+            </Box>
+
+            <Divider sx={{ borderStyle: "dashed" }} />
+
+            <Box className="paymentPage__body__payments__footer">
+              <Box className="paymentPage__body__payments__footer__paymentsInfo">
+                <Box className="paymentPage__body__payments__footer__paymentsInfo__paymentTotal">
+                  <Typography className="paymentPage__body__payments__footer__paymentsInfo__paymentTotal__label">
+                    Payment Total:
+                  </Typography>
+
+                  <Typography className="paymentPage__body__payments__footer__paymentsInfo__paymentTotal__value">
+                    ₱5,000.00
+                  </Typography>
+                </Box>
+
+                <Box className="paymentPage__body__payments__footer__paymentsInfo__paymentBalance">
+                  <Typography className="paymentPage__body__payments__footer__paymentsInfo__paymentBalance__label">
+                    Remaining Balance:
+                  </Typography>
+
+                  <Typography className="paymentPage__body__payments__footer__paymentsInfo__paymentBalance__value">
+                    ₱250.00
+                  </Typography>
+                </Box>
+              </Box>
+
+              <SecondaryButton
+                size="medium"
+                endIcon={<Payment />}
+                onClick={handleSubmit(onSubmit)}
+                disabled={paymentFields.length === 0 || !isValid || !isDirty}
+              >
+                Pay Now
+              </SecondaryButton>
+            </Box>
+          </Box>
         </Box>
       </Box>
 
-      <PaymentModalForm open={isModalFormOpen} onClose={onModalFormClose} />
+      <PaymentModalForm
+        open={isModalFormOpen}
+        onClose={onModalFormClose}
+        appendPayment={appendPayment}
+        updatePayment={updatePayment}
+      />
     </>
   );
 }

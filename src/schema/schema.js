@@ -716,7 +716,7 @@ export const advancePaymentSchema = {
 
 export const paymentTransactionSchema = {
   schema: {
-    transactionIds: yup.array().of(yup.number()),
+    transactionIds: yup.array().of(yup.object()),
     payments: yup
       .array()
       .of(yup.object())
