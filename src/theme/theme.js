@@ -68,7 +68,7 @@ export const theme = createTheme({
           backgroundColor: ownerState?.formControl?.required
             ? "#f3f1ff"
             : ownerState?.formControl?.disabled
-            ? "#f1f1f1"
+            ? "#EFEFEF"
             : "null",
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: colorSchemes.light.primary,
@@ -82,9 +82,9 @@ export const theme = createTheme({
               borderColor: `${colorSchemes.light.secondary} !important`,
             },
 
-          // "& input": {
-          //   textTransform: "uppercase",
-          // },
+          "& .MuiInputBase-input.Mui-disabled": {
+            WebkitTextFillColor: "#707070",
+          },
         }),
       },
     },

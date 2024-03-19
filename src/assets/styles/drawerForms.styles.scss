@@ -460,7 +460,7 @@
 .overlay {
   background: rgba(0, 0, 0, 0.4);
   pointer-events: none;
-  z-index: 2; /* Make sure it's higher than the buttons */
+  z-index: 5; /* Make sure it's higher than the buttons */
   filter: grayscale(1);
 }
 

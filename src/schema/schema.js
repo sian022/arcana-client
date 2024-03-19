@@ -715,13 +715,13 @@ export const advancePaymentSchema = {
 };
 
 export const paymentTransactionSchema = {
-  schema: {
-    transactionIds: yup.array().of(yup.object()),
+  schema: yup.object({
+    transactionIds: yup.array().of(yup.number()),
     payments: yup
       .array()
       .of(yup.object())
       .min(1, "At least one payment is required"),
-  },
+  }),
   defaultValues: {
     transactionIds: [],
     payments: [],

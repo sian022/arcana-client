@@ -232,16 +232,36 @@
         }
       }
 
-      &__body {
+      &__paymentsList {
         flex: 1;
         display: flex;
         flex-direction: column;
         gap: 10px;
 
-        &__paymentsList {
+        &__item {
           display: flex;
-          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
           gap: 10px;
+
+          &__info {
+            display: flex;
+            flex-direction: column;
+
+            & &__paymentType {
+              font-weight: 400;
+              color: gray;
+            }
+
+            & &__amount {
+              font-weight: 600;
+              font-size: 1.02rem;
+            }
+          }
+
+          &__actions {
+            display: flex;
+          }
         }
       }
 
@@ -260,11 +280,11 @@
             align-items: center;
 
             & &__label {
-              font-size: 1rem;
+              font-size: 1.1rem;
             }
 
             & &__value {
-              font-size: 1.1rem;
+              font-size: 1.2rem;
               font-weight: 600;
               color: $primary;
             }
@@ -277,16 +297,25 @@
 
             & &__label {
               font-size: 1rem;
+              color: gray;
             }
 
             & &__value {
               font-size: 1.1rem;
               font-weight: 600;
-              color: $primary;
+              // color: $primary;
+              color: lighten($primary, 30%);
             }
           }
         }
       }
     }
   }
+}
+
+.paymentTransactionOverlay {
+  background: lighten(gray, 46%);
+  pointer-events: none;
+  z-index: 2;
+  filter: grayscale(1);
 }

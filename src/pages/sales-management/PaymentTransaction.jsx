@@ -120,6 +120,10 @@ function PaymentTransaction() {
             ) : (
               <CommonTable
                 mapData={dummyPaymentData}
+                includeActions={
+                  transactionStatus === "Receivable" ||
+                  transactionStatus === "Paid"
+                }
                 compact
                 tableHeads={tableHeads}
                 pesoArray={pesoArray}

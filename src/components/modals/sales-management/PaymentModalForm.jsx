@@ -11,11 +11,20 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import useSnackbar from "../../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
+import useConfirm from "../../../hooks/useConfirm";
+import moment from "moment";
 
-function PaymentModalForm({ appendPayment, updatePayment, ...props }) {
-  const { open } = props;
+function PaymentModalForm({
+  editMode,
+  appendPayment,
+  updatePayment,
+  selectedPayment,
+  ...props
+}) {
+  const { open, onClose } = props;
 
   //Hooks
+  const confirm = useConfirm();
   const snackbar = useSnackbar();
 
   //React Hook Form
@@ -35,8 +44,17 @@ function PaymentModalForm({ appendPayment, updatePayment, ...props }) {
   //Functions
   const onSubmit = async (data) => {
     try {
-      console.log(data);
-      // appendPayment(data);
+      await confirm({
+        children: "Are you sure you want to add this payment?",
+        question: true,
+        callback: () =>
+          editMode
+            ? updatePayment(selectedPayment.index, data)
+            : appendPayment(data),
+      });
+
+      snackbar({ message: "Payment added successfully", type: "success" });
+      onClose();
     } catch (error) {
       snackbar({ message: handleCatchErrorMessage(error), type: "error" });
     }
@@ -49,9 +67,23 @@ function PaymentModalForm({ appendPayment, updatePayment, ...props }) {
     }
   }, [open, reset]);
 
+  useEffect(() => {
+    if (editMode && open) {
+      const { index, ...paymentInfo } = selectedPayment;
+
+      Object.keys(paymentInfo).forEach((key) => {
+        if (key === "chequeDate" || key === "dateReceived") {
+          setValue(key, paymentInfo[key] ? moment(paymentInfo[key]) : null);
+          return;
+        }
+        setValue(key, paymentInfo[key]);
+      });
+    }
+  }, [open, editMode, selectedPayment, setValue]);
+
   return (
     <CommonModalForm
-      title="Payment Transaction"
+      title="Payment Form"
       {...props}
       // open={isModalFormOpen}
       // onClose={handleFormClose}
