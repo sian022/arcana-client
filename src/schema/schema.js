@@ -698,6 +698,12 @@ export const advancePaymentSchema = {
       then: (schema) => schema.required("Account number is required"),
       otherwise: (schema) => schema.nullable(),
     }),
+
+    referenceNumber: yup.string().when("paymentType.label", {
+      is: "Online",
+      then: (schema) => schema.required("Reference number is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
   }),
   defaultValues: {
     clientId: null,
@@ -711,6 +717,7 @@ export const advancePaymentSchema = {
     // chequeAmount: "",
     accountName: "",
     accountNumber: "",
+    referenceNumber: "",
   },
 };
 
@@ -778,6 +785,12 @@ export const paymentSchema = {
       otherwise: (schema) => schema.nullable(),
     }),
 
+    referenceNumber: yup.string().when("paymentType.label", {
+      is: "Online",
+      then: (schema) => schema.required("Reference number is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+
     //Offset
     remarks: yup.string().when("paymentType.label", {
       is: "Offset",
@@ -796,6 +809,7 @@ export const paymentSchema = {
     // chequeAmount: "",
     accountName: "",
     accountNumber: "",
+    referenceNumber: "",
     remarks: "",
   },
 };

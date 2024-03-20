@@ -127,6 +127,7 @@ function PaymentModalForm({
                 if (value.label !== "Online") {
                   setValue("accountName", "");
                   setValue("accountNumber", "");
+                  setValue("referenceNumber", "");
                 }
                 if (value.label !== "Offset") {
                   setValue("remarks", "");
@@ -317,12 +318,29 @@ function PaymentModalForm({
               defaultValue=""
               render={({ field }) => (
                 <TextField
-                  label="Account No."
+                  label="Account Number"
                   size="small"
                   autoComplete="off"
                   {...field}
                   helperText={errors?.accountNumber?.message}
                   error={errors?.accountNumber}
+                  type="number"
+                />
+              )}
+            />
+
+            <Controller
+              name="referenceNumber"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  label="Reference Number"
+                  size="small"
+                  autoComplete="off"
+                  {...field}
+                  helperText={errors?.referenceNumber?.message}
+                  error={errors?.referenceNumber}
                   type="number"
                 />
               )}
