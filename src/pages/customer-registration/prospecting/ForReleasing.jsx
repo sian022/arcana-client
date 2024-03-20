@@ -595,10 +595,11 @@ function ForReleasing() {
 
           {drawerMode === "edit" && (
             <TertiaryButton
-              sx={{ color: "white !important" }}
               onClick={() => {
                 setEditMode(!editMode);
               }}
+              variant="outlined"
+              sx={{ color: "tertiary !important" }}
             >
               Edit
             </TertiaryButton>

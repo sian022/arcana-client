@@ -699,10 +699,11 @@ function ForFreebies() {
 
           {drawerMode === "edit" && (
             <TertiaryButton
-              sx={{ color: "white !important" }}
               onClick={() => {
                 setEditMode(!editMode);
               }}
+              variant="outlined"
+              sx={{ color: "tertiary" }}
             >
               Edit
             </TertiaryButton>
