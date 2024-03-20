@@ -281,14 +281,18 @@ function PaymentPage({ setPaymentMode }) {
             />
           </Tooltip>
 
-          <Button
-            variant="outlined"
-            endIcon={<Receipt />}
-            color="secondary"
-            disabled={!client}
-          >
-            Payment Histories
-          </Button>
+          <Tooltip followCursor title={!client ? "Select client first" : ""}>
+            <span>
+              <Button
+                variant="outlined"
+                endIcon={<Receipt />}
+                color="secondary"
+                disabled={!client}
+              >
+                Payment Histories
+              </Button>
+            </span>
+          </Tooltip>
         </Box>
 
         <Box className="paymentPage__body">
