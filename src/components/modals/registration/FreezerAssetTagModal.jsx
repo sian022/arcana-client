@@ -29,12 +29,15 @@ function FreezerAssetTagModal({ ...props }) {
       })
     );
 
-    handleClose();
+    // handleClose();
+    onClose();
   };
 
   const handleClose = () => {
     onClose();
     setTagNumber("");
+
+    dispatch(setTermsAndConditions({ property: "freezer", value: false }));
   };
 
   //UseEffect
@@ -48,14 +51,14 @@ function FreezerAssetTagModal({ ...props }) {
     }
   }, [open, termsAndConditions.freezerAssetTag]);
 
-  useEffect(() => {
-    if (!open && !termsAndConditions["freezerAssetTag"]) {
-      dispatch(setTermsAndConditions({ property: "freezer", value: false }));
-    }
-  }, [open, termsAndConditions["freezerAssetTag"], dispatch]);
+  // useEffect(() => {
+  //   if (!open && !termsAndConditions["freezerAssetTag"]) {
+  //     dispatch(setTermsAndConditions({ property: "freezer", value: false }));
+  //   }
+  // }, [open, termsAndConditions["freezerAssetTag"], dispatch]);
 
   return (
-    <CommonModal width="400px" {...props} closeTopRight>
+    <CommonModal width="400px" {...props} onClose={handleClose} closeTopRight>
       <Box component="form" onSubmit={onSubmit}>
         <Typography fontSize="1.2rem" fontWeight="700">
           Freezer Asset Tag Number
