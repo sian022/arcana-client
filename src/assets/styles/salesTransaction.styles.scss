@@ -76,6 +76,17 @@
         padding-bottom: 5px;
         flex: 1;
 
+        // &__selectClientFirst {
+        //   flex: 1;
+        //   display: flex;
+        //   align-items: center;
+        //   justify-content: center;
+
+        //   & img {
+        //     width: 16vw;
+        //   }
+        // }
+
         &.noProductFound {
           grid-auto-rows: auto;
         }
@@ -91,7 +102,7 @@
           grid-column: 1 / -1;
           margin: auto;
           text-align: center;
-          font-size: 2.2rem;
+          font-size: 2.5rem;
           font-weight: 600;
           color: gray;
           position: relative;

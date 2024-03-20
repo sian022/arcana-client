@@ -56,7 +56,9 @@ function PaymentModalForm({
       snackbar({ message: "Payment added successfully", type: "success" });
       onClose();
     } catch (error) {
-      snackbar({ message: handleCatchErrorMessage(error), type: "error" });
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), type: "error" });
+      }
     }
   };
 

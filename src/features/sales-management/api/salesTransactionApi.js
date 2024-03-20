@@ -49,24 +49,6 @@ const salesTransactionApi = api
         }),
         invalidatesTags: ["Sales Transaction"],
       }),
-
-      //Payment
-      payTransaction: builder.mutation({
-        query: ({ id, ...body }) => ({
-          url: `/sales-transaction/payment${id}`,
-          method: "POST",
-          body,
-        }),
-      }),
-
-      clearSalesTransaction: builder.mutation({
-        query: (body) => ({
-          url: "/sales-transaction/clear",
-          method: "PUT",
-          body,
-        }),
-        invalidatesTags: ["Sales Transaction"],
-      }),
     }),
   });
 
@@ -75,7 +57,5 @@ export const {
   useGetAllSalesTransactionQuery,
   useVoidSalesTransactionMutation,
   useUploadCiAttachmentMutation,
-  useClearSalesTransactionMutation,
   useCreateSalesTransactionMutation,
-  usePayTransactionMutation,
 } = salesTransactionApi;

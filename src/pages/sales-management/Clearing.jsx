@@ -8,8 +8,8 @@ import { usePatchReadNotificationMutation } from "../../features/notification/ap
 import SearchActionMixin from "../../components/mixins/SearchActionMixin";
 import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
-import { useClearSalesTransactionMutation } from "../../features/sales-management/api/salesTransactionApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import { useClearSalesTransactionMutation } from "../../features/sales-management/api/paymentTransactionApi";
 
 function Clearing() {
   const [tabViewing, setTabViewing] = useState(1);

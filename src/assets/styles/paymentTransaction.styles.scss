@@ -70,6 +70,30 @@
       border-radius: 5px;
       height: 100%;
 
+      & &__selectClientFirst {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: gray;
+        position: relative;
+        bottom: 5%;
+      }
+
+      // &__selectClientFirst {
+      //   flex: 1;
+      //   display: flex;
+      //   align-items: center;
+      //   justify-content: center;
+
+      //   & img {
+      //     width: 16vw;
+      //   }
+      // }
+
       &__header {
         display: flex;
         justify-content: space-between;
@@ -237,6 +261,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        overflow: auto;
 
         &__item {
           display: flex;
@@ -248,9 +273,20 @@
             display: flex;
             flex-direction: column;
 
-            & &__paymentType {
-              font-weight: 400;
-              color: gray;
+            &__paymentType {
+              display: flex;
+              gap: 5px;
+              align-items: center;
+
+              & &__label {
+                font-weight: 400;
+                color: gray;
+              }
+
+              & &__icon {
+                font-size: 1rem;
+                color: gray;
+              }
             }
 
             & &__amount {

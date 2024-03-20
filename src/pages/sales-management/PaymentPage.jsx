@@ -3,6 +3,7 @@ import {
   EditOutlined,
   KeyboardDoubleArrowLeft,
   Payment,
+  Receipt,
   RemoveCircleOutline,
 } from "@mui/icons-material";
 import {
@@ -17,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SecondaryButton from "../../components/SecondaryButton";
 import useDisclosure from "../../hooks/useDisclosure";
 import { dummyPaymentData } from "../../utils/DummyData";
@@ -28,6 +29,9 @@ import { paymentTransactionSchema } from "../../schema/schema";
 import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import { getIconElement } from "../../components/GetIconElement";
+import { useLazyGetAllSalesTransactionForPaymentsQuery } from "../../features/sales-management/api/paymentTransactionApi";
+import PaymentListSkeleton from "../../components/skeletons/PaymentListSkeleton";
 
 function PaymentPage({ setPaymentMode }) {
   const [client, setClient] = useState(null);
@@ -70,6 +74,19 @@ function PaymentPage({ setPaymentMode }) {
     name: "payments",
   });
 
+  //RTK Query
+  const [
+    triggerTransactions,
+    { data: transactionsData, isFetching: isTransactionsFetching },
+  ] = useLazyGetAllSalesTransactionForPaymentsQuery();
+
+  const { data: clientData, isFetching: isClientFetching } =
+    useGetAllClientsQuery({
+      RegistrationStatus: "Approved",
+      PageNumber: 1,
+      PageSize: 1000,
+    });
+
   //Functions
   const onSubmit = async (data) => {
     try {
@@ -79,9 +96,9 @@ function PaymentPage({ setPaymentMode }) {
         callback: () => console.log(data),
       });
 
-      reset();
+      handleReset();
       snackbar({
-        message: "Payment transaction submitted successfully",
+        message: "Payment Transaction submitted successfully",
         type: "success",
       });
     } catch (error) {
@@ -91,14 +108,6 @@ function PaymentPage({ setPaymentMode }) {
     }
   };
 
-  //RTK Query
-  const { data: clientData, isFetching: isClientFetching } =
-    useGetAllClientsQuery({
-      RegistrationStatus: "Approved",
-      PageNumber: 1,
-      PageSize: 1000,
-    });
-
   //Constants
   const isAllChecked =
     watch("transactionIds")?.length === dummyPaymentData.length;
@@ -107,6 +116,11 @@ function PaymentPage({ setPaymentMode }) {
     watch("transactionIds")?.length !== dummyPaymentData.length;
 
   //Functions
+  const handleReset = async () => {
+    reset();
+    checkboxRef.current.checked = false;
+  };
+
   const handleBack = async () => {
     try {
       if (watch("payments").length > 0) {
@@ -208,6 +222,15 @@ function PaymentPage({ setPaymentMode }) {
     return remainingBalance;
   }, [handleTotal, handlePaymentTotal]);
 
+  //UseEffect
+  useEffect(() => {
+    if (client) {
+      triggerTransactions({ clientId: client?.id });
+    }
+  }, [client, triggerTransactions]);
+
+  console.log(transactionsData, "transactionsData");
+
   return (
     <>
       <Box className="paymentPage">
@@ -226,38 +249,45 @@ function PaymentPage({ setPaymentMode }) {
         <Divider />
 
         <Box className="paymentPage__filters">
-          <Autocomplete
-            options={clientData?.regularClient || []}
-            getOptionLabel={(option) =>
-              option.businessName?.toUpperCase() +
-                " - " +
-                option.ownersName?.toUpperCase() || ""
+          <Tooltip
+            followCursor
+            title={
+              watch("payments").length > 0
+                ? "Finish/clear payments first before changing clients"
+                : ""
             }
-            disableClearable
-            disabled={watch("payments").length > 0}
-            loading={isClientFetching}
-            isOptionEqualToValue={() => true}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                size="small"
-                label="Business Name - Owner's Name"
-              />
-            )}
-            value={client}
-            onChange={(_, value) => setClient(value)}
-            sx={{ width: "40%" }}
-          />
+          >
+            <Autocomplete
+              options={clientData?.regularClient || []}
+              getOptionLabel={(option) =>
+                option.businessName?.toUpperCase() +
+                  " - " +
+                  option.ownersName?.toUpperCase() || ""
+              }
+              disabled={watch("payments").length > 0}
+              loading={isClientFetching}
+              isOptionEqualToValue={() => true}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label="Business Name - Owner's Name"
+                />
+              )}
+              value={client}
+              onChange={(_, value) => setClient(value)}
+              sx={{ width: "40%" }}
+            />
+          </Tooltip>
 
-          <TextField
-            type="search"
-            size="small"
-            label="Search"
-            // onChange={(e) => {
-            //   debouncedSetSearch(e.target.value);
-            // }}
-            autoComplete="off"
-          />
+          <Button
+            variant="outlined"
+            endIcon={<Receipt />}
+            color="secondary"
+            disabled={!client}
+          >
+            Payment Histories
+          </Button>
         </Box>
 
         <Box className="paymentPage__body">
@@ -266,123 +296,129 @@ function PaymentPage({ setPaymentMode }) {
               watch("payments")?.length > 0 ? " paymentTransactionOverlay" : ""
             }`}
           >
-            <Box className="paymentPage__body__transactions__header">
-              <Button
-                className="paymentPage__body__transactions__header__checkAll"
-                onClick={() => {
-                  if (isAllChecked) {
-                    checkboxRef.current.checked = false;
-                  } else {
-                    checkboxRef.current.checked = !checkboxRef.current.checked;
-                  }
+            {!client ? (
+              <Typography className="paymentPage__body__transactions__selectClientFirst">
+                Select client first
+              </Typography>
+            ) : isTransactionsFetching ? (
+              <PaymentListSkeleton />
+            ) : (
+              <>
+                <Box className="paymentPage__body__transactions__header">
+                  <Button
+                    className="paymentPage__body__transactions__header__checkAll"
+                    onClick={() => {
+                      if (isAllChecked) {
+                        checkboxRef.current.checked = false;
+                      } else {
+                        checkboxRef.current.checked =
+                          !checkboxRef.current.checked;
+                      }
 
-                  handleSelectAll({
-                    target: { checked: checkboxRef.current.checked },
-                  });
-                }}
-              >
-                <Checkbox
-                  ref={checkboxRef}
-                  onChange={handleSelectAll}
-                  checked={isAllChecked}
-                  indeterminate={isAllIndeterminate}
-                />
+                      handleSelectAll({
+                        target: { checked: checkboxRef.current.checked },
+                      });
+                    }}
+                  >
+                    <Checkbox
+                      ref={checkboxRef}
+                      onChange={handleSelectAll}
+                      checked={isAllChecked}
+                      indeterminate={isAllIndeterminate}
+                    />
 
-                <Typography className="paymentPage__body__transactions__checkAll__label">
-                  Select All
-                </Typography>
-              </Button>
+                    <Typography className="paymentPage__body__transactions__checkAll__label">
+                      Select All
+                    </Typography>
+                  </Button>
 
-              <Box className="paymentPage__body__transactions__header__totalAmount">
-                <Typography className="paymentPage__body__transactions__header__totalAmount__label">
-                  Total Amount:
-                </Typography>
+                  <Box className="paymentPage__body__transactions__header__totalAmount">
+                    <Typography className="paymentPage__body__transactions__header__totalAmount__label">
+                      Total Amount:
+                    </Typography>
 
-                <Typography className="paymentPage__body__transactions__header__totalAmount__value">
-                  ₱
-                  {handleTotal?.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionsDigits: 2,
-                  })}
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box className="paymentPage__body__transactions__transactionsList">
-              {dummyPaymentData.map((item) => (
-                <Box
-                  key={item.transactionNo}
-                  className="paymentPage__body__transactions__transactionsList__item"
-                  onClick={() => handleTransactionClick(item.transactionNo)}
-                  sx={{
-                    bgcolor: watch("transactionIds")?.includes(
-                      item.transactionNo
-                    )
-                      ? "primary.light"
-                      : "inherit",
-                  }}
-                >
-                  <Typography className="paymentPage__body__transactions__transactionsList__item__date">
-                    {item.date}
-                  </Typography>
-
-                  <Box className="paymentPage__body__transactions__transactionsList__item__identifiers">
-                    <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber">
-                      <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber__label">
-                        Transaction Number:
-                      </Box>
-
-                      <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber__value">
-                        {item.transactionNo}
-                      </Box>
-                    </Box>
-
-                    <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber">
-                      <Typography className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber__label">
-                        Invoice Number:
-                      </Typography>
-
-                      <Typography className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber__value">
-                        {item.chargeInvoiceNo}
-                      </Typography>
-                    </Box>
-                  </Box>
-
-                  <Divider variant="inset" />
-
-                  <Box className="paymentPage__body__transactions__transactionsList__item__numbers">
-                    <Box className="paymentPage__body__transactions__transactionsList__item__numbers__discount">
-                      <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__discount__label">
-                        Discount:
-                      </Typography>
-
-                      <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__discount__value">
-                        10.00%
-                      </Typography>
-                    </Box>
-
-                    <Box className="paymentPage__body__transactions__transactionsList__item__numbers__amount">
-                      <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__label">
-                        Amount:
-                      </Typography>
-
-                      <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__value">
-                        ₱
-                        {item.amount?.toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionsDigits: 2,
-                        })}
-                      </Typography>
-                    </Box>
+                    <Typography className="paymentPage__body__transactions__header__totalAmount__value">
+                      ₱
+                      {handleTotal?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionsDigits: 2,
+                      })}
+                    </Typography>
                   </Box>
                 </Box>
-              ))}
-            </Box>
 
-            {/* <Box className="paymentPage__body__transactions__actions">
-              <DangerButton>Void</DangerButton>
-              <SecondaryButton>Pay</SecondaryButton>
-            </Box> */}
+                <Box className="paymentPage__body__transactions__transactionsList">
+                  {dummyPaymentData.map((item) => (
+                    <Box
+                      key={item.transactionNo}
+                      className="paymentPage__body__transactions__transactionsList__item"
+                      onClick={() => handleTransactionClick(item.transactionNo)}
+                      sx={{
+                        bgcolor: watch("transactionIds")?.includes(
+                          item.transactionNo
+                        )
+                          ? "primary.light"
+                          : "inherit",
+                      }}
+                    >
+                      <Typography className="paymentPage__body__transactions__transactionsList__item__date">
+                        {item.date}
+                      </Typography>
+
+                      <Box className="paymentPage__body__transactions__transactionsList__item__identifiers">
+                        <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber">
+                          <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber__label">
+                            Transaction Number:
+                          </Box>
+
+                          <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__transactionNumber__value">
+                            {item.transactionNo}
+                          </Box>
+                        </Box>
+
+                        <Box className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber">
+                          <Typography className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber__label">
+                            Invoice Number:
+                          </Typography>
+
+                          <Typography className="paymentPage__body__transactions__transactionsList__item__identifiers__invoiceNumber__value">
+                            {item.chargeInvoiceNo}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Divider variant="inset" />
+
+                      <Box className="paymentPage__body__transactions__transactionsList__item__numbers">
+                        <Box className="paymentPage__body__transactions__transactionsList__item__numbers__discount">
+                          <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__discount__label">
+                            Discount:
+                          </Typography>
+
+                          <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__discount__value">
+                            10.00%
+                          </Typography>
+                        </Box>
+
+                        <Box className="paymentPage__body__transactions__transactionsList__item__numbers__amount">
+                          <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__label">
+                            Amount:
+                          </Typography>
+
+                          <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__value">
+                            ₱
+                            {item.amount?.toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionsDigits: 2,
+                            })}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
+              </>
+            )}
           </Box>
 
           <Box className="paymentPage__body__payments">
@@ -411,9 +447,17 @@ function PaymentPage({ setPaymentMode }) {
                   onClick={() => setSelectedPayment({ index, ...payment })}
                 >
                   <Box className="paymentPage__body__payments__paymentsList__item__info">
-                    <Typography className="paymentPage__body__payments__paymentsList__item__info__paymentType">
-                      {payment.paymentType.label}
-                    </Typography>
+                    <Box className="paymentPage__body__payments__paymentsList__item__info__paymentType">
+                      <Typography className="paymentPage__body__payments__paymentsList__item__info__paymentType__label">
+                        {payment.paymentType.label}
+                      </Typography>
+
+                      {getIconElement(
+                        payment.paymentType.icon,
+                        "gray",
+                        "1.1rem"
+                      )}
+                    </Box>
 
                     <Typography className="paymentPage__body__payments__paymentsList__item__info__amount">
                       ₱

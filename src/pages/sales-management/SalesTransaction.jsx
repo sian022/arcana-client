@@ -307,6 +307,9 @@ function SalesTransaction() {
                       ))}
                     </>
                   ) : !watch("clientId") ? (
+                    // <Box className="salesTransaction__body__itemsForm__itemsList__selectClientFirst">
+                    //   <img src={SelectClientFirst} alt="select-client-first" />
+                    // </Box>
                     <Typography className="salesTransaction__body__itemsForm__itemsList__selectClientFirst">
                       Select client first
                     </Typography>
