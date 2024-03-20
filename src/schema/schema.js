@@ -680,11 +680,11 @@ export const advancePaymentSchema = {
       then: (schema) => schema.required("Date received is required"),
       otherwise: (schema) => schema.nullable(),
     }),
-    chequeAmount: yup.string().when("paymentType.label", {
-      is: "Cheque",
-      then: (schema) => schema.required("Cheque amount is required"),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    // chequeAmount: yup.string().when("paymentType.label", {
+    //   is: "Cheque",
+    //   then: (schema) => schema.required("Cheque amount is required"),
+    //   otherwise: (schema) => schema.nullable(),
+    // }),
 
     //Online
     accountName: yup.string().when("paymentType.label", {
@@ -708,7 +708,7 @@ export const advancePaymentSchema = {
     bankName: "",
     chequeNumber: "",
     dateReceived: null,
-    chequeAmount: "",
+    // chequeAmount: "",
     accountName: "",
     accountNumber: "",
   },
@@ -759,11 +759,11 @@ export const paymentSchema = {
       then: (schema) => schema.required("Date received is required"),
       otherwise: (schema) => schema.nullable(),
     }),
-    chequeAmount: yup.string().when("paymentType.label", {
-      is: "Cheque",
-      then: (schema) => schema.required("Cheque amount is required"),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    // chequeAmount: yup.string().when("paymentType.label", {
+    //   is: "Cheque",
+    //   then: (schema) => schema.required("Cheque amount is required"),
+    //   otherwise: (schema) => schema.nullable(),
+    // }),
 
     //Online
     accountName: yup.string().when("paymentType.label", {
@@ -786,7 +786,7 @@ export const paymentSchema = {
     bankName: "",
     chequeNumber: "",
     dateReceived: null,
-    chequeAmount: "",
+    // chequeAmount: "",
     accountName: "",
     accountNumber: "",
   },

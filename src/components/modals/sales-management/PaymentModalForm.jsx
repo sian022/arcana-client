@@ -122,7 +122,7 @@ function PaymentModalForm({
                   setValue("bankName", "");
                   setValue("chequeNumber", "");
                   setValue("dateReceived", null);
-                  setValue("chequeAmount", "");
+                  // setValue("chequeAmount", "");
                 } else if (value?.label !== "Online") {
                   setValue("accountName", "");
                   setValue("accountNumber", "");
@@ -261,7 +261,7 @@ function PaymentModalForm({
               )}
             />
 
-            <Controller
+            {/* <Controller
               control={control}
               name="chequeAmount"
               render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -284,7 +284,7 @@ function PaymentModalForm({
                   decimalScale={2}
                 />
               )}
-            />
+            /> */}
           </Box>
         )}
 

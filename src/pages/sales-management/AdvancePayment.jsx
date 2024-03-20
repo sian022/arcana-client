@@ -102,7 +102,7 @@ function AdvancePayment() {
         bankName: data.bankName,
         chequeNumber: data.chequeNumber,
         dateReceived: data.dateReceived,
-        chequeAmount: Number(data.chequeAmount),
+        // chequeAmount: Number(data.chequeAmount),
       };
     } else if (data.paymentType.label === "Online") {
       transformedData = {
@@ -338,7 +338,7 @@ function AdvancePayment() {
                     setValue("bankName", "");
                     setValue("chequeNumber", "");
                     setValue("dateReceived", null);
-                    setValue("chequeAmount", "");
+                    // setValue("chequeAmount", "");
                   } else if (value?.label !== "Online") {
                     setValue("accountName", "");
                     setValue("accountNumber", "");
@@ -491,7 +491,7 @@ function AdvancePayment() {
                 )}
               />
 
-              <Controller
+              {/* <Controller
                 control={control}
                 name="chequeAmount"
                 render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -514,7 +514,7 @@ function AdvancePayment() {
                     decimalScale={2}
                   />
                 )}
-              />
+              /> */}
             </Box>
           )}
 
