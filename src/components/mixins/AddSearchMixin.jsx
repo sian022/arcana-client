@@ -16,7 +16,7 @@ function AddSearchMixin({ endIcon, title, addTitle, onAddOpen, setSearch }) {
           onClick={onAddOpen}
           endIcon={endIcon ? endIcon : <Add />}
         >
-          {title ? title : `Add ${addTitle && addTitle}}`}
+          {title ? title : `Add ${addTitle && addTitle}`}
         </SecondaryButton>
       </Box>
       <Box className="pageHeader__right">

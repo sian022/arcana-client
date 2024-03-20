@@ -25,6 +25,7 @@ import FreebieForm from "./FreebieForm";
 import { Cancel } from "@mui/icons-material";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat } from "react-number-format";
+import FreezerAssetTagModal from "../../../components/modals/registration/FreezerAssetTagModal";
 
 function TermsAndConditions({ direct, editMode, storeType }) {
   const dispatch = useDispatch();
@@ -45,6 +46,12 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     isOpen: isFreebieFormOpen,
     onOpen: onFreebieFormOpen,
     onClose: onFreebieFormClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isAssetTagOpen,
+    onOpen: onAssetTagOpen,
+    onClose: onAssetTagClose,
   } = useDisclosure();
 
   //RTK Query
@@ -164,6 +171,12 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     }
   }, [termsAndConditions["freezer"], dispatch]);
 
+  useEffect(() => {
+    if (termsAndConditions["freezer"]) {
+      onAssetTagOpen();
+    }
+  }, [termsAndConditions["freezer"]]);
+
   return (
     <Box className="terms">
       <Box className="terms__column">
@@ -198,7 +211,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             </RadioGroup>
           </Box>
 
-          {termsAndConditions["freezer"] && (
+          {/* {termsAndConditions["freezer"] && (
             <TextField
               label="Asset Tag"
               type="number"
@@ -213,8 +226,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               value={termsAndConditions["freezerAssetTag"]}
               required
               sx={{
-                // position: "absolute",
-                // left: "-90px",
                 right: "6px",
                 margin: "auto",
                 width: "200px",
@@ -231,7 +242,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                 },
               }}
             />
-          )}
+          )} */}
         </Box>
         <Box className="terms__column__item">
           <Box className="terms__column__item__title">
@@ -380,36 +391,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                     );
                   }}
                 />
-                // <TextField
-                //   sx={{
-                //     width: "100px",
-                //     position: "absolute",
-                //     right: "-65px",
-                //     "& .MuiInputBase-root": {
-                //       height: "30px",
-                //     },
-                //   }}
-                //   className="terms__select"
-                //   defaultValue={termsAndConditions["termDaysId"] ?? ""}
-                //   select
-                //   label="Term Days"
-                //   value={termsAndConditions["termDaysId"] ?? ""}
-                //   onChange={(e) => {
-                //     dispatch(
-                //       setTermsAndConditions({
-                //         property: "termDaysId",
-                //         value: e.target.value,
-                //       })
-                //     );
-                //   }}
-                //   InputLabelProps={{ shrink: true }}
-                // >
-                //   {termDaysData?.termDays?.map((item) => (
-                //     <MenuItem key={item.days} value={item.days}>
-                //       {item.days}
-                //     </MenuItem>
-                //   ))}
-                // </TextField>
               )}
             </Box>
 
@@ -423,7 +404,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               />
 
               {termsAndConditions["terms"] === 3 && (
-                //  && termDaysData
                 <>
                   <NumericFormat
                     className="termsAndConditionsCreditLimit"
@@ -443,9 +423,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                     onValueChange={(e) => {
                       handleCreditLimitChange(e);
                     }}
-                    // onChange={(e) => {
-                    //   handleCreditLimitChange(e);
-                    // }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment
@@ -458,35 +435,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                     }}
                     thousandSeparator=","
                   />
-
-                  {/* <TextField
-                    className="termsAndConditionsCreditLimit"
-                    sx={{
-                      width: "120px",
-                      "& .MuiInputBase-root": {
-                        height: "30px",
-                      },
-                    }}
-                    type="number"
-                    value={
-                      termsAndConditions["creditLimit"] != null
-                        ? termsAndConditions["creditLimit"].toString()
-                        : ""
-                    }
-                    onChange={(e) => {
-                      handleCreditLimitChange(e);
-                    }}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment
-                          position="start"
-                          style={{ marginLeft: -3 }}
-                        >
-                          ₱
-                        </InputAdornment>
-                      ),
-                    }}
-                  /> */}
 
                   <Autocomplete
                     selectOnFocus
@@ -531,35 +479,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                       );
                     }}
                   />
-                  {/* <TextField
-                    sx={{
-                      width: "100px",
-                      position: "absolute",
-                      right: "-80px",
-                      "& .MuiInputBase-root": {
-                        height: "30px",
-                      },
-                    }}
-                    defaultValue={termsAndConditions["termDaysId"] ?? ""}
-                    select
-                    label="Term Days"
-                    value={termsAndConditions["termDaysId"] ?? ""}
-                    onChange={(e) => {
-                      dispatch(
-                        setTermsAndConditions({
-                          property: "termDaysId",
-                          value: e.target.value,
-                        })
-                      );
-                    }}
-                    InputLabelProps={{ shrink: true }}
-                  >
-                    {termDaysData?.termDays?.map((item) => (
-                      <MenuItem key={item.days} value={item.days}>
-                        {item.days}
-                      </MenuItem>
-                    ))}
-                  </TextField> */}
                 </>
               )}
             </Box>
@@ -640,16 +559,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             <FormControlLabel value={false} control={<Radio />} label="Fixed" />
 
             {termsAndConditions["variableDiscount"] === false && (
-              <Box
-                className="termsAndConditionsFixedDiscount"
-                // sx={{
-                //   display: "flex",
-                //   alignItems: "center",
-                //   gap: "5px",
-                //   position: "absolute",
-                //   right: "-35px",
-                // }}
-              >
+              <Box className="termsAndConditionsFixedDiscount">
                 <TextField
                   sx={{
                     width: "70px",
@@ -681,50 +591,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           </RadioGroup>
         </Box>
 
-        {/* <Box className="terms__column__item">
-          <Box className="terms__column__item__title">
-            <Typography>Special Discount</Typography>
-          </Box>
-          <Box
-            // className="termsAndConditionsFixedDiscount"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              mt: "10px",
-              justifyContent: "center",
-              // position: "absolute",
-              // right: "-35px",
-            }}
-          >
-            <TextField
-              sx={{
-                width: "200px",
-                // position: "absolute",
-                // right: "-25px",
-                "& .MuiInputBase-root": {
-                  height: "30px",
-                },
-              }}
-              type="number"
-              value={
-                termsAndConditions["fixedDiscount"].discountPercentage != null
-                  ? termsAndConditions[
-                      "fixedDiscount"
-                    ].discountPercentage.toString()
-                  : ""
-              }
-              onChange={(e) => {
-                handleFixedDiscountChange(e);
-              }}
-              InputProps={{
-                inputProps: { min: 0, max: 10 },
-              }}
-            />
-            {"%"}
-          </Box>
-        </Box> */}
-
         {direct && !editMode && (
           <>
             <SecondaryButton medium onClick={onFreebieFormOpen}>
@@ -733,12 +599,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             {freebiesDirect?.length > 0 && (
               <IconButton
                 className="termsAndConditionsCancelFreebies"
-                // sx={{
-                //   color: "error.main",
-                //   position: "absolute",
-                //   right: "85px",
-                //   top: "408px",
-                // }}
                 onClick={() => {
                   dispatch(resetFreebies());
                   setSignatureDirect(null);
@@ -750,6 +610,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             )}
           </>
         )}
+
         {direct && (
           <FreebieForm
             isFreebieFormOpen={isFreebieFormOpen}
@@ -757,6 +618,8 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             direct
           />
         )}
+
+        <FreezerAssetTagModal open={isAssetTagOpen} onClose={onAssetTagClose} />
       </Box>
     </Box>
   );
