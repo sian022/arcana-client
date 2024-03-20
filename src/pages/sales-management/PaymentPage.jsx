@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SecondaryButton from "../../components/SecondaryButton";
 import useDisclosure from "../../hooks/useDisclosure";
 import { dummyPaymentData } from "../../utils/DummyData";
@@ -116,10 +116,10 @@ function PaymentPage({ setPaymentMode }) {
     watch("transactionIds")?.length !== dummyPaymentData.length;
 
   //Functions
-  const handleReset = async () => {
+  const handleReset = useCallback(async () => {
     reset();
     checkboxRef.current.checked = false;
-  };
+  }, [reset]);
 
   const handleBack = async () => {
     try {
@@ -226,8 +226,9 @@ function PaymentPage({ setPaymentMode }) {
   useEffect(() => {
     if (client) {
       triggerTransactions({ clientId: client?.id });
+      handleReset();
     }
-  }, [client, triggerTransactions]);
+  }, [client, triggerTransactions, handleReset]);
 
   console.log(transactionsData, "transactionsData");
 
