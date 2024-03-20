@@ -92,7 +92,7 @@ function PaymentModalForm({
       onSubmit={handleSubmit(onSubmit)}
       disableSubmit={!isValid || !isDirty}
       width="800px"
-      height="440px"
+      height="450px"
     >
       <Box className="paymentTransactionModal">
         <Box className="paymentTransactionModal__header">
@@ -116,16 +116,20 @@ function PaymentModalForm({
                 />
               )}
               onChange={(_, value) => {
-                if (value?.label !== "Cheque") {
+                if (value.label !== "Cheque") {
                   setValue("payee", "");
                   setValue("chequeDate", null);
                   setValue("bankName", "");
                   setValue("chequeNumber", "");
                   setValue("dateReceived", null);
                   // setValue("chequeAmount", "");
-                } else if (value?.label !== "Online") {
+                }
+                if (value.label !== "Online") {
                   setValue("accountName", "");
                   setValue("accountNumber", "");
+                }
+                if (value.label !== "Offset") {
+                  setValue("remarks", "");
                 }
                 return value;
               }}
@@ -323,6 +327,73 @@ function PaymentModalForm({
                 />
               )}
             />
+          </Box>
+        )}
+
+        {watch("paymentType")?.label === "Listing Fee" && (
+          <Box className="paymentTransactionModal__footer">
+            <Box className="paymentTransactionModal__footer__label">
+              <Typography className="paymentTransactionModal__footer__label__top">
+                Listing Fee
+              </Typography>
+
+              <Typography className="paymentTransactionModal__footer__label__bottom">
+                (Current Balance)
+              </Typography>
+            </Box>
+
+            <Typography className="paymentTransactionModal__footer__value">
+              ₱
+              {2000?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </Typography>
+          </Box>
+        )}
+
+        {watch("paymentType")?.label === "Offset" && (
+          <Box className="paymentTransactionModal__otherFields">
+            <Controller
+              name="remarks"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  label="Remarks"
+                  size="small"
+                  autoComplete="off"
+                  multiline
+                  maxRows={3}
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  helperText={errors?.remarks?.message}
+                  error={errors?.remarks}
+                />
+              )}
+            />
+          </Box>
+        )}
+
+        {watch("paymentType")?.label === "Advance Payment" && (
+          <Box className="paymentTransactionModal__footer">
+            <Box className="paymentTransactionModal__footer__label">
+              <Typography className="paymentTransactionModal__footer__label__top">
+                Advance Payment
+              </Typography>
+
+              <Typography className="paymentTransactionModal__footer__label__bottom">
+                (Current Balance)
+              </Typography>
+            </Box>
+
+            <Typography className="paymentTransactionModal__footer__value">
+              ₱
+              {30000?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </Typography>
           </Box>
         )}
       </Box>

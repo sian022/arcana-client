@@ -777,6 +777,13 @@ export const paymentSchema = {
       then: (schema) => schema.required("Account number is required"),
       otherwise: (schema) => schema.nullable(),
     }),
+
+    //Offset
+    remarks: yup.string().when("paymentType.label", {
+      is: "Offset",
+      then: (schema) => schema.required("Remarks is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
   }),
   defaultValues: {
     paymentType: null,
@@ -789,6 +796,7 @@ export const paymentSchema = {
     // chequeAmount: "",
     accountName: "",
     accountNumber: "",
+    remarks: "",
   },
 };
 
