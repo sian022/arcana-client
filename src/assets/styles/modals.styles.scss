@@ -1939,3 +1939,19 @@
     margin-top: 20px;
   }
 }
+
+.paymentHistoriesModal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & &__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  &__table {
+    display: flex;
+    flex: 1;
+  }
+}
