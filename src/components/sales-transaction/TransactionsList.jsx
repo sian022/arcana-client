@@ -10,15 +10,9 @@ import SecondaryButton from "../SecondaryButton";
 import useDisclosure from "../../hooks/useDisclosure";
 import ViewTransactionModal from "../modals/sales-management/ViewTransactionModal";
 import ViewAttachmentModal from "../modals/sales-management/ViewAttachmentModal";
-import { debounce, handleCatchErrorMessage } from "../../utils/CustomFunctions";
-import {
-  useGetAllSalesTransactionQuery,
-  useVoidSalesTransactionMutation,
-} from "../../features/sales-management/api/salesTransactionApi";
+import { debounce } from "../../utils/CustomFunctions";
+import { useGetAllSalesTransactionQuery } from "../../features/sales-management/api/salesTransactionApi";
 import CommonTableSkeleton from "../CommonTableSkeleton";
-import useConfirm from "../../hooks/useConfirm";
-import useSnackbar from "../../hooks/useSnackbar";
-import { useSelector } from "react-redux";
 
 function TransactionsList({ setTransactionsMode }) {
   const [search, setSearch] = useState("");
@@ -29,11 +23,6 @@ function TransactionsList({ setTransactionsMode }) {
   const [dateTo, setDateTo] = useState(moment().format("YYYY-MM-DD"));
   const [dateFromTemp, setDateFromTemp] = useState(moment());
   const [dateToTemp, setDateToTemp] = useState(moment());
-
-  // Hooks
-  const confirm = useConfirm();
-  const snackbar = useSnackbar();
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //Disclosures
   const {
@@ -74,36 +63,6 @@ function TransactionsList({ setTransactionsMode }) {
       DateFrom: moment(dateFrom).format("YYYY-MM-DD"),
       DateTo: moment(dateTo).format("YYYY-MM-DD"),
     });
-  const [voidSalesTransaction] = useVoidSalesTransactionMutation();
-
-  //Functions: API Submit
-  const onVoid = async () => {
-    try {
-      await confirm({
-        children: (
-          <>
-            Are you sure you want to void transaction number{" "}
-            <span style={{ fontWeight: "700" }}>{selectedRowData?.id}</span>?
-          </>
-        ),
-        question: false,
-        callback: () =>
-          voidSalesTransaction({ id: selectedRowData?.id }).unwrap(),
-      });
-
-      snackbar({
-        message: "Transaction voided successfully",
-        variant: "success",
-      });
-    } catch (error) {
-      if (error.isConfirmed) {
-        snackbar({
-          message: handleCatchErrorMessage(error),
-          variant: "error",
-        });
-      }
-    }
-  };
 
   //Functions: Others
   const debouncedSetSearch = debounce((value) => {
@@ -215,7 +174,7 @@ function TransactionsList({ setTransactionsMode }) {
             attachKey="attachmentStatus"
             onView={onViewOpen}
             onAttach={onAttachmentOpen}
-            onVoid={onVoid}
+            // onVoid={onVoid}
             lessCompact
           />
         )}

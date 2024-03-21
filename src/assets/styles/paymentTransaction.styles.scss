@@ -149,6 +149,10 @@
           background-color: white;
           border-radius: 5px;
 
+          &:hover {
+            background-color: $primary-light;
+          }
+
           & &__date {
             font-weight: 400;
             color: gray;
@@ -333,7 +337,7 @@
 
             & &__label {
               font-size: 1rem;
-              color: gray;
+              color: darken(gray, 15%);
             }
 
             & &__value {
@@ -342,6 +346,11 @@
               // color: $primary;
               color: lighten($primary, 30%);
             }
+          }
+
+          & &__paymentBalanceNote {
+            font-size: 0.8rem;
+            color: gray;
           }
         }
       }

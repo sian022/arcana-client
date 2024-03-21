@@ -215,9 +215,9 @@ function PaymentPage({ setPaymentMode }) {
       remainingBalance = handleTotal - handlePaymentTotal;
     }
 
-    if (remainingBalance < 0) {
-      return 0;
-    }
+    // if (remainingBalance < 0) {
+    //   return 0;
+    // }
 
     return remainingBalance;
   }, [handleTotal, handlePaymentTotal]);
@@ -436,7 +436,7 @@ function PaymentPage({ setPaymentMode }) {
                 onClick={handleAddOpen}
                 endIcon={<Add />}
                 sx={{ width: "140px" }}
-                disabled={handleRemainingBalance === 0}
+                disabled={handleRemainingBalance <= 0}
               >
                 Add Payment
               </SecondaryButton>
@@ -521,6 +521,10 @@ function PaymentPage({ setPaymentMode }) {
                     })}
                   </Typography>
                 </Box>
+
+                <Typography className="paymentPage__body__payments__footer__paymentsInfo__paymentBalanceNote">
+                  (Negative balance will go to advance payment)
+                </Typography>
               </Box>
 
               <SecondaryButton
