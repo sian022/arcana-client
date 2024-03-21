@@ -513,7 +513,12 @@ function PaymentPage({ setPaymentMode }) {
                     Remaining Balance:
                   </Typography>
 
-                  <Typography className="paymentPage__body__payments__footer__paymentsInfo__paymentBalance__value">
+                  <Typography
+                    className={
+                      "paymentPage__body__payments__footer__paymentsInfo__paymentBalance__value" +
+                      (handleRemainingBalance < 0 ? "Advance" : "Balance")
+                    }
+                  >
                     ₱
                     {handleRemainingBalance?.toLocaleString(undefined, {
                       minimumFractionDigits: 2,

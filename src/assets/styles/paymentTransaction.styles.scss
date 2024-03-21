@@ -340,12 +340,24 @@
               color: darken(gray, 15%);
             }
 
-            & &__value {
+            & &__valueAdvance {
               font-size: 1.1rem;
               font-weight: 600;
-              // color: $primary;
-              color: lighten($primary, 30%);
+              color: $primary-green;
             }
+
+            & &__valueBalance {
+              font-size: 1.1rem;
+              font-weight: 600;
+              color: $primary-red;
+            }
+
+            // & &__value {
+            //   font-size: 1.1rem;
+            //   font-weight: 600;
+            //   // color: $primary;
+            //   color: lighten($primary, 30%);
+            // }
           }
 
           & &__paymentBalanceNote {
