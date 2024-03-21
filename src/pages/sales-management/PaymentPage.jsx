@@ -32,6 +32,7 @@ import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import { getIconElement } from "../../components/GetIconElement";
 import { useLazyGetAllSalesTransactionForPaymentsQuery } from "../../features/sales-management/api/paymentTransactionApi";
 import PaymentListSkeleton from "../../components/skeletons/PaymentListSkeleton";
+import PaymentHistoriesModal from "../../components/modals/sales-management/PaymentHistoriesModal";
 
 function PaymentPage({ setPaymentMode }) {
   const [client, setClient] = useState(null);
@@ -48,6 +49,12 @@ function PaymentPage({ setPaymentMode }) {
     isOpen: isModalFormOpen,
     onOpen: onModalFormOpen,
     onClose: onModalFormClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isPaymentHistoriesOpen,
+    onOpen: onPaymentHistoriesOpen,
+    onClose: onPaymentHistoriesClose,
   } = useDisclosure();
 
   //React Hook Form
@@ -288,6 +295,7 @@ function PaymentPage({ setPaymentMode }) {
                 endIcon={<Receipt />}
                 color="secondary"
                 disabled={!client}
+                onClick={onPaymentHistoriesOpen}
               >
                 Payment Histories
               </Button>
@@ -552,6 +560,11 @@ function PaymentPage({ setPaymentMode }) {
         appendPayment={appendPayment}
         updatePayment={updatePayment}
         selectedPayment={selectedPayment}
+      />
+
+      <PaymentHistoriesModal
+        open={isPaymentHistoriesOpen}
+        onClose={onPaymentHistoriesClose}
       />
     </>
   );
