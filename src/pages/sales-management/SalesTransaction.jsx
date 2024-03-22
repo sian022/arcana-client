@@ -462,7 +462,10 @@ function SalesTransaction() {
 
                 <Divider />
 
-                <Box className="salesTransaction__body__orderDetails__itemsList">
+                <Box
+                  className="salesTransaction__body__orderDetails__itemsList"
+                  // ref={animationParent}
+                >
                   {fields.length === 0 ? (
                     <Box className="salesTransaction__body__orderDetails__itemsList__noProductFound">
                       <img
