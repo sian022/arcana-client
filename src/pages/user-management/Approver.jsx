@@ -276,87 +276,90 @@ function Approver() {
           )}
         />
 
-        <Box
-          sx={{ display: "flex", flexDirection: "column", gap: "10px" }}
-          ref={parent}
-        >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
             List of Approvers
           </Typography>
-          {fields.map((item, index) => (
-            <Box
-              key={item.id}
-              sx={{
-                display: "flex",
-                gap: "10px",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <ControlledAutocomplete
-                name={`approvers[${index}].userId`}
-                control={control}
-                options={data || []}
-                getOptionLabel={(option) => option.fullname || ""}
-                getOptionDisabled={(option) => {
-                  const approvers = watch("approvers");
-                  return approvers.some(
-                    (item) => item?.userId?.userId === option.userId
-                  );
-                }}
-                sx={{ flex: 1 }}
-                disableClearable
-                disabled={!watch("moduleName")}
-                loading={isLoading}
-                isOptionEqualToValue={() => true}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label="Approver Name"
-                    helperText={errors?.userId?.message}
-                    error={errors?.userId}
-                  />
-                )}
-              />
 
-              <IconButton
-                sx={{ color: "secondary.main" }}
-                onClick={() => {
-                  setValue(`approvers[${index}].level`, index);
-                  setValue(`approvers[${index - 1}].level`, index + 1);
-                  swap(index, index - 1);
-                }}
-                disabled={index === 0}
-              >
-                <KeyboardArrowUp sx={{ fontSize: "30px" }} />
-              </IconButton>
-
-              <IconButton
-                sx={{ color: "secondary.main" }}
-                onClick={() => {
-                  setValue(`approvers[${index}].level`, index + 2);
-                  setValue(`approvers[${index + 1}].level`, index + 1);
-                  swap(index, index + 1);
-                }}
-                disabled={index === fields.length - 1}
-              >
-                <KeyboardArrowDown sx={{ fontSize: "30px" }} />
-              </IconButton>
-
-              <IconButton
-                sx={{ color: "error.main" }}
-                onClick={() => {
-                  fields.length <= 1
-                    ? handleApproverError()
-                    : // : remove(fields[index]);
-                      remove(index);
+          <Box
+            sx={{ display: "flex", flexDirection: "column", gap: "10px" }}
+            ref={parent}
+          >
+            {fields.map((item, index) => (
+              <Box
+                key={item.id}
+                sx={{
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  width: "100%",
                 }}
               >
-                <RemoveCircleOutline sx={{ fontSize: "30px" }} />
-              </IconButton>
-            </Box>
-          ))}
+                <ControlledAutocomplete
+                  name={`approvers[${index}].userId`}
+                  control={control}
+                  options={data || []}
+                  getOptionLabel={(option) => option.fullname || ""}
+                  getOptionDisabled={(option) => {
+                    const approvers = watch("approvers");
+                    return approvers.some(
+                      (item) => item?.userId?.userId === option.userId
+                    );
+                  }}
+                  sx={{ flex: 1 }}
+                  disableClearable
+                  disabled={!watch("moduleName")}
+                  loading={isLoading}
+                  isOptionEqualToValue={() => true}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Approver Name"
+                      helperText={errors?.userId?.message}
+                      error={errors?.userId}
+                    />
+                  )}
+                />
+
+                <IconButton
+                  sx={{ color: "secondary.main" }}
+                  onClick={() => {
+                    setValue(`approvers[${index}].level`, index);
+                    setValue(`approvers[${index - 1}].level`, index + 1);
+                    swap(index, index - 1);
+                  }}
+                  disabled={index === 0}
+                >
+                  <KeyboardArrowUp sx={{ fontSize: "30px" }} />
+                </IconButton>
+
+                <IconButton
+                  sx={{ color: "secondary.main" }}
+                  onClick={() => {
+                    setValue(`approvers[${index}].level`, index + 2);
+                    setValue(`approvers[${index + 1}].level`, index + 1);
+                    swap(index, index + 1);
+                  }}
+                  disabled={index === fields.length - 1}
+                >
+                  <KeyboardArrowDown sx={{ fontSize: "30px" }} />
+                </IconButton>
+
+                <IconButton
+                  sx={{ color: "error.main" }}
+                  onClick={() => {
+                    fields.length <= 1
+                      ? handleApproverError()
+                      : // : remove(fields[index]);
+                        remove(index);
+                  }}
+                >
+                  <RemoveCircleOutline sx={{ fontSize: "30px" }} />
+                </IconButton>
+              </Box>
+            ))}
+          </Box>
         </Box>
 
         <SecondaryButton

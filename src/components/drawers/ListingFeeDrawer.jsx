@@ -23,6 +23,7 @@ import { NumericFormat } from "react-number-format";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import useSnackbar from "../../hooks/useSnackbar";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 function ListingFeeDrawer({
   editMode,
@@ -38,6 +39,7 @@ function ListingFeeDrawer({
   const [confirmationValue, setConfirmationValue] = useState(null);
 
   const snackbar = useSnackbar();
+  const [parent] = useAutoAnimate();
 
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -377,11 +379,7 @@ function ListingFeeDrawer({
               display: "flex",
               flexDirection: "column",
               gap: "10px",
-              maxHeight: "310px",
-              overflowX: "hidden",
-              overflowY: "auto",
             }}
-            // ref={parent}
           >
             <Box
               sx={{
@@ -395,187 +393,201 @@ function ListingFeeDrawer({
               </Typography>
             </Box>
 
-            {fields?.map((item, index) => (
-              <Box
-                key={item.id}
-                sx={{
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "center",
-                }}
-              >
-                <ControlledAutocomplete
-                  name={`listingItems[${index}].itemId`}
-                  control={control}
-                  options={productData?.items || []}
-                  getOptionLabel={(option) => option.itemCode || ""}
-                  getOptionDisabled={(option) => {
-                    const listingFees = watch("listingItems");
-                    // const isListingFeeRepeating = listingFees.some(
-                    //   (item) => item?.itemId?.itemCode === option.itemCode
-                    // );
-
-                    const isListingFeeRepeating = Array.isArray(listingFees)
-                      ? listingFees.some(
-                          (item) => item?.itemId?.itemCode === option.itemCode
-                        )
-                      : false;
-
-                    const selectedClientData = watch("clientId");
-
-                    const isListingFeeRepeatingBackend =
-                      selectedClientData?.listingFees?.some((item) =>
-                        item?.listingItems?.some(
-                          (item) => item?.itemCode === option.itemCode
-                        )
-                      );
-
-                    const isInitialValue = selectedRowData?.listingItems?.some(
-                      (item) => item?.itemCode === option.itemCode
-                    );
-
-                    // const isInitialValueStillSelected =
-                    //   selectedClientData?.listingFees?.some((request) =>
-                    //     request?.listingItems?.some((item) =>
-                    //       selectedRowData?.listingItems.some(
-                    //         (initialItem) =>
-                    //           initialItem?.itemCode === item.itemCode
-                    //       )
-                    //     )
-                    //   );
-
-                    return (
-                      isListingFeeRepeating ||
-                      (editMode
-                        ? !isInitialValue &&
-                          // !isInitialValueStillSelected &&
-                          isListingFeeRepeatingBackend
-                        : isListingFeeRepeatingBackend)
-                    );
+            <Box
+              sx={{
+                paddingTop: "2px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                height: "270px",
+                overflowX: "hidden",
+                overflowY: "auto",
+              }}
+              ref={parent}
+            >
+              {fields?.map((item, index) => (
+                <Box
+                  key={item.id}
+                  sx={{
+                    display: "flex",
+                    gap: "10px",
+                    alignItems: "center",
                   }}
-                  disableClearable
-                  loading={isProductLoading}
-                  disabled={!watch("clientId")}
-                  isOptionEqualToValue={() => true}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      label="Product Code"
-                      // required
-                      helperText={errors?.itemId?.message}
-                      error={errors?.itemId}
-                      sx={{ width: "180px" }}
-                    />
-                  )}
-                  onChange={(_, value) => {
-                    setValue(
-                      `listingItems[${index}].itemDescription`,
-                      value?.itemDescription
-                    );
-                    setValue(`listingItems[${index}].uom`, value?.uom);
-                    return value;
-                  }}
-                />
-
-                <Controller
-                  control={control}
-                  name={`listingItems[${index}].itemDescription`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="Item Description"
-                      size="small"
-                      autoComplete="off"
-                      disabled
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      value={value?.toUpperCase() || ""}
-                      ref={ref}
-                      sx={{ width: "400px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name={`listingItems[${index}].uom`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="UOM"
-                      size="small"
-                      autoComplete="off"
-                      disabled
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      ref={ref}
-                      sx={{ width: "200px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  key={index}
-                  control={control}
-                  name={`listingItems[${index}].sku`}
-                  render={({ field: { onChange, onBlur, ref } }) => (
-                    <TextField
-                      label="SKU"
-                      size="small"
-                      autoComplete="off"
-                      disabled
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      value={1}
-                      ref={ref}
-                      sx={{ width: "200px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name={`listingItems[${index}].unitCost`}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <NumericFormat
-                      label="Unit Cost"
-                      type="text"
-                      size="small"
-                      customInput={TextField}
-                      autoComplete="off"
-                      onValueChange={(e) => {
-                        onChange(Number(e.value));
-                        handleRecalculateTotalAmount();
-                      }}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      // ref={ref}
-                      // required
-                      thousandSeparator=","
-                      allowNegative={false}
-                      allowLeadingZeros={false}
-                      prefix="₱"
-                      disabled={!watch("clientId")}
-                    />
-                  )}
-                />
-
-                <IconButton
-                  sx={{ color: "error.main" }}
-                  onClick={() => {
-                    console.log(index);
-                    fields.length <= 1
-                      ? handleListingFeeError()
-                      : // : remove(fields[index]);
-                        remove(index);
-                    handleRecalculateTotalAmount();
-                  }}
-                  tabIndex={-1}
                 >
-                  <RemoveCircleOutline sx={{ fontSize: "30px" }} />
-                </IconButton>
-              </Box>
-            ))}
+                  <ControlledAutocomplete
+                    name={`listingItems[${index}].itemId`}
+                    control={control}
+                    options={productData?.items || []}
+                    getOptionLabel={(option) => option.itemCode || ""}
+                    getOptionDisabled={(option) => {
+                      const listingFees = watch("listingItems");
+                      // const isListingFeeRepeating = listingFees.some(
+                      //   (item) => item?.itemId?.itemCode === option.itemCode
+                      // );
+
+                      const isListingFeeRepeating = Array.isArray(listingFees)
+                        ? listingFees.some(
+                            (item) => item?.itemId?.itemCode === option.itemCode
+                          )
+                        : false;
+
+                      const selectedClientData = watch("clientId");
+
+                      const isListingFeeRepeatingBackend =
+                        selectedClientData?.listingFees?.some((item) =>
+                          item?.listingItems?.some(
+                            (item) => item?.itemCode === option.itemCode
+                          )
+                        );
+
+                      const isInitialValue =
+                        selectedRowData?.listingItems?.some(
+                          (item) => item?.itemCode === option.itemCode
+                        );
+
+                      // const isInitialValueStillSelected =
+                      //   selectedClientData?.listingFees?.some((request) =>
+                      //     request?.listingItems?.some((item) =>
+                      //       selectedRowData?.listingItems.some(
+                      //         (initialItem) =>
+                      //           initialItem?.itemCode === item.itemCode
+                      //       )
+                      //     )
+                      //   );
+
+                      return (
+                        isListingFeeRepeating ||
+                        (editMode
+                          ? !isInitialValue &&
+                            // !isInitialValueStillSelected &&
+                            isListingFeeRepeatingBackend
+                          : isListingFeeRepeatingBackend)
+                      );
+                    }}
+                    disableClearable
+                    loading={isProductLoading}
+                    disabled={!watch("clientId")}
+                    isOptionEqualToValue={() => true}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        label="Product Code"
+                        // required
+                        helperText={errors?.itemId?.message}
+                        error={errors?.itemId}
+                        sx={{ width: "180px" }}
+                      />
+                    )}
+                    onChange={(_, value) => {
+                      setValue(
+                        `listingItems[${index}].itemDescription`,
+                        value?.itemDescription
+                      );
+                      setValue(`listingItems[${index}].uom`, value?.uom);
+                      return value;
+                    }}
+                  />
+
+                  <Controller
+                    control={control}
+                    name={`listingItems[${index}].itemDescription`}
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Item Description"
+                        size="small"
+                        autoComplete="off"
+                        disabled
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value?.toUpperCase() || ""}
+                        ref={ref}
+                        sx={{ width: "400px" }}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name={`listingItems[${index}].uom`}
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="UOM"
+                        size="small"
+                        autoComplete="off"
+                        disabled
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        ref={ref}
+                        sx={{ width: "200px" }}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    key={index}
+                    control={control}
+                    name={`listingItems[${index}].sku`}
+                    render={({ field: { onChange, onBlur, ref } }) => (
+                      <TextField
+                        label="SKU"
+                        size="small"
+                        autoComplete="off"
+                        disabled
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={1}
+                        ref={ref}
+                        sx={{ width: "200px" }}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name={`listingItems[${index}].unitCost`}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <NumericFormat
+                        label="Unit Cost"
+                        type="text"
+                        size="small"
+                        customInput={TextField}
+                        autoComplete="off"
+                        onValueChange={(e) => {
+                          onChange(Number(e.value));
+                          handleRecalculateTotalAmount();
+                        }}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        // ref={ref}
+                        // required
+                        thousandSeparator=","
+                        allowNegative={false}
+                        allowLeadingZeros={false}
+                        prefix="₱"
+                        disabled={!watch("clientId")}
+                      />
+                    )}
+                  />
+
+                  <IconButton
+                    sx={{ color: "error.main" }}
+                    onClick={() => {
+                      console.log(index);
+                      fields.length <= 1
+                        ? handleListingFeeError()
+                        : // : remove(fields[index]);
+                          remove(index);
+                      handleRecalculateTotalAmount();
+                    }}
+                    tabIndex={-1}
+                  >
+                    <RemoveCircleOutline sx={{ fontSize: "30px" }} />
+                  </IconButton>
+                </Box>
+              ))}
+            </Box>
           </Box>
         </Box>
 

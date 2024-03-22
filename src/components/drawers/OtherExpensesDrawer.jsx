@@ -22,6 +22,7 @@ import {
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 function OtherExpensesDrawer({
   editMode,
@@ -38,6 +39,7 @@ function OtherExpensesDrawer({
   //Redux States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const snackbar = useSnackbar();
+  const [parent] = useAutoAnimate();
 
   //Disclosures
   const {
@@ -323,9 +325,6 @@ function OtherExpensesDrawer({
               display: "flex",
               flexDirection: "column",
               gap: "10px",
-              maxHeight: "310px",
-              overflowX: "hidden",
-              overflowY: "auto",
             }}
           >
             <Box
@@ -339,123 +338,137 @@ function OtherExpensesDrawer({
                 Expenses Information
               </Typography>
             </Box>
-            {fields.map((item, index) => (
-              <Box
-                key={item.id}
-                sx={{
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "center",
-                }}
-              >
-                <ControlledAutocomplete
-                  name={`expenses[${index}].otherExpenseId`}
-                  control={control}
-                  options={expensesData?.otherExpenses || []}
-                  getOptionLabel={(option) =>
-                    option.expenseType?.toUpperCase() || ""
-                  }
-                  getOptionDisabled={(option) => {
-                    const otherExpenses = watch("expenses");
 
-                    const isExpenseRepeating = Array.isArray(otherExpenses)
-                      ? otherExpenses.some(
-                          (expense) =>
-                            expense?.otherExpenseId?.expenseType ===
-                            option.expenseType
-                        )
-                      : false;
-
-                    // const selectedClientData = watch("clientId");
-
-                    // const isExpenseRepeatingBackend =
-                    //   selectedClientData?.listingFees?.some((item) =>
-                    //     item?.expenses?.some(
-                    //       (item) => item?.itemCode === option.itemCode
-                    //     )
-                    //   );
-
-                    // return isExpenseRepeating || isExpenseRepeatingBackend;
-                    return isExpenseRepeating;
+            <Box
+              sx={{
+                paddingTop: "2px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                height: "270px",
+                overflowX: "hidden",
+                overflowY: "auto",
+              }}
+              ref={parent}
+            >
+              {fields.map((item, index) => (
+                <Box
+                  key={item.id}
+                  sx={{
+                    display: "flex",
+                    gap: "10px",
+                    alignItems: "center",
                   }}
-                  disableClearable
-                  loading={isExpensesLoading}
-                  disabled={!watch("clientId")}
-                  isOptionEqualToValue={() => true}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size="small"
-                      label="Expense Type"
-                      // required
-                      helperText={errors?.otherExpenseId?.message}
-                      error={errors?.otherExpenseId}
-                      sx={{ width: "400px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name={`expenses[${index}].amount`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <NumericFormat
-                      label="Amount"
-                      type="text"
-                      size="small"
-                      customInput={TextField}
-                      autoComplete="off"
-                      onValueChange={(e) => {
-                        onChange(Number(e.value));
-                        handleRecalculateTotalAmount();
-                      }}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      inputRef={ref}
-                      thousandSeparator=","
-                      allowNegative={false}
-                      allowLeadingZeros={false}
-                      disabled={!watch("clientId")}
-                      prefix="₱"
-                      sx={{ width: "180px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name={`expenses[${index}].remarks`}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <TextField
-                      label="Remarks"
-                      type="text"
-                      size="small"
-                      autoComplete="off"
-                      onChange={(e) => onChange(e.target.value.toUpperCase())}
-                      onBlur={onBlur}
-                      value={value || ""}
-                      inputRef={ref}
-                      sx={{ flex: 1 }}
-                      disabled={!watch("clientId")}
-                    />
-                  )}
-                />
-
-                <IconButton
-                  sx={{ color: "error.main" }}
-                  onClick={() => {
-                    fields?.length <= 1
-                      ? handleExpensesError()
-                      : // : remove(fields[index]);
-                        remove(index);
-                    handleRecalculateTotalAmount();
-                  }}
-                  tabIndex={-1}
                 >
-                  <RemoveCircleOutline sx={{ fontSize: "30px" }} />
-                </IconButton>
-              </Box>
-            ))}
+                  <ControlledAutocomplete
+                    name={`expenses[${index}].otherExpenseId`}
+                    control={control}
+                    options={expensesData?.otherExpenses || []}
+                    getOptionLabel={(option) =>
+                      option.expenseType?.toUpperCase() || ""
+                    }
+                    getOptionDisabled={(option) => {
+                      const otherExpenses = watch("expenses");
+
+                      const isExpenseRepeating = Array.isArray(otherExpenses)
+                        ? otherExpenses.some(
+                            (expense) =>
+                              expense?.otherExpenseId?.expenseType ===
+                              option.expenseType
+                          )
+                        : false;
+
+                      // const selectedClientData = watch("clientId");
+
+                      // const isExpenseRepeatingBackend =
+                      //   selectedClientData?.listingFees?.some((item) =>
+                      //     item?.expenses?.some(
+                      //       (item) => item?.itemCode === option.itemCode
+                      //     )
+                      //   );
+
+                      // return isExpenseRepeating || isExpenseRepeatingBackend;
+                      return isExpenseRepeating;
+                    }}
+                    disableClearable
+                    loading={isExpensesLoading}
+                    disabled={!watch("clientId")}
+                    isOptionEqualToValue={() => true}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        label="Expense Type"
+                        // required
+                        helperText={errors?.otherExpenseId?.message}
+                        error={errors?.otherExpenseId}
+                        sx={{ width: "400px" }}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name={`expenses[${index}].amount`}
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <NumericFormat
+                        label="Amount"
+                        type="text"
+                        size="small"
+                        customInput={TextField}
+                        autoComplete="off"
+                        onValueChange={(e) => {
+                          onChange(Number(e.value));
+                          handleRecalculateTotalAmount();
+                        }}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        inputRef={ref}
+                        thousandSeparator=","
+                        allowNegative={false}
+                        allowLeadingZeros={false}
+                        disabled={!watch("clientId")}
+                        prefix="₱"
+                        sx={{ width: "180px" }}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name={`expenses[${index}].remarks`}
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <TextField
+                        label="Remarks"
+                        type="text"
+                        size="small"
+                        autoComplete="off"
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        inputRef={ref}
+                        sx={{ flex: 1 }}
+                        disabled={!watch("clientId")}
+                      />
+                    )}
+                  />
+
+                  <IconButton
+                    sx={{ color: "error.main" }}
+                    onClick={() => {
+                      fields?.length <= 1
+                        ? handleExpensesError()
+                        : // : remove(fields[index]);
+                          remove(index);
+                      handleRecalculateTotalAmount();
+                    }}
+                    tabIndex={-1}
+                  >
+                    <RemoveCircleOutline sx={{ fontSize: "30px" }} />
+                  </IconButton>
+                </Box>
+              ))}
+            </Box>
           </Box>
         </Box>
 
