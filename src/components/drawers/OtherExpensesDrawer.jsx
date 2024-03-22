@@ -416,6 +416,7 @@ function OtherExpensesDrawer({
                       allowNegative={false}
                       allowLeadingZeros={false}
                       disabled={!watch("clientId")}
+                      prefix="₱"
                       sx={{ width: "180px" }}
                     />
                   )}
@@ -483,23 +484,28 @@ function OtherExpensesDrawer({
           <Box
             sx={{
               display: "flex",
+              alignItems: "center",
               mr: "50px",
               position: "absolute",
-              left: "600px",
+              // left: "600px",
+              right: "5px",
               gap: "23px",
             }}
           >
             <Typography
               sx={{
-                fontSize: "1rem",
                 fontWeight: "bold",
                 textTransform: "uppercase",
               }}
             >
               Total Amount
             </Typography>
-            <Typography sx={{ fontSize: "1rem" }}>
-              {totalAmount?.toLocaleString() || 0}
+            <Typography>
+              ₱
+              {totalAmount?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }) || 0}
             </Typography>
           </Box>
         </Box>

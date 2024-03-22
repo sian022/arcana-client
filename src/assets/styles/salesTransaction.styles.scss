@@ -5,7 +5,8 @@
   flex-direction: column;
   border-radius: 5px;
   background-color: $primary;
-  height: 85vh;
+  // height: 85vh;
+  height: calc(100vh - 120px);
 
   &__header {
     height: 45px;

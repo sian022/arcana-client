@@ -206,14 +206,7 @@ function ViewListingFeeModal({
         <Box className="viewListingFeeModal">
           <Box className="viewListingFeeModal__customerDetails">
             <Box className="viewListingFeeModal__customerDetails__left">
-              <Box
-                sx={{
-                  bgcolor: "secondary.main",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  color: "white !important",
-                }}
-              >
+              <Box className="viewListingFeeModal__customerDetails__left__boxLabel">
                 Business Name
               </Box>
               <Box>
@@ -227,16 +220,10 @@ function ViewListingFeeModal({
             </Box>
 
             <Box className="viewListingFeeModal__customerDetails__right">
-              <Box
-                sx={{
-                  bgcolor: "secondary.main",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  color: "white !important",
-                }}
-              >
+              <Box className="viewListingFeeModal__customerDetails__left__boxLabel">
                 Customer Name
               </Box>
+
               <Box>
                 <TextField
                   size="small"
@@ -252,92 +239,96 @@ function ViewListingFeeModal({
             <Typography className="viewListingFeeModal__transactionNumber__label">
               Transaction Number:
             </Typography>
+
             <Typography className="viewListingFeeModal__transactionNumber__value">
               {selectedRowData?.listingFeeId}
             </Typography>
           </Box>
 
-          <Box className="viewListingFeeModal__table">
-            <TableContainer
-              sx={{
-                maxHeight: "300px",
-                overflow: "auto",
-                width: "815px",
-                borderRadius: "10px",
-                border: "1px solid #e0e0e0",
-              }}
-            >
-              <Table>
-                <TableHead
-                  sx={{
-                    bgcolor: "white !important",
-                    color: "black !important",
-                  }}
-                >
-                  <TableRow>
-                    <TableCell
-                      sx={{
-                        color: "black !important",
-                      }}
-                    >
-                      Item Code
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        color: "black !important",
-                      }}
-                    >
-                      Item Description
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        color: "black !important",
-                      }}
-                    >
-                      UOM
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        color: "black !important",
-                      }}
-                    >
-                      SKU
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        color: "black !important",
-                      }}
-                    >
-                      Unit Cost
+          <TableContainer
+            sx={{
+              maxHeight: "340px",
+              overflow: "auto",
+              width: "815px",
+              borderRadius: "10px",
+              border: "1px solid #e0e0e0",
+            }}
+          >
+            <Table>
+              <TableHead
+                sx={{
+                  bgcolor: "white !important",
+                  color: "black !important",
+                }}
+              >
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      color: "black !important",
+                    }}
+                  >
+                    Item Code
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "black !important",
+                    }}
+                  >
+                    Item Description
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "black !important",
+                    }}
+                  >
+                    UOM
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "black !important",
+                    }}
+                  >
+                    SKU
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "black !important",
+                    }}
+                  >
+                    Unit Cost
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {selectedRowData?.listingItems?.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.itemCode}</TableCell>
+                    <TableCell>{item.itemDescription?.toUpperCase()}</TableCell>
+                    <TableCell>{item.uom}</TableCell>
+                    <TableCell>{item.sku}</TableCell>
+                    <TableCell>
+                      ₱
+                      {item.unitCost?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </TableCell>
                   </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {selectedRowData?.listingItems?.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{item.itemCode}</TableCell>
-                      <TableCell>
-                        {item.itemDescription?.toUpperCase()}
-                      </TableCell>
-                      <TableCell>{item.uom}</TableCell>
-                      <TableCell>{item.sku}</TableCell>
-                      <TableCell>₱ {item.unitCost?.toLocaleString()}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Box>
+
         <Box
           sx={{
             display: "flex",
             position: "absolute",
             // right: "150px",
-            // right: "125px",
-            left: "550px",
-            bottom: "90px",
+            right: "40px",
+            // left: "550px",
+            bottom: "50px",
             gap: "20px",
           }}
         >
@@ -351,7 +342,11 @@ function ViewListingFeeModal({
             Total Amount
           </Typography>
           <Typography sx={{ fontSize: "1rem" }}>
-            ₱ {totalAmount?.toLocaleString()}
+            ₱
+            {totalAmount?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </Typography>
         </Box>
         {approval && listingFeeStatus === "Under review" && (

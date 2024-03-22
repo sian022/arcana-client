@@ -610,9 +610,10 @@ function ListingFeeDrawer({
               display: "flex",
               mr: "50px",
               position: "absolute",
-              left: "600px",
+              // left: "600px",
+              right: "5px",
               // gap: "23px",
-              gap: "16px",
+              gap: "10px",
             }}
           >
             <Typography
@@ -626,7 +627,11 @@ function ListingFeeDrawer({
             </Typography>
 
             <Typography sx={{ fontSize: "1rem" }}>
-              ₱{totalAmount?.toLocaleString() || 0}
+              ₱
+              {totalAmount?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }) || 0}
             </Typography>
           </Box>
         </Box>

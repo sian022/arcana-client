@@ -357,7 +357,7 @@ function SalesTransaction() {
                               color="white !important"
                             >
                               <span style={{ whiteSpace: "nowrap" }}>
-                                ₱{" "}
+                                ₱
                                 {item.currentPrice?.toLocaleString(undefined, {
                                   minimumFractionDigits: 2,
                                   maximumFractionDigits: 2,
@@ -434,7 +434,7 @@ function SalesTransaction() {
                               color="white !important"
                             >
                               <span style={{ whiteSpace: "nowrap" }}>
-                                ₱{" "}
+                                ₱
                                 {item.currentPrice?.toLocaleString(undefined, {
                                   minimumFractionDigits: 2,
                                   maximumFractionDigits: 2,
@@ -519,7 +519,7 @@ function SalesTransaction() {
                       color="primary"
                     >
                       <span style={{ whiteSpace: "nowrap" }}>
-                        ₱{" "}
+                        ₱
                         {totalAmount.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,

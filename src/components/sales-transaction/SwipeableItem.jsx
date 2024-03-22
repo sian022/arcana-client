@@ -100,7 +100,7 @@ function SwipeableItem({
           whiteSpace="nowrap"
           sx={{ cursor: "default" }}
         >
-          ₱{" "}
+          ₱
           {(orderItem.itemId?.currentPrice * orderItem.quantity).toLocaleString(
             undefined,
             {

@@ -116,7 +116,7 @@ function PaymentTransaction() {
             />
 
             {isTransactionFetching ? (
-              <CommonTableSkeleton compact mt={"-20px"} />
+              <CommonTableSkeleton lowerCompact mt={"-20px"} />
             ) : (
               <CommonTable
                 mapData={dummyPaymentData}
@@ -124,7 +124,7 @@ function PaymentTransaction() {
                   transactionStatus === "Receivable" ||
                   transactionStatus === "Paid"
                 }
-                compact
+                lowerCompact
                 tableHeads={tableHeads}
                 pesoArray={pesoArray}
                 page={page}
