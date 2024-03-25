@@ -1,10 +1,10 @@
-import { Box, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, Input, TextField, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
-import { Controller, get, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productSchema } from "../../schema/schema";
 import CommonDialog from "../../components/CommonDialog";
@@ -22,9 +22,7 @@ import { useGetAllUomsQuery } from "../../features/setup/api/uomApi";
 import { useGetAllProductSubCategoriesQuery } from "../../features/setup/api/productSubCategoryApi";
 import { useGetAllMeatTypesQuery } from "../../features/setup/api/meatTypeApi";
 import { useSelector } from "react-redux";
-import PriceDetailsModal from "../../components/modals/PriceDetailsModal";
-import PriceChangeDrawer from "../../components/drawers/PriceChangeDrawer";
-import { LocalMall } from "@mui/icons-material";
+import { FileUpload, LocalMall } from "@mui/icons-material";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -37,7 +35,9 @@ function Products() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [changePrice, setChangePrice] = useState(false);
 
+  //Hooks
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const imageUploadRef = useRef();
 
   // Drawer Disclosures
   const {
@@ -62,18 +62,6 @@ function Products() {
     isOpen: isErrorOpen,
     onOpen: onErrorOpen,
     onClose: onErrorClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isPriceOpen,
-    onOpen: onPriceOpen,
-    onClose: onPriceClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isAddPriceOpen,
-    onOpen: onAddPriceOpen,
-    onClose: onAddPriceClose,
   } = useDisclosure();
 
   // Constants
@@ -102,7 +90,6 @@ function Products() {
     register,
     setValue,
     reset,
-    getValues,
     control,
     watch,
   } = useForm({
@@ -113,7 +100,7 @@ function Products() {
 
   //RTK Query
   const [postProduct, { isLoading: isAddLoading }] = usePostProductMutation();
-  const { data, isLoading, isFetching, refetch } = useGetAllProductsQuery({
+  const { data, isFetching } = useGetAllProductsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -131,29 +118,32 @@ function Products() {
 
   const onDrawerSubmit = async (data) => {
     try {
+      const formData = new FormData();
+
       const {
         uomId: { id: uomId },
         productSubCategoryId: { id: productSubCategoryId },
         meatTypeId: { id: meatTypeId },
-        priceChange,
-        ...restData
+        itemCode,
+        itemDescription,
       } = data;
+
+      formData.append("itemCode", itemCode);
+      formData.append("itemDescription", itemDescription);
+      formData.append("uomId", uomId);
+      formData.append("productSubCategoryId", productSubCategoryId);
+      formData.append("meatTypeId", meatTypeId);
+      formData.append("itemImageLink", data.itemImageLink);
 
       if (drawerMode === "add") {
         await postProduct({
-          ...restData,
-          uomId,
-          productSubCategoryId,
-          meatTypeId,
+          body: formData,
         }).unwrap();
         setSnackbarMessage("Product added successfully");
       } else if (drawerMode === "edit") {
         if (!changePrice) {
           await putProduct({
-            ...restData,
-            uomId,
-            productSubCategoryId,
-            meatTypeId,
+            body: formData,
           }).unwrap();
           setSnackbarMessage("Product updated successfully");
         }
@@ -403,6 +393,50 @@ function Products() {
             />
           )}
         />
+
+        <Controller
+          control={control}
+          name="itemImageLink"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              label="Product Image"
+              size="small"
+              type="file"
+              onChange={(event) => {
+                onChange(event.target.files[0]);
+              }}
+              onBlur={onBlur}
+              value={value?.fileName || ""}
+              inputRef={imageUploadRef}
+              sx={{ display: "none" }}
+            />
+          )}
+        />
+
+        <Box
+          className="productDrawer__canvas"
+          onClick={() => imageUploadRef.current.click()}
+        >
+          {watch("itemImageLink") ? (
+            <img
+              src={URL.createObjectURL(watch("itemImageLink"))}
+              alt="attachment-preview"
+              style={{
+                borderRadius: "5px",
+                maxWidth: "100%",
+                maxHeight: "100%",
+              }}
+            />
+          ) : (
+            <>
+              <FileUpload sx={{ fontSize: "5rem", color: "#33333361" }} />
+
+              <Typography fontWeight="500" color="#333333A8" fontSize="1.1rem">
+                Upload Product Image
+              </Typography>
+            </>
+          )}
+        </Box>
       </CommonDrawer>
 
       <CommonDialog
@@ -430,16 +464,6 @@ function Products() {
         onClose={onErrorClose}
         message={snackbarMessage}
       />
-
-      <PriceDetailsModal
-        data={data?.items}
-        isFetching={isFetching}
-        open={isPriceOpen}
-        // open={true}
-        onClose={onPriceClose}
-      />
-
-      <PriceChangeDrawer open={isAddPriceOpen} onClose={onAddPriceClose} />
     </Box>
   );
 }

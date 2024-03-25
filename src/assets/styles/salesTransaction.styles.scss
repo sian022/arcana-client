@@ -150,7 +150,8 @@
             & img {
               border-radius: 5px;
               object-fit: cover;
-              width: 55%;
+              width: 100%;
+              // width: 55%;
             }
 
             & img.noImage {

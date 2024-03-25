@@ -456,6 +456,24 @@
   }
 }
 
+.productDrawer {
+  &__canvas {
+    border-radius: 5px;
+    box-sizing: border-box;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5px;
+    //Gray
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2333333361' stroke-width='3' stroke-dasharray='24%2c 21' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    gap: 5px;
+    cursor: pointer;
+    object-fit: cover;
+  }
+}
+
 //Others
 .overlay {
   background: rgba(0, 0, 0, 0.4);

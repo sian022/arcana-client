@@ -524,7 +524,11 @@ function PaymentPage({ setPaymentMode }) {
                   <Typography
                     className={
                       "paymentPage__body__payments__footer__paymentsInfo__paymentBalance__value" +
-                      (handleRemainingBalance < 0 ? "Advance" : "Balance")
+                      (handleRemainingBalance < 0
+                        ? "Advance"
+                        : handleRemainingBalance === 0
+                        ? "Zero"
+                        : "Balance")
                     }
                   >
                     ₱

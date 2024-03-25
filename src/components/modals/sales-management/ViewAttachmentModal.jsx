@@ -125,12 +125,6 @@ function ViewAttachmentModal({ ...props }) {
                 Upload CI attachment
               </Typography>
             </>
-            // <>
-            //   <img src={BlankCanvas} alt="blank-canvas" width="250px" />
-            //   <Typography fontWeight="500" fontSize="1.1rem">
-            //     No attachment found
-            //   </Typography>
-            // </>
           )}
         </Box>
 

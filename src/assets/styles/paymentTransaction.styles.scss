@@ -352,6 +352,12 @@
               color: $primary-red;
             }
 
+            & &__valueZero {
+              font-size: 1.1rem;
+              font-weight: 600;
+              color: lighten($primary, 30%);
+            }
+
             // & &__value {
             //   font-size: 1.1rem;
             //   font-weight: 600;

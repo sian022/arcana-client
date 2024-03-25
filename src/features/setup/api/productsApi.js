@@ -5,10 +5,10 @@ const productsApi = api
   .injectEndpoints({
     endpoints: (builder) => ({
       postProduct: builder.mutation({
-        query: (body) => ({
+        query: ({ body }) => ({
           url: "/Items/AddNewItem",
           method: "POST",
-          body: body,
+          body,
         }),
         invalidatesTags: ["Products"],
       }),

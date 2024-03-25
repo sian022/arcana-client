@@ -336,10 +336,13 @@ function SalesTransaction() {
                         }}
                       >
                         <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__imageWrapper">
-                          {/* <img src={NoImg} alt="no-img" /> */}
-                          <NoPhotography
-                            sx={{ fontSize: "100px", color: "#7D8B99" }}
-                          />
+                          {item.itemImageLink ? (
+                            <img src={item.itemImageLink} alt="product-img" />
+                          ) : (
+                            <NoPhotography
+                              sx={{ fontSize: "100px", color: "#7D8B99" }}
+                            />
+                          )}
                         </Box>
                         <Box className="salesTransaction__body__itemsForm__itemsList__itemCard__labels">
                           <Typography
