@@ -340,7 +340,11 @@ function SalesTransaction() {
                             <img src={item.itemImageLink} alt="product-img" />
                           ) : (
                             <NoPhotography
-                              sx={{ fontSize: "100px", color: "#7D8B99" }}
+                              sx={{
+                                padding: "10px",
+                                fontSize: "120px",
+                                color: "#7D8B99",
+                              }}
                             />
                           )}
                         </Box>

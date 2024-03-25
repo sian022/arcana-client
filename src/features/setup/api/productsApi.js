@@ -23,10 +23,10 @@ const productsApi = api
         transformErrorResponse: (response) => response.value,
       }),
       putProduct: builder.mutation({
-        query: ({ id, ...body }) => ({
+        query: ({ id, body }) => ({
           url: `/Items/UpdateItem/${id}`,
           method: "PUT",
-          body: body,
+          body,
         }),
         invalidatesTags: ["Products"],
       }),

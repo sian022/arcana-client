@@ -133,7 +133,8 @@ function Products() {
       formData.append("uomId", uomId);
       formData.append("productSubCategoryId", productSubCategoryId);
       formData.append("meatTypeId", meatTypeId);
-      formData.append("itemImageLink", data.itemImageLink);
+      data.itemImageLink &&
+        formData.append("itemImageLink", data.itemImageLink);
 
       if (drawerMode === "add") {
         await postProduct({
@@ -143,6 +144,7 @@ function Products() {
       } else if (drawerMode === "edit") {
         if (!changePrice) {
           await putProduct({
+            id: selectedRowData.id,
             body: formData,
           }).unwrap();
           setSnackbarMessage("Product updated successfully");
@@ -325,7 +327,7 @@ function Products() {
           options={uomData?.uom || []}
           getOptionLabel={(option) => option.uomCode}
           disableClearable
-          isOptionEqualToValue={(option, value) => option.id === value.id}
+          isOptionEqualToValue={() => true}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -343,7 +345,7 @@ function Products() {
           options={productSubcategoriesData?.productSubCategories || []}
           getOptionLabel={(option) => option.productSubCategoryName}
           disableClearable
-          isOptionEqualToValue={(option, value) => option.id === value.id}
+          isOptionEqualToValue={() => true}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -382,7 +384,7 @@ function Products() {
           options={meatTypeData?.meatTypes || []}
           getOptionLabel={(option) => option.meatTypeName}
           disableClearable
-          isOptionEqualToValue={(option, value) => option.id === value.id}
+          isOptionEqualToValue={() => true}
           renderInput={(params) => (
             <TextField
               {...params}

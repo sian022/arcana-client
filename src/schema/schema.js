@@ -112,7 +112,7 @@ export const productSchema = {
     uomId: yup.object().required("UOM is required"),
     productSubCategoryId: yup.object().required("Subcategory is required"),
     meatTypeId: yup.object().required("Meat type is required"),
-    itemImageLink: yup.mixed().required("Image is required"),
+    itemImageLink: yup.mixed().nullable(),
   }),
   defaultValues: {
     itemCode: "",
