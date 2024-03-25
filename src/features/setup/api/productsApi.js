@@ -1,7 +1,9 @@
 import { api } from "../../api";
 
 const productsApi = api
-  .enhanceEndpoints({ addTagTypes: "Products" })
+  .enhanceEndpoints({
+    addTagTypes: ["Products", "Price Mode Items", "Price Mode Code"],
+  })
   .injectEndpoints({
     endpoints: (builder) => ({
       postProduct: builder.mutation({

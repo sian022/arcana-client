@@ -23,6 +23,7 @@ import { useGetAllProductSubCategoriesQuery } from "../../features/setup/api/pro
 import { useGetAllMeatTypesQuery } from "../../features/setup/api/meatTypeApi";
 import { useSelector } from "react-redux";
 import { FileUpload, LocalMall } from "@mui/icons-material";
+import { isValidUrl } from "../../utils/CustomFunctions";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -86,7 +87,7 @@ function Products() {
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     register,
     setValue,
     reset,
@@ -168,6 +169,8 @@ function Products() {
     }
   };
 
+  console.log(watch());
+
   const onArchiveSubmit = async () => {
     try {
       await patchProductStatus(selectedId).unwrap();
@@ -200,43 +203,24 @@ function Products() {
     setValue("itemDescription", editData.itemDescription);
     setValue("productCategory", editData?.productCategory);
     setValue("price", editData?.latestPriceChange?.price);
-
-    const foundUom = data?.items.find((item) => item.uom === editData.uom);
-    if (foundUom) {
-      const updatedItem = { ...foundUom, uomCode: foundUom.uom };
-      delete updatedItem.uom;
-      setValue("uomId", updatedItem);
-    }
-
-    // setValue(
-    //   "uomId",
-    //   data?.items.find((item) => item.uom === editData.uom)
-    // );
-
+    setValue(
+      "uomId",
+      uomData?.uom.find((item) => item.uomCode === editData.uom)
+    );
     setValue(
       "productSubCategoryId",
-      data?.items.find(
+      productSubcategoriesData?.productSubCategories.find(
         (item) =>
           item.productSubCategoryName === editData.productSubCategoryName
       )
     );
-
-    const foundMeatType = data?.items.find(
-      (item) => item.meatType === editData.meatType
+    setValue(
+      "meatTypeId",
+      meatTypeData?.meatTypes.find(
+        (item) => item.meatTypeName === editData.meatType
+      )
     );
-    if (foundMeatType) {
-      const updatedItem = {
-        ...foundMeatType,
-        meatTypeName: foundMeatType.meatType,
-      };
-      delete updatedItem.meatType;
-      setValue("meatTypeId", updatedItem);
-    }
-
-    // setValue(
-    //   "meatTypeId",
-    //   data?.items.find((item) => item.meatType === editData.meatType)
-    // );
+    setValue("itemImageLink", editData.itemImageLink);
   };
 
   const handleArchiveOpen = (id) => {
@@ -305,7 +289,7 @@ function Products() {
         onClose={handleDrawerClose}
         drawerHeader={(drawerMode === "add" ? "Add" : "Edit") + " Product"}
         onSubmit={handleSubmit(onDrawerSubmit)}
-        disableSubmit={!isValid || watch("price") <= 0}
+        disableSubmit={!isValid || !isDirty}
         isLoading={drawerMode === "add" ? isAddLoading : isUpdateLoading}
       >
         <TextField
@@ -421,7 +405,11 @@ function Products() {
         >
           {watch("itemImageLink") ? (
             <img
-              src={URL.createObjectURL(watch("itemImageLink"))}
+              src={
+                isValidUrl(watch("itemImageLink"))
+                  ? watch("itemImageLink")
+                  : URL.createObjectURL(watch("itemImageLink"))
+              }
               alt="attachment-preview"
               style={{
                 borderRadius: "5px",
