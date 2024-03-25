@@ -8,6 +8,7 @@ import useSnackbar from "../../../hooks/useSnackbar";
 import useConfirm from "../../../hooks/useConfirm";
 import { useCreateSalesTransactionMutation } from "../../../features/sales-management/api/salesTransactionApi";
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
+import { NumericFormat } from "react-number-format";
 
 function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   const { onClose, open } = props;
@@ -16,6 +17,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   const confirm = useConfirm();
   const snackbar = useSnackbar();
   const chargeInvoiceRef = useRef();
+  const discountRef = useRef();
 
   //React Hook Form
   const {
@@ -23,11 +25,34 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     formState: { errors, isValid, isDirty },
     reset,
     control,
+    setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(cashoutSchema.schema),
     mode: "onSubmit",
     defaultValues: cashoutSchema.defaultValues,
   });
+
+  //Temp Constants
+  const specialDiscount = 0.09;
+  const discount = 0.05;
+
+  const specialDiscountAmount = useMemo(
+    () => total * specialDiscount,
+    [specialDiscount, total]
+  );
+
+  const discountAmount = useMemo(
+    () => (total * watch("discount")) / 100,
+    [watch("discount"), watch, total]
+  );
+
+  const netSales = useMemo(
+    () => total - discountAmount - specialDiscountAmount,
+    [total, discountAmount, specialDiscountAmount]
+  );
+
+  const isVariableDiscount = true;
 
   //RTK Query
   const [createSalesTransaction] = useCreateSalesTransactionMutation();
@@ -35,14 +60,18 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   //Functions
   const onSubmit = async (data) => {
     const transformedOrderData = {
-      clientId: orderData?.clientId?.id,
+      clientId: orderData?.clientId?.clientId,
       items: orderData?.items?.map((item) => ({
         itemId: item?.itemId?.itemId,
         quantity: item?.quantity,
+        unitPrice: item?.itemId?.currentPrice,
       })),
     };
 
-    const combinedData = { ...transformedOrderData, ...data };
+    const combinedData = {
+      ...transformedOrderData,
+      ...data,
+    };
 
     try {
       await confirm({
@@ -70,30 +99,27 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     onClose();
   };
 
-  //Temp Constants
-  const specialDiscount = 0.09;
-  const discount = 0.05;
-
-  const specialDiscountAmount = useMemo(
-    () => total * specialDiscount,
-    [specialDiscount, total]
-  );
-
-  const discountAmount = useMemo(() => total * discount, [discount, total]);
-
-  const netSales = useMemo(
-    () => total - discountAmount - specialDiscountAmount,
-    [total, discountAmount, specialDiscountAmount]
-  );
-
   //UseEffect
   useEffect(() => {
     if (open) {
-      setTimeout(() => {
-        chargeInvoiceRef.current.select();
-      }, 0);
+      if (isVariableDiscount) {
+        setTimeout(() => {
+          discountRef.current.select();
+        }, 0);
+      } else {
+        setTimeout(() => {
+          chargeInvoiceRef.current.select();
+        }, 0);
+      }
     }
-  }, [open]);
+  }, [open, isVariableDiscount]);
+
+  useEffect(() => {
+    if (open) {
+      !isVariableDiscount && setValue("discount", discount * 100);
+      setValue("specialDiscount", specialDiscount * 100);
+    }
+  }, [open, setValue, discount, specialDiscount, isVariableDiscount]);
 
   return (
     <CommonModalForm
@@ -157,11 +183,54 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
                 </Typography>
 
                 <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
-                  {discount &&
-                    `(${(discount * 100)?.toLocaleString(undefined, {
+                  {isVariableDiscount ? (
+                    <Controller
+                      control={control}
+                      name="discount"
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <NumericFormat
+                          type="text"
+                          size="small"
+                          customInput={TextField}
+                          autoComplete="off"
+                          value={value || ""}
+                          onValueChange={(e) => onChange(Number(e.value))}
+                          onBlur={onBlur}
+                          inputRef={discountRef}
+                          inputProps={{
+                            style: {
+                              width: "60px",
+                              //  padding: "0.5px 10px"
+                              padding: "5px 10px",
+                            },
+                          }}
+                          isAllowed={(values) => {
+                            const { floatValue } = values;
+                            // Check if the floatValue is greater than 10 and show a snackbar
+                            if (floatValue != null && floatValue > 10) {
+                              snackbar({
+                                message: "Value should be between 1% and 10%",
+                                variant: "error",
+                              });
+                              return false;
+                            }
+                            return true;
+                          }}
+                          thousandSeparator=","
+                          allowNegative={false}
+                          allowLeadingZeros={false}
+                          decimalScale={2}
+                          fixedDecimalScale
+                          suffix="%"
+                        />
+                      )}
+                    />
+                  ) : (
+                    `(${watch("discount")?.toLocaleString(undefined, {
                       minimumFractionDigits: 2,
                       maximumFractionsDigits: 2,
-                    })}%)`}
+                    })}%)`
+                  )}
                 </Typography>
               </Box>
 
@@ -182,11 +251,10 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
                 </Typography>
 
                 <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
-                  {specialDiscount &&
-                    `(${(specialDiscount * 100)?.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionsDigits: 2,
-                    })}%)`}
+                  {`(${watch("specialDiscount")?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionsDigits: 2,
+                  })}%)`}
                 </Typography>
               </Box>
 

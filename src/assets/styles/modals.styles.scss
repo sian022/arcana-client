@@ -1960,8 +1960,8 @@
     font-weight: 700;
   }
 
-  &__table {
+  &__body {
+    position: relative;
     display: flex;
-    flex: 1;
   }
 }
