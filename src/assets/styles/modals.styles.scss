@@ -1954,6 +1954,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: 100%;
 
   & &__title {
     font-size: 1.1rem;
@@ -1963,5 +1964,81 @@
   &__body {
     position: relative;
     display: flex;
+    overflow: auto;
+    height: calc(100% - 50px);
+
+    &__total {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      & &__label {
+        font-size: 1.1rem;
+        // font-weight: 600;
+      }
+
+      & &__value {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+    }
+
+    &__paymentTypes {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+
+      & &__label {
+        font-size: 0.95rem;
+        // font-weight: 500;
+      }
+
+      & &__value {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      & button {
+        padding: 3px;
+      }
+    }
+
+    &__paymentsDetailed {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      &__item {
+        display: flex;
+        flex-direction: column;
+
+        & &__title {
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: gray;
+        }
+
+        &__content {
+          display: flex;
+          flex-direction: column;
+          margin-left: 20px;
+
+          &__row {
+            display: flex;
+            gap: 5px;
+
+            & &__label {
+              font-size: 0.9rem;
+              font-weight: 500;
+            }
+
+            & &__value {
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+    }
   }
 }
