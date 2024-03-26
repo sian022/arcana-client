@@ -26,7 +26,9 @@ function PaymentHistoriesModal({ ...props }) {
   //Functions
   const getPaymentTypeIcon = (paymentType) => {
     return getIconElement(
-      paymentTypes.find((type) => type.value === paymentType).icon
+      paymentTypes.find((type) => type.value === paymentType).icon,
+      "gray",
+      "1.3rem"
     );
   };
 
@@ -143,9 +145,17 @@ function PaymentHistoriesModal({ ...props }) {
                               key={index}
                               className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item"
                             >
-                              <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title">
-                                {paymentType.paymentType}
-                              </Typography>
+                              <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title">
+                                <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title__number">
+                                  {index + 1}.
+                                </Typography>
+
+                                <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title__label">
+                                  {paymentType.paymentType}
+                                </Typography>
+
+                                {getPaymentTypeIcon(paymentType.paymentType)}
+                              </Box>
 
                               <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content">
                                 <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">

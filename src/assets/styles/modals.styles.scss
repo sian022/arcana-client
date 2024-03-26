@@ -2025,10 +2025,23 @@
           display: flex;
           flex-direction: column;
 
-          & &__title {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: gray;
+          &__title {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+
+            & &__number {
+              font-size: 0.9rem;
+              font-weight: 500;
+              color: gray;
+              min-width: 15px;
+            }
+
+            & &__label {
+              font-size: 0.9rem;
+              font-weight: 500;
+              color: gray;
+            }
           }
 
           &__content {
