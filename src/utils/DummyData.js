@@ -491,3 +491,100 @@ export const dummyInventoryData = [
   //   nearExpiry: 15,
   // },
 ];
+
+export const dummyPaymentHistoriesData = [
+  {
+    id: 5,
+    date: "2024-03-28T16:55:30",
+    total: 150000,
+    paymentTypes: [
+      {
+        paymentType: "Cash",
+        amount: 120000,
+      },
+      {
+        paymentType: "Online",
+        amount: 30000,
+        accountName: "Michael Johnson",
+        accountNumber: "1357924680",
+        referenceNumber: "987654",
+      },
+    ],
+  },
+  {
+    id: 4,
+    date: "2024-03-25T09:45:12",
+    total: 90000,
+    paymentTypes: [
+      {
+        paymentType: "Advance Payment",
+        amount: 90000,
+      },
+    ],
+  },
+  {
+    id: 3,
+    date: "2024-03-20T14:30:22",
+    total: 120000,
+    paymentTypes: [
+      {
+        paymentType: "Online",
+        amount: 120000,
+        accountName: "Jane Smith",
+        accountNumber: "0987654321",
+        referenceNumber: "654321",
+      },
+    ],
+  },
+  {
+    id: 2,
+    date: "2024-03-15T11:20:45",
+    total: 180000,
+    paymentTypes: [
+      {
+        paymentType: "Cash",
+        amount: 180000,
+      },
+    ],
+  },
+  {
+    id: 1,
+    date: "2024-03-10T10:00:33",
+    total: 240000,
+    paymentTypes: [
+      {
+        paymentType: "Cash",
+        amount: 100000,
+      },
+      {
+        paymentType: "Cheque",
+        amount: 50000,
+        payee: "John Doe",
+        chequeDate: "2024-03-10",
+        bank: "BDO",
+        chequeNo: "123456",
+        dateReceived: "2024-03-10",
+      },
+      {
+        paymentType: "Online",
+        amount: 50000,
+        accountName: "John Doe",
+        accountNumber: "1234567890",
+        referenceNumber: "123456",
+      },
+      {
+        paymentType: "Listing Fee",
+        amount: 20000,
+      },
+      {
+        paymentType: "Offset",
+        amount: 10000,
+        remarks: "Deduct from CDO",
+      },
+      {
+        paymentType: "Advance Payment",
+        amount: 10000,
+      },
+    ],
+  },
+];

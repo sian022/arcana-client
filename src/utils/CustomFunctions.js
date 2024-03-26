@@ -256,3 +256,10 @@ export const isValidUrl = (urlString) => {
     return false;
   }
 };
+
+export const formatPesoAmount = (amount) => {
+  return amount.toLocaleString("en-PH", {
+    style: "currency",
+    currency: "PHP",
+  });
+};
