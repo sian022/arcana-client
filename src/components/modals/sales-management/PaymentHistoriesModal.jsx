@@ -130,9 +130,9 @@ function PaymentHistoriesModal({ ...props }) {
 
                       <IconButton>
                         {expandedPaymentType[paymentTransaction.id] ? (
-                          <KeyboardArrowUp />
+                          <KeyboardArrowUp color="secondary" />
                         ) : (
-                          <KeyboardArrowDown />
+                          <KeyboardArrowDown color="secondary" />
                         )}
                       </IconButton>
                     </Box>
