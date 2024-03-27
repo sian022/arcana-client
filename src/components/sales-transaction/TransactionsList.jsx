@@ -13,14 +13,15 @@ import ViewAttachmentModal from "../modals/sales-management/ViewAttachmentModal"
 import { debounce } from "../../utils/CustomFunctions";
 import { useGetAllSalesTransactionQuery } from "../../features/sales-management/api/salesTransactionApi";
 import CommonTableSkeleton from "../CommonTableSkeleton";
+import * as _ from "lodash";
 
 function TransactionsList({ setTransactionsMode }) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
-  const [dateFrom, setDateFrom] = useState(moment().format("YYYY-MM-DD"));
-  const [dateTo, setDateTo] = useState(moment().format("YYYY-MM-DD"));
+  const [dateFrom, setDateFrom] = useState(moment());
+  const [dateTo, setDateTo] = useState(moment());
   const [dateFromTemp, setDateFromTemp] = useState(moment());
   const [dateToTemp, setDateToTemp] = useState(moment());
 
@@ -152,6 +153,11 @@ function TransactionsList({ setTransactionsMode }) {
               size="medium"
               onClick={handleSubmitDate}
               sx={{ ml: "10px", height: "100%" }}
+              disabled={
+                isTransactionsFetching ||
+                (_.isEqual(dateFrom, dateFromTemp) &&
+                  _.isEqual(dateTo, dateToTemp))
+              }
             >
               <Search />
             </SecondaryButton>
