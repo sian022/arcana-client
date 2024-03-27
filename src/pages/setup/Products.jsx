@@ -264,9 +264,10 @@ function Products() {
       />
 
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.items}
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}

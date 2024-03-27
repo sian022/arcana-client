@@ -182,9 +182,10 @@ function ExpensesSetup() {
       />
 
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.otherExpenses}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}

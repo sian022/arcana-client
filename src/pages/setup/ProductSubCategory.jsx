@@ -1,5 +1,5 @@
-import { Autocomplete, Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -80,7 +80,7 @@ function ProductSubCategory() {
   //RTK Query
   const [postProductSubCategory, { isLoading: isAddLoading }] =
     usePostProductSubCategoryMutation();
-  const { data, isLoading, isFetching } = useGetAllProductSubCategoriesQuery({
+  const { data, isFetching } = useGetAllProductSubCategoriesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -206,9 +206,10 @@ function ProductSubCategory() {
         setStatus={setStatus}
       />
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.productSubCategories}
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}

@@ -87,6 +87,9 @@ function PriceModeManagement() {
     defaultValues: priceModeItemSchema.defaultValues,
   });
 
+  //React Hook Form Watch
+  const watchPriceModeId = watch("priceModeId");
+
   //Axios
   const exportPriceChanges = async () => {
     const res = await axios.get(
@@ -235,10 +238,10 @@ function PriceModeManagement() {
 
   // UseEffect;
   useEffect(() => {
-    if (watch("priceModeId")) {
+    if (watchPriceModeId) {
       triggerProducts(
         {
-          priceModeId: watch("priceModeId")?.id,
+          priceModeId: watchPriceModeId?.id,
           Status: true,
           page: 1,
           pageSize: 1000,
@@ -246,7 +249,7 @@ function PriceModeManagement() {
         { preferCacheValue: true }
       );
     }
-  }, [watch("priceModeId"), triggerProducts, watch]);
+  }, [watchPriceModeId, triggerProducts]);
 
   useEffect(() => {
     setCount(priceModeItemsData?.totalCount);
@@ -273,9 +276,10 @@ function PriceModeManagement() {
         />
 
         {isPriceModeItemsFetching ? (
-          <CommonTableSkeleton />
+          <CommonTableSkeleton evenLesserCompact />
         ) : (
           <CommonTable
+            evenLesserCompact
             mapData={priceModeItemsData?.priceModeItems}
             onRemove={onDeleteOpen}
             onPriceChange={onPriceChangeOpen}

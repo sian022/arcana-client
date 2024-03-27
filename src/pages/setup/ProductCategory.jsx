@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import {
@@ -77,7 +77,7 @@ function ProductCategory() {
   //RTK Query
   const [postProductCategory, { isLoading: isAddLoading }] =
     usePostProductCategoryMutation();
-  const { data, isLoading, isFetching } = useGetAllProductCategoryQuery({
+  const { data, isFetching } = useGetAllProductCategoryQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -182,9 +182,10 @@ function ProductCategory() {
       />
 
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.result}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}

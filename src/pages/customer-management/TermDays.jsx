@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -67,7 +67,6 @@ function TermDays() {
     register,
     setValue,
     reset,
-    control,
   } = useForm({
     resolver: yupResolver(termDaysSchema.schema),
     mode: "onChange",
@@ -76,7 +75,7 @@ function TermDays() {
 
   //RTK Query
   const [postTermDays, { isLoading: isAddLoading }] = usePostTermDaysMutation();
-  const { data, isLoading, isFetching } = useGetAllTermDaysQuery({
+  const { data, isFetching } = useGetAllTermDaysQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -180,9 +179,10 @@ function TermDays() {
         setStatus={setStatus}
       />
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.termDays}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}

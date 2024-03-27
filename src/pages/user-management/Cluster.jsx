@@ -1,5 +1,5 @@
-import { Autocomplete, Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -18,7 +18,6 @@ import {
   usePostClusterMutation,
   usePutClusterMutation,
 } from "../../features/setup/api/clusterApi";
-import TagCDODrawer from "../../components/drawers/TagCDODrawer";
 import ViewCDOModal from "../../components/modals/ViewCDOModal";
 import { PinDrop } from "@mui/icons-material";
 
@@ -90,7 +89,7 @@ function Cluster() {
 
   //RTK Query
   const [postCluster, { isLoading: isAddLoading }] = usePostClusterMutation();
-  const { data, isLoading, isFetching } = useGetAllClustersQuery({
+  const { data, isFetching } = useGetAllClustersQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -206,9 +205,10 @@ function Cluster() {
           setStatus={setStatus}
         />
         {isFetching ? (
-          <CommonTableSkeleton />
+          <CommonTableSkeleton evenLesserCompact />
         ) : (
           <CommonTable
+            evenLesserCompact
             mapData={data?.cluster}
             customOrderKeys={customOrderKeys}
             onEdit={handleEditOpen}

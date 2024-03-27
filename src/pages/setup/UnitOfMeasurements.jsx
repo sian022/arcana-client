@@ -1,5 +1,5 @@
-import { Autocomplete, Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -68,7 +68,6 @@ function UnitOfMeasurements() {
     register,
     setValue,
     reset,
-    getValues,
   } = useForm({
     resolver: yupResolver(uomSchema.schema),
     mode: "onChange",
@@ -77,7 +76,7 @@ function UnitOfMeasurements() {
 
   //RTK Query
   const [postUom, { isLoading: isAddLoading }] = usePostUomMutation();
-  const { data, isLoading, isFetching } = useGetAllUomsQuery({
+  const { data, isFetching } = useGetAllUomsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -180,9 +179,10 @@ function UnitOfMeasurements() {
         setStatus={setStatus}
       />
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.uom}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}

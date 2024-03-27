@@ -186,9 +186,10 @@ function PriceModeSetup() {
       />
 
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.priceMode}
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}

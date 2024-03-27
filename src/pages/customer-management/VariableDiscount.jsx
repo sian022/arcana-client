@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -14,7 +14,6 @@ import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   useDeleteVariableDiscountMutation,
   useGetAllDiscountTypesQuery,
-  usePatchDiscountTypeStatusMutation,
   usePostDiscountTypeMutation,
   usePutDiscountTypeMutation,
 } from "../../features/setup/api/discountTypeApi";
@@ -24,8 +23,6 @@ import { Label } from "@mui/icons-material";
 
 function VariableDiscount() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
-  const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -42,9 +39,9 @@ function VariableDiscount() {
   } = useDisclosure();
 
   const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
+    isOpen: isRemoveOpen,
+    onOpen: onRemoveOpen,
+    onClose: onRemoveClose,
   } = useDisclosure();
 
   const {
@@ -72,12 +69,10 @@ function VariableDiscount() {
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid },
-    register,
+    formState: { isValid },
     setValue,
     reset,
     control,
-    getValues,
   } = useForm({
     resolver: yupResolver(variableDiscountSchema.schema),
     mode: "onChange",
@@ -87,17 +82,15 @@ function VariableDiscount() {
   //RTK Query
   const [postDiscountType, { isLoading: isAddLoading }] =
     usePostDiscountTypeMutation();
-  const { data, isLoading, isFetching } = useGetAllDiscountTypesQuery({
+  const { data, isFetching } = useGetAllDiscountTypesQuery({
     Search: search,
-    Status: status,
+    Status: true,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
   });
   const [putDiscountType, { isLoading: isUpdateLoading }] =
     usePutDiscountTypeMutation();
-  // const [patchDiscountTypeStatus, { isLoading: isArchiveLoading }] =
-  //   usePatchDiscountTypeStatusMutation();
-  const [deleteVariableDiscount, { isLoading: isArchiveLoading }] =
+  const [deleteVariableDiscount, { isLoading: isRemoveLoading }] =
     useDeleteVariableDiscountMutation();
 
   //Drawer Functions
@@ -129,14 +122,14 @@ function VariableDiscount() {
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onRemoveSubmit = async () => {
     try {
       await deleteVariableDiscount(selectedRowData?.id).unwrap();
-      onArchiveClose();
+      onRemoveClose();
       setSnackbarMessage("Variable Discount deleted successfully");
 
       // await patchDiscountTypeStatus(selectedId).unwrap();
-      // onArchiveClose();
+      // onRemoveClose();
       // setSnackbarMessage(
       //   `Variable Discount ${status ? "archived" : "restored"} successfully`
       // );
@@ -158,31 +151,9 @@ function VariableDiscount() {
     onDrawerOpen();
   };
 
-  const handleEditOpen = (editData) => {
-    setDrawerMode("edit");
-    onDrawerOpen();
-
-    // Object.keys(editData).forEach((key) => {
-    //   setValue(key, editData[key]);
-    // });
-
-    setValue("id", editData.id);
-    setValue("minimumAmount", editData.minimumAmount);
-    setValue("maximumAmount", editData.maximumAmount);
-    setValue("maximumAmountUpperBoundary", editData.maximumAmount + 0.999);
-    setValue("minimumPercentage", editData.minimumPercentage * 100);
-    setValue("maximumPercentage", editData.maximumPercentage * 100);
-  };
-
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
 
   //Constants
@@ -195,7 +166,7 @@ function VariableDiscount() {
 
   useEffect(() => {
     setPage(0);
-  }, [search, status, rowsPerPage]);
+  }, [search, rowsPerPage]);
 
   useEffect(() => {
     if (isDrawerOpen && drawerMode === "add") {
@@ -221,7 +192,7 @@ function VariableDiscount() {
         );
       }
     }
-  }, [isDrawerOpen]);
+  }, [isDrawerOpen, drawerMode, data, setValue]);
 
   return (
     <Box className="commonPageLayout">
@@ -233,19 +204,18 @@ function VariableDiscount() {
         }
         onOpen={handleAddOpen}
         setSearch={setSearch}
-        setStatus={setStatus}
-        removeAdd={!status}
         removeArchive
       />
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.discount}
           customOrderKeys={customOrderKeys}
           pesoArray={pesoArray}
           percentageArray={percentageArray}
-          onRemove={handleArchiveOpen}
+          onRemove={onRemoveOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -286,9 +256,8 @@ function VariableDiscount() {
               decimalScale={0}
               onBlur={onBlur}
               value={value || ""}
-              // ref={ref}
+              inputRef={ref}
               thousandSeparator=","
-              // disabled={data?.discount?.length > 0 && drawerMode === "add"}
               disabled
             />
           )}
@@ -315,7 +284,7 @@ function VariableDiscount() {
               }}
               onBlur={onBlur}
               value={value || ""}
-              // ref={ref}
+              inputRef={ref}
               thousandSeparator=","
             />
           )}
@@ -361,11 +330,10 @@ function VariableDiscount() {
               }}
               onBlur={onBlur}
               value={value || ""}
-              // ref={ref}
+              inputRef={ref}
               thousandSeparator=","
               allowNegative={false}
               decimalScale={0}
-              // disabled={data?.discount?.length > 0 && drawerMode === "add"}
               disabled
             />
           )}
@@ -396,7 +364,7 @@ function VariableDiscount() {
               }}
               onBlur={onBlur}
               value={value || ""}
-              // ref={ref}
+              inputRef={ref}
               thousandSeparator=","
               allowNegative={false}
               decimalScale={0}
@@ -416,10 +384,10 @@ function VariableDiscount() {
         /> */}
       </CommonDrawer>
       <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
+        open={isRemoveOpen}
+        onClose={onRemoveClose}
+        onYes={onRemoveSubmit}
+        isLoading={isRemoveLoading}
         question={!status}
       >
         Are you sure you want to delete amount range{" "}

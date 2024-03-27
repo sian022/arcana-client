@@ -74,6 +74,9 @@ function UserAccount() {
     defaultValues: userAccountSchema.defaultValues,
   });
 
+  // React Hook Form: Watch
+  const watchUserRole = watch("userRoleId");
+
   // RTK Query: Main CRUD
   const [postUser, { isLoading: isAddUserLoading }] = usePostUserMutation();
   const { data, isFetching } = useGetAllUsersQuery({
@@ -240,10 +243,10 @@ function UserAccount() {
 
   // useEffect: Others
   useEffect(() => {
-    if (watch("userRoleId")?.roleName !== "CDO") {
+    if (watchUserRole?.roleName !== "CDO") {
       setValue("clusterId", null);
     }
-  }, [watch("userRoleId"), setValue, watch]);
+  }, [watchUserRole, setValue]);
 
   return (
     <>
@@ -266,9 +269,10 @@ function UserAccount() {
 
         {/* Main Table */}
         {isFetching ? (
-          <CommonTableSkeleton />
+          <CommonTableSkeleton evenLesserCompact />
         ) : (
           <CommonTable
+            evenLesserCompact
             //Data Props
             mapData={data?.users}
             tableHeads={tableHeads}

@@ -1,10 +1,5 @@
 import {
   Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Modal,
   Paper,
   Table,
   TableBody,
@@ -13,9 +8,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
 } from "@mui/material";
-import React, { useState } from "react";
 import { transformKey } from "../utils/CustomFunctions";
 import CommonActions from "./CommonActions";
 import NoData from "../assets/images/NoRecordsFound.svg";
@@ -36,21 +29,20 @@ function RoleTable({
   setRowsPerPage,
   count = 0,
   status,
+  evenLesserCompact,
 }) {
+  const dispatch = useDispatch();
+
   if (!mapData || mapData.length === 0) {
     return (
-      <Box className="noData">
-        <img
-          src={NoData}
-          alt="no-data-img"
-          className="noData__image"
-          // style={{ position: "relative", bottom: "10%" }}
-        />
+      <Box
+        className="noData"
+        sx={{ height: evenLesserCompact ? "calc(100vh - 262px)" : null }}
+      >
+        <img src={NoData} alt="no-data-img" className="noData__image" />
       </Box>
     );
   }
-
-  const dispatch = useDispatch();
 
   var dataToMap = mapData;
   var tableHeadsList;
@@ -58,7 +50,7 @@ function RoleTable({
   if (excludeKeys) {
     const filteredData = mapData?.map((obj) => {
       const filteredObj = Object.fromEntries(
-        Object.entries(obj).filter(([key, value]) => !excludeKeys.includes(key))
+        Object.entries(obj).filter(([key]) => !excludeKeys.includes(key))
       );
       return filteredObj;
     });
@@ -83,6 +75,7 @@ function RoleTable({
       <TableContainer
         component={Paper}
         className="tableSuperContainer__tableContainer"
+        sx={{ height: evenLesserCompact ? "calc(100vh - 262px)" : null }}
       >
         <Table>
           <TableHead>
@@ -92,6 +85,7 @@ function RoleTable({
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {dataToMap.map((item, j) => {
               return (
@@ -124,6 +118,7 @@ function RoleTable({
           </TableBody>
         </Table>
       </TableContainer>
+
       <TablePagination
         component="div"
         rowsPerPage={rowsPerPage}

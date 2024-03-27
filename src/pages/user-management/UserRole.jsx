@@ -228,9 +228,10 @@ function UserRole() {
         setStatus={setStatus}
       />
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <RoleTable
+          evenLesserCompact
           mapData={data?.userRoles}
           excludeKeys={excludeKeys}
           onEdit={handleEditOpen}

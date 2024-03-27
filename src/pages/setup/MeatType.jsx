@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -68,7 +68,6 @@ function MeatType() {
     register,
     setValue,
     reset,
-    control,
   } = useForm({
     resolver: yupResolver(meatTypeSchema.schema),
     mode: "onChange",
@@ -77,7 +76,7 @@ function MeatType() {
 
   //RTK Query
   const [postMeatType, { isLoading: isAddLoading }] = usePostMeatTypeMutation();
-  const { data, isLoading, isFetching } = useGetAllMeatTypesQuery({
+  const { data, isFetching } = useGetAllMeatTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -181,9 +180,10 @@ function MeatType() {
         setStatus={setStatus}
       />
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.meatTypes}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}

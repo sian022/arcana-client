@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -68,7 +68,6 @@ function BusinessType() {
     register,
     setValue,
     reset,
-    control,
   } = useForm({
     resolver: yupResolver(storeTypeSchema.schema),
     mode: "onChange",
@@ -78,7 +77,7 @@ function BusinessType() {
   //RTK Query
   const [postStoreType, { isLoading: isAddLoading }] =
     usePostStoreTypeMutation();
-  const { data, isLoading, isFetching } = useGetAllStoreTypesQuery({
+  const { data, isFetching } = useGetAllStoreTypesQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,
@@ -182,9 +181,10 @@ function BusinessType() {
         setStatus={setStatus}
       />
       {isFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={data?.storeTypes}
           tableHeads={tableHeads}
           customOrderKeys={customOrderKeys}

@@ -217,9 +217,10 @@ function Approver() {
         removeArchive
       />
       {isApproversPerModuleFetching ? (
-        <CommonTableSkeleton />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
+          evenLesserCompact
           mapData={approversPerModuleData}
           customOrderKeys={customOrderKeys}
           onManageApprovers={handleEditOpen}
