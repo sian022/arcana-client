@@ -135,7 +135,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
         <Box className="cashoutModal__businessInfo">
           <Box className="cashoutModal__businessInfo__business">
             <Typography fontWeight="500" fontSize="1.05rem">
-              Business Name:
+              Business Name
             </Typography>
 
             <Typography fontSize="1.05rem">
@@ -145,7 +145,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
 
           <Box className="cashoutModal__businessInfo__owner">
             <Typography fontWeight="500" fontSize="1.05rem">
-              Owner&apos;s Name:
+              Owner&apos;s Name
             </Typography>
 
             <Typography fontSize="1.05rem">

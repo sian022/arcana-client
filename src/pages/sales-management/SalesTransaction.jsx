@@ -77,7 +77,7 @@ function SalesTransaction() {
     setValue,
   } = useForm({
     resolver: yupResolver(salesTransactionSchema.schema),
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: salesTransactionSchema.defaultValues,
   });
 
@@ -85,6 +85,10 @@ function SalesTransaction() {
     control,
     name: "items",
   });
+
+  //Hook Form Constant Values
+  const watchAllValues = watch();
+  const watchClientId = watch("clientId");
 
   //RTK Query: Autocomplete
   const { data: clientData, isLoading: isClientLoading } =
@@ -104,14 +108,10 @@ function SalesTransaction() {
   }, 200);
 
   const totalAmount = useMemo(() => {
-    let total = 0;
-
-    watch("items").forEach((item) => {
-      total += item.itemId?.currentPrice * item.quantity;
-    });
-
-    return total;
-  }, [watch, watch("items"), watch()]);
+    return watchAllValues["items"].reduce((total, item) => {
+      return total + (item.itemId?.currentPrice || 0) * item.quantity;
+    }, 0);
+  }, [watchAllValues]);
 
   const handleAddItem = (item, quantity) => {
     const existingItemIndex = watch("items").findIndex(
@@ -154,7 +154,7 @@ function SalesTransaction() {
 
     // Clear the timeout if the component unmounts before the timeout
     return () => clearTimeout(timeoutId);
-  }, [watch("clientId")]);
+  }, [watchClientId]);
 
   return (
     <>
