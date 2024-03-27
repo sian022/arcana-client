@@ -81,6 +81,9 @@ function PaymentPage({ setPaymentMode }) {
     name: "payments",
   });
 
+  //Watch Constants
+  const watchTransactionIds = watch("transactionIds");
+
   //RTK Query
   const [
     triggerTransactions,
@@ -193,14 +196,14 @@ function PaymentPage({ setPaymentMode }) {
     const total = dummyPaymentData.reduce(
       (acc, transaction) =>
         acc +
-        (watch("transactionIds")?.includes(transaction.transactionNo)
+        (watchTransactionIds?.includes(transaction.transactionNo)
           ? transaction.amount
           : 0),
       0
     );
 
     return total;
-  }, [watch("transactionIds"), watch]);
+  }, [watchTransactionIds]);
 
   const handlePaymentTotal = useMemo(() => {
     const total = paymentFields.reduce(
