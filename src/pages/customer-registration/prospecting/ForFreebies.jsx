@@ -301,7 +301,7 @@ function ForFreebies() {
           setSearch={setSearch}
         />
         {isFetching ? (
-          <CommonTableSkeleton compact />
+          <CommonTableSkeleton lowerCompact />
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
@@ -316,7 +316,7 @@ function ForFreebies() {
             setRowsPerPage={setRowsPerPage}
             count={count}
             status={status}
-            compact
+            lowerCompact
           />
         )}
       </Box>

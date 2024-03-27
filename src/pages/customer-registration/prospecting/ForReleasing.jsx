@@ -259,7 +259,7 @@ function ForReleasing() {
           setSearch={setSearch}
         /> */}
         {isFetching ? (
-          <CommonTableSkeleton compact />
+          <CommonTableSkeleton lowerCompact />
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
@@ -274,7 +274,7 @@ function ForReleasing() {
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
-            compact
+            lowerCompact
           />
         )}
       </Box>

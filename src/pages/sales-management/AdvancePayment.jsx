@@ -237,7 +237,7 @@ function AdvancePayment() {
       />
 
       {isAdvancePaymentFetching ? (
-        <CommonTableSkeleton lesserCompact />
+        <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
           mapData={advancePaymentData || dummyAdvancePaymentData}
@@ -248,7 +248,7 @@ function AdvancePayment() {
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
           count={count}
-          lesserCompact
+          evenLesserCompact
           onEdit={handleEditOpen}
           onCancel={onCancel}
         />

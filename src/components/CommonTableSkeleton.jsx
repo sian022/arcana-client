@@ -12,6 +12,7 @@ import {
 
 function CommonTableSkeleton({
   columnCount,
+  evenLesserCompact,
   lesserCompact,
   lessCompact,
   lowerCompact,
@@ -27,6 +28,8 @@ function CommonTableSkeleton({
         sx={{
           height: expanded
             ? "calc(100vh - 220px)"
+            : evenLesserCompact
+            ? "calc(100vh - 262px)"
             : lesserCompact
             ? "calc(100vh - 282px)"
             : lessCompact

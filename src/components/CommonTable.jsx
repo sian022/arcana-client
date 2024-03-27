@@ -63,6 +63,7 @@ function CommonTable({
   setRowsPerPage,
   count = 0,
   status,
+  evenLesserCompact,
   lesserCompact,
   lessCompact,
   lowerCompact,
@@ -92,6 +93,8 @@ function CommonTable({
         sx={{
           height: expanded
             ? "calc(100vh - 220px)"
+            : evenLesserCompact
+            ? "calc(100vh - 262px)"
             : lesserCompact
             ? "calc(100vh - 282px)"
             : lessCompact
@@ -173,6 +176,8 @@ function CommonTable({
         sx={{
           height: expanded
             ? "calc(100vh - 220px)"
+            : evenLesserCompact
+            ? "calc(100vh - 262px)"
             : lesserCompact
             ? "calc(100vh - 282px)"
             : lessCompact

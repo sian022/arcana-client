@@ -129,7 +129,7 @@ function Released() {
         /> */}
 
         {isFetching ? (
-          <CommonTableSkeleton compact />
+          <CommonTableSkeleton lowerCompact />
         ) : (
           <CommonTable
             mapData={data?.requestedProspect}
@@ -144,8 +144,7 @@ function Released() {
             onVoid={registrationStatus !== "Voided" && onVoidOpen}
             setRowsPerPage={setRowsPerPage}
             count={count}
-            status={status}
-            compact
+            lowerCompact
             onPrintFreebies={onPrintOpen}
           />
         )}

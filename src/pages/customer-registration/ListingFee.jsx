@@ -193,12 +193,12 @@ function ListingFee() {
         />
 
         {isFetching ? (
-          <CommonTableSkeleton compact mt={"-20px"} />
+          <CommonTableSkeleton lowerCompact mt={"-20px"} />
         ) : (
           <CommonTable
             moveNoDataUp
             mapData={data?.listingFees}
-            compact
+            lowerCompact
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
             pesoArray={pesoArray}

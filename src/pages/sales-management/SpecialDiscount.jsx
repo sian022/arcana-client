@@ -370,14 +370,14 @@ function SpecialDiscount() {
         />
 
         {isSpecialDiscountFetching ? (
-          <CommonTableSkeleton compact mt={"-20px"} />
+          <CommonTableSkeleton lowerCompact mt={"-20px"} />
         ) : (
           <CommonTable
             mapData={specialDiscountData?.specialDiscounts}
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
             percentageArray={percentageArray}
-            compact
+            lowerCompact
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}

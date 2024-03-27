@@ -143,7 +143,7 @@ function Clearing() {
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
         count={count}
-        compact
+        lowerCompact
         checkboxSelection={clearingStatus === "For Clearing"}
         includeActions={false}
         checkedArray={checkedArray}

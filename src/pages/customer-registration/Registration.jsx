@@ -218,11 +218,11 @@ function DirectRegistration() {
         />
 
         {isFetching ? (
-          <CommonTableSkeleton compact />
+          <CommonTableSkeleton lowerCompact />
         ) : (
           <CommonTable
             mapData={data?.regularClient}
-            compact
+            lowerCompact
             moveNoDataUp
             count={count}
             rowsPerPage={rowsPerPage}

@@ -195,11 +195,11 @@ function OtherExpenses() {
         />
 
         {isFetching ? (
-          <CommonTableSkeleton compact mt={"-20px"} />
+          <CommonTableSkeleton lowerCompact mt={"-20px"} />
         ) : (
           <CommonTable
             mapData={data?.expenses}
-            compact
+            lowerCompact
             count={count}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
