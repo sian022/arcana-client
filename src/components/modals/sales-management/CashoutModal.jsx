@@ -33,6 +33,9 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     defaultValues: cashoutSchema.defaultValues,
   });
 
+  //Watch Constatns
+  const watchDiscount = watch("discount");
+
   //Temp Constants
   const specialDiscount = 0.09;
   const discount = 0.05;
@@ -43,8 +46,8 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   );
 
   const discountAmount = useMemo(
-    () => (total * watch("discount")) / 100,
-    [watch("discount"), watch, total]
+    () => (total * watchDiscount) / 100,
+    [watchDiscount, total]
   );
 
   const netSales = useMemo(
