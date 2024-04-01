@@ -74,12 +74,12 @@ export const theme = createTheme({
             borderColor: colorSchemes.light.primary,
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: `${colorSchemes.light.secondary} !important`,
+            borderColor: `${colorSchemes.light.secondary}`,
           },
           "& .Mui-active .MuiOutlinedInput-notchedOutline, & .Mui-focused .MuiOutlinedInput-notchedOutline":
             {
-              color: `${colorSchemes.light.secondary} !important`,
-              borderColor: `${colorSchemes.light.secondary} !important`,
+              color: `${colorSchemes.light.secondary}`,
+              borderColor: `${colorSchemes.light.secondary}`,
             },
 
           "& .MuiInputBase-input.Mui-disabled": {
