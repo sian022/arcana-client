@@ -65,6 +65,8 @@ function ListingFeeClient() {
     setTotalAmount(total);
   }, [watch]);
 
+  console.log(totalAmount);
+
   //UseEffect
   useEffect(() => {
     dispatch(setIsListingFeeValid(isValid));
