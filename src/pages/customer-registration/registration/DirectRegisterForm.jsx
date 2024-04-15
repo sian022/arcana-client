@@ -551,7 +551,7 @@ function DirectRegisterForm({
 
   const addListingFee = async (clientId) => {
     const totalAmount = listingFees.reduce(
-      (acc, listingItem) => acc + listingItem.unitCost,
+      (acc, listingItem) => acc + parseFloat(listingItem.unitCost),
       0
     );
 
