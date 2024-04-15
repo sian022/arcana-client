@@ -11,9 +11,27 @@ import {
 } from "@mui/material";
 import FOLogo from "../../../assets/images/FO-Logo.png";
 import moment from "moment/moment";
+import { useLazyGetSalesTransactionByIdQuery } from "../../../features/sales-management/api/salesTransactionApi";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { formatPesoAmount } from "../../../utils/CustomFunctions";
 
 function ViewTransactionModal({ ...props }) {
-  // const selectedRowData = useSelector((state) => state.selectedRow.value);
+  const { open } = props;
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  //RTK Query
+  const [trigger, { data, isFetching }] = useLazyGetSalesTransactionByIdQuery();
+
+  //useEffect
+  useEffect(() => {
+    if (open) {
+      trigger(
+        { id: selectedRowData?.transactionNo },
+        { preferCacheValue: true }
+      );
+    }
+  }, [open, selectedRowData, trigger]);
 
   return (
     <CommonModal closeTopRight {...props} width="1000px">
@@ -43,14 +61,47 @@ function ViewTransactionModal({ ...props }) {
               <Typography fontWeight="700" textTransform="uppercase">
                 Business Name:{" "}
               </Typography>
-              <Typography>Changioc</Typography>
+              <Typography>{data?.businessName}</Typography>
             </Box>
 
             <Box className="viewTransactionSlipModal__details__left__row">
               <Typography fontWeight="700" textTransform="uppercase">
                 Address:{" "}
               </Typography>
-              <Typography>#64 Sto. Cristo, Guagua, Pampanga</Typography>
+              <Typography>
+                {`${
+                  data?.businessAddress?.houseNumber
+                    ? `#${data?.businessAddress.houseNumber}`
+                    : ""
+                }${
+                  data?.businessAddress?.houseNumber &&
+                  (data?.businessAddress?.streetName ||
+                    data?.businessAddress?.barangayName)
+                    ? ", "
+                    : ""
+                }${
+                  data?.businessAddress?.streetName
+                    ? `${data?.businessAddress.streetName}`
+                    : ""
+                }${
+                  data?.businessAddress?.streetName &&
+                  data?.businessAddress?.barangayName
+                    ? ", "
+                    : ""
+                }${
+                  data?.businessAddress?.barangayName
+                    ? `${data?.businessAddress.barangayName}`
+                    : ""
+                }${
+                  data?.businessAddress?.city
+                    ? `, ${data?.businessAddress.city}`
+                    : ""
+                }${
+                  data?.businessAddress?.province
+                    ? `, ${data?.businessAddress.province}`
+                    : ""
+                }`}
+              </Typography>
             </Box>
           </Box>
 
@@ -59,14 +110,16 @@ function ViewTransactionModal({ ...props }) {
               <Typography fontWeight="700" textTransform="uppercase">
                 Date:{" "}
               </Typography>
-              <Typography>{moment().format("MM/DD/YYYY")}</Typography>
+              <Typography>
+                {moment(data?.createdAt).format("MM/DD/YYYY")}
+              </Typography>
             </Box>
 
             <Box className="viewTransactionSlipModal__details__right__row">
               <Typography fontWeight="700" textTransform="uppercase">
                 Charge Invoice No:{" "}
               </Typography>
-              <Typography>20016</Typography>
+              <Typography>{data?.chargeInvoiceNo}</Typography>
             </Box>
           </Box>
         </Box>
@@ -94,13 +147,15 @@ function ViewTransactionModal({ ...props }) {
             </TableHead>
 
             <TableBody className="viewTransactionSlipModal__tableContainer__tableBody">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell>1</TableCell>
-                  <TableCell>PC</TableCell>
-                  <TableCell>Changioc</TableCell>
-                  <TableCell>1000.00</TableCell>
-                  <TableCell>1000.00</TableCell>
+              {(data?.items || []).map((item) => (
+                <TableRow key={item.itemId}>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>{item.uom}</TableCell>
+                  <TableCell sx={{ textTransform: "uppercase" }}>
+                    {item.itemDescription}
+                  </TableCell>
+                  <TableCell>{formatPesoAmount(item.unitPrice)}</TableCell>
+                  <TableCell>{formatPesoAmount(item.amount)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -116,7 +171,7 @@ function ViewTransactionModal({ ...props }) {
                 <TableCell>
                   <span className="label">SUBTOTAL</span>
                 </TableCell>
-                <TableCell>2795.00</TableCell>
+                <TableCell>{formatPesoAmount(data?.subtotal)}</TableCell>
               </TableRow>
 
               <TableRow>
@@ -125,9 +180,11 @@ function ViewTransactionModal({ ...props }) {
                 <TableCell></TableCell>
                 <TableCell>
                   <span className="label">DISCOUNT</span>{" "}
-                  <span style={{ fontWeight: "400" }}>(10%)</span>
+                  <span style={{ fontWeight: "400" }}>
+                    ({data?.discountPercentage}%)
+                  </span>
                 </TableCell>
-                <TableCell>279.50</TableCell>
+                <TableCell>{formatPesoAmount(data?.discountAmount)}</TableCell>
               </TableRow>
 
               <TableRow>
@@ -143,38 +200,15 @@ function ViewTransactionModal({ ...props }) {
                 <TableCell></TableCell>
                 <TableCell>
                   <Box className="labelValueGrid">
-                    <span className="label">VATABLE SALES</span> 2245.98
+                    <span className="label">VATABLE SALES</span>{" "}
+                    {formatPesoAmount(data?.vatableSales)}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <span className="label">TOTAL SALES</span>{" "}
                   <span style={{ fontWeight: "400" }}>(VAT INCLUSIVE)</span>
                 </TableCell>
-                <TableCell>2515.50</TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <span className="label">VAT-EXEMPT SALES</span>
-                </TableCell>
-                <TableCell>
-                  <span className="label">AMOUNT DUE</span>
-                </TableCell>
-                <TableCell>2245.98</TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <span className="label">ZERO RATED SALES</span>
-                </TableCell>
-                <TableCell>
-                  <span className="label">ADD VAT</span>
-                </TableCell>
-                <TableCell>269.52</TableCell>
+                <TableCell>{formatPesoAmount(data?.totalSales)}</TableCell>
               </TableRow>
 
               <TableRow>
@@ -182,7 +216,40 @@ function ViewTransactionModal({ ...props }) {
                 <TableCell></TableCell>
                 <TableCell>
                   <Box className="labelValueGrid">
-                    <span className="label">VAT AMOUNT</span> 269.52
+                    <span className="label">VAT-EXEMPT SALES</span>{" "}
+                    {data?.vatExemptSales > 0 &&
+                      formatPesoAmount(data?.vatExemptSales)}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <span className="label">AMOUNT DUE</span>
+                </TableCell>
+                <TableCell>{formatPesoAmount(data?.amountDue)}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <Box className="labelValueGrid">
+                    <span className="label">ZERO RATED SALES</span>{" "}
+                    {data?.zeroRatedSales > 0 &&
+                      formatPesoAmount(data?.zeroRatedSales)}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <span className="label">ADD VAT</span>
+                </TableCell>
+                <TableCell>{formatPesoAmount(data?.addVat)}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <Box className="labelValueGrid">
+                    <span className="label">VAT AMOUNT</span>{" "}
+                    {formatPesoAmount(data?.vatAmount)}
                   </Box>
                 </TableCell>
                 <TableCell></TableCell>
@@ -196,7 +263,7 @@ function ViewTransactionModal({ ...props }) {
                 <TableCell>
                   <span className="label">TOTAL AMOUNT DUE</span>
                 </TableCell>
-                <TableCell>25515.50</TableCell>
+                <TableCell>{formatPesoAmount(data?.totalAmountDue)}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

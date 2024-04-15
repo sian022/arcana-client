@@ -107,3 +107,8 @@ input::-webkit-inner-spin-button {
     bottom: -40px;
   }
 }
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}

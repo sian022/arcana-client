@@ -258,8 +258,10 @@ export const isValidUrl = (urlString) => {
 };
 
 export const formatPesoAmount = (amount) => {
-  return amount.toLocaleString("en-PH", {
-    style: "currency",
-    currency: "PHP",
-  });
+  return (
+    amount?.toLocaleString("en-PH", {
+      style: "currency",
+      currency: "PHP",
+    }) || ""
+  );
 };

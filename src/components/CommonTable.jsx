@@ -71,6 +71,7 @@ function CommonTable({
   expanded,
   percentageArray,
   pesoArray,
+  timeArray,
   viewMoreKey,
   onViewMoreClick,
   onViewMoreConstant,
@@ -301,6 +302,15 @@ function CommonTable({
                           {item[keys] === "Prospecting"
                             ? "Prospect"
                             : item[keys]}
+                        </TableCell>
+                      );
+                    }
+
+                    //Override createdAt or updatedAt default formatting if time only
+                    if (timeArray?.includes(keys)) {
+                      return (
+                        <TableCell key={k}>
+                          {item[keys] && moment(item[keys]).format("hh:mm a")}
                         </TableCell>
                       );
                     }

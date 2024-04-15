@@ -7,8 +7,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useSnackbar from "../../../hooks/useSnackbar";
 import useConfirm from "../../../hooks/useConfirm";
 import { useCreateSalesTransactionMutation } from "../../../features/sales-management/api/salesTransactionApi";
-import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
+import {
+  formatPesoAmount,
+  handleCatchErrorMessage,
+} from "../../../utils/CustomFunctions";
 import { NumericFormat } from "react-number-format";
+import { useGetAllDiscountTypesQuery } from "../../../features/setup/api/discountTypeApi";
 
 function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   const { onClose, open } = props;
@@ -33,16 +37,14 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     defaultValues: cashoutSchema.defaultValues,
   });
 
-  //Watch Constatns
+  //Watch Constants
   const watchDiscount = watch("discount");
+  const watchSpecialDiscount = watch("specialDiscount");
 
-  //Temp Constants
-  const specialDiscount = 0.09;
-  const discount = 0.05;
-
+  //Calculations
   const specialDiscountAmount = useMemo(
-    () => total * specialDiscount,
-    [specialDiscount, total]
+    () => (total * watchSpecialDiscount) / 100,
+    [watchSpecialDiscount, total]
   );
 
   const discountAmount = useMemo(
@@ -55,16 +57,36 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     [total, discountAmount, specialDiscountAmount]
   );
 
-  const isVariableDiscount = true;
+  //Constants
+  const client = orderData?.clientId;
+  const items = orderData?.items;
 
   //RTK Query
   const [createSalesTransaction] = useCreateSalesTransactionMutation();
+  const { data: variableDiscountData } = useGetAllDiscountTypesQuery({
+    Status: true,
+    Page: 1,
+    PageSize: 1000,
+  });
+
+  const discountRange = useMemo(() => {
+    let discountRange = null;
+    variableDiscountData?.discount?.forEach((discount) => {
+      if (total >= discount.minimumAmount && total <= discount.maximumAmount) {
+        discountRange = {
+          minimumPercentage: discount.minimumPercentage,
+          maximumPercentage: discount.maximumPercentage,
+        };
+      }
+    });
+    return discountRange || { minimumPercentage: 0, maximumPercentage: 0 };
+  }, [variableDiscountData, total]);
 
   //Functions
   const onSubmit = async (data) => {
     const transformedOrderData = {
-      clientId: orderData?.clientId?.clientId,
-      items: orderData?.items?.map((item) => ({
+      clientId: client?.clientId,
+      items: items?.map((item) => ({
         itemId: item?.itemId?.itemId,
         quantity: item?.quantity,
         unitPrice: item?.itemId?.currentPrice,
@@ -74,6 +96,8 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     const combinedData = {
       ...transformedOrderData,
       ...data,
+      discount: data.discount || 0,
+      specialDiscount: data.specialDiscount || 0,
     };
 
     try {
@@ -105,7 +129,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   //UseEffect
   useEffect(() => {
     if (open) {
-      if (isVariableDiscount) {
+      if (client?.variableDiscount) {
         setTimeout(() => {
           discountRef.current.select();
         }, 0);
@@ -115,14 +139,15 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
         }, 0);
       }
     }
-  }, [open, isVariableDiscount]);
+  }, [open, client]);
 
   useEffect(() => {
     if (open) {
-      !isVariableDiscount && setValue("discount", discount * 100);
-      setValue("specialDiscount", specialDiscount * 100);
+      !client?.variableDiscount &&
+        setValue("discount", client?.discountPercentage * 100);
+      setValue("specialDiscount", client?.specialDiscount * 100);
     }
-  }, [open, setValue, discount, specialDiscount, isVariableDiscount]);
+  }, [open, setValue, client]);
 
   return (
     <CommonModalForm
@@ -141,9 +166,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
               Business Name
             </Typography>
 
-            <Typography fontSize="1.05rem">
-              {orderData?.clientId?.businessName}
-            </Typography>
+            <Typography fontSize="1.05rem">{client?.businessName}</Typography>
           </Box>
 
           <Box className="cashoutModal__businessInfo__owner">
@@ -151,12 +174,10 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
               Owner&apos;s Name
             </Typography>
 
-            <Typography fontSize="1.05rem">
-              {orderData?.clientId?.ownersName}
-            </Typography>
+            <Typography fontSize="1.05rem">{client?.ownersName}</Typography>
           </Box>
 
-          {/* {`${orderData?.clientId?.businessName} - ${orderData?.clientId?.ownersName}`} */}
+          {/* {`${client?.businessName} - ${client?.ownersName}`} */}
         </Box>
 
         <Box className="cashoutModal__transactionInfo">
@@ -186,7 +207,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
                 </Typography>
 
                 <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
-                  {isVariableDiscount ? (
+                  {client?.variableDiscount ? (
                     <Controller
                       control={control}
                       name="discount"
@@ -209,10 +230,20 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
                           }}
                           isAllowed={(values) => {
                             const { floatValue } = values;
-                            // Check if the floatValue is greater than 10 and show a snackbar
-                            if (floatValue != null && floatValue > 10) {
+                            // Check if the floatValue is greater than maximum amount and less than minimum amount and show a snackbar
+                            if (
+                              floatValue != null &&
+                              (floatValue <
+                                discountRange.minimumPercentage * 100 ||
+                                floatValue >
+                                  discountRange.maximumPercentage * 100)
+                            ) {
                               snackbar({
-                                message: "Value should be between 1% and 10%",
+                                message: `Discount should be between ${
+                                  discountRange.minimumPercentage * 100
+                                }% and ${
+                                  discountRange.maximumPercentage * 100
+                                }%`,
                                 variant: "error",
                               });
                               return false;
@@ -238,12 +269,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
               </Box>
 
               <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
-                {!discountAmount
-                  ? "N/A"
-                  : `-₱${discountAmount?.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionsDigits: 2,
-                    })}`}
+                -{discountAmount ? formatPesoAmount(discountAmount) : ""}
               </Typography>
             </Box>
 
@@ -254,20 +280,18 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
                 </Typography>
 
                 <Typography className="cashoutModal__transactionInfo__costBreakdown__item__labelDiscount__value">
-                  {`(${watch("specialDiscount")?.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionsDigits: 2,
-                  })}%)`}
+                  {watch("specialDiscount") > 0 &&
+                    `(${watch("specialDiscount")?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionsDigits: 2,
+                    })}%)`}
                 </Typography>
               </Box>
 
               <Typography className="cashoutModal__transactionInfo__costBreakdown__item__value">
-                {!specialDiscountAmount
-                  ? "N/A"
-                  : `-₱${specialDiscountAmount?.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionsDigits: 2,
-                    })}`}
+                -
+                {specialDiscountAmount > 0 &&
+                  `${formatPesoAmount(specialDiscountAmount)}`}
               </Typography>
             </Box>
 
@@ -316,7 +340,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             label="Business Name - Owner's Name"
             size="small"
             readOnly
-            value={`${orderData?.clientId?.businessName} - ${orderData?.clientId?.ownersName}`}
+            value={`${client?.businessName} - ${client?.ownersName}`}
             sx={{
               gridColumn: "span 2",
               "& .MuiInputBase-root": {

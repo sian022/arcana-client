@@ -1,7 +1,13 @@
 import { api } from "../../api";
 
 const salesTransactionApi = api
-  .enhanceEndpoints({ addTagTypes: ["Clients POS", "Sales Transaction"] })
+  .enhanceEndpoints({
+    addTagTypes: [
+      "Clients POS",
+      "Sales Transaction",
+      "Sales Transaction By Id",
+    ],
+  })
   .injectEndpoints({
     endpoints: (builder) => ({
       getAllClientsForPOS: builder.query({
@@ -25,11 +31,20 @@ const salesTransactionApi = api
 
       getAllSalesTransaction: builder.query({
         query: (params) => ({
-          url: "/sales-transaction",
+          url: "/sales-transaction/page",
           method: "GET",
           params,
         }),
         providesTags: ["Sales Transaction"],
+        transformResponse: (response) => response.value,
+      }),
+
+      getSalesTransactionById: builder.query({
+        query: ({ id }) => ({
+          url: `/sales-transaction/${id}`,
+          method: "GET",
+        }),
+        providesTags: ["Sales Transaction By Id"],
         transformResponse: (response) => response.value,
       }),
 
@@ -43,7 +58,7 @@ const salesTransactionApi = api
 
       uploadCiAttachment: builder.mutation({
         query: ({ id, formData }) => ({
-          url: `/sales-transaction/${id}/upload`,
+          url: `/sales-transaction/${id}`,
           method: "PATCH",
           body: formData,
         }),
@@ -58,4 +73,5 @@ export const {
   useVoidSalesTransactionMutation,
   useUploadCiAttachmentMutation,
   useCreateSalesTransactionMutation,
+  useLazyGetSalesTransactionByIdQuery,
 } = salesTransactionApi;

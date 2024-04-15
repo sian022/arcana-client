@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Box, Divider, IconButton, TextField, Typography } from "@mui/material";
 import { KeyboardDoubleArrowLeft, Search } from "@mui/icons-material";
 import CommonTable from "../CommonTable";
-import { dummyTransactionsData } from "../../utils/DummyData";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
@@ -45,17 +44,18 @@ function TransactionsList({ setTransactionsMode }) {
     "Amount",
     "Business Name",
     "CI No.",
-    "CI Status",
+    "Upload Status",
   ];
   const customOrderKeys = [
-    "id",
-    "time",
+    "transactionNo",
+    "createdAt",
     "amount",
     "businessName",
-    "CINo.",
+    "chargeInvoiceNo",
     "attachmentStatus",
   ];
   const pesoArray = ["amount"];
+  const timeArray = ["createdAt"];
 
   //RTK Query
   const { data: transactionsData, isFetching: isTransactionsFetching } =
@@ -63,6 +63,8 @@ function TransactionsList({ setTransactionsMode }) {
       Search: search,
       DateFrom: moment(dateFrom).format("YYYY-MM-DD"),
       DateTo: moment(dateTo).format("YYYY-MM-DD"),
+      PageNumber: page + 1,
+      PageSize: rowsPerPage,
     });
 
   //Functions: Others
@@ -170,8 +172,9 @@ function TransactionsList({ setTransactionsMode }) {
           <CommonTable
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
-            mapData={transactionsData || dummyTransactionsData}
+            mapData={transactionsData?.transactions || []}
             pesoArray={pesoArray}
+            timeArray={timeArray}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}

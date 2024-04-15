@@ -28,7 +28,8 @@ function ViewAttachmentModal({ ...props }) {
   const onUpload = async () => {
     const formData = new FormData();
 
-    formData.append("attachment", currentAttachment);
+    formData.append("SalesTransactionId", selectedRowData?.transactionNo);
+    formData.append("SalesInvoice", currentAttachment);
 
     try {
       await confirm({
@@ -44,7 +45,7 @@ function ViewAttachmentModal({ ...props }) {
         question: true,
         callback: () =>
           uploadCiAttachment({
-            id: selectedRowData?.id,
+            id: selectedRowData?.transactionNo,
             formData,
           }).unwrap(),
       });
@@ -53,6 +54,7 @@ function ViewAttachmentModal({ ...props }) {
         message: "CI attachment uploaded successfully",
         variant: "success",
       });
+      onClose();
     } catch (error) {
       if (error.isConfirmed) {
         snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
