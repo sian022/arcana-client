@@ -344,7 +344,7 @@ function CommonTable({
                       return (
                         <TableCell key={k}>
                           {item[keys] &&
-                            moment(item[keys]).format("MMMM D, YYYY")}
+                            moment(item[keys]).format("MMM DD, YYYY")}
                           {/* // H:mm a */}
                         </TableCell>
                       );

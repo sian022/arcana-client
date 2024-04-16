@@ -6,7 +6,7 @@ const advancePaymentApi = api
     endpoints: (builder) => ({
       createAdvancePayment: builder.mutation({
         query: (body) => ({
-          url: "/advance-payment",
+          url: "/advance-payment/cash",
           method: "POST",
           body,
         }),
@@ -15,7 +15,7 @@ const advancePaymentApi = api
 
       getAllAdvancePayments: builder.query({
         query: (params) => ({
-          url: "/advance-payment",
+          url: "/advance-payment/page",
           method: "GET",
           params,
         }),
@@ -29,6 +29,14 @@ const advancePaymentApi = api
           url: `/advance-payment/${id}`,
           method: "PUT",
           body,
+        }),
+        invalidatesTags: ["Advance Payment"],
+      }),
+
+      voidAdvancePayment: builder.mutation({
+        query: ({ id }) => ({
+          url: `/advance-payment/${id}`,
+          method: "PATCH",
         }),
         invalidatesTags: ["Advance Payment"],
       }),
@@ -47,5 +55,6 @@ export const {
   useCreateAdvancePaymentMutation,
   useGetAllAdvancePaymentsQuery,
   useUpdateAdvancePaymentMutation,
+  useVoidAdvancePaymentMutation,
   useCancelAdvancePaymentMutation,
 } = advancePaymentApi;

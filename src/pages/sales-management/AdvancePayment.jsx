@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonTable from "../../components/CommonTable";
-import { dummyAdvancePaymentData } from "../../utils/DummyData";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import CommonModalForm from "../../components/CommonModalForm";
@@ -19,12 +18,13 @@ import { paymentTypesAdvPayment } from "../../utils/Constants";
 import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import {
-  useCancelAdvancePaymentMutation,
   useCreateAdvancePaymentMutation,
   useGetAllAdvancePaymentsQuery,
   useUpdateAdvancePaymentMutation,
+  useVoidAdvancePaymentMutation,
 } from "../../features/sales-management/api/advancePaymentApi";
 import useConfirm from "../../hooks/useConfirm";
+import ViewAdvancePaymentDetailsModal from "../../components/modals/sales-management/ViewAdvancePaymentDetailsModal";
 
 function AdvancePayment() {
   const [editMode, setEditMode] = useState(false);
@@ -59,16 +59,22 @@ function AdvancePayment() {
     onClose: onFormClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isViewOpen,
+    onOpen: onViewOpen,
+    onClose: onViewClose,
+  } = useDisclosure();
+
   //RTK Query
   const [createAdvancePayment] = useCreateAdvancePaymentMutation();
   const { data: advancePaymentData, isFetching: isAdvancePaymentFetching } =
     useGetAllAdvancePaymentsQuery({
       Search: search,
-      Page: page + 1,
+      PageNumber: page + 1,
       PageSize: rowsPerPage,
     });
   const [updateAdvancePayment] = useUpdateAdvancePaymentMutation();
-  const [cancelAdvancePayment] = useCancelAdvancePaymentMutation();
+  const [voidAdvancePayment] = useVoidAdvancePaymentMutation();
 
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsQuery({
@@ -86,37 +92,45 @@ function AdvancePayment() {
     "Created At",
   ];
 
-  const pesoArray = ["amount"];
+  const customOrderKeys = [
+    "businessName",
+    "fullname",
+    "advancePaymentAmount",
+    "paymentMethod",
+    "createdAt",
+  ];
+
+  const pesoArray = ["advancePaymentAmount"];
 
   //Functions
   const onSubmit = async (data) => {
     let transformedData;
 
-    if (data.paymentType.label === "Cheque") {
+    if (data.paymentMethod.label === "Cheque") {
       transformedData = {
         clientId: data.clientId?.id,
-        paymentType: data.paymentType?.value,
-        amount: data.amount,
+        paymentMethod: data.paymentMethod?.value,
+        advancePaymentAmount: data.advancePaymentAmount,
         payee: data.payee,
         chequeDate: data.chequeDate,
         bankName: data.bankName,
-        chequeNumber: data.chequeNumber,
+        chequeNo: data.chequeNo,
         dateReceived: data.dateReceived,
         // chequeAmount: Number(data.chequeAmount),
       };
-    } else if (data.paymentType.label === "Online") {
+    } else if (data.paymentMethod.label === "Online") {
       transformedData = {
         clientId: data.clientId?.id,
-        paymentType: data.paymentType?.value,
-        amount: data.amount,
+        paymentMethod: data.paymentMethod?.value,
+        advancePaymentAmount: data.advancePaymentAmount,
         accountName: data.accountName,
         accountNumber: data.accountNumber,
       };
     } else {
       transformedData = {
         clientId: data.clientId?.id,
-        paymentType: data.paymentType?.value,
-        amount: data.amount,
+        paymentMethod: data.paymentMethod?.value,
+        advancePaymentAmount: data.advancePaymentAmount,
       };
     }
 
@@ -157,12 +171,12 @@ function AdvancePayment() {
     }
   };
 
-  const onCancel = async () => {
+  const onVoid = async () => {
     try {
       await confirm({
         children: (
           <>
-            Are you sure you want to cancel advance payment for{" "}
+            Are you sure you want to void advance payment for{" "}
             <span style={{ fontWeight: "700" }}>
               {selectedRowData?.businessName}
             </span>
@@ -171,11 +185,11 @@ function AdvancePayment() {
         ),
         question: false,
         callback: () =>
-          cancelAdvancePayment({ id: selectedRowData?.id }).unwrap(),
+          voidAdvancePayment({ id: selectedRowData?.id }).unwrap(),
       });
 
       snackbar({
-        message: "Advance Payment canceled successfully!",
+        message: "Advance Payment voided successfully!",
         variant: "success",
       });
       handleFormClose();
@@ -194,24 +208,38 @@ function AdvancePayment() {
     onFormOpen();
   };
 
-  const handleEditOpen = () => {
-    setEditMode(true);
-    onFormOpen();
+  // const handleEditOpen = () => {
+  //   setEditMode(true);
+  //   onFormOpen();
 
-    setValue(
-      "clientId",
-      clientData?.regularClient?.find(
-        (item) => item.clienId === selectedRowData?.id
-      )
-    );
-    setValue(
-      "paymentType",
-      paymentTypesAdvPayment.find(
-        (item) => item.value === selectedRowData?.paymentType
-      )
-    );
-    setValue("amount", selectedRowData?.amount);
-  };
+  //   setValue(
+  //     "clientId",
+  //     clientData?.regularClient?.find(
+  //       (item) => item.clienId === selectedRowData?.id
+  //     )
+  //   );
+  //   setValue(
+  //     "paymentMethod",
+  //     paymentTypesAdvPayment.find(
+  //       (item) => item.value === selectedRowData?.paymentMethod
+  //     )
+  //   );
+  //   setValue("advancePaymentAmount", selectedRowData?.advancePaymentAmount);
+
+  //   if (selectedRowData?.paymentMethod === "Cheque") {
+  //     setValue("payee", selectedRowData?.payee);
+  //     setValue("chequeDate", moment(selectedRowData?.chequeDate));
+  //     setValue("bankName", selectedRowData?.bankName);
+  //     setValue("chequeNo", selectedRowData?.chequeNo);
+  //     setValue("dateReceived", moment(selectedRowData?.dateReceived));
+  //   }
+
+  //   if (selectedRowData?.paymentMethod === "Online") {
+  //     setValue("accountName", selectedRowData?.accountName);
+  //     setValue("accountNumber", selectedRowData?.accountNumber);
+  //     setValue("referenceNumber", selectedRowData?.referenceNumber);
+  //   }
+  // };
 
   const handleFormClose = () => {
     reset();
@@ -228,271 +256,278 @@ function AdvancePayment() {
   }, [search, rowsPerPage]);
 
   return (
-    <Box className="commonPageLayout">
-      <PageHeaderAdd
-        pageTitle="Advance Payment"
-        onOpen={handleAddOpen}
-        setSearch={setSearch}
-        removeArchive
-      />
-
-      {isAdvancePaymentFetching ? (
-        <CommonTableSkeleton evenLesserCompact />
-      ) : (
-        <CommonTable
-          mapData={advancePaymentData || dummyAdvancePaymentData}
-          tableHeads={tableHeads}
-          pesoArray={pesoArray}
-          page={page}
-          setPage={setPage}
-          rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
-          count={count}
-          evenLesserCompact
-          onEdit={handleEditOpen}
-          onCancel={onCancel}
+    <>
+      <Box className="commonPageLayout">
+        <PageHeaderAdd
+          pageTitle="Advance Payment"
+          onOpen={handleAddOpen}
+          setSearch={setSearch}
+          removeArchive
         />
-      )}
 
-      <CommonModalForm
-        title="Advance Payment"
-        open={isFormOpen}
-        onClose={handleFormClose}
-        onSubmit={handleSubmit(onSubmit)}
-        disableSubmit={!isValid || !isDirty}
-        width="800px"
-        height="520px"
-      >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "5px",
-            }}
-          >
-            <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-              Business Info
-            </Typography>
+        {isAdvancePaymentFetching ? (
+          <CommonTableSkeleton evenLesserCompact />
+        ) : (
+          <CommonTable
+            mapData={advancePaymentData?.advancePayments}
+            tableHeads={tableHeads}
+            customOrderKeys={customOrderKeys}
+            pesoArray={pesoArray}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            count={count}
+            evenLesserCompact
+            // onEdit={handleEditOpen}
+            onView={onViewOpen}
+            onVoid={onVoid}
+          />
+        )}
 
-            <ControlledAutocomplete
-              name={`clientId`}
-              control={control}
-              options={clientData?.regularClient || []}
-              getOptionLabel={(option) =>
-                option.businessName?.toUpperCase() +
-                  " - " +
-                  option.ownersName?.toUpperCase() || ""
-              }
-              disableClearable
-              loading={isClientLoading}
-              disabled={editMode}
-              isOptionEqualToValue={() => true}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  label="Business Name - Owner's Name"
-                  // required
-                  helperText={errors?.clientId?.message}
-                  error={errors?.clientId}
-                />
-              )}
-            />
-          </Box>
-
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-            }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+        <CommonModalForm
+          title="Advance Payment"
+          open={isFormOpen}
+          onClose={handleFormClose}
+          onSubmit={handleSubmit(onSubmit)}
+          disableSubmit={!isValid || !isDirty}
+          width="800px"
+          height="520px"
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "5px",
+              }}
+            >
               <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-                Payment Type
+                Business Info
               </Typography>
 
               <ControlledAutocomplete
-                name="paymentType"
+                name={`clientId`}
                 control={control}
-                options={paymentTypesAdvPayment}
-                getOptionLabel={(option) => option.label.toUpperCase()}
+                options={clientData?.regularClient || []}
+                getOptionLabel={(option) =>
+                  option.businessName?.toUpperCase() +
+                    " - " +
+                    option.ownersName?.toUpperCase() || ""
+                }
                 disableClearable
-                // disabled={!watch("clientId")}
+                loading={isClientLoading}
+                disabled={editMode}
                 isOptionEqualToValue={() => true}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     size="small"
-                    label="Payment Type"
+                    label="Business Name - Owner's Name"
                     // required
-                    helperText={errors?.paymentType?.message}
-                    error={errors?.paymentType}
-                  />
-                )}
-                onChange={(_, value) => {
-                  if (value?.label !== "Cheque") {
-                    setValue("payee", "");
-                    setValue("chequeDate", null);
-                    setValue("bankName", "");
-                    setValue("chequeNumber", "");
-                    setValue("dateReceived", null);
-                    // setValue("chequeAmount", "");
-                  } else if (value?.label !== "Online") {
-                    setValue("accountName", "");
-                    setValue("accountNumber", "");
-                    setValue("referenceNumber", "");
-                  }
-                  return value;
-                }}
-              />
-            </Box>
-
-            <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-              <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-                Advance Payment Amount
-              </Typography>
-
-              <Controller
-                control={control}
-                name={"amount"}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <NumericFormat
-                    label="Advance Payment Amount"
-                    type="text"
-                    size="small"
-                    customInput={TextField}
-                    autoComplete="off"
-                    onValueChange={(e) => {
-                      onChange(e.value === "" ? null : Number(e.value));
-                    }}
-                    inputRef={ref}
-                    onBlur={onBlur}
-                    value={value || ""}
-                    thousandSeparator=","
-                    allowNegative={false}
-                    allowLeadingZeros={false}
-                    prefix="₱"
-                    decimalScale={2}
-                    // disabled={!watch("clientId")}
+                    helperText={errors?.clientId?.message}
+                    error={errors?.clientId}
                   />
                 )}
               />
             </Box>
-          </Box>
 
-          {watch("paymentType")?.label === "Cheque" && (
             <Box
               sx={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
                 gap: "20px",
-                mt: "20px",
               }}
             >
-              <Controller
-                name="payee"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    label="Payee"
-                    size="small"
-                    autoComplete="off"
-                    {...field}
-                    onChange={(e) =>
-                      field.onChange(e.target.value.toUpperCase())
-                    }
-                    helperText={errors?.payee?.message}
-                    error={errors?.payee}
-                  />
-                )}
-              />
+              <Box
+                sx={{ display: "flex", flexDirection: "column", gap: "5px" }}
+              >
+                <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                  Payment Type
+                </Typography>
 
-              <Controller
-                name="chequeDate"
-                control={control}
-                render={({ field }) => (
-                  <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <DatePicker
-                      {...field}
-                      label="Cheque Date"
-                      slotProps={{
-                        textField: { size: "small" },
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          helperText={errors?.chequeDate?.message}
-                          error={errors?.chequeDate}
-                        />
-                      )}
+                <ControlledAutocomplete
+                  name="paymentMethod"
+                  control={control}
+                  options={paymentTypesAdvPayment}
+                  getOptionLabel={(option) => option.label.toUpperCase()}
+                  disableClearable
+                  // disabled={!watch("clientId")}
+                  isOptionEqualToValue={() => true}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      label="Payment Type"
+                      // required
+                      helperText={errors?.paymentMethod?.message}
+                      error={errors?.paymentMethod}
                     />
-                  </LocalizationProvider>
-                )}
-              />
-
-              <Controller
-                name="bankName"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    label="Bank Name"
-                    size="small"
-                    autoComplete="off"
-                    {...field}
-                    onChange={(e) =>
-                      field.onChange(e.target.value.toUpperCase())
+                  )}
+                  onChange={(_, value) => {
+                    if (value?.label !== "Cheque") {
+                      setValue("payee", "");
+                      setValue("chequeDate", null);
+                      setValue("bankName", "");
+                      setValue("chequeNo", "");
+                      setValue("dateReceived", null);
+                      // setValue("chequeAmount", "");
+                    } else if (value?.label !== "Online") {
+                      setValue("accountName", "");
+                      setValue("accountNumber", "");
+                      setValue("referenceNumber", "");
                     }
-                    helperText={errors?.bankName?.message}
-                    error={errors?.bankName}
-                  />
-                )}
-              />
+                    return value;
+                  }}
+                />
+              </Box>
 
-              <Controller
-                name="chequeNumber"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    label="Cheque No."
-                    size="small"
-                    autoComplete="off"
-                    {...field}
-                    helperText={errors?.chequeNumber?.message}
-                    error={errors?.chequeNumber}
-                    type="number"
-                  />
-                )}
-              />
+              <Box
+                sx={{ display: "flex", flexDirection: "column", gap: "5px" }}
+              >
+                <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                  Advance Payment Amount
+                </Typography>
 
-              <Controller
-                name="dateReceived"
-                control={control}
-                render={({ field }) => (
-                  <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <DatePicker
-                      {...field}
-                      label="Date Received"
-                      slotProps={{
-                        textField: { size: "small" },
+                <Controller
+                  control={control}
+                  name={"advancePaymentAmount"}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <NumericFormat
+                      label="Advance Payment Amount"
+                      type="text"
+                      size="small"
+                      customInput={TextField}
+                      autoComplete="off"
+                      onValueChange={(e) => {
+                        onChange(e.value === "" ? null : Number(e.value));
                       }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          helperText={errors?.dateReceived?.message}
-                          error={errors?.dateReceived}
-                        />
-                      )}
+                      inputRef={ref}
+                      onBlur={onBlur}
+                      value={value || ""}
+                      thousandSeparator=","
+                      allowNegative={false}
+                      allowLeadingZeros={false}
+                      prefix="₱"
+                      decimalScale={2}
+                      // disabled={!watch("clientId")}
                     />
-                  </LocalizationProvider>
-                )}
-              />
+                  )}
+                />
+              </Box>
+            </Box>
 
-              {/* <Controller
+            {watch("paymentMethod")?.label === "Cheque" && (
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "20px",
+                  mt: "20px",
+                }}
+              >
+                <Controller
+                  name="payee"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextField
+                      label="Payee"
+                      size="small"
+                      autoComplete="off"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.toUpperCase())
+                      }
+                      helperText={errors?.payee?.message}
+                      error={errors?.payee}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="chequeDate"
+                  control={control}
+                  render={({ field }) => (
+                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                      <DatePicker
+                        {...field}
+                        label="Cheque Date"
+                        slotProps={{
+                          textField: { size: "small" },
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            helperText={errors?.chequeDate?.message}
+                            error={errors?.chequeDate}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                />
+
+                <Controller
+                  name="bankName"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextField
+                      label="Bank Name"
+                      size="small"
+                      autoComplete="off"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.toUpperCase())
+                      }
+                      helperText={errors?.bankName?.message}
+                      error={errors?.bankName}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="chequeNo"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextField
+                      label="Cheque No."
+                      size="small"
+                      autoComplete="off"
+                      {...field}
+                      helperText={errors?.chequeNo?.message}
+                      error={errors?.chequeNo}
+                      type="number"
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="dateReceived"
+                  control={control}
+                  render={({ field }) => (
+                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                      <DatePicker
+                        {...field}
+                        label="Date Received"
+                        slotProps={{
+                          textField: { size: "small" },
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            helperText={errors?.dateReceived?.message}
+                            error={errors?.dateReceived}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                />
+
+                {/* <Controller
                 control={control}
                 name="chequeAmount"
                 render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -516,75 +551,78 @@ function AdvancePayment() {
                   />
                 )}
               /> */}
-            </Box>
-          )}
+              </Box>
+            )}
 
-          {watch("paymentType")?.label === "Online" && (
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "20px",
-                mt: "20px",
-              }}
-            >
-              <Controller
-                name="accountName"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    label="Account Name"
-                    size="small"
-                    autoComplete="off"
-                    {...field}
-                    onChange={(e) =>
-                      field.onChange(e.target.value.toUpperCase())
-                    }
-                    helperText={errors?.accountName?.message}
-                    error={errors?.accountName}
-                  />
-                )}
-              />
+            {watch("paymentMethod")?.label === "Online" && (
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "20px",
+                  mt: "20px",
+                }}
+              >
+                <Controller
+                  name="accountName"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextField
+                      label="Account Name"
+                      size="small"
+                      autoComplete="off"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.toUpperCase())
+                      }
+                      helperText={errors?.accountName?.message}
+                      error={errors?.accountName}
+                    />
+                  )}
+                />
 
-              <Controller
-                name="accountNumber"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    label="Account Number"
-                    size="small"
-                    autoComplete="off"
-                    {...field}
-                    helperText={errors?.accountNumber?.message}
-                    error={errors?.accountNumber}
-                    type="number"
-                  />
-                )}
-              />
+                <Controller
+                  name="accountNumber"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextField
+                      label="Account Number"
+                      size="small"
+                      autoComplete="off"
+                      {...field}
+                      helperText={errors?.accountNumber?.message}
+                      error={errors?.accountNumber}
+                      type="number"
+                    />
+                  )}
+                />
 
-              <Controller
-                name="referenceNumber"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    label="Reference Number"
-                    size="small"
-                    autoComplete="off"
-                    {...field}
-                    helperText={errors?.referenceNumber?.message}
-                    error={errors?.referenceNumber}
-                    type="number"
-                  />
-                )}
-              />
-            </Box>
-          )}
-        </Box>
-      </CommonModalForm>
-    </Box>
+                <Controller
+                  name="referenceNumber"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextField
+                      label="Reference Number"
+                      size="small"
+                      autoComplete="off"
+                      {...field}
+                      helperText={errors?.referenceNumber?.message}
+                      error={errors?.referenceNumber}
+                      type="number"
+                    />
+                  )}
+                />
+              </Box>
+            )}
+          </Box>
+        </CommonModalForm>
+      </Box>
+
+      <ViewAdvancePaymentDetailsModal open={isViewOpen} onClose={onViewClose} />
+    </>
   );
 }
 

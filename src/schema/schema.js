@@ -653,55 +653,55 @@ export const expensesForRegistrationSchema = {
 export const advancePaymentSchema = {
   schema: yup.object({
     clientId: yup.object().required("Business Name is required"),
-    paymentType: yup.object().required("Payment Type is required"),
-    amount: yup.number().required("Amount is required"),
+    paymentMethod: yup.object().required("Payment Type is required"),
+    advancePaymentAmount: yup.number().required("Amount is required"),
 
     //Cheque Validations
-    payee: yup.string().when("paymentType.label", {
+    payee: yup.string().when("paymentMethod.label", {
       is: "Cheque",
       then: (schema) => schema.required("Payee is required"),
       otherwise: (schema) => schema.nullable(),
     }),
-    chequeDate: yup.date().when("paymentType.label", {
+    chequeDate: yup.date().when("paymentMethod.label", {
       is: "Cheque",
       then: (schema) => schema.required("Cheque date is required"),
       otherwise: (schema) => schema.nullable(),
     }),
-    bankName: yup.string().when("paymentType.label", {
+    bankName: yup.string().when("paymentMethod.label", {
       is: "Cheque",
       then: (schema) => schema.required("Bank name is required"),
       otherwise: (schema) => schema.nullable(),
     }),
-    chequeNumber: yup.string().when("paymentType.label", {
+    chequeNo: yup.string().when("paymentMethod.label", {
       is: "Cheque",
       then: (schema) => schema.required("Cheque number is required"),
       otherwise: (schema) => schema.nullable(),
     }),
-    dateReceived: yup.date().when("paymentType.label", {
+    dateReceived: yup.date().when("paymentMethod.label", {
       is: "Cheque",
       then: (schema) => schema.required("Date received is required"),
       otherwise: (schema) => schema.nullable(),
     }),
-    // chequeAmount: yup.string().when("paymentType.label", {
+    // chequeAmount: yup.string().when("paymentMethod.label", {
     //   is: "Cheque",
     //   then: (schema) => schema.required("Cheque amount is required"),
     //   otherwise: (schema) => schema.nullable(),
     // }),
 
     //Online
-    accountName: yup.string().when("paymentType.label", {
+    accountName: yup.string().when("paymentMethod.label", {
       is: "Online",
       then: (schema) => schema.required("Account name is required"),
       otherwise: (schema) => schema.nullable(),
     }),
 
-    accountNumber: yup.string().when("paymentType.label", {
+    accountNumber: yup.string().when("paymentMethod.label", {
       is: "Online",
       then: (schema) => schema.required("Account number is required"),
       otherwise: (schema) => schema.nullable(),
     }),
 
-    referenceNumber: yup.string().when("paymentType.label", {
+    referenceNumber: yup.string().when("paymentMethod.label", {
       is: "Online",
       then: (schema) => schema.required("Reference number is required"),
       otherwise: (schema) => schema.nullable(),
@@ -709,12 +709,12 @@ export const advancePaymentSchema = {
   }),
   defaultValues: {
     clientId: null,
-    paymentType: null,
-    amount: null,
+    paymentMethod: null,
+    advancePaymentAmount: null,
     payee: "",
     chequeDate: null,
     bankName: "",
-    chequeNumber: "",
+    chequeNo: "",
     dateReceived: null,
     // chequeAmount: "",
     accountName: "",
