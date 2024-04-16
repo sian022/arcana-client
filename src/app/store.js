@@ -10,6 +10,7 @@ import { sedarApi } from "../features/user-management/api/sedarApi";
 import { disclosureSlice } from "../features/misc/reducers/disclosureSlice";
 import { rdfSmsApi } from "../features/misc/api/rdfSmsApi";
 import { api } from "../features/api";
+import { initialChangePasswordApi } from "../features/authentication/api/initialChangePasswordApi";
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     regularRegistration: regularRegistrationSlice.reducer,
     disclosure: disclosureSlice.reducer,
     [api.reducerPath]: api.reducer,
+    [initialChangePasswordApi.reducerPath]: initialChangePasswordApi.reducer,
     [sedarApi.reducerPath]: sedarApi.reducer,
     [rdfSmsApi.reducerPath]: rdfSmsApi.reducer,
   },
@@ -28,6 +30,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
       api.middleware,
+      initialChangePasswordApi.middleware,
       sedarApi.middleware,
       rdfSmsApi.middleware,
     ]),

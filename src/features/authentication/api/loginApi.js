@@ -47,17 +47,7 @@ const loginApi = api
           "Notification",
         ],
       }),
-
-      patchInitialChangePassword: builder.mutation({
-        query: ({ id, token, ...body }) => ({
-          url: `/User/ChangeUserPassword/${id}`,
-          method: "PATCH",
-          body: body,
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      }),
     }),
   });
 
-export const { usePostLoginMutation, usePatchInitialChangePasswordMutation } =
-  loginApi;
+export const { usePostLoginMutation } = loginApi;

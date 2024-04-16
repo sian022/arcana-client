@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CommonModal from "../CommonModal";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
@@ -14,10 +14,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { initialChangePasswordSchema } from "../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import useDisclosure from "../../hooks/useDisclosure";
-import CommonDialog from "../CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
-import { usePatchChangePasswordMutation } from "../../features/user-management/api/userAccountApi";
 import { useDispatch, useSelector } from "react-redux";
 import { decryptString } from "../../utils/CustomFunctions";
 import {
@@ -27,11 +24,11 @@ import {
   setUserDetails,
 } from "../../features/authentication/reducers/loginSlice";
 import { setPermissisons } from "../../features/authentication/reducers/permissionsSlice";
-import { usePatchInitialChangePasswordMutation } from "../../features/authentication/api/loginApi";
 import { useNavigate } from "react-router-dom";
+import { usePatchInitialChangePasswordMutation } from "../../features/authentication/api/initialChangePasswordApi";
 
 function InitialChangePasswordModal({ ...otherProps }) {
-  const { onClose, ...noOnClose } = otherProps;
+  const { onClose } = otherProps;
 
   const snackbar = useSnackbar();
   const dispatch = useDispatch();
@@ -41,7 +38,6 @@ function InitialChangePasswordModal({ ...otherProps }) {
   const [viewConfirmNewPassword, setViewConfirmNewPassword] = useState(false);
 
   const userDetails = useSelector((state) => state.login.userDetails);
-  const username = useSelector((state) => state.login.username);
 
   //Disclosures
   // const {
@@ -55,13 +51,7 @@ function InitialChangePasswordModal({ ...otherProps }) {
     usePatchInitialChangePasswordMutation();
 
   //React Hook Form
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, isValid },
-    reset,
-    watch,
-  } = useForm({
+  const { handleSubmit, register, reset, watch } = useForm({
     resolver: yupResolver(initialChangePasswordSchema.schema),
     mode: "onChange",
     defaultValues: initialChangePasswordSchema.defaultValues,
@@ -100,7 +90,6 @@ function InitialChangePasswordModal({ ...otherProps }) {
 
       handleCloseModal();
     } catch (error) {
-      console.log(error);
       if (error?.data?.error?.message) {
         snackbar({ message: error?.data?.error?.message, variant: "error" });
       } else {
@@ -205,7 +194,11 @@ function InitialChangePasswordModal({ ...otherProps }) {
               // onClick={onConfirmOpen}
               // onClick={handleSubmit(onSubmit)}
               type="submit"
-              disabled={!watch("newPassword") || !watch("confirmNewPassword")}
+              disabled={
+                !watch("newPassword") ||
+                !watch("confirmNewPassword") ||
+                isLoading
+              }
             >
               {isLoading ? <CircularProgress size="20px" /> : "Submit"}
             </SecondaryButton>
