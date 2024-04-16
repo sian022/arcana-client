@@ -2068,3 +2068,79 @@
     }
   }
 }
+
+.viewAdvancePaymentDetailsModal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  & &__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  &__clientInfo {
+    display: flex;
+    flex-direction: column;
+
+    &__item {
+      display: flex;
+      justify-content: space-between;
+
+      & &__label {
+        // font-weight: 500;
+      }
+
+      & &__value {
+        font-weight: 500;
+        color: gray;
+      }
+    }
+  }
+
+  &__paymentInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    & &__title {
+      font-size: 1.03rem;
+      font-weight: 600;
+    }
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+
+      &__amount {
+        display: flex;
+        justify-content: space-between;
+
+        & &___label {
+          // font-weight: 500;
+        }
+
+        & &__value {
+          font-weight: 600;
+          font-size: 1.1rem;
+          color: $primary;
+        }
+      }
+
+      &__item {
+        display: flex;
+        justify-content: space-between;
+
+        & &__label {
+          // font-weight: 500;
+        }
+
+        & &__value {
+          font-weight: 500;
+          color: gray;
+        }
+      }
+    }
+  }
+}
