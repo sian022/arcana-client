@@ -58,6 +58,15 @@ function ViewAdvancePaymentDetailsModal({ ...props }) {
               </Typography>
             </Box>
 
+            <Box className="viewAdvancePaymentDetailsModal__paymentInfo__content__item">
+              <Typography className="viewAdvancePaymentDetailsModal__paymentInfo__content__item__label">
+                Origin
+              </Typography>
+              <Typography className="viewAdvancePaymentDetailsModal__paymentInfo__content__item__value">
+                {selectedRowData?.origin}
+              </Typography>
+            </Box>
+
             {selectedRowData?.paymentMethod === "Cheque" && (
               <>
                 <Box className="viewAdvancePaymentDetailsModal__paymentInfo__content__item">
