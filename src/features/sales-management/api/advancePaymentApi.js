@@ -24,6 +24,13 @@ const advancePaymentApi = api
         transformErrorResponse: (response) => response.value,
       }),
 
+      getAdvancePaymentBalance: builder.query({
+        query: ({ id }) => ({
+          url: `/advance-payment/${id}/remaining-balance`,
+          method: "GET",
+        }),
+      }),
+
       updateAdvancePayment: builder.mutation({
         query: ({ id, ...body }) => ({
           url: `/advance-payment/${id}`,
@@ -54,6 +61,7 @@ const advancePaymentApi = api
 export const {
   useCreateAdvancePaymentMutation,
   useGetAllAdvancePaymentsQuery,
+  useLazyGetAdvancePaymentBalanceQuery,
   useUpdateAdvancePaymentMutation,
   useVoidAdvancePaymentMutation,
   useCancelAdvancePaymentMutation,

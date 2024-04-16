@@ -1,6 +1,6 @@
 import { Box, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import PageHeaderAdd from "../../components/PageHeaderAdd";
+import PageHeaderAddVoid from "../../components/PageHeaderAddVoid";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -124,7 +124,7 @@ function AdvancePayment() {
         paymentMethod: data.paymentMethod?.value,
         advancePaymentAmount: data.advancePaymentAmount,
         accountName: data.accountName,
-        accountNumber: data.accountNumber,
+        accountNo: data.accountNo,
       };
     } else {
       transformedData = {
@@ -236,7 +236,7 @@ function AdvancePayment() {
 
   //   if (selectedRowData?.paymentMethod === "Online") {
   //     setValue("accountName", selectedRowData?.accountName);
-  //     setValue("accountNumber", selectedRowData?.accountNumber);
+  //     setValue("accountNo", selectedRowData?.accountNo);
   //     setValue("referenceNumber", selectedRowData?.referenceNumber);
   //   }
   // };
@@ -258,11 +258,10 @@ function AdvancePayment() {
   return (
     <>
       <Box className="commonPageLayout">
-        <PageHeaderAdd
+        <PageHeaderAddVoid
           pageTitle="Advance Payment"
           onOpen={handleAddOpen}
           setSearch={setSearch}
-          removeArchive
         />
 
         {isAdvancePaymentFetching ? (
@@ -374,7 +373,7 @@ function AdvancePayment() {
                       // setValue("chequeAmount", "");
                     } else if (value?.label !== "Online") {
                       setValue("accountName", "");
-                      setValue("accountNumber", "");
+                      setValue("accountNo", "");
                       setValue("referenceNumber", "");
                     }
                     return value;
@@ -583,7 +582,7 @@ function AdvancePayment() {
                 />
 
                 <Controller
-                  name="accountNumber"
+                  name="accountNo"
                   control={control}
                   defaultValue=""
                   render={({ field }) => (
@@ -592,8 +591,8 @@ function AdvancePayment() {
                       size="small"
                       autoComplete="off"
                       {...field}
-                      helperText={errors?.accountNumber?.message}
-                      error={errors?.accountNumber}
+                      helperText={errors?.accountNo?.message}
+                      error={errors?.accountNo}
                       type="number"
                     />
                   )}

@@ -695,7 +695,7 @@ export const advancePaymentSchema = {
       otherwise: (schema) => schema.nullable(),
     }),
 
-    accountNumber: yup.string().when("paymentMethod.label", {
+    accountNo: yup.string().when("paymentMethod.label", {
       is: "Online",
       then: (schema) => schema.required("Account number is required"),
       otherwise: (schema) => schema.nullable(),
@@ -718,7 +718,7 @@ export const advancePaymentSchema = {
     dateReceived: null,
     // chequeAmount: "",
     accountName: "",
-    accountNumber: "",
+    accountNo: "",
     referenceNumber: "",
   },
 };
