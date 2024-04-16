@@ -12,13 +12,16 @@ import {
 import FOLogo from "../../../assets/images/FO-Logo.png";
 import moment from "moment/moment";
 import { useLazyGetSalesTransactionByIdQuery } from "../../../features/sales-management/api/salesTransactionApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { formatPesoAmount } from "../../../utils/CustomFunctions";
+import ViewTransactionModalSkeleton from "../../skeletons/ViewTransactionModalSkeleton";
 
 function ViewTransactionModal({ ...props }) {
   const { open } = props;
   const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   //RTK Query
   const [trigger, { data, isFetching }] = useLazyGetSalesTransactionByIdQuery();
@@ -33,6 +36,19 @@ function ViewTransactionModal({ ...props }) {
     }
   }, [open, selectedRowData, trigger]);
 
+  useEffect(() => {
+    if (open) {
+      const timeoutId = setTimeout(() => {
+        setIsLoading(false);
+      }, 200);
+
+      // Clear the timeout if the component unmounts before the timeout
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsLoading(true);
+    }
+  }, [open]);
+
   return (
     <CommonModal closeTopRight {...props} width="1000px">
       {/* <Typography
@@ -44,236 +60,244 @@ function ViewTransactionModal({ ...props }) {
         Transaction Slip
       </Typography> */}
 
-      <Box className="viewTransactionSlipModal">
-        <Box className="viewTransactionSlipModal__header">
-          <Box className="viewTransactionSlipModal__header__logo">
-            <img src={FOLogo} alt="FO-Logo" width="200px" />
+      {isFetching || isLoading ? (
+        <ViewTransactionModalSkeleton />
+      ) : (
+        <Box className="viewTransactionSlipModal">
+          <Box className="viewTransactionSlipModal__header">
+            <Box className="viewTransactionSlipModal__header__logo">
+              <img src={FOLogo} alt="FO-Logo" width="200px" />
+            </Box>
+
+            <Typography>
+              Purok 06 Brgy. Lara, City of San Fernando, Pampanga
+            </Typography>
           </Box>
 
-          <Typography>
-            Purok 06 Brgy. Lara, City of San Fernando, Pampanga
-          </Typography>
-        </Box>
+          <Box className="viewTransactionSlipModal__details">
+            <Box className="viewTransactionSlipModal__details__left">
+              <Box className="viewTransactionSlipModal__details__left__row">
+                <Typography fontWeight="700" textTransform="uppercase">
+                  Business Name:{" "}
+                </Typography>
+                <Typography>{data?.businessName}</Typography>
+              </Box>
 
-        <Box className="viewTransactionSlipModal__details">
-          <Box className="viewTransactionSlipModal__details__left">
-            <Box className="viewTransactionSlipModal__details__left__row">
-              <Typography fontWeight="700" textTransform="uppercase">
-                Business Name:{" "}
-              </Typography>
-              <Typography>{data?.businessName}</Typography>
+              <Box className="viewTransactionSlipModal__details__left__row">
+                <Typography fontWeight="700" textTransform="uppercase">
+                  Address:{" "}
+                </Typography>
+                <Typography>
+                  {`${
+                    data?.businessAddress?.houseNumber
+                      ? `#${data?.businessAddress.houseNumber}`
+                      : ""
+                  }${
+                    data?.businessAddress?.houseNumber &&
+                    (data?.businessAddress?.streetName ||
+                      data?.businessAddress?.barangayName)
+                      ? ", "
+                      : ""
+                  }${
+                    data?.businessAddress?.streetName
+                      ? `${data?.businessAddress.streetName}`
+                      : ""
+                  }${
+                    data?.businessAddress?.streetName &&
+                    data?.businessAddress?.barangayName
+                      ? ", "
+                      : ""
+                  }${
+                    data?.businessAddress?.barangayName
+                      ? `${data?.businessAddress.barangayName}`
+                      : ""
+                  }${
+                    data?.businessAddress?.city
+                      ? `, ${data?.businessAddress.city}`
+                      : ""
+                  }${
+                    data?.businessAddress?.province
+                      ? `, ${data?.businessAddress.province}`
+                      : ""
+                  }`}
+                </Typography>
+              </Box>
             </Box>
 
-            <Box className="viewTransactionSlipModal__details__left__row">
-              <Typography fontWeight="700" textTransform="uppercase">
-                Address:{" "}
-              </Typography>
-              <Typography>
-                {`${
-                  data?.businessAddress?.houseNumber
-                    ? `#${data?.businessAddress.houseNumber}`
-                    : ""
-                }${
-                  data?.businessAddress?.houseNumber &&
-                  (data?.businessAddress?.streetName ||
-                    data?.businessAddress?.barangayName)
-                    ? ", "
-                    : ""
-                }${
-                  data?.businessAddress?.streetName
-                    ? `${data?.businessAddress.streetName}`
-                    : ""
-                }${
-                  data?.businessAddress?.streetName &&
-                  data?.businessAddress?.barangayName
-                    ? ", "
-                    : ""
-                }${
-                  data?.businessAddress?.barangayName
-                    ? `${data?.businessAddress.barangayName}`
-                    : ""
-                }${
-                  data?.businessAddress?.city
-                    ? `, ${data?.businessAddress.city}`
-                    : ""
-                }${
-                  data?.businessAddress?.province
-                    ? `, ${data?.businessAddress.province}`
-                    : ""
-                }`}
-              </Typography>
-            </Box>
-          </Box>
+            <Box className="viewTransactionSlipModal__details__right">
+              <Box className="viewTransactionSlipModal__details__right__row">
+                <Typography fontWeight="700" textTransform="uppercase">
+                  Date:{" "}
+                </Typography>
+                <Typography>
+                  {moment(data?.createdAt).format("MM/DD/YYYY")}
+                </Typography>
+              </Box>
 
-          <Box className="viewTransactionSlipModal__details__right">
-            <Box className="viewTransactionSlipModal__details__right__row">
-              <Typography fontWeight="700" textTransform="uppercase">
-                Date:{" "}
-              </Typography>
-              <Typography>
-                {moment(data?.createdAt).format("MM/DD/YYYY")}
-              </Typography>
-            </Box>
-
-            <Box className="viewTransactionSlipModal__details__right__row">
-              <Typography fontWeight="700" textTransform="uppercase">
-                Charge Invoice No:{" "}
-              </Typography>
-              <Typography>{data?.chargeInvoiceNo}</Typography>
+              <Box className="viewTransactionSlipModal__details__right__row">
+                <Typography fontWeight="700" textTransform="uppercase">
+                  Charge Invoice No:{" "}
+                </Typography>
+                <Typography>{data?.chargeInvoiceNo}</Typography>
+              </Box>
             </Box>
           </Box>
-        </Box>
 
-        <TableContainer className="viewTransactionSlipModal__tableContainer">
-          <Table>
-            <TableHead className="viewTransactionSlipModal__tableContainer__tableHead">
-              <TableRow>
-                <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
-                  QTY
-                </TableCell>
-                <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
-                  UNIT
-                </TableCell>
-                <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
-                  ARTICLES
-                </TableCell>
-                <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
-                  UNIT PRICE
-                </TableCell>
-                <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
-                  AMOUNT
-                </TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody className="viewTransactionSlipModal__tableContainer__tableBody">
-              {(data?.items || []).map((item) => (
-                <TableRow key={item.itemId}>
-                  <TableCell>{item.quantity}</TableCell>
-                  <TableCell>{item.uom}</TableCell>
-                  <TableCell sx={{ textTransform: "uppercase" }}>
-                    {item.itemDescription}
+          <TableContainer className="viewTransactionSlipModal__tableContainer">
+            <Table>
+              <TableHead className="viewTransactionSlipModal__tableContainer__tableHead">
+                <TableRow>
+                  <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
+                    QTY
                   </TableCell>
-                  <TableCell>{formatPesoAmount(item.unitPrice)}</TableCell>
-                  <TableCell>{formatPesoAmount(item.amount)}</TableCell>
+                  <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
+                    UNIT
+                  </TableCell>
+                  <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
+                    ARTICLES
+                  </TableCell>
+                  <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
+                    UNIT PRICE
+                  </TableCell>
+                  <TableCell className="viewTransactionSlipModal__tableContainer__tableHead__tableCell">
+                    AMOUNT
+                  </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
+              </TableHead>
 
-            <TableBody
-              className="viewTransactionSlipModal__tableContainer__tableBody"
-              // sx={{ position: "sticky", bottom: 0 }}
-            >
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <span className="label">SUBTOTAL</span>
-                </TableCell>
-                <TableCell>{formatPesoAmount(data?.subtotal)}</TableCell>
-              </TableRow>
+              <TableBody className="viewTransactionSlipModal__tableContainer__tableBody">
+                {(data?.items || []).map((item) => (
+                  <TableRow key={item.itemId}>
+                    <TableCell>{item.quantity}</TableCell>
+                    <TableCell>{item.uom}</TableCell>
+                    <TableCell sx={{ textTransform: "uppercase" }}>
+                      {item.itemDescription}
+                    </TableCell>
+                    <TableCell>{formatPesoAmount(item.unitPrice)}</TableCell>
+                    <TableCell>{formatPesoAmount(item.amount)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
 
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <span className="label">DISCOUNT</span>{" "}
-                  <span style={{ fontWeight: "400" }}>
-                    ({data?.discountPercentage}%)
-                  </span>
-                </TableCell>
-                <TableCell>{formatPesoAmount(data?.discountAmount)}</TableCell>
-              </TableRow>
+              <TableBody
+                className="viewTransactionSlipModal__tableContainer__tableBody"
+                // sx={{ position: "sticky", bottom: 0 }}
+              >
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <span className="label">SUBTOTAL</span>
+                  </TableCell>
+                  <TableCell>{formatPesoAmount(data?.subtotal)}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <span className="label">DISCOUNT</span>{" "}
+                    <span style={{ fontWeight: "400" }}>
+                      ({data?.discountPercentage}%)
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    {formatPesoAmount(data?.discountAmount)}
+                  </TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <Box className="labelValueGrid">
-                    <span className="label">VATABLE SALES</span>{" "}
-                    {formatPesoAmount(data?.vatableSales)}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <span className="label">TOTAL SALES</span>{" "}
-                  <span style={{ fontWeight: "400" }}>(VAT INCLUSIVE)</span>
-                </TableCell>
-                <TableCell>{formatPesoAmount(data?.totalSales)}</TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <Box className="labelValueGrid">
-                    <span className="label">VAT-EXEMPT SALES</span>{" "}
-                    {data?.vatExemptSales > 0 &&
-                      formatPesoAmount(data?.vatExemptSales)}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <span className="label">AMOUNT DUE</span>
-                </TableCell>
-                <TableCell>{formatPesoAmount(data?.amountDue)}</TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <Box className="labelValueGrid">
+                      <span className="label">VATABLE SALES</span>{" "}
+                      {formatPesoAmount(data?.vatableSales)}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <span className="label">TOTAL SALES</span>{" "}
+                    <span style={{ fontWeight: "400" }}>(VAT INCLUSIVE)</span>
+                  </TableCell>
+                  <TableCell>{formatPesoAmount(data?.totalSales)}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <Box className="labelValueGrid">
-                    <span className="label">ZERO RATED SALES</span>{" "}
-                    {data?.zeroRatedSales > 0 &&
-                      formatPesoAmount(data?.zeroRatedSales)}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <span className="label">ADD VAT</span>
-                </TableCell>
-                <TableCell>{formatPesoAmount(data?.addVat)}</TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <Box className="labelValueGrid">
+                      <span className="label">VAT-EXEMPT SALES</span>{" "}
+                      {data?.vatExemptSales > 0 &&
+                        formatPesoAmount(data?.vatExemptSales)}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <span className="label">AMOUNT DUE</span>
+                  </TableCell>
+                  <TableCell>{formatPesoAmount(data?.amountDue)}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <Box className="labelValueGrid">
-                    <span className="label">VAT AMOUNT</span>{" "}
-                    {formatPesoAmount(data?.vatAmount)}
-                  </Box>
-                </TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <Box className="labelValueGrid">
+                      <span className="label">ZERO RATED SALES</span>{" "}
+                      {data?.zeroRatedSales > 0 &&
+                        formatPesoAmount(data?.zeroRatedSales)}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <span className="label">ADD VAT</span>
+                  </TableCell>
+                  <TableCell>{formatPesoAmount(data?.addVat)}</TableCell>
+                </TableRow>
 
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <span className="label">TOTAL AMOUNT DUE</span>
-                </TableCell>
-                <TableCell>{formatPesoAmount(data?.totalAmountDue)}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <Box className="labelValueGrid">
+                      <span className="label">VAT AMOUNT</span>{" "}
+                      {formatPesoAmount(data?.vatAmount)}
+                    </Box>
+                  </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
 
-        {/* <img src={UnderConstruction} alt="under-construction" width="400px" />
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <span className="label">TOTAL AMOUNT DUE</span>
+                  </TableCell>
+                  <TableCell>
+                    {formatPesoAmount(data?.totalAmountDue)}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* <img src={UnderConstruction} alt="under-construction" width="400px" />
         <Typography fontWeight="500" fontSize="1.2rem">
           Under Construction!
         </Typography> */}
-      </Box>
+        </Box>
+      )}
     </CommonModal>
   );
 }

@@ -40,6 +40,7 @@ function TransactionsList({ setTransactionsMode }) {
   //Constants
   const tableHeads = [
     "Tx Number",
+    "Date",
     "Time",
     "Amount",
     "Business Name",
@@ -55,7 +56,7 @@ function TransactionsList({ setTransactionsMode }) {
     "attachmentStatus",
   ];
   const pesoArray = ["amount"];
-  const timeArray = ["createdAt"];
+  const dateTimeSplitArray = ["createdAt"];
 
   //RTK Query
   const { data: transactionsData, isFetching: isTransactionsFetching } =
@@ -174,7 +175,7 @@ function TransactionsList({ setTransactionsMode }) {
             customOrderKeys={customOrderKeys}
             mapData={transactionsData?.transactions || []}
             pesoArray={pesoArray}
-            timeArray={timeArray}
+            dateTimeSplitArray={dateTimeSplitArray}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}

@@ -72,6 +72,8 @@ function CommonTable({
   percentageArray,
   pesoArray,
   timeArray,
+  dateTimeArray,
+  dateTimeSplitArray,
   viewMoreKey,
   onViewMoreClick,
   onViewMoreConstant,
@@ -312,6 +314,29 @@ function CommonTable({
                         <TableCell key={k}>
                           {item[keys] && moment(item[keys]).format("hh:mm a")}
                         </TableCell>
+                      );
+                    }
+
+                    if (dateTimeArray?.includes(keys)) {
+                      return (
+                        <TableCell key={k}>
+                          {item[keys] &&
+                            moment(item[keys]).format("MMM D, YYYY hh:mm a")}
+                        </TableCell>
+                      );
+                    }
+
+                    if (dateTimeSplitArray?.includes(keys)) {
+                      return (
+                        <React.Fragment key={k}>
+                          <TableCell>
+                            {item[keys] &&
+                              moment(item[keys]).format("MMM DD, YYYY")}
+                          </TableCell>
+                          <TableCell key={k}>
+                            {item[keys] && moment(item[keys]).format("hh:mm a")}
+                          </TableCell>
+                        </React.Fragment>
                       );
                     }
 

@@ -73,6 +73,7 @@ function Products() {
     "Product Category",
     "Product Sub Category",
     "Meat Type",
+    "Has Image",
   ];
 
   const customOrderKeys = [
@@ -82,7 +83,10 @@ function Products() {
     "productCategory",
     "productSubCategoryName",
     "meatType",
+    "itemImageLink",
   ];
+
+  const attachKey = "itemImageLink";
 
   //React Hook Form
   const {
@@ -168,8 +172,6 @@ function Products() {
       onErrorOpen();
     }
   };
-
-  console.log(watch());
 
   const onArchiveSubmit = async () => {
     try {
@@ -279,6 +281,7 @@ function Products() {
           status={status}
           tableHeads={tableHeads}
           customOrderKeys={customOrderKeys}
+          attachKey={attachKey}
           // viewMoreKey={"priceChangeHistories"}
           // onViewMoreClick={onPriceOpen}
           // onAddPriceChange={onAddPriceOpen}
