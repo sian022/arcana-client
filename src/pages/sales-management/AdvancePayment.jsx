@@ -1,6 +1,5 @@
 import { Box, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import PageHeaderAddVoid from "../../components/PageHeaderAddVoid";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -25,7 +24,7 @@ import {
 } from "../../features/sales-management/api/advancePaymentApi";
 import useConfirm from "../../hooks/useConfirm";
 import ViewAdvancePaymentDetailsModal from "../../components/modals/sales-management/ViewAdvancePaymentDetailsModal";
-import FilterMixin from "../../components/mixins/FilterMixin";
+import PageHeaderAddFilterVoid from "../../components/PageHeaderAddFilterVoid";
 
 function AdvancePayment() {
   const [editMode, setEditMode] = useState(false);
@@ -277,13 +276,13 @@ function AdvancePayment() {
   return (
     <>
       <Box className="commonPageLayout">
-        <PageHeaderAddVoid
+        <PageHeaderAddFilterVoid
           pageTitle="Advance Payment"
           onOpen={handleAddOpen}
           setSearch={setSearch}
+          selectOptions={originOptions}
+          setSelectValue={setOrigin}
         />
-
-        <FilterMixin selectOptions={originOptions} setSelectValue={setOrigin} />
 
         {isAdvancePaymentFetching ? (
           <CommonTableSkeleton evenLesserCompact />
@@ -298,8 +297,8 @@ function AdvancePayment() {
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
-            // evenLesserCompact
-            lowerCompact
+            evenLesserCompact
+            // lowerCompact
             // onEdit={handleEditOpen}
             onView={onViewOpen}
             onVoid={onVoid}

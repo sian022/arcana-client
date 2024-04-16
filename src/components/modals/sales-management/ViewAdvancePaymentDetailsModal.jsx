@@ -8,7 +8,12 @@ function ViewAdvancePaymentDetailsModal({ ...props }) {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   return (
-    <CommonModal {...props} closeTopRight width="500px" height="320px">
+    <CommonModal
+      {...props}
+      closeTopRight
+      width="500px"
+      // height="320px"
+    >
       <Box className="viewAdvancePaymentDetailsModal">
         <Typography className="viewAdvancePaymentDetailsModal__title">
           Advance Payment Details
