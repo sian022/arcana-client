@@ -25,6 +25,7 @@ import {
 } from "../../features/sales-management/api/advancePaymentApi";
 import useConfirm from "../../hooks/useConfirm";
 import ViewAdvancePaymentDetailsModal from "../../components/modals/sales-management/ViewAdvancePaymentDetailsModal";
+import FilterMixin from "../../components/mixins/FilterMixin";
 
 function AdvancePayment() {
   const [editMode, setEditMode] = useState(false);
@@ -32,6 +33,8 @@ function AdvancePayment() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+
+  const [origin, setOrigin] = useState("All");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const confirm = useConfirm();
@@ -81,6 +84,7 @@ function AdvancePayment() {
       RegistrationStatus: "Approved",
       PageNumber: 1,
       PageSize: 1000,
+      Origin: origin,
     });
 
   //Constants
@@ -101,6 +105,21 @@ function AdvancePayment() {
   ];
 
   const pesoArray = ["advancePaymentAmount"];
+
+  const originOptions = [
+    {
+      value: " ",
+      label: "All",
+    },
+    {
+      value: "From Payment",
+      label: "From Payment",
+    },
+    {
+      value: "Manual Entry",
+      label: "Manual Entry",
+    },
+  ];
 
   //Functions
   const onSubmit = async (data) => {
@@ -264,6 +283,8 @@ function AdvancePayment() {
           setSearch={setSearch}
         />
 
+        <FilterMixin selectOptions={originOptions} setSelectValue={setOrigin} />
+
         {isAdvancePaymentFetching ? (
           <CommonTableSkeleton evenLesserCompact />
         ) : (
@@ -277,7 +298,8 @@ function AdvancePayment() {
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
-            evenLesserCompact
+            // evenLesserCompact
+            lowerCompact
             // onEdit={handleEditOpen}
             onView={onViewOpen}
             onVoid={onVoid}
