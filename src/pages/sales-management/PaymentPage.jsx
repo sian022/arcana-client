@@ -33,6 +33,7 @@ import { getIconElement } from "../../components/GetIconElement";
 import { useLazyGetAllSalesTransactionForPaymentsQuery } from "../../features/sales-management/api/paymentTransactionApi";
 import PaymentListSkeleton from "../../components/skeletons/PaymentListSkeleton";
 import PaymentHistoriesModal from "../../components/modals/sales-management/PaymentHistoriesModal";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 function PaymentPage({ setPaymentMode }) {
   const [client, setClient] = useState(null);
@@ -43,6 +44,7 @@ function PaymentPage({ setPaymentMode }) {
   const confirm = useConfirm();
   const snackbar = useSnackbar();
   const checkboxRef = useRef(null);
+  const [parent] = useAutoAnimate();
 
   // Disclosures
   const {
@@ -455,7 +457,10 @@ function PaymentPage({ setPaymentMode }) {
 
             <Divider />
 
-            <Box className="paymentPage__body__payments__paymentsList">
+            <Box
+              className="paymentPage__body__payments__paymentsList"
+              ref={parent}
+            >
               {paymentFields?.map((payment, index) => (
                 <Box
                   key={payment.id}
