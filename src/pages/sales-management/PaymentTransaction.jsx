@@ -6,21 +6,42 @@ import { dummyPaymentData } from "../../utils/DummyData";
 import { AppContext } from "../../context/AppContext";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
-import { useGetAllSalesTransactionQuery } from "../../features/sales-management/api/salesTransactionApi";
+import {
+  useGetAllSalesTransactionQuery,
+  useVoidSalesTransactionMutation,
+} from "../../features/sales-management/api/salesTransactionApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { KeyboardDoubleArrowRight } from "@mui/icons-material";
 import PaymentPage from "./PaymentPage";
+import PaymentHistoriesBySalesInvoiceModal from "../../components/modals/sales-management/PaymentHistoriesBySalesInvoiceModal";
+import useDisclosure from "../../hooks/useDisclosure";
+import { useSelector } from "react-redux";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function PaymentTransaction() {
   const [paymentMode, setPaymentMode] = useState(false);
   const [tabViewing, setTabViewing] = useState(1);
   const [search, setSearch] = useState("");
-  const [transactionStatus, setTransactionStatus] = useState("Receivable");
+  const [transactionStatus, setTransactionStatus] = useState("Pending");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
   const { notifications } = useContext(AppContext);
+
+  //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
+
+  //Disclosures
+  const {
+    isOpen: isPaymentHistoriesOpen,
+    onOpen: onPaymentHistoriesOpen,
+    onClose: onPaymentHistoriesClose,
+  } = useDisclosure();
 
   //RTK Query
   const { data: transactionData, isFetching: isTransactionFetching } =
@@ -30,6 +51,7 @@ function PaymentTransaction() {
       Search: search,
       TransactionStatus: transactionStatus,
     });
+  const [voidSalesTransaction] = useVoidSalesTransactionMutation();
 
   //Constants
   const paymentNavigation = useMemo(
@@ -37,7 +59,7 @@ function PaymentTransaction() {
       {
         case: 1,
         name: "Receivable",
-        transactionStatus: "Receivable",
+        transactionStatus: "Pending",
         badge: notifications["receivableTransaction"],
       },
       {
@@ -63,19 +85,56 @@ function PaymentTransaction() {
   );
 
   //Constants
+  const customOrderKeys = [
+    "createdAt",
+    "transactionNo",
+    "businessName",
+    "fullName",
+    "chargeInvoiceNo",
+    "totalAmountDue",
+    "balance",
+  ];
+
   const tableHeads = [
     "Date",
     "Tx No.",
     "Business Name",
     "Owner's Name",
     "CI No.",
-    "Amount",
-    "Balance",
+    "Total Amount Due",
+    "Remaining Balance",
   ];
 
-  const pesoArray = ["amount", "amountBalance"];
+  const pesoArray = ["totalAmountDue", "balance"];
 
   //Functions
+  const onVoid = async () => {
+    try {
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to void transaction number{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {selectedRowData?.transactionNo}
+            </span>
+            ?
+          </>
+        ),
+        question: false,
+        callback: () =>
+          voidSalesTransaction({ id: selectedRowData?.transactionNo }).unwrap(),
+      });
+
+      snackbar({
+        message: "Transaction voided successfully",
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
+    }
+  };
 
   //UseEffect
   useEffect(() => {
@@ -91,6 +150,16 @@ function PaymentTransaction() {
       setCount(setCount(transactionData?.totalCount));
     }
   }, [transactionData]);
+
+  useEffect(() => {
+    if (transactionData) {
+      setCount(transactionData?.totalCount);
+    }
+  }, [transactionData]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [rowsPerPage, search, transactionStatus]);
 
   return (
     <>
@@ -119,10 +188,11 @@ function PaymentTransaction() {
               <CommonTableSkeleton lowerCompact mt={"-20px"} />
             ) : (
               <CommonTable
-                mapData={dummyPaymentData}
+                mapData={transactionData?.transactions}
+                customOrderKeys={customOrderKeys}
+                tableHeads={tableHeads}
                 includeActions
                 lowerCompact
-                tableHeads={tableHeads}
                 pesoArray={pesoArray}
                 page={page}
                 setPage={setPage}
@@ -130,13 +200,18 @@ function PaymentTransaction() {
                 setRowsPerPage={setRowsPerPage}
                 count={count}
                 mt={"-20px"}
-                onVoid={transactionStatus === "Receivable"}
-                onPaymentHistories={true}
+                onVoid={transactionStatus === "Receivable" && onVoid}
+                onPaymentHistories={onPaymentHistoriesOpen}
               />
             )}
           </>
         )}
       </Box>
+
+      <PaymentHistoriesBySalesInvoiceModal
+        open={isPaymentHistoriesOpen}
+        onClose={onPaymentHistoriesClose}
+      />
     </>
   );
 }

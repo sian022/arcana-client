@@ -2069,6 +2069,125 @@
   }
 }
 
+.paymentHistoriesBySalesInvoiceModal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+
+  & &__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  &__body {
+    position: relative;
+    display: flex;
+    overflow: auto;
+    height: calc(100% - 50px);
+
+    &__stepContent {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      &__total {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        & &__label {
+          font-size: 1.1rem;
+          // font-weight: 600;
+        }
+
+        & &__value {
+          font-size: 1.1rem;
+          font-weight: 500;
+        }
+      }
+
+      &__paymentTypes {
+        display: flex;
+        gap: 5px;
+        cursor: pointer;
+
+        & &__label {
+          font-size: 0.95rem;
+          white-space: nowrap;
+          position: relative;
+          top: 3px;
+          // font-weight: 500;
+        }
+
+        &__chips {
+          display: flex;
+          gap: 5px;
+          align-items: center;
+          // justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        & button {
+          padding: 3px;
+          height: 2rem;
+          width: 2rem;
+        }
+      }
+
+      &__paymentsDetailed {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        &__item {
+          display: flex;
+          flex-direction: column;
+
+          &__title {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+
+            & &__number {
+              font-size: 0.9rem;
+              font-weight: 500;
+              color: gray;
+              min-width: 15px;
+            }
+
+            & &__label {
+              font-size: 0.9rem;
+              font-weight: 500;
+              color: gray;
+            }
+          }
+
+          &__content {
+            display: flex;
+            flex-direction: column;
+            margin-left: 40px;
+
+            &__row {
+              display: flex;
+              gap: 5px;
+
+              & &__label {
+                font-size: 0.9rem;
+                font-weight: 500;
+              }
+
+              & &__value {
+                font-size: 0.9rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 .viewAdvancePaymentDetailsModal {
   display: flex;
   flex-direction: column;

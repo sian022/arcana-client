@@ -302,7 +302,7 @@ function PaymentPage({ setPaymentMode }) {
                 disabled={!client}
                 onClick={onPaymentHistoriesOpen}
               >
-                Payment Histories
+                Client Payment Histories
               </Button>
             </span>
           </Tooltip>
