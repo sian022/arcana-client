@@ -120,10 +120,7 @@ function PaymentTransaction() {
             ) : (
               <CommonTable
                 mapData={dummyPaymentData}
-                includeActions={
-                  transactionStatus === "Receivable" ||
-                  transactionStatus === "Paid"
-                }
+                includeActions
                 lowerCompact
                 tableHeads={tableHeads}
                 pesoArray={pesoArray}
@@ -133,6 +130,8 @@ function PaymentTransaction() {
                 setRowsPerPage={setRowsPerPage}
                 count={count}
                 mt={"-20px"}
+                onVoid={transactionStatus === "Receivable"}
+                onPaymentHistories={true}
               />
             )}
           </>

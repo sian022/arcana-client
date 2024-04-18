@@ -57,6 +57,7 @@ function CommonTable({
   onRemove,
   onApprove,
   onReject,
+  onPaymentHistories,
   page,
   setPage,
   rowsPerPage,
@@ -467,6 +468,9 @@ function CommonTable({
                         onRemove={onRemove && onRemove}
                         onApprove={onApprove && onApprove}
                         onReject={onReject && onReject}
+                        onPaymentHistories={
+                          onPaymentHistories && onPaymentHistories
+                        }
                         item={item}
                         status={status}
                         disableActions={disableActions}

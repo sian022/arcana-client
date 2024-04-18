@@ -17,6 +17,7 @@ import {
   PeopleAlt,
   PersonAdd,
   Print,
+  Receipt,
   RemoveCircle,
   RequestPage,
   Restore,
@@ -53,6 +54,7 @@ function CommonActions({
   onRemove,
   onApprove,
   onReject,
+  onPaymentHistories,
   disableActions,
   item,
   status,
@@ -113,6 +115,8 @@ function CommonActions({
       onApprove();
     } else if (action === "reject") {
       onReject();
+    } else if (action === "paymentHistories") {
+      onPaymentHistories();
     }
 
     onClose();
@@ -470,6 +474,23 @@ function CommonActions({
           >
             <Password />
             Reset Password
+          </MenuItem>
+        )}
+
+        {onPaymentHistories && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("paymentHistories");
+            }}
+            disabled={
+              disableActions
+                ? disableActions?.includes("paymentHistories")
+                : false
+            }
+          >
+            <Receipt />
+            Payment Histories
           </MenuItem>
         )}
 
