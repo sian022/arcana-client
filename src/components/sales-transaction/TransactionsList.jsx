@@ -50,13 +50,14 @@ function TransactionsList({ setTransactionsMode }) {
   const customOrderKeys = [
     "transactionNo",
     "createdAt",
-    "amount",
+    "totalAmountDue",
     "businessName",
     "chargeInvoiceNo",
-    "attachmentStatus",
+    "ciAttachment",
   ];
-  const pesoArray = ["amount"];
+  const pesoArray = ["totalAmountDue"];
   const dateTimeSplitArray = ["createdAt"];
+  const attachKey = "ciAttachment";
 
   //RTK Query
   const { data: transactionsData, isFetching: isTransactionsFetching } =
@@ -181,7 +182,7 @@ function TransactionsList({ setTransactionsMode }) {
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
-            attachKey="attachmentStatus"
+            attachKey={attachKey}
             onView={onViewOpen}
             onAttach={onAttachmentOpen}
             // onVoid={onVoid}

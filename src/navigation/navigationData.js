@@ -160,6 +160,13 @@ export const navigationData = [
         icon: "AttachMoney",
         description: "Manage and create other expenses",
       },
+      {
+        id: 5,
+        name: "Online Payment Platforms",
+        path: "/customer-management/online-payment-platforms",
+        icon: "CreditCard",
+        description: "Manage and create online payment platforms",
+      },
     ],
   },
 

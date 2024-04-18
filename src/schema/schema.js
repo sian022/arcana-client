@@ -275,6 +275,15 @@ export const termDaysSchema = {
   },
 };
 
+export const onlinePaymentPlatformsSchema = {
+  schema: yup.object({
+    name: yup.string().required("Online Payment Platform is required"),
+  }),
+  defaultValues: {
+    name: "",
+  },
+};
+
 //Prospect Schemas
 export const prospectSchema = {
   schema: yup.object({

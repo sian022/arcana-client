@@ -33,7 +33,7 @@ function AdvancePayment() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
 
-  const [origin, setOrigin] = useState("All");
+  const [origin, setOrigin] = useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const confirm = useConfirm();
@@ -74,6 +74,7 @@ function AdvancePayment() {
       Search: search,
       PageNumber: page + 1,
       PageSize: rowsPerPage,
+      Origin: origin,
     });
   const [updateAdvancePayment] = useUpdateAdvancePaymentMutation();
   const [voidAdvancePayment] = useVoidAdvancePaymentMutation();
@@ -83,7 +84,6 @@ function AdvancePayment() {
       RegistrationStatus: "Approved",
       PageNumber: 1,
       PageSize: 1000,
-      Origin: origin,
     });
 
   //Constants

@@ -200,7 +200,13 @@ function ViewTransactionModal({ ...props }) {
                   <TableCell>
                     <span className="label">DISCOUNT</span>{" "}
                     <span style={{ fontWeight: "400" }}>
-                      ({data?.discountPercentage}%)
+                      {(data?.discountPercentage * 100)?.toLocaleString(
+                        undefined,
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }
+                      ) + "%" || ""}
                     </span>
                   </TableCell>
                   <TableCell>

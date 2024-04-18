@@ -9,9 +9,6 @@ import CustomerRegistration from "../pages/customer-registration";
 import Approval from "../pages/approval";
 import UserAccount from "../pages/user-management/UserAccount";
 import UserRole from "../pages/user-management/UserRole";
-import Company from "../pages/user-management/Company";
-import Department from "../pages/user-management/Department";
-import Location from "../pages/user-management/Location";
 import Products from "../pages/setup/Products";
 import ProductCategory from "../pages/setup/ProductCategory";
 import ProductSubCategory from "../pages/setup/ProductSubCategory";
@@ -40,6 +37,7 @@ import PriceModeSetup from "../pages/setup/PriceModeSetup";
 import PriceModeManagement from "../pages/setup/PriceModeManagement";
 import PageNotFound from "../pages/PageNotFound";
 import Clearing from "../pages/sales-management/Clearing";
+import OnlinePaymentPlatforms from "../pages/customer-management/OnlinePaymentPlatforms";
 
 export const router = createBrowserRouter([
   {
@@ -145,6 +143,10 @@ export const router = createBrowserRouter([
           {
             path: "expenses-setup",
             element: <ExpensesSetup />,
+          },
+          {
+            path: "online-payment-platforms",
+            element: <OnlinePaymentPlatforms />,
           },
         ],
       },

@@ -196,33 +196,35 @@ function SalesTransaction() {
                       : ""
                   }
                 >
-                  <ControlledAutocomplete
-                    name={`clientId`}
-                    control={control}
-                    options={clientData || []}
-                    disabled={watch("items")?.length > 0}
-                    getOptionLabel={(option) =>
-                      option.businessName?.toUpperCase() +
-                        " - " +
-                        option.ownersName?.toUpperCase() || ""
-                    }
-                    // disableClearable
-                    loading={isClientLoading}
-                    isOptionEqualToValue={() => true}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        size="small"
-                        placeholder="Business Name - Owner's Name"
-                        sx={{
-                          pointerEvents:
-                            watch("items")?.length > 0 ? "none" : "auto",
-                        }}
-                        helperText={errors?.clientId?.message}
-                        error={!!errors?.clientId}
-                      />
-                    )}
-                  />
+                  <>
+                    <ControlledAutocomplete
+                      name={`clientId`}
+                      control={control}
+                      options={clientData || []}
+                      disabled={watch("items")?.length > 0}
+                      getOptionLabel={(option) =>
+                        option.businessName?.toUpperCase() +
+                          " - " +
+                          option.ownersName?.toUpperCase() || ""
+                      }
+                      // disableClearable
+                      loading={isClientLoading}
+                      isOptionEqualToValue={() => true}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          placeholder="Business Name - Owner's Name"
+                          sx={{
+                            pointerEvents:
+                              watch("items")?.length > 0 ? "none" : "auto",
+                          }}
+                          helperText={errors?.clientId?.message}
+                          error={!!errors?.clientId}
+                        />
+                      )}
+                    />
+                  </>
                 </Tooltip>
 
                 <Box className="salesTransaction__body__itemsForm__searchFilter">
@@ -267,7 +269,7 @@ function SalesTransaction() {
                         horizontal: "right",
                       }}
                       transformOrigin={{
-                        // vertical: "bottom",
+                        vertical: "center",
                         horizontal: "right",
                       }}
                       elevation={3}
@@ -325,7 +327,7 @@ function SalesTransaction() {
                     productData?.priceModeItems?.map((item) => (
                       <Button
                         className="salesTransaction__body__itemsForm__itemsList__itemCard"
-                        key={item.id}
+                        key={item.itemId}
                         onClick={() => {
                           if (quickAdd) {
                             handleAddItem(item);
