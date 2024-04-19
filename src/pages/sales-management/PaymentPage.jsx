@@ -251,6 +251,8 @@ function PaymentPage({ setPaymentMode }) {
     }
   }, [client, triggerTransactions, handleReset]);
 
+  console.log(transactionsData, "transactionsData");
+
   return (
     <>
       <Box className="paymentPage">

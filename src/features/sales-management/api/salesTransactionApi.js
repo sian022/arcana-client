@@ -70,6 +70,7 @@ const salesTransactionApi = api
 export const {
   useGetAllClientsForPOSQuery,
   useGetAllSalesTransactionQuery,
+  useLazyGetAllSalesTransactionQuery,
   useVoidSalesTransactionMutation,
   useUploadCiAttachmentMutation,
   useCreateSalesTransactionMutation,

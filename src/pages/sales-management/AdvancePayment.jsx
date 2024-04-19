@@ -105,6 +105,8 @@ function AdvancePayment() {
 
   const pesoArray = ["advancePaymentAmount"];
 
+  const disableActions = ["void"];
+
   const originOptions = [
     {
       value: " ",
@@ -302,6 +304,11 @@ function AdvancePayment() {
             // onEdit={handleEditOpen}
             onView={onViewOpen}
             onVoid={onVoid}
+            disableActions={
+              (selectedRowData?.origin === "From Payment" ||
+                origin === "From Payment") &&
+              disableActions
+            }
           />
         )}
 
