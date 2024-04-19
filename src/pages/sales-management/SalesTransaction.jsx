@@ -69,7 +69,7 @@ function SalesTransaction() {
 
   //React Hook Form
   const {
-    formState: { errors, isValid },
+    formState: { isValid },
     reset,
     control,
     watch,
@@ -219,8 +219,8 @@ function SalesTransaction() {
                             pointerEvents:
                               watch("items")?.length > 0 ? "none" : "auto",
                           }}
-                          helperText={errors?.clientId?.message}
-                          error={!!errors?.clientId}
+                          // helperText={errors?.clientId?.message}
+                          // error={!!errors?.clientId}
                         />
                       )}
                     />

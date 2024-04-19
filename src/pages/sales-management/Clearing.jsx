@@ -3,7 +3,7 @@ import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import CommonTable from "../../components/CommonTable";
-import { dummyTransactionsData } from "../../utils/DummyData";
+import { dummyPaymentData, dummyTransactionsData } from "../../utils/DummyData";
 import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 import SearchActionMixin from "../../components/mixins/SearchActionMixin";
 import useConfirm from "../../hooks/useConfirm";
@@ -46,21 +46,19 @@ function Clearing() {
 
   const customOrderKeys = [
     "id",
-    "time",
+    "businessName",
+    "date",
     "amount",
     "paymentType",
-    "businessName",
-    "CINo.",
   ];
-
   const tableHeads = [
     "Tx Number",
-    "Time",
+    "Business Name",
+    "Date",
     "Amount",
     "Payment Type",
-    "Business Name",
-    "CI No.",
   ];
+  const pesoArray = ["amount"];
 
   //RTK Query
   const [clearSalesTransaction] = useClearSalesTransactionMutation();
@@ -135,9 +133,10 @@ function Clearing() {
       />
 
       <CommonTable
-        mapData={dummyTransactionsData}
+        mapData={dummyPaymentData}
         customOrderKeys={customOrderKeys}
         tableHeads={tableHeads}
+        pesoArray={pesoArray}
         page={page}
         setPage={setPage}
         rowsPerPage={rowsPerPage}

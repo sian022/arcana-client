@@ -7,8 +7,6 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   useGetAllTermDaysQuery,
@@ -16,9 +14,13 @@ import {
   usePostTermDaysMutation,
   usePutTermDaysMutation,
 } from "../../features/setup/api/termDaysApi";
-import { termDaysSchema } from "../../schema/schema";
+import { onlinePaymentPlatformsSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
 import { CreditCard } from "@mui/icons-material";
+import { dummyOnlinePaymentPlatformsData } from "../../utils/DummyData";
+import useSnackbar from "../../hooks/useSnackbar";
+import useConfirm from "../../hooks/useConfirm";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function OnlinePaymentPlatforms() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -28,8 +30,10 @@ function OnlinePaymentPlatforms() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  //Hooks
+  const snackbar = useSnackbar();
+  const confirm = useConfirm();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -45,20 +49,8 @@ function OnlinePaymentPlatforms() {
     onClose: onArchiveClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
-  } = useDisclosure();
-
   // Constants
-  const customOrderKeys = ["days"];
+  const customOrderKeys = ["name"];
 
   //React Hook Form
   const {
@@ -67,12 +59,14 @@ function OnlinePaymentPlatforms() {
     register,
     setValue,
     reset,
+    watch,
   } = useForm({
-    resolver: yupResolver(termDaysSchema.schema),
+    resolver: yupResolver(onlinePaymentPlatformsSchema.schema),
     mode: "onChange",
-    defaultValues: termDaysSchema.defaultValues,
+    defaultValues: onlinePaymentPlatformsSchema.defaultValues,
   });
 
+  console.log(watch());
   //RTK Query
   const [postTermDays, { isLoading: isAddLoading }] = usePostTermDaysMutation();
   const { data, isFetching } = useGetAllTermDaysQuery({
@@ -91,25 +85,18 @@ function OnlinePaymentPlatforms() {
     try {
       if (drawerMode === "add") {
         await postTermDays(data).unwrap();
-        setSnackbarMessage("Online Payment Platform added successfully");
       } else if (drawerMode === "edit") {
         await putTermDays(data).unwrap();
-        setSnackbarMessage("Online Payment Platform updated successfully");
       }
 
+      const snackbarMessage = `Online Payment Platform ${
+        drawerMode === "add" ? "added" : "updated"
+      } successfully`;
+      snackbar({ message: snackbarMessage, variant: "success" });
       onDrawerClose();
       reset();
-      onSuccessOpen();
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} term days`
-        );
-      }
-
-      onErrorOpen();
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
@@ -117,20 +104,14 @@ function OnlinePaymentPlatforms() {
     try {
       await patchTermDaysStatus(selectedId).unwrap();
       onArchiveClose();
-      setSnackbarMessage(
-        `Online Payment Platform ${
-          status ? "archived" : "restored"
-        } successfully`
-      );
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving term days");
-      }
 
-      onErrorOpen();
+      const snackbarMessage = `Online Payment Platform ${
+        status ? "archived" : "restored"
+      } successfully`;
+
+      snackbar({ message: snackbarMessage, variant: "success" });
+    } catch (error) {
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
@@ -185,7 +166,7 @@ function OnlinePaymentPlatforms() {
       ) : (
         <CommonTable
           evenLesserCompact
-          mapData={data?.termDays}
+          mapData={dummyOnlinePaymentPlatformsData}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}
           onArchive={handleArchiveOpen}
@@ -212,12 +193,12 @@ function OnlinePaymentPlatforms() {
           label="Online Payment Platform"
           size="small"
           autoComplete="off"
-          {...register("days")}
-          helperText={errors?.days?.message}
-          error={errors?.days}
-          type="number"
+          {...register("name")}
+          helperText={errors?.name?.message}
+          error={errors?.name}
         />
       </CommonDrawer>
+
       <CommonDialog
         open={isArchiveOpen}
         onClose={onArchiveClose}
@@ -231,16 +212,6 @@ function OnlinePaymentPlatforms() {
         </span>
         ?
       </CommonDialog>
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }

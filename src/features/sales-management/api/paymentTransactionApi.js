@@ -15,8 +15,8 @@ const paymentTransactionApi = api
       }),
 
       createPaymentTransaction: builder.mutation({
-        query: ({ id, ...body }) => ({
-          url: `/sales-transaction/payment${id}`,
+        query: (body) => ({
+          url: `/payment`,
           method: "POST",
           body,
         }),

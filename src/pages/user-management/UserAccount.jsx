@@ -384,58 +384,6 @@ function UserAccount() {
           )}
         />
 
-        {/* FISTO Account Title */}
-        {/* <Controller
-         control={control}
-         name={"location"}
-         render={({ field: { onChange, onBlur, value, ref } }) => (
-           <TextField
-             size="small"
-             label="Location"
-             autoComplete="off"
-             onChange={onChange}
-             onBlur={onBlur}
-             value={value}
-             inputRef={ref}
-             disabled
-           />
-         )}
-       />
-
-       <Controller
-         control={control}
-         name={"department"}
-         render={({ field: { onChange, onBlur, value, ref } }) => (
-           <TextField
-             size="small"
-             label="Department"
-             autoComplete="off"
-             onChange={onChange}
-             onBlur={onBlur}
-             value={value}
-             inputRef={ref}
-             disabled
-           />
-         )}
-       />
-
-       <Controller
-         control={control}
-         name={"company"}
-         render={({ field: { onChange, onBlur, value, ref } }) => (
-           <TextField
-             size="small"
-             label="Company"
-             autoComplete="off"
-             onChange={onChange}
-             onBlur={onBlur}
-             value={value}
-             inputRef={ref}
-             disabled
-           />
-         )}
-       /> */}
-
         <Controller
           control={control}
           name={"username"}

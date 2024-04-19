@@ -100,7 +100,7 @@ function PaymentModalForm({
             <Typography>Payment Type</Typography>
 
             <ControlledAutocomplete
-              name="paymentType"
+              name="paymentMethod"
               control={control}
               options={paymentTypes}
               getOptionLabel={(option) => option.label.toUpperCase()}
@@ -111,8 +111,8 @@ function PaymentModalForm({
                   {...params}
                   size="small"
                   label="Payment Type"
-                  helperText={errors?.paymentType?.message}
-                  error={errors?.paymentType}
+                  helperText={errors?.paymentMethod?.message}
+                  error={errors?.paymentMethod}
                 />
               )}
               onChange={(_, value) => {
@@ -120,13 +120,13 @@ function PaymentModalForm({
                   setValue("payee", "");
                   setValue("chequeDate", null);
                   setValue("bankName", "");
-                  setValue("chequeNumber", "");
+                  setValue("chequeNo", "");
                   setValue("dateReceived", null);
                   // setValue("chequeAmount", "");
                 }
                 if (value.label !== "Online") {
                   setValue("accountName", "");
-                  setValue("accountNumber", "");
+                  setValue("accountNo", "");
                   setValue("referenceNumber", "");
                 }
                 if (value.label !== "Offset") {
@@ -142,7 +142,7 @@ function PaymentModalForm({
 
             <Controller
               control={control}
-              name={"amount"}
+              name={"paymentAmount"}
               render={({ field: { onChange, onBlur, value, ref } }) => (
                 <NumericFormat
                   label="Payment Amount"
@@ -167,7 +167,7 @@ function PaymentModalForm({
           </Box>
         </Box>
 
-        {watch("paymentType")?.label === "Cheque" && (
+        {watch("paymentMethod")?.label === "Cheque" && (
           <Box className="paymentTransactionModal__otherFields">
             <Controller
               name="payee"
@@ -227,7 +227,7 @@ function PaymentModalForm({
             />
 
             <Controller
-              name="chequeNumber"
+              name="chequeNo"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -236,8 +236,8 @@ function PaymentModalForm({
                   size="small"
                   autoComplete="off"
                   {...field}
-                  helperText={errors?.chequeNumber?.message}
-                  error={errors?.chequeNumber}
+                  helperText={errors?.chequeNo?.message}
+                  error={errors?.chequeNo}
                   type="number"
                 />
               )}
@@ -293,7 +293,7 @@ function PaymentModalForm({
           </Box>
         )}
 
-        {watch("paymentType")?.label === "Online" && (
+        {watch("paymentMethod")?.label === "Online" && (
           <Box className="paymentTransactionModal__otherFields">
             <Controller
               name="accountName"
@@ -313,7 +313,7 @@ function PaymentModalForm({
             />
 
             <Controller
-              name="accountNumber"
+              name="accountNo"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -322,8 +322,8 @@ function PaymentModalForm({
                   size="small"
                   autoComplete="off"
                   {...field}
-                  helperText={errors?.accountNumber?.message}
-                  error={errors?.accountNumber}
+                  helperText={errors?.accountNo?.message}
+                  error={errors?.accountNo}
                   type="number"
                 />
               )}
@@ -348,7 +348,7 @@ function PaymentModalForm({
           </Box>
         )}
 
-        {watch("paymentType")?.label === "Listing Fee" && (
+        {watch("paymentMethod")?.label === "Listing Fee" && (
           <Box className="paymentTransactionModal__footer">
             <Box className="paymentTransactionModal__footer__label">
               <Typography className="paymentTransactionModal__footer__label__top">
@@ -370,7 +370,7 @@ function PaymentModalForm({
           </Box>
         )}
 
-        {watch("paymentType")?.label === "Offset" && (
+        {watch("paymentMethod")?.label === "Offset" && (
           <Box className="paymentTransactionModal__otherFields">
             <Controller
               name="remarks"
@@ -393,7 +393,7 @@ function PaymentModalForm({
           </Box>
         )}
 
-        {watch("paymentType")?.label === "Advance Payment" && (
+        {watch("paymentMethod")?.label === "Advance Payment" && (
           <Box className="paymentTransactionModal__footer">
             <Box className="paymentTransactionModal__footer__label">
               <Typography className="paymentTransactionModal__footer__label__top">

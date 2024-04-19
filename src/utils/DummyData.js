@@ -588,3 +588,86 @@ export const dummyPaymentHistoriesData = [
     ],
   },
 ];
+
+export const dummyOnlinePaymentPlatformsData = [
+  {
+    id: 1,
+    name: "GCash",
+  },
+  {
+    id: 2,
+    name: "PayMaya",
+  },
+  {
+    id: 3,
+    name: "Coins.PH",
+  },
+  {
+    id: 4,
+    name: "BPI",
+  },
+  {
+    id: 5,
+    name: "BDO",
+  },
+  {
+    id: 6,
+    name: "Metrobank",
+  },
+  {
+    id: 7,
+    name: "UnionBank",
+  },
+  {
+    id: 8,
+    name: "Security Bank",
+  },
+  {
+    id: 9,
+    name: "Landbank",
+  },
+  {
+    id: 10,
+    name: "PNB",
+  },
+  {
+    id: 11,
+    name: "Metrobank",
+  },
+  {
+    id: 12,
+    name: "ChinaBank",
+  },
+  {
+    id: 13,
+    name: "PSBank",
+  },
+  {
+    id: 14,
+    name: "Maybank",
+  },
+  {
+    id: 15,
+    name: "EastWest Bank",
+  },
+  {
+    id: 16,
+    name: "UCPB",
+  },
+  {
+    id: 17,
+    name: "DBP",
+  },
+  {
+    id: 18,
+    name: "HSBC",
+  },
+  {
+    id: 19,
+    name: "CIMB",
+  },
+  {
+    id: 20,
+    name: "ING",
+  },
+];

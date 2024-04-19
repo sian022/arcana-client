@@ -30,7 +30,10 @@ import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import { getIconElement } from "../../components/GetIconElement";
-import { useLazyGetAllSalesTransactionForPaymentsQuery } from "../../features/sales-management/api/paymentTransactionApi";
+import {
+  useCreatePaymentTransactionMutation,
+  useLazyGetAllSalesTransactionForPaymentsQuery,
+} from "../../features/sales-management/api/paymentTransactionApi";
 import PaymentListSkeleton from "../../components/skeletons/PaymentListSkeleton";
 import PaymentHistoriesModal from "../../components/modals/sales-management/PaymentHistoriesModal";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -84,7 +87,7 @@ function PaymentPage({ setPaymentMode }) {
   });
 
   //Watch Constants
-  const watchTransactionIds = watch("transactionIds");
+  const watchTransactionIds = watch("transactionId");
 
   //RTK Query
   const [
@@ -99,13 +102,19 @@ function PaymentPage({ setPaymentMode }) {
       PageSize: 1000,
     });
 
+  const [createPaymentTransaction] = useCreatePaymentTransactionMutation();
+
   //Functions
   const onSubmit = async (data) => {
     try {
       await confirm({
         children: "Are you sure you want to submit payment transaction?",
         question: true,
-        callback: () => console.log(data),
+        callback: () =>
+          createPaymentTransaction({
+            ...data,
+            totalAmountReceived: handleTotal,
+          }).unwrap(),
       });
 
       handleReset();
@@ -122,10 +131,10 @@ function PaymentPage({ setPaymentMode }) {
 
   //Constants
   const isAllChecked =
-    watch("transactionIds")?.length === dummyPaymentData.length;
+    watch("transactionId")?.length === dummyPaymentData.length;
   const isAllIndeterminate =
-    watch("transactionIds")?.length > 0 &&
-    watch("transactionIds")?.length !== dummyPaymentData.length;
+    watch("transactionId")?.length > 0 &&
+    watch("transactionId")?.length !== dummyPaymentData.length;
 
   //Functions
   const handleReset = useCallback(async () => {
@@ -163,16 +172,16 @@ function PaymentPage({ setPaymentMode }) {
   };
 
   const handleTransactionClick = (transactionId) => {
-    const currentTransactionIds = watch("transactionIds") || [];
+    const currentTransactionIds = watch("transactionId") || [];
     const transactionIndex = currentTransactionIds.indexOf(transactionId);
 
     if (transactionIndex === -1) {
       // If not already selected, add it to the array
-      setValue("transactionIds", [...currentTransactionIds, transactionId]);
+      setValue("transactionId", [...currentTransactionIds, transactionId]);
     } else {
       // If already selected, remove it from the array
       setValue(
-        "transactionIds",
+        "transactionId",
         currentTransactionIds.filter((id) => id !== transactionId)
       );
     }
@@ -187,10 +196,10 @@ function PaymentPage({ setPaymentMode }) {
 
     if (checked) {
       // If checkbox is checked, select all transaction IDs
-      setValue("transactionIds", allTransactionIds);
+      setValue("transactionId", allTransactionIds);
     } else {
       // If checkbox is unchecked, deselect all transaction IDs
-      setValue("transactionIds", []);
+      setValue("transactionId", []);
     }
   };
 
@@ -209,7 +218,7 @@ function PaymentPage({ setPaymentMode }) {
 
   const handlePaymentTotal = useMemo(() => {
     const total = paymentFields.reduce(
-      (acc, payment) => acc + payment.amount,
+      (acc, payment) => acc + payment.paymentAmount,
       0
     );
 
@@ -241,8 +250,6 @@ function PaymentPage({ setPaymentMode }) {
       handleReset();
     }
   }, [client, triggerTransactions, handleReset]);
-
-  console.log(transactionsData, "transactionsData");
 
   return (
     <>
@@ -372,7 +379,7 @@ function PaymentPage({ setPaymentMode }) {
                       className="paymentPage__body__transactions__transactionsList__item"
                       onClick={() => handleTransactionClick(item.transactionNo)}
                       sx={{
-                        bgcolor: watch("transactionIds")?.includes(
+                        bgcolor: watch("transactionId")?.includes(
                           item.transactionNo
                         )
                           ? "primary.light"
@@ -425,7 +432,7 @@ function PaymentPage({ setPaymentMode }) {
 
                           <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__value">
                             ₱
-                            {item.amount?.toLocaleString(undefined, {
+                            {item.paymentAmount?.toLocaleString(undefined, {
                               minimumFractionDigits: 2,
                               maximumFractionsDigits: 2,
                             })}
@@ -470,11 +477,11 @@ function PaymentPage({ setPaymentMode }) {
                   <Box className="paymentPage__body__payments__paymentsList__item__info">
                     <Box className="paymentPage__body__payments__paymentsList__item__info__paymentType">
                       <Typography className="paymentPage__body__payments__paymentsList__item__info__paymentType__label">
-                        {payment.paymentType.label}
+                        {payment.paymentMethod.label}
                       </Typography>
 
                       {getIconElement(
-                        payment.paymentType.icon,
+                        payment.paymentMethod.icon,
                         "gray",
                         "1.1rem"
                       )}
@@ -482,7 +489,7 @@ function PaymentPage({ setPaymentMode }) {
 
                     <Typography className="paymentPage__body__payments__paymentsList__item__info__amount">
                       ₱
-                      {payment.amount?.toLocaleString(undefined, {
+                      {payment.paymentAmount?.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionsDigits: 2,
                       })}

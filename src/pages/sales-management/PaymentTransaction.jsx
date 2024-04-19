@@ -2,7 +2,6 @@ import "../../assets/styles/paymentTransaction.styles.scss";
 import { Box } from "@mui/material";
 import { useContext, useEffect, useMemo, useState } from "react";
 import CommonTable from "../../components/CommonTable";
-import { dummyPaymentData } from "../../utils/DummyData";
 import { AppContext } from "../../context/AppContext";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import AddSearchMixin from "../../components/mixins/AddSearchMixin";
@@ -106,6 +105,7 @@ function PaymentTransaction() {
   ];
 
   const pesoArray = ["totalAmountDue", "balance"];
+  const disableActions = ["void"];
 
   //Functions
   const onVoid = async () => {
@@ -193,6 +193,7 @@ function PaymentTransaction() {
                 tableHeads={tableHeads}
                 includeActions
                 lowerCompact
+                moveNoDataUp
                 pesoArray={pesoArray}
                 page={page}
                 setPage={setPage}
@@ -200,7 +201,11 @@ function PaymentTransaction() {
                 setRowsPerPage={setRowsPerPage}
                 count={count}
                 mt={"-20px"}
-                onVoid={transactionStatus === "Receivable" && onVoid}
+                disableActions={
+                  selectedRowData?.totalAmountDue !==
+                    selectedRowData?.remainingBalance && disableActions
+                }
+                onVoid={transactionStatus === "Pending" && onVoid}
                 onPaymentHistories={onPaymentHistoriesOpen}
               />
             )}

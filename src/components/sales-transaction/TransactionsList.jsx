@@ -187,6 +187,7 @@ function TransactionsList({ setTransactionsMode }) {
             onAttach={onAttachmentOpen}
             // onVoid={onVoid}
             lessCompact
+            moveNoDataUp
           />
         )}
 

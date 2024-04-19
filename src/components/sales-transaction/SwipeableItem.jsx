@@ -90,6 +90,10 @@ function SwipeableItem({
               {orderItem.itemId?.itemCode}
             </Typography>
 
+            {/* <Typography fontSize="1rem" color="gray">
+              {orderItem.itemId?.itemDescription}
+            </Typography> */}
+
             <Info fontSize="" sx={{ color: "gray" }} />
           </Box>
         </Tooltip>
