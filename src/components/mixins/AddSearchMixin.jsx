@@ -9,8 +9,8 @@ function AddSearchMixin({ endIcon, title, addTitle, onAddOpen, setSearch }) {
 
   return (
     // <Paper elevation={1}>
-    <Box className="pageHeader" sx={{ mt: "-20px" }}>
-      <Box className="pageHeader__left">
+    <Box className="mixin" sx={{ mt: "-20px" }}>
+      <Box className="mixin__left">
         <SecondaryButton
           className="addRowButtons"
           onClick={onAddOpen}
@@ -19,7 +19,7 @@ function AddSearchMixin({ endIcon, title, addTitle, onAddOpen, setSearch }) {
           {title ? title : `Add ${addTitle && addTitle}`}
         </SecondaryButton>
       </Box>
-      <Box className="pageHeader__right">
+      <Box className="mixin__right">
         <TextField
           type="search"
           size="small"

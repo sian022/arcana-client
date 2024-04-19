@@ -37,6 +37,41 @@
   }
 }
 
+.mixin {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 15px 0px;
+  align-items: center;
+  gap: 30px;
+  // overflow: auto;
+  overflow: overlay;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  & &__title {
+    font-weight: bold;
+    // font-size: 30px;
+    font-size: 1.6rem;
+    white-space: nowrap;
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
 .addRowButtons {
   font-size: 11px;
   color: white;

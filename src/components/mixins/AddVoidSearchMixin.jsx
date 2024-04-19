@@ -15,8 +15,8 @@ function AddVoidSearchMixin({
 
   return (
     // <Paper elevation={1}>
-    <Box className="pageHeader" sx={{ mt: "-20px" }}>
-      <Box className="pageHeader__left">
+    <Box className="mixin" sx={{ mt: "-20px" }}>
+      <Box className="mixin__left">
         <SecondaryButton
           className="addRowButtons"
           onClick={onAddOpen}
@@ -26,7 +26,7 @@ function AddVoidSearchMixin({
         </SecondaryButton>
       </Box>
 
-      <Box className="pageHeader__right">
+      <Box className="mixin__right">
         {(status === "Voided" || status === "Rejected") && (
           <>
             <Checkbox

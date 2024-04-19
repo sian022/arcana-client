@@ -1,12 +1,4 @@
-import {
-  Box,
-  Checkbox,
-  Paper,
-  TextField,
-  Typography,
-  debounce,
-} from "@mui/material";
-import React from "react";
+import { Box, Checkbox, TextField, Typography, debounce } from "@mui/material";
 
 function SearchVoidMixin({ setSearch, setStatus, status }) {
   const debouncedSetSearch = debounce((value) => {
@@ -15,10 +7,10 @@ function SearchVoidMixin({ setSearch, setStatus, status }) {
 
   return (
     // <Paper elevation={1}>
-    <Box className="pageHeader" sx={{ mt: "-20px" }}>
-      <Box className="pageHeader__left"></Box>
+    <Box className="mixin" sx={{ mt: "-20px" }}>
+      <Box className="mixin__left"></Box>
 
-      <Box className="pageHeader__right">
+      <Box className="mixin__right">
         <Checkbox
           onChange={() => {
             status === "Voided" ? setStatus("") : setStatus("Voided");

@@ -11,8 +11,8 @@ function DatetimePickerButtonMixin({
   buttonProps,
 }) {
   return (
-    <Box className="pageHeader" sx={{ my: "-20px" }}>
-      <Box className="pageHeader__left">
+    <Box className="mixin" sx={{ my: "-20px" }}>
+      <Box className="mixin__left">
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <DateTimePicker
             label="Date From"
@@ -32,7 +32,7 @@ function DatetimePickerButtonMixin({
         </SecondaryButton>
       </Box>
 
-      <Box className="pageHeader__right">
+      <Box className="mixin__right">
         <TextField type="search" size="small" />
       </Box>
     </Box>

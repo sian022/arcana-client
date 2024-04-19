@@ -432,7 +432,7 @@ function PaymentPage({ setPaymentMode }) {
 
                           <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__value">
                             ₱
-                            {item.paymentAmount?.toLocaleString(undefined, {
+                            {item.amount?.toLocaleString(undefined, {
                               minimumFractionDigits: 2,
                               maximumFractionsDigits: 2,
                             })}

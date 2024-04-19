@@ -7,8 +7,8 @@ function SearchFilterMixin({ setSearch, selectOptions, setSelectValue }) {
 
   return (
     // <Paper elevation={1}>
-    <Box className="pageHeader" sx={{ my: "-20px" }}>
-      <Box className="pageHeader__left">
+    <Box className="mixin" sx={{ my: "-20px" }}>
+      <Box className="mixin__left">
         <TextField
           type="search"
           size="small"
@@ -19,7 +19,7 @@ function SearchFilterMixin({ setSearch, selectOptions, setSelectValue }) {
           autoComplete="off"
         />
       </Box>
-      <Box className="pageHeader__right">
+      <Box className="mixin__right">
         <TextField
           sx={{ width: "150px" }}
           size="small"

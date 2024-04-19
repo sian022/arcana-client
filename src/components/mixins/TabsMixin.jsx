@@ -1,23 +1,7 @@
-import {
-  Box,
-  Paper,
-  Typography,
-  Stack,
-  Badge,
-  Divider,
-  CircularProgress,
-} from "@mui/material";
-import React from "react";
+import { Box, Typography, Stack, Badge, Divider } from "@mui/material";
 import "../../assets/styles/common.styles.scss";
 
-function TabsMixin({
-  wide,
-  extraWide,
-  pageTitle,
-  tabsList,
-  tabViewing,
-  setTabViewing,
-}) {
+function TabsMixin({ wide, extraWide, tabsList, tabViewing, setTabViewing }) {
   return (
     <Box
       sx={{

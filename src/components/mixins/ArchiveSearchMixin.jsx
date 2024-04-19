@@ -1,28 +1,19 @@
-import {
-  Box,
-  Checkbox,
-  Paper,
-  TextField,
-  Typography,
-  debounce,
-} from "@mui/material";
-import React from "react";
-import SecondaryButton from "../SecondaryButton";
+import { Box, Checkbox, TextField, Typography, debounce } from "@mui/material";
 
-function ArchiveSearchMixin({ addTitle, onAddOpen, setStatus, setSearch }) {
+function ArchiveSearchMixin({ setStatus, setSearch }) {
   const debouncedSetSearch = debounce((value) => {
     setSearch(value);
   }, 200);
 
   return (
     // <Paper elevation={1}>
-    <Box className="pageHeader">
-      <Box className="pageHeader__left">
+    <Box className="mixin">
+      <Box className="mixin__left">
         {/* <SecondaryButton className="addRowButtons" onClick={onAddOpen}>
             Add {addTitle && addTitle}
           </SecondaryButton> */}
       </Box>
-      <Box className="pageHeader__right">
+      <Box className="mixin__right">
         <Checkbox
           onChange={() => {
             setStatus((prev) => !prev);

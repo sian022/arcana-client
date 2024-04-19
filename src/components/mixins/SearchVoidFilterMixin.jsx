@@ -6,7 +6,6 @@ import {
   Typography,
   debounce,
 } from "@mui/material";
-import React from "react";
 
 function SearchVoidFilterMixin({
   status,
@@ -20,8 +19,8 @@ function SearchVoidFilterMixin({
   }, 200);
 
   return (
-    <Box className="pageHeader" sx={{ my: "-20px" }}>
-      <Box className="pageHeader__left">
+    <Box className="mixin" sx={{ my: "-20px" }}>
+      <Box className="mixin__left">
         <TextField
           type="search"
           size="small"
@@ -33,7 +32,7 @@ function SearchVoidFilterMixin({
         />
       </Box>
 
-      <Box className="pageHeader__right">
+      <Box className="mixin__right">
         {(status === "Voided" || status === "Rejected") && (
           <>
             <Checkbox
