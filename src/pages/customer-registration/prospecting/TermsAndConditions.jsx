@@ -26,6 +26,9 @@ import { Cancel } from "@mui/icons-material";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat } from "react-number-format";
 import FreezerAssetTagModal from "../../../components/modals/registration/FreezerAssetTagModal";
+import SignatureCanvasModal from "../../../components/modals/SignatureCanvasModal";
+import { AttachmentsContext } from "../../../context/AttachmentsContext";
+import { base64ToBlob } from "../../../utils/CustomFunctions";
 
 function TermsAndConditions({ direct, editMode, storeType }) {
   const dispatch = useDispatch();
@@ -42,6 +45,16 @@ function TermsAndConditions({ direct, editMode, storeType }) {
   const { setPhotoProofDirect, setSignatureDirect } =
     useContext(DirectReleaseContext);
 
+  const {
+    requirementsMode,
+    ownersRequirements,
+    representativeRequirements,
+    setOwnersRequirements,
+    setRepresentativeRequirements,
+    representativeRequirementsIsLink,
+    ownersRequirementsIsLink,
+  } = useContext(AttachmentsContext);
+
   //Disclosures
   const {
     isOpen: isFreebieFormOpen,
@@ -53,6 +66,12 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     isOpen: isAssetTagOpen,
     onOpen: onAssetTagOpen,
     onClose: onAssetTagClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isCanvasOpen,
+    onOpen: onCanvasOpen,
+    onClose: onCanvasClose,
   } = useDisclosure();
 
   //RTK Query
@@ -93,6 +112,20 @@ function TermsAndConditions({ direct, editMode, storeType }) {
         value: parsedValue === "" ? null : parsedValue,
       })
     );
+  };
+
+  const handleSetSignature = (signature) => {
+    if (requirementsMode === "owner") {
+      setOwnersRequirements((prev) => ({
+        ...prev,
+        signature: signature,
+      }));
+    } else if (requirementsMode === "representative") {
+      setRepresentativeRequirements((prev) => ({
+        ...prev,
+        signature: signature,
+      }));
+    }
   };
 
   useEffect(() => {
@@ -177,6 +210,28 @@ function TermsAndConditions({ direct, editMode, storeType }) {
       onAssetTagOpen();
     }
   }, [termsAndConditions["freezer"]]);
+
+  const handleViewSignature = (type) => {
+    let convertedSignature;
+
+    if (type === "owner") {
+      if (!ownersRequirementsIsLink["signature"]) {
+        convertedSignature = base64ToBlob(ownersRequirements["signature"]);
+      } else {
+        convertedSignature = ownersRequirementsIsLink["signature"];
+      }
+    } else if (type === "representative") {
+      if (!representativeRequirementsIsLink["signature"]) {
+        convertedSignature = base64ToBlob(
+          representativeRequirements["signature"]
+        );
+      } else {
+        convertedSignature = representativeRequirementsIsLink["signature"];
+      }
+    }
+
+    return convertedSignature;
+  };
 
   return (
     <Box className="terms">
@@ -594,7 +649,11 @@ function TermsAndConditions({ direct, editMode, storeType }) {
 
         {direct && !editMode && (
           <>
-            <SecondaryButton medium onClick={onFreebieFormOpen}>
+            <SecondaryButton
+              medium
+              onClick={onFreebieFormOpen}
+              variant="outlined"
+            >
               Request Freebie
             </SecondaryButton>{" "}
             {freebiesDirect?.length > 0 && (
@@ -621,6 +680,37 @@ function TermsAndConditions({ direct, editMode, storeType }) {
         )}
 
         <FreezerAssetTagModal open={isAssetTagOpen} onClose={onAssetTagClose} />
+
+        <SignatureCanvasModal
+          open={isCanvasOpen}
+          onClose={onCanvasClose}
+          setSignature={handleSetSignature}
+          signature={ownersRequirements["signature"]}
+        />
+
+        <Box sx={{ display: "flex", mt: "40px" }}>
+          {ownersRequirements["signature"] ? (
+            <Box className="attachments__viewModal__signature">
+              <img
+                src={
+                  requirementsMode === "owner"
+                    ? ownersRequirementsIsLink["signature"]
+                      ? handleViewSignature("owner")
+                      : URL.createObjectURL(handleViewSignature("owner"))
+                    : representativeRequirementsIsLink["signature"]
+                    ? handleViewSignature("representative")
+                    : URL.createObjectURL(handleViewSignature("representative"))
+                }
+                alt="File preview"
+                style={{ borderRadius: "12px" }}
+              />
+            </Box>
+          ) : (
+            <SecondaryButton fullWidth size="medium" onClick={onCanvasOpen}>
+              Sign here
+            </SecondaryButton>
+          )}
+        </Box>
       </Box>
     </Box>
   );

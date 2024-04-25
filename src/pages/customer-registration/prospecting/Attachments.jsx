@@ -75,32 +75,12 @@ function Attachments() {
     if (requirementsMode === "owner") {
       setOwnersRequirements((prev) => ({
         ...prev,
-        signature:
-          // new File(
-          //   [base64ToBlob(signature)],
-          //   `signature_${
-          //     selectedRowData.businessName
-          //       ? selectedRowData.businessname
-          //       : "owner"
-          //   }_${Date.now()}.jpg`,
-          //   { type: "image/jpeg" }
-          // ),
-          signature,
+        signature: signature,
       }));
     } else if (requirementsMode === "representative") {
       setRepresentativeRequirements((prev) => ({
         ...prev,
-        signature:
-          // new File(
-          //   [base64ToBlob(signature)],
-          //   `signature_${
-          //     selectedRowData.businessName
-          //       ? selectedRowData.businessname
-          //       : "representative"
-          //   }_${Date.now()}.jpg`,
-          //   { type: "image/jpeg" }
-          // ),
-          signature,
+        signature: signature,
       }));
     }
   };
