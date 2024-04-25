@@ -281,8 +281,9 @@
     &__orderDetails {
       display: flex;
       flex-direction: column;
-      width: 300px;
-      // width: 400px;
+      // width: 300px;
+      // width: 600px;
+      width: 500px;
       box-shadow: 0 4px 12px -4px hsla(0, 0%, 8%, 0.1),
         0 4px 6px -5px hsla(0, 0%, 8%, 0.05) !important;
 
@@ -346,13 +347,15 @@
       &__total {
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        margin-top: 15px;
+        gap: 10px;
+        margin-top: 10px;
 
         &__amount {
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          // justify-content: space-between;
+          justify-content: flex-end;
+          gap: 10px;
         }
       }
     }

@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import CommonModal from "../CommonModal";
-import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { AttachmentsContext } from "../../context/AttachmentsContext";
 import BlankCanvas from "../../assets/images/blank-canvas.svg";
@@ -12,7 +12,7 @@ function ViewPhotoModal({
   cloudified,
   ...otherProps
 }) {
-  const { onClose, ...noOnClose } = otherProps;
+  const { onClose } = otherProps;
 
   const {
     ownersRequirementsIsLink,

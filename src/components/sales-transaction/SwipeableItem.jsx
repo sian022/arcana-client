@@ -1,12 +1,5 @@
-import { Add, Check, Close, Info, Remove } from "@mui/icons-material";
-import {
-  Box,
-  IconButton,
-  Popover,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Add, Check, Close, Remove } from "@mui/icons-material";
+import { Box, IconButton, Popover, TextField, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import useDisclosure from "../../hooks/useDisclosure";
@@ -81,22 +74,22 @@ function SwipeableItem({
       }`}
     >
       <Box>
-        <Tooltip
+        {/* <Tooltip
           title={orderItem.itemId?.itemDescription}
           sx={{ cursor: "pointer" }}
-        >
-          <Box className="salesTransaction__body__orderDetails__itemsList__item__labels">
-            <Typography fontSize="1rem" color="gray">
-              {orderItem.itemId?.itemCode}
-            </Typography>
+        > */}
+        <Box className="salesTransaction__body__orderDetails__itemsList__item__labels">
+          <Typography fontSize="1rem" color="gray">
+            {orderItem.itemId?.itemDescription}
+          </Typography>
 
-            {/* <Typography fontSize="1rem" color="gray">
+          {/* <Typography fontSize="1rem" color="gray">
               {orderItem.itemId?.itemDescription}
             </Typography> */}
 
-            <Info fontSize="" sx={{ color: "gray" }} />
-          </Box>
-        </Tooltip>
+          {/* <Info fontSize="" sx={{ color: "gray" }} /> */}
+        </Box>
+        {/* </Tooltip> */}
 
         <Typography
           fontSize="1rem"
