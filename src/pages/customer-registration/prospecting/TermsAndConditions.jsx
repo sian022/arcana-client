@@ -681,7 +681,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
 
         <FreezerAssetTagModal open={isAssetTagOpen} onClose={onAssetTagClose} />
 
-        <SignatureCanvasModal
+        {/* <SignatureCanvasModal
           open={isCanvasOpen}
           onClose={onCanvasClose}
           setSignature={handleSetSignature}
@@ -710,7 +710,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               Sign here
             </SecondaryButton>
           )}
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );
