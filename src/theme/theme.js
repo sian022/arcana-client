@@ -4,6 +4,7 @@ const colorSchemes = {
   light: {
     primary: "#544d91",
     primaryLight: "#EAE9F4",
+    primaryLightActive: "#dcd9e9",
     secondary: "#243448",
     tertiary: "#008080",
     accent: "#766bb9",
@@ -20,6 +21,7 @@ export const theme = createTheme({
     primary: {
       main: colorSchemes.light.primary,
       light: colorSchemes.light.primaryLight,
+      lightActive: colorSchemes.light.primaryLightActive,
     },
     secondary: {
       main: colorSchemes.light.secondary,

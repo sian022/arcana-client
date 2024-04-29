@@ -386,8 +386,15 @@ function PaymentPage({ setPaymentMode }) {
                         bgcolor: watch("transactionId")?.includes(
                           item.transactionNo
                         )
-                          ? "primary.light"
+                          ? "primary.lightActive"
                           : "inherit",
+                        ":hover": {
+                          bgcolor: watch("transactionId")?.includes(
+                            item.transactionNo
+                          )
+                            ? "primary.lightActive"
+                            : "primary.light",
+                        },
                       }}
                     >
                       <Typography className="paymentPage__body__transactions__transactionsList__item__date">

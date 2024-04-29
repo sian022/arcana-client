@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import CommonModal from "../../CommonModal";
 import { Box, Divider, Input, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -10,11 +10,13 @@ import { useUploadCiAttachmentMutation } from "../../../features/sales-managemen
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 import moment from "moment/moment";
 import useConfirm from "../../../hooks/useConfirm";
+import { set } from "lodash";
 
 function ViewAttachmentModal({ ...props }) {
   const { onClose, open } = props;
 
   const [currentAttachment, setCurrentAttachment] = useState(null);
+  const [isLink, setIsLink] = useState(false);
 
   const confirm = useConfirm();
   const snackbar = useSnackbar();
@@ -62,12 +64,25 @@ function ViewAttachmentModal({ ...props }) {
     }
   };
 
+  //Constants
+  const attachmentName = useMemo(() => {
+    return isLink
+      ? selectedRowData?.ciAttachment?.split("/")[
+          selectedRowData?.ciAttachment?.split("/").length - 1
+        ]
+      : currentAttachment?.name;
+  }, [isLink, currentAttachment, selectedRowData]);
+
+  console.log(isLink);
+
   //UseEffect
   useEffect(() => {
     if (!open) {
       setCurrentAttachment(null);
+      setIsLink(false);
     } else if (open) {
-      setCurrentAttachment(selectedRowData?.attachment);
+      setCurrentAttachment(selectedRowData?.ciAttachment);
+      setIsLink(true);
     }
   }, [open, selectedRowData]);
 
@@ -88,9 +103,7 @@ function ViewAttachmentModal({ ...props }) {
 
         <Box className="viewAttachmentModal__labels">
           <Typography>
-            {currentAttachment
-              ? currentAttachment?.name
-              : "No attachment found"}
+            {currentAttachment ? attachmentName : "No attachment found"}
           </Typography>
 
           {currentAttachment && (
@@ -104,7 +117,10 @@ function ViewAttachmentModal({ ...props }) {
         >
           <Input
             type="file"
-            onChange={(e) => setCurrentAttachment(e.target.files[0])}
+            onChange={(e) => {
+              setCurrentAttachment(e.target.files[0]);
+              setIsLink(false);
+            }}
             inputProps={{ accept: "image/jpeg, image/png, image/gif" }}
             sx={{ display: "none" }}
             inputRef={uploadRef}
@@ -112,7 +128,11 @@ function ViewAttachmentModal({ ...props }) {
 
           {currentAttachment ? (
             <img
-              src={URL.createObjectURL(currentAttachment)}
+              src={
+                isLink
+                  ? currentAttachment
+                  : URL.createObjectURL(currentAttachment)
+              }
               alt="attachment-preview"
               style={{
                 borderRadius: "5px",

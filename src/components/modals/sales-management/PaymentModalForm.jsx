@@ -89,10 +89,10 @@ function PaymentModalForm({
   }, [open, editMode, selectedPayment, setValue]);
 
   useEffect(() => {
-    if (watchPaymentMethod?.label === "Cash") {
+    if (watchPaymentMethod?.label === "Cash" && !editMode) {
       setValue("paymentAmount", remainingBalance);
     }
-  }, [watchPaymentMethod, setValue, remainingBalance]);
+  }, [watchPaymentMethod, setValue, remainingBalance, editMode]);
 
   return (
     <CommonModalForm
