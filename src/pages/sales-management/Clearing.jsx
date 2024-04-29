@@ -9,7 +9,7 @@ import SearchActionMixin from "../../components/mixins/SearchActionMixin";
 import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
-import { useClearSalesTransactionMutation } from "../../features/sales-management/api/paymentTransactionApi";
+import { useClearPaymentTransactionMutation } from "../../features/sales-management/api/paymentTransactionApi";
 
 function Clearing() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -61,7 +61,7 @@ function Clearing() {
   const pesoArray = ["amount"];
 
   //RTK Query
-  const [clearSalesTransaction] = useClearSalesTransactionMutation();
+  const [clearPaymentTransaction] = useClearPaymentTransactionMutation();
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
   //Functions
@@ -71,7 +71,7 @@ function Clearing() {
         children: <>Are you sure you want to clear selected transactions?</>,
         question: true,
         callback: () =>
-          clearSalesTransaction({
+          clearPaymentTransaction({
             transactions: checkedArray?.map(
               (item) => dummyTransactionsData?.[item]?.id
             ),

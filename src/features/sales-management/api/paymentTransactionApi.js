@@ -1,7 +1,13 @@
 import { api } from "../../api";
 
 const paymentTransactionApi = api
-  .enhanceEndpoints({ addTagTypes: ["Sales Transaction For Payments"] })
+  .enhanceEndpoints({
+    addTagTypes: [
+      "Payment Transaction Histories",
+      "Sales Transaction",
+      "Sales Transaction For Payments",
+    ],
+  })
   .injectEndpoints({
     endpoints: (builder) => ({
       getAllSalesTransactionForPayments: builder.query({
@@ -10,7 +16,17 @@ const paymentTransactionApi = api
           method: "GET",
           params,
         }),
-        providesTags: ["Sales Transaction For Payments"],
+        providesTags: ["Sales Transaction", "Sales Transaction For Payments"],
+        transformResponse: (response) => response.value,
+      }),
+
+      getAllPaymentHistories: builder.query({
+        query: (params) => ({
+          url: "/payment-transaction",
+          method: "GET",
+          params,
+        }),
+        providesTags: ["Payment Transaction Histories"],
         transformResponse: (response) => response.value,
       }),
 
@@ -20,15 +36,35 @@ const paymentTransactionApi = api
           method: "POST",
           body,
         }),
+        invalidatesTags: [
+          "Sales Transaction",
+          "Sales Transaction For Payments",
+        ],
       }),
 
-      clearSalesTransaction: builder.mutation({
+      clearPaymentTransaction: builder.mutation({
         query: (body) => ({
-          url: "/sales-transaction/clear",
+          url: "/clearing-payment/status",
+          method: "PATCH",
+          body,
+        }),
+        invalidatesTags: [
+          "Sales Transaction",
+          "Sales Transaction For Payments",
+        ],
+      }),
+
+      voidPaymentTransaction: builder.mutation({
+        query: ({ id, ...body }) => ({
+          url: `/payment-transaction/${id}/void`,
           method: "PUT",
           body,
         }),
-        invalidatesTags: ["Sales Transaction"],
+        invalidatesTags: [
+          "Sales Transaction",
+          "Sales Transaction For Payments",
+          "",
+        ],
       }),
     }),
   });
@@ -36,6 +72,8 @@ const paymentTransactionApi = api
 export const {
   useGetAllSalesTransactionForPaymentsQuery,
   useLazyGetAllSalesTransactionForPaymentsQuery,
+  useLazyGetAllPaymentHistoriesQuery,
   useCreatePaymentTransactionMutation,
-  useClearSalesTransactionMutation,
+  useClearPaymentTransactionMutation,
+  useVoidPaymentTransactionMutation,
 } = paymentTransactionApi;

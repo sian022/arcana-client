@@ -10,7 +10,6 @@ import { useUploadCiAttachmentMutation } from "../../../features/sales-managemen
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 import moment from "moment/moment";
 import useConfirm from "../../../hooks/useConfirm";
-import { set } from "lodash";
 
 function ViewAttachmentModal({ ...props }) {
   const { onClose, open } = props;
@@ -72,8 +71,6 @@ function ViewAttachmentModal({ ...props }) {
         ]
       : currentAttachment?.name;
   }, [isLink, currentAttachment, selectedRowData]);
-
-  console.log(isLink);
 
   //UseEffect
   useEffect(() => {
