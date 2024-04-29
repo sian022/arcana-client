@@ -1,6 +1,7 @@
 import {
   Alert,
   Box,
+  Checkbox,
   Chip,
   Collapse,
   IconButton,
@@ -8,6 +9,7 @@ import {
   StepContent,
   StepLabel,
   Stepper,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -26,22 +28,33 @@ import {
   formatPesoAmount,
   handleCatchErrorMessage,
 } from "../../../utils/CustomFunctions";
-import useConfirm from "../../../hooks/useConfirm";
 import useSnackbar from "../../../hooks/useSnackbar";
 import { useVoidPaymentTransactionMutation } from "../../../features/sales-management/api/paymentTransactionApi";
+import CommonDialog from "../../CommonDialog";
+import useDisclosure from "../../../hooks/useDisclosure";
 
 function PaymentHistoriesModal({ ...props }) {
   const { open } = props;
 
   const [expandedPaymentType, setExpandedPaymentType] = useState({});
+  const [confirmReason, setConfirmReason] = useState(false);
+  const [reason, setReason] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
   const hasVoidable = true;
 
   //Hooks
-  const confirm = useConfirm();
   const snackbar = useSnackbar();
 
+  //Disclosures
+  const {
+    isOpen: isVoidOpen,
+    onOpen: onVoidOpen,
+    onClose: onVoidClose,
+  } = useDisclosure();
+
   //RTK Query
-  const [voidPaymentTransaction] = useVoidPaymentTransactionMutation();
+  const [voidPaymentTransaction, { isLoading: isVoidLoading }] =
+    useVoidPaymentTransactionMutation();
 
   //Functions
   const getPaymentTypeIcon = (paymentType) => {
@@ -66,20 +79,44 @@ function PaymentHistoriesModal({ ...props }) {
     });
   };
 
-  const onVoid = async (id) => {
+  const onVoid = async () => {
     try {
-      await confirm({
-        children: "Are you sure you want to void this payment?",
-        question: false,
-        callback: () => voidPaymentTransaction({ id }).unwrap(),
-      });
+      await voidPaymentTransaction({ id: selectedId, reason }).unwrap();
 
-      snackbar({ message: "Payment voided successfully!", variant: "success" });
+      snackbar({
+        message: "Payment voided successfully!",
+        variant: "success",
+      });
+      handleVoidClose();
     } catch (error) {
-      if (error.isConfirmed) {
-        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
-      }
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
+  };
+
+  // const onVoid = async (id) => {
+  //   try {
+  //     await confirm({
+  //       children: "Are you sure you want to void this payment?",
+  //       question: false,
+  //       callback: () => voidPaymentTransaction({ id }).unwrap(),
+  //     });
+
+  //     snackbar({ message: "Payment voided successfully!", variant: "success" });
+  //   } catch (error) {
+  //     if (error.isConfirmed) {
+  //       snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+  //     }
+  //   }
+  // };
+
+  const handleVoidOpen = (id) => {
+    onVoidOpen();
+    setSelectedId(id);
+  };
+
+  const handleVoidClose = () => {
+    onVoidClose();
+    setSelectedId(null);
   };
 
   //UseEffect
@@ -138,7 +175,7 @@ function PaymentHistoriesModal({ ...props }) {
                         <IconButton
                           color="error"
                           sx={{ ml: 1, padding: 0 }}
-                          onClick={() => onVoid(paymentTransaction.id)}
+                          onClick={() => handleVoidOpen(paymentTransaction.id)}
                         >
                           <BlockOutlined />
                         </IconButton>
@@ -349,6 +386,39 @@ function PaymentHistoriesModal({ ...props }) {
           </Box>
         </Box>
       </CommonModal>
+
+      <CommonDialog
+        onClose={handleVoidClose}
+        open={isVoidOpen}
+        onYes={onVoid}
+        isLoading={isVoidLoading}
+        disableYes={!confirmReason || !reason.trim() || isVoidLoading}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          Are you sure you want to void this payment?{" "}
+          <TextField
+            size="small"
+            label="Reason"
+            autoComplete="off"
+            value={reason}
+            onChange={(e) => {
+              setReason(e.target.value.toUpperCase());
+            }}
+            multiline
+            rows={3}
+          />
+          <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>
+            <Typography>Confirm reason</Typography>
+            <Checkbox
+              checked={confirmReason}
+              onChange={(e) => {
+                setConfirmReason(e.target.checked);
+              }}
+              disabled={!reason.trim()}
+            />
+          </Box>
+        </Box>
+      </CommonDialog>
     </>
   );
 }
