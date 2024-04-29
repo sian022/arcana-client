@@ -18,6 +18,8 @@ function PaymentModalForm({
   editMode,
   appendPayment,
   updatePayment,
+  cashExists,
+  remainingBalance,
   selectedPayment,
   ...props
 }) {
@@ -40,6 +42,9 @@ function PaymentModalForm({
     mode: "onChange",
     defaultValues: paymentSchema.defaultValues,
   });
+
+  //Watch Constants
+  const watchPaymentMethod = watch("paymentMethod");
 
   //Functions
   const onSubmit = async (data) => {
@@ -83,6 +88,12 @@ function PaymentModalForm({
     }
   }, [open, editMode, selectedPayment, setValue]);
 
+  useEffect(() => {
+    if (watchPaymentMethod?.label === "Cash") {
+      setValue("paymentAmount", remainingBalance);
+    }
+  }, [watchPaymentMethod, setValue, remainingBalance]);
+
   return (
     <CommonModalForm
       title="Payment Form"
@@ -102,7 +113,11 @@ function PaymentModalForm({
             <ControlledAutocomplete
               name="paymentMethod"
               control={control}
-              options={paymentTypes}
+              options={
+                cashExists
+                  ? paymentTypes.filter((type) => type.label !== "Cash")
+                  : paymentTypes
+              }
               getOptionLabel={(option) => option.label.toUpperCase()}
               disableClearable
               isOptionEqualToValue={() => true}
@@ -161,6 +176,7 @@ function PaymentModalForm({
                   allowLeadingZeros={false}
                   prefix="₱"
                   decimalScale={2}
+                  disabled={watchPaymentMethod?.label === "Cash"}
                 />
               )}
             />

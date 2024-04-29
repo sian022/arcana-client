@@ -236,12 +236,14 @@ function PaymentPage({ setPaymentMode }) {
       remainingBalance = handleTotal - handlePaymentTotal;
     }
 
-    // if (remainingBalance < 0) {
-    //   return 0;
-    // }
-
     return remainingBalance;
   }, [handleTotal, handlePaymentTotal]);
+
+  const handleCashExists = useMemo(() => {
+    return paymentFields.some(
+      (payment) => payment.paymentMethod.value === "Cash"
+    );
+  }, [paymentFields]);
 
   //UseEffect
   useEffect(() => {
@@ -578,6 +580,8 @@ function PaymentPage({ setPaymentMode }) {
         open={isModalFormOpen}
         onClose={onModalFormClose}
         editMode={editMode}
+        cashExists={handleCashExists}
+        remainingBalance={handleRemainingBalance}
         appendPayment={appendPayment}
         updatePayment={updatePayment}
         selectedPayment={selectedPayment}
