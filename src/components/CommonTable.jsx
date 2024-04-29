@@ -21,6 +21,7 @@ import {
   Attachment,
   Cancel,
   CheckCircle,
+  PriorityHigh,
   Visibility,
 } from "@mui/icons-material";
 import { formatPhoneNumber } from "../utils/CustomFunctions";
@@ -86,6 +87,7 @@ function CommonTable({
   checkboxSelection,
   checkedArray,
   setCheckedArray,
+  warning,
 }) {
   const dispatch = useDispatch();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -196,6 +198,8 @@ function CommonTable({
         <Table>
           <TableHead>
             <TableRow>
+              {warning && <TableCell></TableCell>}
+
               {checkboxSelection && (
                 <TableCell>
                   <Checkbox
@@ -238,6 +242,14 @@ function CommonTable({
                       "#f3f3f3",
                   }}
                 >
+                  {warning && (
+                    <TableCell>
+                      {item[warning.key] === warning.value ? (
+                        <PriorityHigh color="error" />
+                      ) : null}
+                    </TableCell>
+                  )}
+
                   {checkboxSelection && (
                     <TableCell>
                       <Checkbox

@@ -200,6 +200,7 @@ function PaymentTransaction() {
                 mapData={transactionData?.transactions}
                 customOrderKeys={customOrderKeys}
                 tableHeads={tableHeads}
+                warning={{ key: "status", value: "Over due" }}
                 includeActions
                 lowerCompact
                 moveNoDataUp

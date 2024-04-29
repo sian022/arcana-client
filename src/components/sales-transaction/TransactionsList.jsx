@@ -62,7 +62,7 @@ function TransactionsList({ setTransactionsMode }) {
   //RTK Query
   const { data: transactionsData, isFetching: isTransactionsFetching } =
     useGetAllSalesTransactionQuery({
-      Search: search,
+      ...(search ? { Search: search } : {}),
       DateFrom: moment(dateFrom).format("YYYY-MM-DD"),
       DateTo: moment(dateTo).format("YYYY-MM-DD"),
       PageNumber: page + 1,
