@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import moment from "moment";
 
 function PaymentTransaction() {
   const [paymentMode, setPaymentMode] = useState(false);
@@ -136,6 +137,14 @@ function PaymentTransaction() {
     }
   };
 
+  const checkIsVoidable = (date, totalAmount, balance) => {
+    const isVoidable =
+      moment(date).isAfter(moment().subtract(1, "days")) &&
+      totalAmount - balance === 0;
+
+    return isVoidable;
+  };
+
   //UseEffect
   useEffect(() => {
     const foundItem = paymentNavigation.find(
@@ -205,7 +214,15 @@ function PaymentTransaction() {
                   selectedRowData?.totalAmountDue !==
                     selectedRowData?.remainingBalance && disableActions
                 }
-                onVoid={transactionStatus === "Pending" && onVoid}
+                onVoid={
+                  transactionStatus === "Pending" &&
+                  checkIsVoidable(
+                    selectedRowData?.createdAt,
+                    selectedRowData?.totalAmountDue,
+                    selectedRowData?.remainingBalance
+                  ) &&
+                  onVoid
+                }
                 onPaymentHistories={onPaymentHistoriesOpen}
               />
             )}

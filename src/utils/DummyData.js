@@ -495,7 +495,7 @@ export const dummyInventoryData = [
 export const dummyPaymentHistoriesData = [
   {
     id: 5,
-    date: "2024-03-28T16:55:30",
+    date: "2024-04-29T16:55:30",
     total: 150000,
     paymentTypes: [
       {

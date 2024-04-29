@@ -1964,6 +1964,7 @@
   &__body {
     position: relative;
     display: flex;
+    flex-direction: column;
     overflow: auto;
     height: calc(100% - 50px);
 

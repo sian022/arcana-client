@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Chip,
   Collapse,
@@ -7,21 +8,36 @@ import {
   StepContent,
   StepLabel,
   Stepper,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import CommonModal from "../../CommonModal";
 import moment from "moment";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import {
+  BlockOutlined,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { paymentTypes } from "../../../utils/Constants";
 import { getIconElement } from "../../GetIconElement";
 import { dummyPaymentHistoriesData } from "../../../utils/DummyData";
-import { formatPesoAmount } from "../../../utils/CustomFunctions";
+import {
+  formatPesoAmount,
+  handleCatchErrorMessage,
+} from "../../../utils/CustomFunctions";
+import useConfirm from "../../../hooks/useConfirm";
+import useSnackbar from "../../../hooks/useSnackbar";
 
 function PaymentHistoriesModal({ ...props }) {
   const { open } = props;
 
   const [expandedPaymentType, setExpandedPaymentType] = useState({});
+  const hasVoidable = true;
+
+  //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
 
   //Functions
   const getPaymentTypeIcon = (paymentType) => {
@@ -46,6 +62,22 @@ function PaymentHistoriesModal({ ...props }) {
     });
   };
 
+  const onVoid = async (id) => {
+    try {
+      await confirm({
+        children: "Are you sure you want to void this payment?",
+        question: false,
+        callback: () => console.log(`Payment voided for ID ${id}!`),
+      });
+
+      snackbar({ message: "Payment voided successfully!", variant: "success" });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
+    }
+  };
+
   //UseEffect
   useEffect(() => {
     if (open) {
@@ -67,6 +99,12 @@ function PaymentHistoriesModal({ ...props }) {
           Payment Histories
         </Typography>
 
+        {hasVoidable && (
+          <Alert severity="warning">
+            Only payments made within the past day can be voided
+          </Alert>
+        )}
+
         <Box className="paymentHistoriesModal__body">
           <Stepper
             orientation="vertical"
@@ -87,6 +125,20 @@ function PaymentHistoriesModal({ ...props }) {
                   <span>
                     {moment(paymentTransaction.date).format("hh:mm a")}
                   </span>
+
+                  {moment(paymentTransaction.date).isAfter(
+                    moment().subtract(1, "days")
+                  ) && (
+                    <Tooltip title="Void" followCursor>
+                      <IconButton
+                        color="error"
+                        sx={{ ml: 1, padding: 0 }}
+                        onClick={() => onVoid(paymentTransaction.id)}
+                      >
+                        <BlockOutlined />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </StepLabel>
 
                 <StepContent>
