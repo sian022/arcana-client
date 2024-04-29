@@ -29,6 +29,7 @@ function Approval() {
         </Box>
 
         <Box className="pageIndex__navigators">
+
           {permittedNavigators.map((navigator) => (
             <Box
               key={navigator.name}
@@ -45,6 +46,7 @@ function Approval() {
                     {getIconElement(navigator.icon, "white")}
                   </Box>
                 </Box>
+                     
                 <Typography className="pageIndex__navigators__item__text__subTitle">
                   {navigator.description}
                 </Typography>
