@@ -1,7 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { Box } from "@mui/material";
-import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
 import ViewListingFeeModal from "../../components/modals/ViewListingFeeModal";
@@ -18,6 +17,9 @@ import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import { AppContext } from "../../context/AppContext";
 import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import AddButtonSearchMixin from "../../components/mixins/AddButtonSearchMixin";
+import ListingFeeBalancesModal from "../../components/modals/registration/ListingFeeBalancesMOdal";
+import { Wallet } from "@mui/icons-material";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -56,6 +58,12 @@ function ListingFee() {
     isOpen: isHistoryOpen,
     onOpen: onHistoryOpen,
     onClose: onHistoryClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isBalancesOpen,
+    onOpen: onBalancesOpen,
+    onClose: onBalancesClose,
   } = useDisclosure();
 
   //RTK Query
@@ -179,17 +187,13 @@ function ListingFee() {
           isNotificationFetching={isNotificationFetching}
         />
 
-        {/* <AddVoidSearchMixin
+        <AddButtonSearchMixin
           addTitle="Listing Fee"
           onAddOpen={onListingFeeOpen}
           setSearch={setSearch}
-          status={listingFeeStatus}
-          setStatus={setListingFeeStatus}
-        /> */}
-        <AddSearchMixin
-          addTitle="Listing Fee"
-          onAddOpen={onListingFeeOpen}
-          setSearch={setSearch}
+          buttonTitle="Listing Fee Balances"
+          buttonIcon={<Wallet />}
+          onButtonClick={onBalancesOpen}
         />
 
         {isFetching ? (
@@ -249,6 +253,11 @@ function ListingFee() {
         open={isHistoryOpen}
         onClose={onHistoryClose}
         variant="listingFee"
+      />
+
+      <ListingFeeBalancesModal
+        open={isBalancesOpen}
+        onClose={onBalancesClose}
       />
     </>
   );

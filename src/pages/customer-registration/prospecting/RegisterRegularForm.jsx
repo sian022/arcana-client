@@ -106,6 +106,11 @@ function RegisterRegularForm({ open, onClose }) {
     (state) => state.regularRegistration.value.expensesForRegistration.isValid
   );
 
+  const signatureToCheck =
+    requirementsMode === "owner"
+      ? ownersRequirements["signature"]
+      : representativeRequirements["signature"];
+
   //Disclosures
   const {
     isOpen: isConfirmOpen,
@@ -156,37 +161,41 @@ function RegisterRegularForm({ open, onClose }) {
 
     {
       label: "Terms & Conditions",
-      isValid: Object.keys(termsAndConditions).every((key) => {
-        if (
-          key === "fixedDiscount" &&
-          (termsAndConditions[key].discountPercentage === null ||
-            termsAndConditions[key].discountPercentage === "" ||
-            termsAndConditions[key].discountPercentage === undefined) &&
-          termsAndConditions["variableDiscount"] === false
-        ) {
-          return false;
-        }
-
-        if (!termsAndConditions["freezer"] && key === "freezerAssetTag") {
-          return true;
-        }
-
-        if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
-          return true;
-        } else if (termsAndConditions["terms"] !== 3 && key === "creditLimit") {
-          return true;
-        }
-
-        if (key === "modeOfPayments") {
-          if (termsAndConditions[key]?.length === 0) {
+      isValid:
+        Object.keys(termsAndConditions).every((key) => {
+          if (
+            key === "fixedDiscount" &&
+            (termsAndConditions[key].discountPercentage === null ||
+              termsAndConditions[key].discountPercentage === "" ||
+              termsAndConditions[key].discountPercentage === undefined) &&
+            termsAndConditions["variableDiscount"] === false
+          ) {
             return false;
           }
-          return true;
-        }
 
-        const value = termsAndConditions[key];
-        return value !== null && value !== "";
-      }),
+          if (!termsAndConditions["freezer"] && key === "freezerAssetTag") {
+            return true;
+          }
+
+          if (termsAndConditions["terms"] === 1 && key === "termDaysId") {
+            return true;
+          } else if (
+            termsAndConditions["terms"] !== 3 &&
+            key === "creditLimit"
+          ) {
+            return true;
+          }
+
+          if (key === "modeOfPayments") {
+            if (termsAndConditions[key]?.length === 0) {
+              return false;
+            }
+            return true;
+          }
+
+          const value = termsAndConditions[key];
+          return value !== null && value !== "";
+        }) && !!signatureToCheck,
       icon: <Gavel />,
       disabled: false,
     },

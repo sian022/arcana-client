@@ -106,7 +106,7 @@ function Attachments() {
               Owner&lsquo;s Requirements
             </Typography>
             <Box className="attachments__column__content">
-              <Box className="attachments__column__content__item">
+              {/* <Box className="attachments__column__content__item">
                 <Typography>Customer&lsquo;s Signature</Typography>
                 <Button
                   className={ownersRequirements["signature"] && "buttonActive"}
@@ -140,7 +140,8 @@ function Attachments() {
                     <Visibility />
                   </IconButton>
                 )}
-              </Box>
+              </Box> */}
+
               <Box className="attachments__column__content__item">
                 <Typography>Store Photo</Typography>
                 <Button
@@ -243,7 +244,7 @@ function Attachments() {
               Representative&lsquo;s Requirements
             </Typography>
             <Box className="attachments__column__content">
-              <Box className="attachments__column__content__item">
+              {/* <Box className="attachments__column__content__item">
                 <Typography>Representative&lsquo;s Signature</Typography>
                 <Button
                   className={
@@ -289,7 +290,8 @@ function Attachments() {
                     <Visibility />
                   </IconButton>
                 )}
-              </Box>
+              </Box> */}
+
               <Box className="attachments__column__content__item">
                 <Typography>Store Photo</Typography>
                 <Button

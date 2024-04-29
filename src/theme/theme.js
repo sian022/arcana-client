@@ -89,6 +89,27 @@ export const theme = createTheme({
       },
     },
 
+    MuiTextField: {
+      variants: [
+        {
+          props: { size: "extraSmall" },
+          style: {
+            "& .MuiInputBase-input": {
+              height: "0.7rem",
+              padding: "12px",
+            },
+            "& .MuiInputLabel-root": {
+              transform: "translate(14px, 6px) scale(1)",
+            },
+
+            "& .MuiInputLabel-root.Mui-focused": {
+              transform: "translate(14px, -8px) scale(0.75)", // Adjust as needed
+            },
+          },
+        },
+      ],
+    },
+
     MuiFormLabel: {
       styleOverrides: {
         root: {

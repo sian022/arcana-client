@@ -2264,3 +2264,61 @@
     }
   }
 }
+
+.listingFeeBalancesModal {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  & &__title {
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  &__filters {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 50vh;
+    overflow: auto;
+
+    &__item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &__clientInfo {
+        display: flex;
+        flex-direction: column;
+
+        & &__businessName {
+          font-weight: 500;
+          font-size: 1.1rem;
+        }
+
+        & &__ownersName {
+          font-weight: 400;
+          font-size: 0.95rem;
+          color: gray;
+        }
+      }
+
+      & &__amount {
+        font-size: 1.1rem;
+        color: $primary;
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__pagination {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

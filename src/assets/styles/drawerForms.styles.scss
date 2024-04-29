@@ -307,10 +307,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid black;
-      min-width: 800px;
-      min-height: 400px;
-      overflow: hidden;
+      // border: 2px solid black;
+      height: 40px;
+      flex: 1;
+      // overflow: hidden;
+
+      & img {
+        width: 100px;
+      }
     }
   }
 

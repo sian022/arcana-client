@@ -22,7 +22,7 @@ import useSnackbar from "../../../hooks/useSnackbar";
 import SecondaryButton from "../../../components/SecondaryButton";
 import useDisclosure from "../../../hooks/useDisclosure";
 import FreebieForm from "./FreebieForm";
-import { Cancel } from "@mui/icons-material";
+import { Cancel, Edit } from "@mui/icons-material";
 import { DirectReleaseContext } from "../../../context/DirectReleaseContext";
 import { NumericFormat } from "react-number-format";
 import FreezerAssetTagModal from "../../../components/modals/registration/FreezerAssetTagModal";
@@ -679,6 +679,40 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           />
         )}
 
+        <Box onClick={onCanvasOpen}>
+          <Box
+            sx={{
+              display: "flex",
+              mt: direct ? "40px" : "60px",
+              cursor: "pointer",
+            }}
+          >
+            {ownersRequirements["signature"] ? (
+              <Box className="attachments__viewModal__signature">
+                <img
+                  src={
+                    requirementsMode === "owner"
+                      ? ownersRequirementsIsLink["signature"]
+                        ? handleViewSignature("owner")
+                        : URL.createObjectURL(handleViewSignature("owner"))
+                      : representativeRequirementsIsLink["signature"]
+                      ? handleViewSignature("representative")
+                      : URL.createObjectURL(
+                          handleViewSignature("representative")
+                        )
+                  }
+                  alt="File preview"
+                  style={{ borderRadius: "12px" }}
+                />
+              </Box>
+            ) : (
+              <SecondaryButton fullWidth size="medium" endIcon={<Edit />}>
+                Sign here
+              </SecondaryButton>
+            )}
+          </Box>
+        </Box>
+
         <FreezerAssetTagModal open={isAssetTagOpen} onClose={onAssetTagClose} />
 
         <SignatureCanvasModal
@@ -687,30 +721,6 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           setSignature={handleSetSignature}
           signature={ownersRequirements["signature"]}
         />
-
-        <Box sx={{ display: "flex", mt: "40px" }}>
-          {ownersRequirements["signature"] ? (
-            <Box className="attachments__viewModal__signature">
-              <img
-                src={
-                  requirementsMode === "owner"
-                    ? ownersRequirementsIsLink["signature"]
-                      ? handleViewSignature("owner")
-                      : URL.createObjectURL(handleViewSignature("owner"))
-                    : representativeRequirementsIsLink["signature"]
-                    ? handleViewSignature("representative")
-                    : URL.createObjectURL(handleViewSignature("representative"))
-                }
-                alt="File preview"
-                style={{ borderRadius: "12px" }}
-              />
-            </Box>
-          ) : (
-            <SecondaryButton fullWidth size="medium" onClick={onCanvasOpen}>
-              Sign here
-            </SecondaryButton>
-          )}
-        </Box>
       </Box>
     </Box>
   );
