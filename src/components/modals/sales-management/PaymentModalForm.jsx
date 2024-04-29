@@ -48,14 +48,44 @@ function PaymentModalForm({
 
   //Functions
   const onSubmit = async (data) => {
+    let transformedData;
+
+    if (data.paymentMethod.label === "Cheque") {
+      transformedData = {
+        clientId: data.clientId?.id,
+        paymentMethod: data.paymentMethod,
+        advancePaymentAmount: data.paymentAmount,
+        payee: data.payee,
+        chequeDate: data.chequeDate,
+        bankName: data.bankName,
+        chequeNo: data.chequeNo,
+        dateReceived: data.dateReceived,
+        // chequeAmount: Number(data.chequeAmount),
+      };
+    } else if (data.paymentMethod.label === "Online") {
+      transformedData = {
+        clientId: data.clientId?.id,
+        paymentMethod: data.paymentMethod,
+        paymentAmount: data.paymentAmount,
+        accountName: data.accountName,
+        accountNo: data.accountNo,
+      };
+    } else {
+      transformedData = {
+        clientId: data.clientId?.id,
+        paymentMethod: data.paymentMethod,
+        paymentAmount: data.paymentAmount,
+      };
+    }
+
     try {
       await confirm({
         children: "Are you sure you want to add this payment?",
         question: true,
         callback: () =>
           editMode
-            ? updatePayment(selectedPayment.index, data)
-            : appendPayment(data),
+            ? updatePayment(selectedPayment.index, transformedData)
+            : appendPayment(transformedData),
       });
 
       snackbar({ message: "Payment added successfully", type: "success" });

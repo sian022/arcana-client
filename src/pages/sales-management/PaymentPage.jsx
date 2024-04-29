@@ -113,6 +113,10 @@ function PaymentPage({ setPaymentMode }) {
         callback: () =>
           createPaymentTransaction({
             ...data,
+            payments: data.payments.map((payment) => ({
+              ...payment,
+              paymentMethod: payment.paymentMethod.value,
+            })),
             totalAmountReceived: handleTotal,
           }).unwrap(),
       });
@@ -120,11 +124,11 @@ function PaymentPage({ setPaymentMode }) {
       handleReset();
       snackbar({
         message: "Payment Transaction submitted successfully",
-        type: "success",
+        variant: "success",
       });
     } catch (error) {
       if (error.isConfirmed) {
-        snackbar({ message: handleCatchErrorMessage(error), type: "error" });
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
     }
   };
