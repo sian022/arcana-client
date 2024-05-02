@@ -28,7 +28,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { paymentTransactionSchema } from "../../schema/schema";
 import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
-import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
+import {
+  formatPesoAmount,
+  handleCatchErrorMessage,
+} from "../../utils/CustomFunctions";
 import { getIconElement } from "../../components/GetIconElement";
 import {
   useCreatePaymentTransactionMutation,
@@ -37,6 +40,8 @@ import {
 import PaymentListSkeleton from "../../components/skeletons/PaymentListSkeleton";
 import PaymentHistoriesModal from "../../components/modals/sales-management/PaymentHistoriesModal";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useLazyGetAllSalesTransactionQuery } from "../../features/sales-management/api/salesTransactionApi";
+import moment from "moment";
 
 function PaymentPage({ setPaymentMode }) {
   const [client, setClient] = useState(null);
@@ -93,7 +98,7 @@ function PaymentPage({ setPaymentMode }) {
   const [
     triggerTransactions,
     { data: transactionsData, isFetching: isTransactionsFetching },
-  ] = useLazyGetAllSalesTransactionForPaymentsQuery();
+  ] = useLazyGetAllSalesTransactionQuery();
 
   const { data: clientData, isFetching: isClientFetching } =
     useGetAllClientsQuery({
@@ -194,7 +199,7 @@ function PaymentPage({ setPaymentMode }) {
   const handleSelectAll = (e) => {
     const { checked } = e.target;
 
-    const allTransactionIds = dummyPaymentData.map(
+    const allTransactionIds = transactionsData?.transactions?.map(
       (transaction) => transaction.transactionNo
     );
 
@@ -208,17 +213,17 @@ function PaymentPage({ setPaymentMode }) {
   };
 
   const handleTotal = useMemo(() => {
-    const total = dummyPaymentData.reduce(
+    const total = transactionsData?.transactions?.reduce(
       (acc, transaction) =>
         acc +
         (watchTransactionIds?.includes(transaction.transactionNo)
-          ? transaction.amount
+          ? transaction.remainingBalance
           : 0),
       0
     );
 
     return total;
-  }, [watchTransactionIds]);
+  }, [watchTransactionIds, transactionsData]);
 
   const handlePaymentTotal = useMemo(() => {
     const total = paymentFields.reduce(
@@ -375,7 +380,7 @@ function PaymentPage({ setPaymentMode }) {
                 </Box>
 
                 <Box className="paymentPage__body__transactions__transactionsList">
-                  {dummyPaymentData.map((item) => (
+                  {transactionsData?.transactions?.map((item) => (
                     <Box
                       key={item.transactionNo}
                       className="paymentPage__body__transactions__transactionsList__item"
@@ -396,7 +401,7 @@ function PaymentPage({ setPaymentMode }) {
                       }}
                     >
                       <Typography className="paymentPage__body__transactions__transactionsList__item__date">
-                        {item.date}
+                        {moment(item.createdAt).format("MMM-DD-YYYY")}
                       </Typography>
 
                       <Box className="paymentPage__body__transactions__transactionsList__item__identifiers">
@@ -426,25 +431,21 @@ function PaymentPage({ setPaymentMode }) {
                       <Box className="paymentPage__body__transactions__transactionsList__item__numbers">
                         <Box className="paymentPage__body__transactions__transactionsList__item__numbers__discount">
                           <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__discount__label">
-                            Discount:
+                            Amount Due:
                           </Typography>
 
                           <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__discount__value">
-                            10.00%
+                            {formatPesoAmount(item.totalAmountDue)}
                           </Typography>
                         </Box>
 
                         <Box className="paymentPage__body__transactions__transactionsList__item__numbers__amount">
                           <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__label">
-                            Amount:
+                            Balance:
                           </Typography>
 
                           <Typography className="paymentPage__body__transactions__transactionsList__item__numbers__amount__value">
-                            ₱
-                            {item.amount?.toLocaleString(undefined, {
-                              minimumFractionDigits: 2,
-                              maximumFractionsDigits: 2,
-                            })}
+                            {formatPesoAmount(item.remainingBalance)}
                           </Typography>
                         </Box>
                       </Box>
