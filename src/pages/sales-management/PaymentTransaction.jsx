@@ -89,23 +89,24 @@ function PaymentTransaction() {
     "createdAt",
     "transactionNo",
     "businessName",
-    "fullName",
+    // "fullName",
     "chargeInvoiceNo",
     "totalAmountDue",
-    "balance",
+    ...(transactionStatus === "Pending" ? ["remainingBalance"] : []),
   ];
 
   const tableHeads = [
     "Date",
     "Tx No.",
     "Business Name",
-    "Owner's Name",
+    // "Owner's Name",
     "CI No.",
     "Total Amount Due",
-    "Remaining Balance",
+    // "Remaining Balance",
+    ...(transactionStatus === "Pending" ? ["Remaining Balance"] : []),
   ];
 
-  const pesoArray = ["totalAmountDue", "balance"];
+  const pesoArray = ["totalAmountDue", "remainingBalance"];
   const disableActions = ["void"];
 
   //Functions
