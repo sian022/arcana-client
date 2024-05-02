@@ -149,7 +149,10 @@ function ViewAttachmentModal({ ...props }) {
 
         <Box className="viewAttachmentModal__actions">
           <DangerButton onClick={onClose}>Close</DangerButton>
-          <SecondaryButton onClick={onUpload} disabled={!currentAttachment}>
+          <SecondaryButton
+            onClick={onUpload}
+            disabled={!currentAttachment || isLink}
+          >
             Upload
           </SecondaryButton>
         </Box>

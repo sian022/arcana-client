@@ -55,6 +55,11 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     ownersRequirementsIsLink,
   } = useContext(AttachmentsContext);
 
+  const requirementsModeToSelect =
+    requirementsMode === "owner"
+      ? ownersRequirements
+      : representativeRequirements;
+
   //Disclosures
   const {
     isOpen: isFreebieFormOpen,
@@ -687,7 +692,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               cursor: "pointer",
             }}
           >
-            {ownersRequirements["signature"] ? (
+            {requirementsModeToSelect["signature"] ? (
               <Box className="attachments__viewModal__signature">
                 <img
                   src={

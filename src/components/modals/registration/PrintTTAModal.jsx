@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import RDFLogo from "../../../assets/images/RDF-Logo.png";
 import { useSelector } from "react-redux";
 import {
+  useLazyGetAttachmentsByClientIdQuery,
   useLazyGetListingFeeByClientIdQuery,
   useLazyGetOtherExpensesByClientIdQuery,
   useLazyGetTermsByClientIdQuery,
@@ -46,6 +47,10 @@ function PrintTTAModal({ ...props }) {
     triggerExpenses,
     { data: expensesData, isFetching: isExpensesFetching },
   ] = useLazyGetOtherExpensesByClientIdQuery();
+  const [
+    triggerAttachments,
+    { data: attachmentsData, isFetching: isAttachmentsFetching },
+  ] = useLazyGetAttachmentsByClientIdQuery();
 
   //Functions
   const handlePrint = useReactToPrint({
@@ -135,11 +140,21 @@ function PrintTTAModal({ ...props }) {
         { preferCacheValue: true }
       );
       triggerExpenses({ id: selectedRowData?.id }, { preferCacheValue: true });
+      triggerAttachments(
+        { id: selectedRowData?.id },
+        { preferCacheValue: true }
+      );
     }
-  }, [open, selectedRowData, triggerTerms, triggerListingFee, triggerExpenses]);
+  }, [
+    open,
+    selectedRowData,
+    triggerTerms,
+    triggerListingFee,
+    triggerExpenses,
+    triggerAttachments,
+  ]);
 
-  console.log(termsData);
-
+  console.log(attachmentsData);
   return (
     <CommonModal width="900px" closeTopRight {...props}>
       <Box className="printTTAModal">
@@ -147,7 +162,10 @@ function PrintTTAModal({ ...props }) {
           Print Term Trade Agreement
         </Typography>
 
-        {isTermsFetching || isListingFeeFetching || isExpensesFetching ? (
+        {isTermsFetching ||
+        isListingFeeFetching ||
+        isExpensesFetching ||
+        isAttachmentsFetching ? (
           <Box
             sx={{
               display: "flex",
@@ -705,6 +723,7 @@ function PrintTTAModal({ ...props }) {
                     <Box className="printTTAModal__body__tableContainer__signatures__content__business__signature">
                       <Box className="printTTAModal__body__tableContainer__signatures__content__business__signature__underline" />
 
+                      <img src={attachmentsData} alt="client-signature" />
                       <Typography className="printTTAModal__body__tableContainer__signatures__content__business__signature__name">
                         {selectedRowData?.businessName}
                       </Typography>

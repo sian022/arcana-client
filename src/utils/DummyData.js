@@ -704,3 +704,36 @@ export const dummyListingFeeBalancesData = [
     listingFeeBalance: 75000,
   },
 ];
+
+export const dummyAdvancePaymentBalancesData = [
+  {
+    id: 1,
+    businessName: "Kiana's Sushi",
+    ownersName: "Kiana Kaslana",
+    listingFeeBalance: 20000,
+  },
+  {
+    id: 2,
+    businessName: "Bronya's Dumplings",
+    ownersName: "Bronya Zaychik",
+    listingFeeBalance: 50000,
+  },
+  {
+    id: 3,
+    businessName: "Himeko's Ramen",
+    ownersName: "Himeko Murata",
+    listingFeeBalance: 60000,
+  },
+  {
+    id: 4,
+    businessName: "Theresa's Pastries",
+    ownersName: "Theresa Apocalypse",
+    listingFeeBalance: 80000,
+  },
+  {
+    id: 5,
+    businessName: "Fu Hua's Tea House",
+    ownersName: "Fu Hua",
+    listingFeeBalance: 75000,
+  },
+];

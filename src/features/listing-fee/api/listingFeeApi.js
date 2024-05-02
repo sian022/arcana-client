@@ -36,6 +36,8 @@ const listingFeeApi = api
         transformErrorResponse: (response) => response.value,
       }),
 
+      // getListingFeeBalance: builder.query({}),
+
       putApproveListingFee: builder.mutation({
         query: ({ id }) => ({
           url: `/ListingFee/ApproveListingFee/${id}`,

@@ -253,8 +253,6 @@ function PaymentPage({ setPaymentMode }) {
 
   console.log(transactionsData, "transactionsData");
 
-  console.log(paymentFields, "paymentFields");
-
   return (
     <>
       <Box className="paymentPage">
@@ -592,6 +590,7 @@ function PaymentPage({ setPaymentMode }) {
         updatePayment={updatePayment}
         selectedPayment={selectedPayment}
         paymentFields={paymentFields}
+        client={client}
       />
 
       <PaymentHistoriesModal

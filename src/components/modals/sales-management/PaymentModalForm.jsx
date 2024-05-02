@@ -13,6 +13,7 @@ import useSnackbar from "../../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../../utils/CustomFunctions";
 import useConfirm from "../../../hooks/useConfirm";
 import moment from "moment";
+import { useLazyGetAdvancePaymentBalanceQuery } from "../../../features/sales-management/api/advancePaymentApi";
 
 function PaymentModalForm({
   editMode,
@@ -21,6 +22,7 @@ function PaymentModalForm({
   remainingBalance,
   selectedPayment,
   paymentFields,
+  client,
   ...props
 }) {
   const { open, onClose } = props;
@@ -46,13 +48,16 @@ function PaymentModalForm({
   //Watch Constants
   const watchPaymentMethod = watch("paymentMethod");
 
+  //RTK Query
+  const [triggerAdvancePaymentBalance, { data: advancePaymentData }] =
+    useLazyGetAdvancePaymentBalanceQuery();
+
   //Functions
   const onSubmit = async (data) => {
     let transformedData;
 
     if (data.paymentMethod.label === "Cheque") {
       transformedData = {
-        clientId: data.clientId?.id,
         paymentMethod: data.paymentMethod,
         paymentAmount: data.paymentAmount,
         payee: data.payee,
@@ -64,7 +69,6 @@ function PaymentModalForm({
       };
     } else if (data.paymentMethod.label === "Online") {
       transformedData = {
-        clientId: data.clientId?.id,
         paymentMethod: data.paymentMethod,
         paymentAmount: data.paymentAmount,
         accountName: data.accountName,
@@ -72,7 +76,6 @@ function PaymentModalForm({
       };
     } else {
       transformedData = {
-        clientId: data.clientId?.id,
         paymentMethod: data.paymentMethod,
         paymentAmount: data.paymentAmount,
       };
@@ -147,6 +150,12 @@ function PaymentModalForm({
       setValue("paymentAmount", remainingBalance);
     }
   }, [watchPaymentMethod, setValue, remainingBalance, editMode]);
+
+  useEffect(() => {
+    if (open) {
+      triggerAdvancePaymentBalance({ id: client.id });
+    }
+  }, [open, triggerAdvancePaymentBalance, client]);
 
   return (
     <CommonModalForm
@@ -229,7 +238,7 @@ function PaymentModalForm({
                   }}
                   isAllowed={(values) => {
                     const { floatValue } = values;
-                    // Check if the floatValue is greater than maximum amount and less than minimum amount and show a snackbar
+
                     if (
                       floatValue != null &&
                       floatValue > remainingBalance &&
@@ -243,6 +252,23 @@ function PaymentModalForm({
                       });
                       return false;
                     }
+
+                    if (
+                      floatValue != null &&
+                      floatValue >
+                        parseFloat(advancePaymentData?.remainingBalance) &&
+                      watch("paymentMethod").label === "Advance Payment"
+                    ) {
+                      snackbar({
+                        message: `Not enough ${
+                          watch("paymentMethod").label
+                        } balance`,
+                        variant: "error",
+                      });
+                      return false;
+                    }
+
+                    // if(floatValue != null && floatValue ) {}
                     return true;
                   }}
                   inputRef={ref}
@@ -500,7 +526,7 @@ function PaymentModalForm({
 
             <Typography className="paymentTransactionModal__footer__value">
               ₱
-              {30000?.toLocaleString(undefined, {
+              {advancePaymentData?.remainingBalance?.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}

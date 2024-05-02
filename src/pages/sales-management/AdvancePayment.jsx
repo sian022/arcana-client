@@ -24,7 +24,10 @@ import {
 } from "../../features/sales-management/api/advancePaymentApi";
 import useConfirm from "../../hooks/useConfirm";
 import ViewAdvancePaymentDetailsModal from "../../components/modals/sales-management/ViewAdvancePaymentDetailsModal";
-import PageHeaderAddFilterVoid from "../../components/PageHeaderAddFilterVoid";
+import PageHeaderAddVoid from "../../components/PageHeaderAddVoid";
+import ButtonFilterMixin from "../../components/mixins/ButtonFilterMixin";
+import { Wallet } from "@mui/icons-material";
+import AdvancePaymentBalancesModal from "../../components/modals/sales-management/AdvancePaymentBalancesModal";
 
 function AdvancePayment() {
   const [editMode, setEditMode] = useState(false);
@@ -65,6 +68,12 @@ function AdvancePayment() {
     isOpen: isViewOpen,
     onOpen: onViewOpen,
     onClose: onViewClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isBalancesOpen,
+    onOpen: onBalancesOpen,
+    onClose: onBalancesClose,
   } = useDisclosure();
 
   //RTK Query
@@ -278,16 +287,27 @@ function AdvancePayment() {
   return (
     <>
       <Box className="commonPageLayout">
-        <PageHeaderAddFilterVoid
+        <PageHeaderAddVoid
           pageTitle="Advance Payment"
           onOpen={handleAddOpen}
           setSearch={setSearch}
+          // selectOptions={originOptions}
+          // setSelectValue={setOrigin}
+        />
+
+        <ButtonFilterMixin
           selectOptions={originOptions}
           setSelectValue={setOrigin}
+          buttonTitle="Advance Payment Balances"
+          buttonIcon={<Wallet />}
+          onButtonClick={onBalancesOpen}
         />
 
         {isAdvancePaymentFetching ? (
-          <CommonTableSkeleton evenLesserCompact />
+          <CommonTableSkeleton
+            // evenLesserCompact
+            lowerCompact
+          />
         ) : (
           <CommonTable
             mapData={advancePaymentData?.advancePayments}
@@ -299,8 +319,8 @@ function AdvancePayment() {
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
-            evenLesserCompact
-            // lowerCompact
+            // evenLesserCompact
+            lowerCompact
             // onEdit={handleEditOpen}
             onView={onViewOpen}
             onVoid={onVoid}
@@ -649,6 +669,11 @@ function AdvancePayment() {
       </Box>
 
       <ViewAdvancePaymentDetailsModal open={isViewOpen} onClose={onViewClose} />
+
+      <AdvancePaymentBalancesModal
+        open={isBalancesOpen}
+        onClose={onBalancesClose}
+      />
     </>
   );
 }

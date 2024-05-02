@@ -1,7 +1,9 @@
 import { api } from "../../api";
 
 const advancePaymentApi = api
-  .enhanceEndpoints({ addTagTypes: ["Advance Payment"] })
+  .enhanceEndpoints({
+    addTagTypes: ["Advance Payment", "Advance Payment Balance"],
+  })
   .injectEndpoints({
     endpoints: (builder) => ({
       createAdvancePayment: builder.mutation({
@@ -29,6 +31,9 @@ const advancePaymentApi = api
           url: `/advance-payment/${id}/remaining-balance`,
           method: "GET",
         }),
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
+        providesTags: ["Advance Payment Balance"],
       }),
 
       updateAdvancePayment: builder.mutation({

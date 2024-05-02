@@ -61,7 +61,7 @@ function PageHeaderAddFilterVoid({
             select
             onChange={(e) => setSelectValue(e.target.value)}
           >
-            {selectOptions.map((item, i) => (
+            {selectOptions?.map((item, i) => (
               <MenuItem key={i} value={item.value}>
                 {item.label}
               </MenuItem>
