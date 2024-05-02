@@ -33,10 +33,7 @@ import {
   handleCatchErrorMessage,
 } from "../../utils/CustomFunctions";
 import { getIconElement } from "../../components/GetIconElement";
-import {
-  useCreatePaymentTransactionMutation,
-  useLazyGetAllSalesTransactionForPaymentsQuery,
-} from "../../features/sales-management/api/paymentTransactionApi";
+import { useCreatePaymentTransactionMutation } from "../../features/sales-management/api/paymentTransactionApi";
 import PaymentListSkeleton from "../../components/skeletons/PaymentListSkeleton";
 import PaymentHistoriesModal from "../../components/modals/sales-management/PaymentHistoriesModal";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -120,7 +117,7 @@ function PaymentPage({ setPaymentMode }) {
             ...data,
             payments: data.payments.map((payment) => ({
               ...payment,
-              paymentMethod: payment.paymentMethod.value,
+              paymentMethod: payment.paymentMethod.value.toUpperCase(),
             })),
             // totalAmountReceived: handleTotal,
           }).unwrap(),
@@ -251,7 +248,10 @@ function PaymentPage({ setPaymentMode }) {
   //UseEffect
   useEffect(() => {
     if (client) {
-      triggerTransactions({ clientId: client?.id });
+      triggerTransactions({
+        clientId: client?.id,
+        transactionStatus: "Pending",
+      });
       handleReset();
     }
   }, [client, triggerTransactions, handleReset]);
