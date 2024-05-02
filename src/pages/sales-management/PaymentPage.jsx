@@ -122,7 +122,7 @@ function PaymentPage({ setPaymentMode }) {
               ...payment,
               paymentMethod: payment.paymentMethod.value,
             })),
-            totalAmountReceived: handleTotal,
+            // totalAmountReceived: handleTotal,
           }).unwrap(),
       });
 
