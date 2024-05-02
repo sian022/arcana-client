@@ -29,7 +29,10 @@ import {
   handleCatchErrorMessage,
 } from "../../../utils/CustomFunctions";
 import useSnackbar from "../../../hooks/useSnackbar";
-import { useVoidPaymentTransactionMutation } from "../../../features/sales-management/api/paymentTransactionApi";
+import {
+  useLazyGetAllPaymentHistoriesQuery,
+  useVoidPaymentTransactionMutation,
+} from "../../../features/sales-management/api/paymentTransactionApi";
 import CommonDialog from "../../CommonDialog";
 import useDisclosure from "../../../hooks/useDisclosure";
 
@@ -53,6 +56,8 @@ function PaymentHistoriesModal({ ...props }) {
   } = useDisclosure();
 
   //RTK Query
+  const [triggerHistories, { data: paymentHistoriesData }] =
+    useLazyGetAllPaymentHistoriesQuery();
   const [voidPaymentTransaction, { isLoading: isVoidLoading }] =
     useVoidPaymentTransactionMutation();
 
@@ -132,6 +137,14 @@ function PaymentHistoriesModal({ ...props }) {
       setExpandedPaymentType({});
     }
   }, [dummyPaymentHistoriesData, open]);
+
+  useEffect(() => {
+    if (open) {
+      triggerHistories({ Status: true, PageSize: 1000, PageNumber: 1 });
+    }
+  }, [open, triggerHistories]);
+
+  console.log(paymentHistoriesData, "paymentHistoriesData");
 
   return (
     <>

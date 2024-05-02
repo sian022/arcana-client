@@ -46,7 +46,7 @@ function PaymentTransaction() {
   //RTK Query
   const { data: transactionData, isFetching: isTransactionFetching } =
     useGetAllSalesTransactionQuery({
-      Page: page + 1,
+      PageNumber: page + 1,
       PageSize: rowsPerPage,
       Search: search,
       TransactionStatus: transactionStatus,

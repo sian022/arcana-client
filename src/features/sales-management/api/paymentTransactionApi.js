@@ -22,7 +22,7 @@ const paymentTransactionApi = api
 
       getAllPaymentHistories: builder.query({
         query: (params) => ({
-          url: "/payment-transaction",
+          url: "/payment-transaction/page",
           method: "GET",
           params,
         }),

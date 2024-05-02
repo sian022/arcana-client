@@ -334,6 +334,10 @@ function PaymentPage({ setPaymentMode }) {
               </Typography>
             ) : isTransactionsFetching ? (
               <PaymentListSkeleton />
+            ) : transactionsData?.transactions?.length === 0 ? (
+              <Typography className="paymentPage__body__transactions__selectClientFirst">
+                No transactions found
+              </Typography>
             ) : (
               <>
                 <Box className="paymentPage__body__transactions__header">
@@ -351,6 +355,7 @@ function PaymentPage({ setPaymentMode }) {
                         target: { checked: checkboxRef.current.checked },
                       });
                     }}
+                    disabled={transactionsData?.transactions?.length === 0}
                   >
                     <Checkbox
                       ref={checkboxRef}
