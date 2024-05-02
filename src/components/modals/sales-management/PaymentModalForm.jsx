@@ -18,9 +18,9 @@ function PaymentModalForm({
   editMode,
   appendPayment,
   updatePayment,
-  cashExists,
   remainingBalance,
   selectedPayment,
+  paymentFields,
   ...props
 }) {
   const { open, onClose } = props;
@@ -54,7 +54,7 @@ function PaymentModalForm({
       transformedData = {
         clientId: data.clientId?.id,
         paymentMethod: data.paymentMethod,
-        advancePaymentAmount: data.paymentAmount,
+        paymentAmount: data.paymentAmount,
         payee: data.payee,
         chequeDate: data.chequeDate,
         bankName: data.bankName,
@@ -79,13 +79,37 @@ function PaymentModalForm({
     }
 
     try {
+      const handleCallback = () => {
+        if (editMode) {
+          updatePayment(selectedPayment.index, transformedData);
+        } else {
+          const paymentIndex = paymentFields.findIndex(
+            (field) =>
+              field.paymentMethod.label ===
+                transformedData.paymentMethod.label &&
+              (transformedData.paymentMethod.label === "Advance Payment" ||
+                transformedData.paymentMethod.label === "Listing Fee")
+          );
+
+          if (paymentIndex !== -1) {
+            const updatedPayment = {
+              ...paymentFields[paymentIndex],
+              paymentAmount:
+                paymentFields[paymentIndex].paymentAmount +
+                transformedData.paymentAmount,
+            };
+
+            updatePayment(paymentIndex, updatedPayment);
+          } else {
+            appendPayment(transformedData);
+          }
+        }
+      };
+
       await confirm({
         children: "Are you sure you want to add this payment?",
         question: true,
-        callback: () =>
-          editMode
-            ? updatePayment(selectedPayment.index, transformedData)
-            : appendPayment(transformedData),
+        callback: () => handleCallback(),
       });
 
       snackbar({ message: "Payment added successfully", type: "success" });
@@ -143,11 +167,16 @@ function PaymentModalForm({
             <ControlledAutocomplete
               name="paymentMethod"
               control={control}
-              options={
-                cashExists
-                  ? paymentTypes.filter((type) => type.label !== "Cash")
-                  : paymentTypes
-              }
+              options={paymentTypes.filter(
+                (type) =>
+                  !paymentFields?.some(
+                    (field) =>
+                      field.paymentMethod.label === type.label &&
+                      field.paymentMethod.label !== "Cheque" &&
+                      field.paymentMethod.label !== "Online" &&
+                      field.paymentMethod.label !== "Offset"
+                  )
+              )}
               getOptionLabel={(option) => option.label.toUpperCase()}
               disableClearable
               isOptionEqualToValue={() => true}
@@ -197,6 +226,24 @@ function PaymentModalForm({
                   autoComplete="off"
                   onValueChange={(e) => {
                     onChange(e.value === "" ? null : Number(e.value));
+                  }}
+                  isAllowed={(values) => {
+                    const { floatValue } = values;
+                    // Check if the floatValue is greater than maximum amount and less than minimum amount and show a snackbar
+                    if (
+                      floatValue != null &&
+                      floatValue > remainingBalance &&
+                      watch("paymentMethod").label !== "Cheque"
+                    ) {
+                      snackbar({
+                        message: `${
+                          watch("paymentMethod").label
+                        } cannot be over the remaining balance`,
+                        variant: "error",
+                      });
+                      return false;
+                    }
+                    return true;
                   }}
                   inputRef={ref}
                   onBlur={onBlur}
