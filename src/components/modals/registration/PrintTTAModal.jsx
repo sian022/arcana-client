@@ -721,9 +721,21 @@ function PrintTTAModal({ ...props }) {
                     </Typography>
 
                     <Box className="printTTAModal__body__tableContainer__signatures__content__business__signature">
-                      <Box className="printTTAModal__body__tableContainer__signatures__content__business__signature__underline" />
+                      <Box className="printTTAModal__body__tableContainer__signatures__content__business__signature__underline"></Box>
 
-                      <img src={attachmentsData} alt="client-signature" />
+                      <Box sx={{ position: "relative" }}>
+                        <img
+                          src={attachmentsData?.attachments?.[0]?.documentLink}
+                          alt="client-signature"
+                          style={{
+                            position: "absolute",
+                            right: -30,
+                            bottom: -5,
+                          }}
+                          width="80px"
+                        />
+                      </Box>
+
                       <Typography className="printTTAModal__body__tableContainer__signatures__content__business__signature__name">
                         {selectedRowData?.businessName}
                       </Typography>

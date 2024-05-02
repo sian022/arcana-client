@@ -424,8 +424,9 @@ function DirectRegisterForm({
         (expenses?.length > 0 || expensesData?.expenses?.length > 0) &&
         (await addExpenses(clientId));
 
-      termsAndConditions["terms"] !== 1 &&
-        (await addAttachmentsSubmit(clientId));
+      // termsAndConditions["terms"] !== 1 &&
+      //   (await addAttachmentsSubmit(clientId));
+      await addAttachmentsSubmit(clientId);
 
       if (editMode) {
         clientStatus === "Rejected" &&
@@ -532,15 +533,23 @@ function DirectRegisterForm({
     }
 
     if (attachmentsObject) {
-      Object.keys(attachmentsObject).forEach((key, index) => {
-        const attachment = attachmentsObject[key];
+      if (termsAndConditions["terms"] !== 1) {
+        Object.keys(attachmentsObject).forEach((key, index) => {
+          const attachment = attachmentsObject[key];
 
-        formData.append(`Attachments[${index}].Attachment`, attachment);
+          formData.append(`Attachments[${index}].Attachment`, attachment);
+          formData.append(
+            `Attachments[${index}].DocumentType`,
+            convertToTitleCase(key)
+          );
+        });
+      } else {
         formData.append(
-          `Attachments[${index}].DocumentType`,
-          convertToTitleCase(key)
+          "Attachments[0].Attachment",
+          attachmentsObject["signature"]
         );
-      });
+        formData.append("Attachments[0].DocumentType", "Signature");
+      }
     }
 
     if (editMode) {

@@ -278,7 +278,8 @@ function RegisterRegularForm({ open, onClose }) {
       listingFees && listingFees?.length > 0 && (await addListingFee());
       expenses && expenses?.length > 0 && (await addExpenses());
 
-      termsAndConditions["terms"] !== 1 && (await addAttachmentsSubmit());
+      // termsAndConditions["terms"] !== 1 && (await addAttachmentsSubmit());
+      await addAttachmentsSubmit();
 
       setIsAllApiLoading(false);
 
@@ -375,15 +376,23 @@ function RegisterRegularForm({ open, onClose }) {
     }
 
     if (attachmentsObject) {
-      Object.keys(attachmentsObject).forEach((key, index) => {
-        const attachment = attachmentsObject[key];
+      if (termsAndConditions["terms"] !== 1) {
+        Object.keys(attachmentsObject).forEach((key, index) => {
+          const attachment = attachmentsObject[key];
 
-        formData.append(`Attachments[${index}].Attachment`, attachment);
+          formData.append(`Attachments[${index}].Attachment`, attachment);
+          formData.append(
+            `Attachments[${index}].DocumentType`,
+            convertToTitleCase(key)
+          );
+        });
+      } else {
         formData.append(
-          `Attachments[${index}].DocumentType`,
-          convertToTitleCase(key)
+          "Attachments[0].Attachment",
+          attachmentsObject["signature"]
         );
-      });
+        formData.append("Attachments[0].DocumentType", "Signature");
+      }
     }
 
     await putAddAttachments({
