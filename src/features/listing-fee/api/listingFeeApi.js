@@ -4,6 +4,7 @@ const listingFeeApi = api
   .enhanceEndpoints({
     addTagTypes: [
       "Listing Fee",
+      "Listing Fee Balances",
       "Clients For Listing",
       "Notification",
       "ListingFeeById",
@@ -36,7 +37,16 @@ const listingFeeApi = api
         transformErrorResponse: (response) => response.value,
       }),
 
-      // getListingFeeBalance: builder.query({}),
+      getAllListingFeeBalances: builder.query({
+        query: (params) => ({
+          params,
+          url: "/listing-fee/balances",
+          method: "GET",
+        }),
+        providesTags: ["Listing Fee Balances"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
+      }),
 
       putApproveListingFee: builder.mutation({
         query: ({ id }) => ({
@@ -92,6 +102,7 @@ const listingFeeApi = api
 export const {
   usePostListingFeeMutation,
   useGetAllListingFeeQuery,
+  useLazyGetAllListingFeeBalancesQuery,
   usePutApproveListingFeeMutation,
   usePutRejectListingFeeMutation,
   usePutUpdateListingFeeMutation,

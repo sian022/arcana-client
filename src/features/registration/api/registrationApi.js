@@ -14,6 +14,7 @@ const registrationApi = api
       "OtherExpensesById",
       "ApprovalHistoryById",
       "Listing Fee",
+      "Expenses",
     ],
   })
   .injectEndpoints({
@@ -114,7 +115,15 @@ const registrationApi = api
           method: "PUT",
           params,
         }),
-        invalidatesTags: ["Registration", "Notification"],
+        invalidatesTags: [
+          "Registration",
+          "Notification",
+          "ListingFeeById",
+          "ApprovalHistoryById",
+          "Listing Fee",
+          "OtherExpensesById",
+          "Expenses",
+        ],
       }),
 
       putRejectClient: builder.mutation({
@@ -124,7 +133,15 @@ const registrationApi = api
           body,
           params,
         }),
-        invalidatesTags: ["Registration", "Listing Fee", "Notification"],
+        invalidatesTags: [
+          "Registration",
+          "Notification",
+          "ListingFeeById",
+          "ApprovalHistoryById",
+          "Listing Fee",
+          "OtherExpensesById",
+          "Expenses",
+        ],
       }),
 
       patchUpdateRegistrationStatus: builder.mutation({
