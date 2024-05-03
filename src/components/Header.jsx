@@ -23,6 +23,7 @@ import {
   toggleSidebarSmallScreen,
 } from "../features/misc/reducers/disclosureSlice";
 import moment from "moment";
+import { api } from "../features/api";
 
 function Header() {
   const dispatch = useDispatch();
@@ -59,6 +60,9 @@ function Header() {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("fullname");
     sessionStorage.removeItem("permissions");
+
+    //Reset API state
+    dispatch(api.util.resetApiState());
 
     navigate("/login");
   };
