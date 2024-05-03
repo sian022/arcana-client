@@ -83,8 +83,6 @@ function PaymentHistoriesModal({ clientId, ...props }) {
     });
   };
 
-  console.log(expandedPaymentType);
-
   const onVoid = async () => {
     try {
       await voidPaymentTransaction({ id: selectedId, reason }).unwrap();
