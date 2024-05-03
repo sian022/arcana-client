@@ -18,7 +18,12 @@ const listingFeeApi = api
           url: "/ListingFee/AddNewListingFee",
           method: "POST",
         }),
-        invalidatesTags: ["Listing Fee", "ListingFeeById", "Notification"],
+        invalidatesTags: [
+          "Listing Fee",
+          "ListingFeeById",
+          "Notification",
+          "Listing Fee Balances",
+        ],
         transformResponse: (response) => response.value,
         transformErrorResponse: (response) => ({
           function: "postListingFee",
@@ -53,7 +58,11 @@ const listingFeeApi = api
           url: `/ListingFee/ApproveListingFee/${id}`,
           method: "PUT",
         }),
-        invalidatesTags: ["Listing Fee", "Notification"],
+        invalidatesTags: [
+          "Listing Fee",
+          "Notification",
+          "Listing Fee Balances",
+        ],
       }),
 
       putRejectListingFee: builder.mutation({

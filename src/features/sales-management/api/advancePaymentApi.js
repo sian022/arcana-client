@@ -2,7 +2,11 @@ import { api } from "../../api";
 
 const advancePaymentApi = api
   .enhanceEndpoints({
-    addTagTypes: ["Advance Payment", "Advance Payment Balance"],
+    addTagTypes: [
+      "Advance Payment",
+      "Advance Payment Balance",
+      "Advance Payment Balances",
+    ],
   })
   .injectEndpoints({
     endpoints: (builder) => ({
@@ -22,6 +26,17 @@ const advancePaymentApi = api
           params,
         }),
         providesTags: ["Advance Payment"],
+        transformResponse: (response) => response.value,
+        transformErrorResponse: (response) => response.value,
+      }),
+
+      getAllAdvancePaymentBalances: builder.query({
+        query: (params) => ({
+          url: "/advance-payment/balances",
+          method: "GET",
+          params,
+        }),
+        providesTags: ["Advance Payment Balances"],
         transformResponse: (response) => response.value,
         transformErrorResponse: (response) => response.value,
       }),
@@ -66,6 +81,7 @@ const advancePaymentApi = api
 export const {
   useCreateAdvancePaymentMutation,
   useGetAllAdvancePaymentsQuery,
+  useLazyGetAllAdvancePaymentBalancesQuery,
   useLazyGetAdvancePaymentBalanceQuery,
   useUpdateAdvancePaymentMutation,
   useVoidAdvancePaymentMutation,

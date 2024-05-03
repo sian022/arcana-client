@@ -6,11 +6,11 @@ import {
   Typography,
 } from "@mui/material";
 import CommonModal from "../../CommonModal";
-import { dummyListingFeeBalancesData } from "../../../utils/DummyData";
 import { debounce, formatPesoAmount } from "../../../utils/CustomFunctions";
 import { useEffect, useState } from "react";
 import { Search } from "@mui/icons-material";
 import { useLazyGetAllListingFeeBalancesQuery } from "../../../features/listing-fee/api/listingFeeApi";
+import ListingFeeBalancesModalSkeleton from "../../skeletons/ListingFeeBalancesModalSkeleton";
 
 function ListingFeeBalancesModal({ ...props }) {
   const { open } = props;
@@ -47,56 +47,63 @@ function ListingFeeBalancesModal({ ...props }) {
 
   return (
     <CommonModal {...props} closeTopRight>
-      <Box className="listingFeeBalancesModal">
-        <Typography className="listingFeeBalancesModal__title">
-          Listing Fee Balances
-        </Typography>
+      {isFetching ? (
+        <ListingFeeBalancesModalSkeleton />
+      ) : (
+        <Box className="listingFeeBalancesModal">
+          <Typography className="listingFeeBalancesModal__title">
+            Listing Fee Balances
+          </Typography>
 
-        <Box className="listingFeeBalanceModal__filters">
-          <TextField
-            label="Search"
-            size="small"
-            fullWidth
-            onChange={(e) => debouncedSetSearch(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
+          <Box className="listingFeeBalanceModal__filters">
+            <TextField
+              label="Search"
+              size="small"
+              fullWidth
+              onChange={(e) => debouncedSetSearch(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
 
-        <Box className="listingFeeBalancesModal__list">
-          {data.map((item) => (
-            <Box key={item.id} className="listingFeeBalancesModal__list__item">
-              <Box className="listingFeeBalancesModal__list__item__clientInfo">
-                <Typography className="listingFeeBalancesModal__list__item__clientInfo__businessName">
-                  {item.businessName}
-                </Typography>
+          <Box className="listingFeeBalancesModal__list">
+            {data?.map((item) => (
+              <Box
+                key={item.clientId}
+                className="listingFeeBalancesModal__list__item"
+              >
+                <Box className="listingFeeBalancesModal__list__item__clientInfo">
+                  <Typography className="listingFeeBalancesModal__list__item__clientInfo__businessName">
+                    {item.businessName}
+                  </Typography>
 
-                <Typography className="listingFeeBalancesModal__list__item__clientInfo__ownersName">
-                  {item.fullname}
+                  <Typography className="listingFeeBalancesModal__list__item__clientInfo__ownersName">
+                    {item.fullname}
+                  </Typography>
+                </Box>
+
+                <Typography className="listingFeeBalancesModal__list__item__amount">
+                  {formatPesoAmount(item.balance)}
                 </Typography>
               </Box>
+            ))}
+          </Box>
 
-              <Typography className="listingFeeBalancesModal__list__item__amount">
-                {formatPesoAmount(item.balance)}
-              </Typography>
-            </Box>
-          ))}
+          <Box className="listingFeeBalancesModal__pagination">
+            <Pagination
+              count={totalPages}
+              variant="outlined"
+              page={page}
+              onChange={handleChange}
+            />
+          </Box>
         </Box>
-
-        <Box className="listingFeeBalancesModal__pagination">
-          <Pagination
-            count={totalPages}
-            variant="outlined"
-            page={page}
-            onChange={handleChange}
-          />
-        </Box>
-      </Box>
+      )}
     </CommonModal>
   );
 }

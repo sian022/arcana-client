@@ -15,6 +15,7 @@ const registrationApi = api
       "ApprovalHistoryById",
       "Listing Fee",
       "Expenses",
+      "Listing Fee Balances",
     ],
   })
   .injectEndpoints({
@@ -123,6 +124,7 @@ const registrationApi = api
           "Listing Fee",
           "OtherExpensesById",
           "Expenses",
+          "Listing Fee Balances",
         ],
       }),
 
