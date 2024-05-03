@@ -256,8 +256,6 @@ function PaymentPage({ setPaymentMode }) {
     }
   }, [client, triggerTransactions, handleReset]);
 
-  console.log(transactionsData, "transactionsData");
-
   return (
     <>
       <Box className="paymentPage">
@@ -602,6 +600,7 @@ function PaymentPage({ setPaymentMode }) {
       <PaymentHistoriesModal
         open={isPaymentHistoriesOpen}
         onClose={onPaymentHistoriesClose}
+        clientId={client?.id}
       />
     </>
   );

@@ -23,7 +23,6 @@ import {
 import { useEffect, useState } from "react";
 import { paymentTypes } from "../../../utils/Constants";
 import { getIconElement } from "../../GetIconElement";
-import { dummyPaymentHistoriesData } from "../../../utils/DummyData";
 import {
   formatPesoAmount,
   handleCatchErrorMessage,
@@ -36,7 +35,7 @@ import {
 import CommonDialog from "../../CommonDialog";
 import useDisclosure from "../../../hooks/useDisclosure";
 
-function PaymentHistoriesModal({ ...props }) {
+function PaymentHistoriesModal({ clientId, ...props }) {
   const { open } = props;
 
   const [expandedPaymentType, setExpandedPaymentType] = useState({});
@@ -64,7 +63,7 @@ function PaymentHistoriesModal({ ...props }) {
   //Functions
   const getPaymentTypeIcon = (paymentType) => {
     return getIconElement(
-      paymentTypes.find((type) => type.value === paymentType).icon,
+      paymentTypes.find((type) => type.uppercase === paymentType).icon,
       "gray",
       "1.3rem"
     );
@@ -83,6 +82,8 @@ function PaymentHistoriesModal({ ...props }) {
       return updatedStates;
     });
   };
+
+  console.log(expandedPaymentType);
 
   const onVoid = async () => {
     try {
@@ -128,23 +129,26 @@ function PaymentHistoriesModal({ ...props }) {
   useEffect(() => {
     if (open) {
       const initialStates = {};
-      dummyPaymentHistoriesData.forEach((item) => {
-        // Assuming item.id is unique for each item
-        initialStates[item.id] = false; // Assuming initially all dropdowns are closed
+      paymentHistoriesData?.transactions?.forEach((item) => {
+        // Assuming item.paymentRecordId is unique for each item
+        initialStates[item.paymentRecordId] = false; // Assuming initially all dropdowns are closed
       });
       setExpandedPaymentType(initialStates);
     } else {
       setExpandedPaymentType({});
     }
-  }, [dummyPaymentHistoriesData, open]);
+  }, [paymentHistoriesData, open]);
 
   useEffect(() => {
     if (open) {
-      triggerHistories({ Status: true, PageSize: 1000, PageNumber: 1 });
+      triggerHistories({
+        Status: true,
+        PageSize: 1000,
+        PageNumber: 1,
+        ClientId: clientId,
+      });
     }
-  }, [open, triggerHistories]);
-
-  console.log(paymentHistoriesData, "paymentHistoriesData");
+  }, [open, triggerHistories, clientId]);
 
   return (
     <>
@@ -170,30 +174,36 @@ function PaymentHistoriesModal({ ...props }) {
                 },
               }}
             >
-              {dummyPaymentHistoriesData.map((paymentTransaction) => (
-                <Step key={paymentTransaction.id} active expanded>
+              {paymentHistoriesData?.transactions?.map((paymentTransaction) => (
+                <Step key={paymentTransaction.paymentRecordId} active expanded>
                   <StepLabel StepIconProps={{ icon: "" }}>
                     <span style={{ fontWeight: "600", marginRight: "5px" }}>
-                      {moment(paymentTransaction.date).format("MMMM D, YYYY")}
+                      {moment(paymentTransaction.createdAt).format(
+                        "MMMM D, YYYY"
+                      )}
                     </span>
 
                     <span>
-                      {moment(paymentTransaction.date).format("hh:mm a")}
+                      {moment(paymentTransaction.createdAt).format("hh:mm a")}
                     </span>
 
-                    {moment(paymentTransaction.date).isAfter(
+                    {moment(paymentTransaction.createdAt).isAfter(
                       moment().subtract(1, "days")
-                    ) && (
-                      <Tooltip title="Void" followCursor>
-                        <IconButton
-                          color="error"
-                          sx={{ ml: 1, padding: 0 }}
-                          onClick={() => handleVoidOpen(paymentTransaction.id)}
-                        >
-                          <BlockOutlined />
-                        </IconButton>
-                      </Tooltip>
-                    )}
+                    ) &&
+                      (paymentTransaction.status === "Pending" ||
+                        paymentTransaction.status === "Over due") && (
+                        <Tooltip title="Void" followCursor>
+                          <IconButton
+                            color="error"
+                            sx={{ ml: 1, padding: 0 }}
+                            onClick={() =>
+                              handleVoidOpen(paymentTransaction.paymentRecordId)
+                            }
+                          >
+                            <BlockOutlined />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                   </StepLabel>
 
                   <StepContent>
@@ -204,7 +214,13 @@ function PaymentHistoriesModal({ ...props }) {
                         </Typography>
 
                         <Typography className="paymentHistoriesModal__body__stepContent__total__value">
-                          {formatPesoAmount(paymentTransaction.total)}
+                          {formatPesoAmount(
+                            paymentTransaction.paymentTransactions.reduce(
+                              (total, transaction) =>
+                                total + transaction.paymentAmount,
+                              0
+                            )
+                          )}
                         </Typography>
                       </Box>
 
@@ -212,8 +228,10 @@ function PaymentHistoriesModal({ ...props }) {
                         className="paymentHistoriesModal__body__stepContent__paymentTypes"
                         onClick={() =>
                           handlePaymentDropdown(
-                            paymentTransaction.id,
-                            !expandedPaymentType[paymentTransaction.id]
+                            paymentTransaction.paymentRecordId,
+                            !expandedPaymentType[
+                              paymentTransaction.paymentRecordId
+                            ]
                           )
                         }
                       >
@@ -222,15 +240,15 @@ function PaymentHistoriesModal({ ...props }) {
                         </Typography>
 
                         <Box className="paymentHistoriesModal__body__stepContent__paymentTypes__chips">
-                          {paymentTransaction.paymentTypes.map(
-                            (paymentType, index) => (
+                          {paymentTransaction?.paymentTransactions?.map(
+                            (transaction, index) => (
                               <Chip
                                 key={index}
-                                label={paymentType.paymentType}
+                                label={transaction.paymentMethod}
                                 variant="outlined"
                                 color="primary"
                                 icon={getPaymentTypeIcon(
-                                  paymentType.paymentType
+                                  transaction.paymentMethod
                                 )}
                               />
                             )
@@ -238,7 +256,9 @@ function PaymentHistoriesModal({ ...props }) {
                         </Box>
 
                         <IconButton>
-                          {expandedPaymentType[paymentTransaction.id] ? (
+                          {expandedPaymentType[
+                            paymentTransaction.paymentRecordId
+                          ] ? (
                             <KeyboardArrowUp color="secondary" />
                           ) : (
                             <KeyboardArrowDown color="secondary" />
@@ -246,9 +266,15 @@ function PaymentHistoriesModal({ ...props }) {
                         </IconButton>
                       </Box>
 
-                      <Collapse in={expandedPaymentType[paymentTransaction.id]}>
+                      <Collapse
+                        in={
+                          expandedPaymentType[
+                            paymentTransaction.paymentRecordId
+                          ]
+                        }
+                      >
                         <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed">
-                          {paymentTransaction.paymentTypes.map(
+                          {paymentTransaction?.paymentTransactions?.map(
                             (paymentType, index) => (
                               <Box
                                 key={index}
@@ -260,10 +286,12 @@ function PaymentHistoriesModal({ ...props }) {
                                   </Typography>
 
                                   <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title__label">
-                                    {paymentType.paymentType}
+                                    {paymentType.paymentMethod}
                                   </Typography>
 
-                                  {getPaymentTypeIcon(paymentType.paymentType)}
+                                  {getPaymentTypeIcon(
+                                    paymentType.paymentMethod
+                                  )}
                                 </Box>
 
                                 <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content">
@@ -273,7 +301,9 @@ function PaymentHistoriesModal({ ...props }) {
                                     </Typography>
 
                                     <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                      {formatPesoAmount(paymentType.amount)}
+                                      {formatPesoAmount(
+                                        paymentType.paymentAmount
+                                      )}
                                     </Typography>
                                   </Box>
 

@@ -62,12 +62,17 @@ export const base64ToBlob = (base64) => {
 
 export const convertToTitleCase = (str) => {
   return str.replace(/(\w)([A-Z])/g, "$1 $2").replace(/\w\S*/g, (txt) => {
-    if (txt.toLowerCase() === "id") {
-      return "ID";
-    } else {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    }
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
+};
+
+export const convertUppercaseToTitleCase = (str) => {
+  return (
+    str
+      .toLowerCase()
+      .replace(/\b(\w)/g, (s) => s.toUpperCase())
+      .trim() || ""
+  );
 };
 
 export const titleCaseToCamelCase = (titleCaseString) => {

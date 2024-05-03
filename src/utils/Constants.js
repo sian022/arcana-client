@@ -9,31 +9,37 @@ export const paymentTypes = [
   {
     label: "Cheque",
     value: "Cheque",
+    uppercase: "CHEQUE",
     icon: "ReceiptLong",
   },
   {
     label: "Cash",
     value: "Cash",
+    uppercase: "CASH",
     icon: "AttachMoney",
   },
   {
     label: "Online",
     value: "Online",
+    uppercase: "ONLINE",
     icon: "CreditCard",
   },
   {
     label: "Listing Fee",
     value: "Listing Fee",
+    uppercase: "LISTING FEE",
     icon: "Assignment",
   },
   {
     label: "Offset",
     value: "Offset",
+    uppercase: "OFFSET",
     icon: "Undo",
   },
   {
     label: "Advance Payment",
     value: "Advance Payment",
+    uppercase: "ADVANCE PAYMENT",
     icon: "FastForward",
   },
 ];
