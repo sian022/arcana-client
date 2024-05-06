@@ -252,6 +252,8 @@ function TermsAndConditions({ direct, editMode, storeType }) {
       : signature;
   };
 
+  console.log(ownersRequirements, "ownersRequirements");
+
   return (
     <Box className="terms">
       <Box className="terms__column">

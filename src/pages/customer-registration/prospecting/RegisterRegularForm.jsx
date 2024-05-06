@@ -646,7 +646,7 @@ function RegisterRegularForm({ open, onClose }) {
       setValue("authorizedRepresentativePosition", "");
       setRequirementsMode("owner");
     }
-  }, [includeAuthorizedRepresentative, setValue, setRequirementsMode]);
+  }, [includeAuthorizedRepresentative, setValue, setRequirementsMode, open]);
 
   useEffect(() => {
     if (clusterData && open) {

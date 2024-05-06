@@ -1088,7 +1088,7 @@ function DirectRegisterForm({
       setValue("authorizedRepresentativePosition", "");
       setRequirementsMode("owner");
     }
-  }, [includeAuthorizedRepresentative, setRequirementsMode, setValue]);
+  }, [includeAuthorizedRepresentative, setRequirementsMode, setValue, open]);
 
   useEffect(() => {
     if (!editMode && clusterData && open) {
