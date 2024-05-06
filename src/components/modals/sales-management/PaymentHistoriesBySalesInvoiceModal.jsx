@@ -26,7 +26,7 @@ function PaymentHistoriesBySalesInvoiceModal({ ...props }) {
   //Functions
   const getPaymentTypeIcon = (paymentType) => {
     return getIconElement(
-      paymentTypes.find((type) => type.value === paymentType).icon,
+      paymentTypes.find((type) => type.value === paymentType)?.icon,
       "gray",
       "1.3rem"
     );

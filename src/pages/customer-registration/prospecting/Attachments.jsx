@@ -19,7 +19,6 @@ import {
 import { AttachmentsContext } from "../../../context/AttachmentsContext";
 import SignatureCanvasModal from "../../../components/modals/SignatureCanvasModal";
 import useDisclosure from "../../../hooks/useDisclosure";
-import { base64ToBlob } from "../../../utils/CustomFunctions";
 import ViewPhotoModal from "../../../components/modals/ViewPhotoModal";
 
 function Attachments() {

@@ -46,7 +46,7 @@ function PaymentModalForm({
   });
 
   //Watch Constants
-  const watchPaymentMethod = watch("paymentMethod");
+  // const watchPaymentMethod = watch("paymentMethod");
 
   //RTK Query
   const [triggerAdvancePaymentBalance, { data: advancePaymentData }] =
@@ -145,11 +145,11 @@ function PaymentModalForm({
     }
   }, [open, editMode, selectedPayment, setValue]);
 
-  useEffect(() => {
-    if (watchPaymentMethod?.label === "Cash" && !editMode) {
-      setValue("paymentAmount", remainingBalance);
-    }
-  }, [watchPaymentMethod, setValue, remainingBalance, editMode]);
+  // useEffect(() => {
+  //   if (watchPaymentMethod?.label === "Cash" && !editMode) {
+  //     setValue("paymentAmount", remainingBalance);
+  //   }
+  // }, [watchPaymentMethod, setValue, remainingBalance, editMode]);
 
   useEffect(() => {
     if (open) {
@@ -279,7 +279,7 @@ function PaymentModalForm({
                   allowLeadingZeros={false}
                   prefix="₱"
                   decimalScale={2}
-                  disabled={watchPaymentMethod?.label === "Cash"}
+                  // disabled={watchPaymentMethod?.label === "Cash"}
                 />
               )}
             />

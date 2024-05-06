@@ -30,12 +30,12 @@ export const paymentTypes = [
     uppercase: "LISTING FEE",
     icon: "Assignment",
   },
-  {
-    label: "Offset",
-    value: "Offset",
-    uppercase: "OFFSET",
-    icon: "Undo",
-  },
+  // {
+  //   label: "Offset",
+  //   value: "Offset",
+  //   uppercase: "OFFSET",
+  //   icon: "Undo",
+  // },
   {
     label: "Advance Payment",
     value: "Advance Payment",

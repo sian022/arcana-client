@@ -233,15 +233,13 @@ function DirectRegistration() {
             customOrderKeys={customOrderKeys}
             onView={onViewOpen}
             onHistory={onHistoryOpen}
-            status={status}
             onEdit={
-              userDetails?.roleName === "Admin"
+              clientStatus !== "Voided" &&
+              (userDetails?.roleName === "Admin"
                 ? handleEditOpen
                 : userDetails?.roleName !== "Admin"
-                ? clientStatus !== "Voided" &&
-                  clientStatus !== "Approved" &&
-                  handleEditOpen
-                : null
+                ? clientStatus !== "Approved" && handleEditOpen
+                : null)
             }
             // onArchive={onArchiveOpen}
             onVoid={clientStatus === "Rejected" && onVoidOpen}

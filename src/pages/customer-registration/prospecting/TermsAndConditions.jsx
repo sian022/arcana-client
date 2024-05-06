@@ -51,8 +51,8 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     representativeRequirements,
     setOwnersRequirements,
     setRepresentativeRequirements,
-    representativeRequirementsIsLink,
-    ownersRequirementsIsLink,
+    // representativeRequirementsIsLink,
+    // ownersRequirementsIsLink,
   } = useContext(AttachmentsContext);
 
   const requirementsModeToSelect =
@@ -210,32 +210,46 @@ function TermsAndConditions({ direct, editMode, storeType }) {
     }
   }, [termsAndConditions["freezer"], dispatch]);
 
-  useEffect(() => {
-    if (termsAndConditions["freezer"]) {
-      onAssetTagOpen();
-    }
-  }, [termsAndConditions["freezer"]]);
+  // useEffect(() => {
+  //   if (termsAndConditions["freezer"]) {
+  //     onAssetTagOpen();
+  //   }
+  // }, [termsAndConditions["freezer"]]);
+
+  // const handleViewSignature = (type) => {
+  //   let convertedSignature;
+
+  //   if (type === "owner") {
+  //     if (!ownersRequirementsIsLink["signature"]) {
+  //       convertedSignature = base64ToBlob(ownersRequirements["signature"]);
+  //     } else {
+  //       convertedSignature = ownersRequirementsIsLink["signature"];
+  //     }
+  //   } else if (type === "representative") {
+  //     if (!representativeRequirementsIsLink["signature"]) {
+  //       convertedSignature = base64ToBlob(
+  //         representativeRequirements["signature"]
+  //       );
+  //     } else {
+  //       convertedSignature = representativeRequirementsIsLink["signature"];
+  //     }
+  //   }
+
+  //   return convertedSignature;
+  // };
 
   const handleViewSignature = (type) => {
-    let convertedSignature;
+    let signature;
 
     if (type === "owner") {
-      if (!ownersRequirementsIsLink["signature"]) {
-        convertedSignature = base64ToBlob(ownersRequirements["signature"]);
-      } else {
-        convertedSignature = ownersRequirementsIsLink["signature"];
-      }
+      signature = ownersRequirements["signature"];
     } else if (type === "representative") {
-      if (!representativeRequirementsIsLink["signature"]) {
-        convertedSignature = base64ToBlob(
-          representativeRequirements["signature"]
-        );
-      } else {
-        convertedSignature = representativeRequirementsIsLink["signature"];
-      }
+      signature = representativeRequirements["signature"];
     }
 
-    return convertedSignature;
+    return signature.startsWith("data:")
+      ? URL.createObjectURL(base64ToBlob(signature))
+      : signature;
   };
 
   return (
@@ -267,7 +281,19 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                 );
               }}
             >
-              <FormControlLabel value={true} control={<Radio />} label="Yes" />
+              <FormControlLabel
+                value={true}
+                control={
+                  <Radio
+                    onClick={() => {
+                      // if (termsAndConditions["freezer"]) {
+                      onAssetTagOpen();
+                      // }
+                    }}
+                  />
+                }
+                label="Yes"
+              />
               <FormControlLabel value={false} control={<Radio />} label="No" />
             </RadioGroup>
           </Box>
@@ -697,15 +723,20 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                 <img
                   src={
                     requirementsMode === "owner"
-                      ? ownersRequirementsIsLink["signature"]
-                        ? handleViewSignature("owner")
-                        : URL.createObjectURL(handleViewSignature("owner"))
-                      : representativeRequirementsIsLink["signature"]
-                      ? handleViewSignature("representative")
-                      : URL.createObjectURL(
-                          handleViewSignature("representative")
-                        )
+                      ? handleViewSignature("owner")
+                      : handleViewSignature("representative")
                   }
+                  // src={
+                  //   requirementsMode === "owner"
+                  //     ? ownersRequirementsIsLink["signature"]
+                  //       ? handleViewSignature("owner")
+                  //       : URL.createObjectURL(handleViewSignature("owner"))
+                  //     : representativeRequirementsIsLink["signature"]
+                  //     ? handleViewSignature("representative")
+                  //     : URL.createObjectURL(
+                  //         handleViewSignature("representative")
+                  //       )
+                  // }
                   alt="File preview"
                   style={{ borderRadius: "12px" }}
                 />

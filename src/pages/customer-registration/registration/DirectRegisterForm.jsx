@@ -851,8 +851,6 @@ function DirectRegisterForm({
     return false;
   };
 
-  console.log(navigators[1]);
-
   const handleSameAsOwnersAddress = () => {
     setSameAsOwnersAddress((prev) => !prev);
     if (!sameAsOwnersAddress) {

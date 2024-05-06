@@ -385,11 +385,12 @@ function SpecialDiscount() {
             setPage={setPage}
             // onEdit={tabViewing === 2 ? null : handleEditOpen}
             onEdit={
-              userDetails?.roleName === "Admin"
+              approvalStatus !== "Voided" &&
+              (userDetails?.roleName === "Admin"
                 ? handleEditOpen
                 : userDetails?.roleName !== "Admin"
                 ? approvalStatus !== "Approved" && handleEditOpen
-                : null
+                : null)
             }
             onHistory={onHistoryOpen}
             onCancel={tabViewing === 1 ? onCancel : null}

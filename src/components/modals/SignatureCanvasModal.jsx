@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import CommonModal from "../CommonModal";
 import { Box, Typography } from "@mui/material";
 import DangerButton from "../DangerButton";
@@ -29,6 +29,7 @@ function SignatureCanvasModal({ signature, setSignature, ...otherProps }) {
     }
     onClose();
   };
+
   return (
     <CommonModal width="auto" {...noOnCloseProps}>
       <Box className="signatureCanvasModal">
