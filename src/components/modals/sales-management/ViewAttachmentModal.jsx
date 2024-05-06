@@ -38,7 +38,7 @@ function ViewAttachmentModal({ ...props }) {
           <>
             Are you sure you want to upload CI attachment for CI No.{" "}
             <span style={{ fontWeight: "700" }}>
-              {selectedRowData?.["CINo."]}
+              {selectedRowData?.chargeInvoiceNo}
             </span>
             ?
           </>

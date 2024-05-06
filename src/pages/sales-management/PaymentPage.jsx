@@ -21,7 +21,6 @@ import { useGetAllClientsQuery } from "../../features/registration/api/registrat
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SecondaryButton from "../../components/SecondaryButton";
 import useDisclosure from "../../hooks/useDisclosure";
-import { dummyPaymentData } from "../../utils/DummyData";
 import PaymentModalForm from "../../components/modals/sales-management/PaymentModalForm";
 import { useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -137,10 +136,10 @@ function PaymentPage({ setPaymentMode }) {
 
   //Constants
   const isAllChecked =
-    watch("transactionId")?.length === dummyPaymentData.length;
+    watch("transactionId")?.length === transactionsData?.transactions?.length;
   const isAllIndeterminate =
     watch("transactionId")?.length > 0 &&
-    watch("transactionId")?.length !== dummyPaymentData.length;
+    watch("transactionId")?.length !== transactionsData?.transactions?.length;
 
   //Functions
   const handleReset = useCallback(async () => {
@@ -369,7 +368,7 @@ function PaymentPage({ setPaymentMode }) {
 
                   <Box className="paymentPage__body__transactions__header__totalAmount">
                     <Typography className="paymentPage__body__transactions__header__totalAmount__label">
-                      Total Amount:
+                      Total Balance:
                     </Typography>
 
                     <Typography className="paymentPage__body__transactions__header__totalAmount__value">
