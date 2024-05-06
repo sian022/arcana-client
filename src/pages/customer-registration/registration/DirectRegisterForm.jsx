@@ -973,7 +973,12 @@ function DirectRegisterForm({
       // Attachments
       // API Version
       if (attachmentsData?.attachments?.length > 4) {
-        setRequirementsMode("representative");
+        if (includeAuthorizedRepresentative) {
+          setRequirementsMode("representative");
+        } else {
+          setRequirementsMode("owner");
+        }
+
         setRepresentativeRequirements({
           signature: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Signature"
@@ -1003,7 +1008,12 @@ function DirectRegisterForm({
           authorizationLetter: true,
         });
       } else if (attachmentsData?.attachments?.length <= 4) {
-        setRequirementsMode("owner");
+        if (includeAuthorizedRepresentative) {
+          setRequirementsMode("representative");
+        } else {
+          setRequirementsMode("owner");
+        }
+
         setOwnersRequirements({
           signature: attachmentsData?.attachments?.find(
             (item) => item.documentType === "Signature"
@@ -1078,6 +1088,7 @@ function DirectRegisterForm({
     productData,
     expensesData,
     expensesDataChoices,
+    includeAuthorizedRepresentative,
   ]);
 
   useEffect(() => {
