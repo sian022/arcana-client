@@ -6,9 +6,6 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { clusterSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
@@ -20,17 +17,20 @@ import {
 } from "../../features/setup/api/clusterApi";
 import ViewCDOModal from "../../components/modals/ViewCDOModal";
 import { PinDrop } from "@mui/icons-material";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function Cluster() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -38,24 +38,6 @@ function Cluster() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   // const {
@@ -96,65 +78,56 @@ function Cluster() {
     PageSize: rowsPerPage,
   });
   const [putCluster, { isLoading: isUpdateLoading }] = usePutClusterMutation();
-  const [patchClusterStatus, { isLoading: isArchiveLoading }] =
-    usePatchClusterStatusMutation();
-
-  // const [postUom, { isLoading: isAddLoading }] = usePostUomMutation();
-  // const { data, isLoading, isFetching } = useGetAllUomsQuery({
-  //   Search: search,
-  //   Status: status,
-  //   PageNumber: page + 1,
-  //   PageSize: rowsPerPage,
-  // });
-  // const [putUom, { isLoading: isUpdateLoading }] = usePutUomMutation();
-  // const [patchUomStatus, { isLoading: isArchiveLoading }] =
-  //   usePatchUomStatusMutation();
+  const [patchClusterStatus] = usePatchClusterStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
         await postCluster(data).unwrap();
-        setSnackbarMessage("Cluster added successfully");
       } else if (drawerMode === "edit") {
         await putCluster(data).unwrap();
-        setSnackbarMessage("Cluster updated successfully");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} cluster`
-        );
-      }
 
-      onErrorOpen();
+      snackbar({
+        message: `Cluster ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        type: "success",
+      });
+    } catch (error) {
+      snackbar({ message: handleCatchErrorMessage(error), type: "error" });
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchClusterStatus(selectedId).unwrap();
-      setSnackbarMessage(
-        `Cluster ${status ? "archived" : "restored"} successfully`
-      );
-      onSuccessOpen();
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.cluster}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () => patchClusterStatus(selectedRowData?.id).unwrap(),
+      });
+
+      snackbar({
+        message: `Cluster ${status ? "archived" : "restored"} successfully`,
+        variant: "success",
+      });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving Cluster");
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
-
-      onErrorOpen();
     }
-
-    onArchiveClose();
   };
 
   const handleAddOpen = () => {
@@ -171,15 +144,9 @@ function Cluster() {
     });
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
 
   //UseEffect
@@ -212,7 +179,7 @@ function Cluster() {
             mapData={data?.cluster}
             customOrderKeys={customOrderKeys}
             onEdit={handleEditOpen}
-            onArchive={handleArchiveOpen}
+            onArchive={onArchive}
             viewMoreKey={"users"}
             onViewMoreClick={onViewOpen}
             // onTagUserInCluster={onTagOpen}
@@ -243,34 +210,7 @@ function Cluster() {
             error={errors?.cluster}
           />
         </CommonDrawer>
-
-        <CommonDialog
-          open={isArchiveOpen}
-          onClose={onArchiveClose}
-          onYes={onArchiveSubmit}
-          isLoading={isArchiveLoading}
-          question={!status}
-        >
-          Are you sure you want to {status ? "archive" : "restore"}{" "}
-          <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-            {selectedRowData?.cluster}
-          </span>
-          ?
-        </CommonDialog>
-
-        <SuccessSnackbar
-          open={isSuccessOpen}
-          onClose={onSuccessClose}
-          message={snackbarMessage}
-        />
-        <ErrorSnackbar
-          open={isErrorOpen}
-          onClose={onErrorClose}
-          message={snackbarMessage}
-        />
       </Box>
-
-      {/* <TagCDODrawer open={isTagOpen} onClose={onTagClose} /> */}
 
       <ViewCDOModal
         open={isViewOpen}

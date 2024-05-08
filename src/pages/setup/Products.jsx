@@ -7,9 +7,6 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productSchema } from "../../schema/schema";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import {
   useGetAllProductsQuery,
   usePatchProductStatusMutation,
@@ -23,20 +20,24 @@ import { useGetAllProductSubCategoriesQuery } from "../../features/setup/api/pro
 import { useGetAllMeatTypesQuery } from "../../features/setup/api/meatTypeApi";
 import { useSelector } from "react-redux";
 import { FileUpload, LocalMall } from "@mui/icons-material";
-import { isValidUrl } from "../../utils/CustomFunctions";
+import {
+  handleCatchErrorMessage,
+  isValidUrl,
+} from "../../utils/CustomFunctions";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
 
 function Products() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [changePrice, setChangePrice] = useState(false);
 
   //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const imageUploadRef = useRef();
 
@@ -45,24 +46,6 @@ function Products() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   // Constants
@@ -112,8 +95,7 @@ function Products() {
     PageSize: rowsPerPage,
   });
   const [putProduct, { isLoading: isUpdateLoading }] = usePutProductMutation();
-  const [patchProductStatus, { isLoading: isArchiveLoading }] =
-    usePatchProductStatusMutation();
+  const [patchProductStatus] = usePatchProductStatusMutation();
 
   const { data: uomData } = useGetAllUomsQuery({ Status: true });
   const { data: productSubcategoriesData } = useGetAllProductSubCategoriesQuery(
@@ -145,50 +127,51 @@ function Products() {
         await postProduct({
           body: formData,
         }).unwrap();
-        setSnackbarMessage("Product added successfully");
       } else if (drawerMode === "edit") {
-        if (!changePrice) {
-          await putProduct({
-            id: selectedRowData.id,
-            body: formData,
-          }).unwrap();
-          setSnackbarMessage("Product updated successfully");
-        }
+        await putProduct({
+          id: selectedRowData.id,
+          body: formData,
+        }).unwrap();
       }
 
       onDrawerClose();
-      setChangePrice(false);
       reset();
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} product`
-        );
-      }
 
-      onErrorOpen();
+      snackbar({
+        message: `Product ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        type: "success",
+      });
+    } catch (error) {
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchProductStatus(selectedId).unwrap();
-      onArchiveClose();
-      setSnackbarMessage(
-        `Product ${status ? "archived" : "restored"} successfully`
-      );
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving product");
-      }
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.itemCode}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () => patchProductStatus(selectedRowData?.id).unwrap(),
+      });
 
-      onErrorOpen();
+      snackbar({
+        message: `Product ${status ? "archived" : "restored"} successfully`,
+        type: "success",
+      });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
     }
   };
 
@@ -225,15 +208,8 @@ function Products() {
     setValue("itemImageLink", editData.itemImageLink);
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     onDrawerClose();
-    setSelectedId("");
-    setChangePrice(false);
     reset();
   };
 
@@ -272,7 +248,7 @@ function Products() {
           evenLesserCompact
           mapData={data?.items}
           onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          onArchive={onArchive}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -432,32 +408,6 @@ function Products() {
           )}
         </Box>
       </CommonDrawer>
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.itemCode}
-        </span>
-        ?
-      </CommonDialog>
-
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }

@@ -294,7 +294,7 @@ function CommonTable({
                       return (
                         <TableCell key={k}>
                           <IconButton
-                            sx={{ color: "secondary.main" }}
+                            sx={{ color: "secondary.main", p: 0 }}
                             onClick={onViewMoreClick}
                           >
                             <Visibility />
