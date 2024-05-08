@@ -6,9 +6,6 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   useGetAllTermDaysQuery,
@@ -19,17 +16,21 @@ import {
 import { termDaysSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
 import { CalendarToday } from "@mui/icons-material";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function TermDays() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -37,24 +38,6 @@ function TermDays() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   // Constants
@@ -83,52 +66,54 @@ function TermDays() {
   });
   const [putTermDays, { isLoading: isUpdateLoading }] =
     usePutTermDaysMutation();
-  const [patchTermDaysStatus, { isLoading: isArchiveLoading }] =
-    usePatchTermDaysStatusMutation();
+  const [patchTermDaysStatus] = usePatchTermDaysStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
         await postTermDays(data).unwrap();
-        setSnackbarMessage("Term Days added successfully");
       } else if (drawerMode === "edit") {
         await putTermDays(data).unwrap();
-        setSnackbarMessage("Term Days updated successfully");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
+      snackbar({
+        message: `Term Days ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        variant: "success",
+      });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} term days`
-        );
-      }
-
-      onErrorOpen();
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchTermDaysStatus(selectedId).unwrap();
-      onArchiveClose();
-      setSnackbarMessage(
-        `Term Days ${status ? "archived" : "restored"} successfully`
-      );
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving term days");
-      }
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.days}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () => patchTermDaysStatus(selectedRowData?.id).unwrap(),
+      });
 
-      onErrorOpen();
+      snackbar({
+        message: `Term Days ${status ? "archived" : "restored"} successfully`,
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
     }
   };
 
@@ -146,15 +131,9 @@ function TermDays() {
     });
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
 
   //UseEffect
@@ -186,7 +165,7 @@ function TermDays() {
           mapData={data?.termDays}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          onArchive={onArchive}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -214,29 +193,6 @@ function TermDays() {
           type="number"
         />
       </CommonDrawer>
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.days}
-        </span>
-        ?
-      </CommonDialog>
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }

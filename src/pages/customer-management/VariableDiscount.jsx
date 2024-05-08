@@ -7,9 +7,6 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { variableDiscountSchema } from "../../schema/schema";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   useDeleteVariableDiscountMutation,
@@ -20,6 +17,9 @@ import {
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
 import { Label } from "@mui/icons-material";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function VariableDiscount() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -27,8 +27,10 @@ function VariableDiscount() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -36,24 +38,6 @@ function VariableDiscount() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isRemoveOpen,
-    onOpen: onRemoveOpen,
-    onClose: onRemoveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   // Constants
@@ -90,59 +74,57 @@ function VariableDiscount() {
   });
   const [putDiscountType, { isLoading: isUpdateLoading }] =
     usePutDiscountTypeMutation();
-  const [deleteVariableDiscount, { isLoading: isRemoveLoading }] =
-    useDeleteVariableDiscountMutation();
+  const [deleteVariableDiscount] = useDeleteVariableDiscountMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
         await postDiscountType(data).unwrap();
-        setSnackbarMessage("Variable Discount added successfully");
       } else if (drawerMode === "edit") {
         await putDiscountType(data).unwrap();
-        setSnackbarMessage("Variable Discount updated successfully");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
+      snackbar({
+        message: `Variable Discount ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        variant: "success",
+      });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${
-            drawerMode === "add" ? "adding" : "updating"
-          } variable discount`
-        );
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
-
-      onErrorOpen();
     }
   };
 
-  const onRemoveSubmit = async () => {
+  const onRemove = async () => {
     try {
-      await deleteVariableDiscount(selectedRowData?.id).unwrap();
-      onRemoveClose();
-      setSnackbarMessage("Variable Discount deleted successfully");
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to delete amount range{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              <br />₱{selectedRowData?.minimumAmount} - ₱
+              {selectedRowData?.maximumAmount}
+            </span>
+            ?
+          </>
+        ),
+        question: true,
+        callback: () => deleteVariableDiscount(selectedRowData?.id).unwrap(),
+      });
 
-      // await patchDiscountTypeStatus(selectedId).unwrap();
-      // onRemoveClose();
-      // setSnackbarMessage(
-      //   `Variable Discount ${status ? "archived" : "restored"} successfully`
-      // );
-
-      onSuccessOpen();
+      snackbar({
+        message: "Variable discount removed successfully",
+        variant: "success",
+      });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error deleting variable discount");
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
-
-      onErrorOpen();
     }
   };
 
@@ -215,7 +197,7 @@ function VariableDiscount() {
           customOrderKeys={customOrderKeys}
           pesoArray={pesoArray}
           percentageArray={percentageArray}
-          onRemove={onRemoveOpen}
+          onRemove={onRemove}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -290,31 +272,6 @@ function VariableDiscount() {
           )}
         />
 
-        {/* <Controller
-          control={control}
-          name={"maximumAmountUpperBoundary"}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <NumericFormat
-              label="Upper Boundary (₱)"
-              type="text"
-              size="small"
-              customInput={TextField}
-              autoComplete="off"
-              allowNegative={false}
-              decimalScale={3}
-              onValueChange={(e) => {
-                onChange(Number(e.value));
-              }}
-              onBlur={onBlur}
-              value={value || ""}
-              // ref={ref}
-            
-              thousandSeparator=","
-              disabled
-            />
-          )}
-        /> */}
-
         <Controller
           control={control}
           name={"minimumPercentage"}
@@ -338,16 +295,6 @@ function VariableDiscount() {
             />
           )}
         />
-        {/* <TextField
-          label="Minimum Percentage"
-          size="small"
-          autoComplete="off"
-          {...register("minimumPercentage")}
-          helperText={errors?.minimumPercentage?.message}
-          error={errors?.minimumPercentage}
-          type="number"
-          inputProps={{ min: 0 }}
-        /> */}
 
         <Controller
           control={control}
@@ -371,42 +318,7 @@ function VariableDiscount() {
             />
           )}
         />
-
-        {/* <TextField
-          label="Maximum Percentage"
-          size="small"
-          autoComplete="off"
-          {...register("maximumPercentage")}
-          helperText={errors?.maximumPercentage?.message}
-          error={errors?.maximumPercentage}
-          type="number"
-          inputProps={{ min: 0 }}
-        /> */}
       </CommonDrawer>
-      <CommonDialog
-        open={isRemoveOpen}
-        onClose={onRemoveClose}
-        onYes={onRemoveSubmit}
-        isLoading={isRemoveLoading}
-        question={!status}
-      >
-        Are you sure you want to delete amount range{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          <br />₱{selectedRowData?.minimumAmount} - ₱
-          {selectedRowData?.maximumAmount}
-        </span>
-        ?
-      </CommonDialog>
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }
