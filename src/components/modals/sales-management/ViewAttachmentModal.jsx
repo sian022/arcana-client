@@ -92,7 +92,7 @@ function ViewAttachmentModal({ ...props }) {
           </Typography>
 
           <Typography fontWeight="500" fontSize="1.2rem">
-            CI No. {selectedRowData?.["CINo."]}
+            CI No. {selectedRowData?.chargeInvoiceNo}
           </Typography>
         </Box>
 

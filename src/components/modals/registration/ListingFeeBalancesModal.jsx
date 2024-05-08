@@ -33,11 +33,11 @@ function ListingFeeBalancesModal({ ...props }) {
   }, 200);
 
   //UseEffect
-  // useEffect(() => {
-  //   if (dummyListingFeeBalancesData) {
-  //     setTotalPages(100);
-  //   }
-  // }, [dummyListingFeeBalancesData]);
+  useEffect(() => {
+    if (data) {
+      setTotalPages(1);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (open) {
@@ -55,53 +55,70 @@ function ListingFeeBalancesModal({ ...props }) {
             Listing Fee Balances
           </Typography>
 
-          <Box className="listingFeeBalanceModal__filters">
-            <TextField
-              label="Search"
-              size="small"
-              fullWidth
-              onChange={(e) => debouncedSetSearch(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Search />
-                  </InputAdornment>
-                ),
+          {data?.length === 0 || !data ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                height: "100px",
+                alignItems: "center",
               }}
-            />
-          </Box>
-
-          <Box className="listingFeeBalancesModal__list">
-            {data?.map((item) => (
-              <Box
-                key={item.clientId}
-                className="listingFeeBalancesModal__list__item"
-              >
-                <Box className="listingFeeBalancesModal__list__item__clientInfo">
-                  <Typography className="listingFeeBalancesModal__list__item__clientInfo__businessName">
-                    {item.businessName}
-                  </Typography>
-
-                  <Typography className="listingFeeBalancesModal__list__item__clientInfo__ownersName">
-                    {item.fullname}
-                  </Typography>
-                </Box>
-
-                <Typography className="listingFeeBalancesModal__list__item__amount">
-                  {formatPesoAmount(item.balance)}
-                </Typography>
+            >
+              <Typography fontSize="1.2rem" fontWeight="500" color="gray">
+                No listing fee balances found
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              <Box className="listingFeeBalanceModal__filters">
+                <TextField
+                  label="Search"
+                  size="small"
+                  fullWidth
+                  onChange={(e) => debouncedSetSearch(e.target.value)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
               </Box>
-            ))}
-          </Box>
 
-          <Box className="listingFeeBalancesModal__pagination">
-            <Pagination
-              count={totalPages}
-              variant="outlined"
-              page={page}
-              onChange={handleChange}
-            />
-          </Box>
+              <Box className="listingFeeBalancesModal__list">
+                {data?.map((item) => (
+                  <Box
+                    key={item.clientId}
+                    className="listingFeeBalancesModal__list__item"
+                  >
+                    <Box className="listingFeeBalancesModal__list__item__clientInfo">
+                      <Typography className="listingFeeBalancesModal__list__item__clientInfo__businessName">
+                        {item.businessName}
+                      </Typography>
+
+                      <Typography className="listingFeeBalancesModal__list__item__clientInfo__ownersName">
+                        {item.fullname}
+                      </Typography>
+                    </Box>
+
+                    <Typography className="listingFeeBalancesModal__list__item__amount">
+                      {formatPesoAmount(item.balance)}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+
+              <Box className="listingFeeBalancesModal__pagination">
+                <Pagination
+                  count={totalPages}
+                  variant="outlined"
+                  page={page}
+                  onChange={handleChange}
+                />
+              </Box>
+            </>
+          )}
         </Box>
       )}
     </CommonModal>

@@ -108,8 +108,6 @@ function DirectRegisterForm({
 
   const snackbar = useSnackbar();
 
-  // const [latitude, setLatitude] = useState(15.0944152);
-  // const [longitude, setLongitude] = useState(120.6075827);
   const [activeTab, setActiveTab] = useState("Personal Info");
   const [sameAsOwnersAddress, setSameAsOwnersAddress] = useState(false);
   const [includeAuthorizedRepresentative, setIncludeAuthorizedRepresentative] =
@@ -159,12 +157,6 @@ function DirectRegisterForm({
     onOpen: onConfirmOpen,
     onClose: onConfirmClose,
   } = useDisclosure();
-
-  // const {
-  //   isOpen: isPinLocationOpen,
-  //   onOpen: onPinLocationOpen,
-  //   onClose: onPinLocationClose,
-  // } = useDisclosure();
 
   const {
     isOpen: isCancelConfirmOpen,
@@ -1884,9 +1876,6 @@ function DirectRegisterForm({
               )}
 
               {activeTab === "Costs and Fees" && (
-                // ((termsAndConditions["terms"] === 1 &&
-                //   activeTab === "Terms & Conditions") ||
-                //   activeTab === "Attachments")
                 <SecondaryButton
                   onClick={() => {
                     dispatch(toggleFeesToStore());
@@ -1907,15 +1896,6 @@ function DirectRegisterForm({
           </>
         )}
       </CommonDrawer>
-
-      {/* <PinLocationModal
-        latitude={latitude}
-        setLatitude={setLatitude}
-        longitude={longitude}
-        setLongitude={setLongitude}
-        open={isPinLocationOpen}
-        onClose={onPinLocationClose}
-      /> */}
 
       <AgreeTermsModal
         open={isConfirmOpen && !editMode}
