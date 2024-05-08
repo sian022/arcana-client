@@ -18,7 +18,7 @@ import { AppContext } from "../../context/AppContext";
 import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import AddButtonSearchMixin from "../../components/mixins/AddButtonSearchMixin";
-import ListingFeeBalancesModal from "../../components/modals/registration/ListingFeeBalancesMOdal";
+import ListingFeeBalancesModal from "../../components/modals/registration/ListingFeeBalancesModal";
 import { Wallet } from "@mui/icons-material";
 
 function ListingFee() {
