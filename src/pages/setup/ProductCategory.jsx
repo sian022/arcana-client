@@ -13,23 +13,24 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productCategorySchema } from "../../schema/schema";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
 import { Category } from "@mui/icons-material";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function ProductCategory() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -37,24 +38,6 @@ function ProductCategory() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   // Constants
@@ -85,53 +68,57 @@ function ProductCategory() {
   });
   const [putProductCategory, { isLoading: isUpdateLoading }] =
     usePutProductCategoryMutation();
-  const [patchProductCategoryStatus, { isLoading: isArchiveLoading }] =
-    usePatchProductCategoryStatusMutation();
+  const [patchProductCategoryStatus] = usePatchProductCategoryStatusMutation();
 
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
         await postProductCategory(data).unwrap();
-        setSnackbarMessage("Product Category added successfully");
       } else if (drawerMode === "edit") {
         await putProductCategory(data).unwrap();
-        setSnackbarMessage("Product Category updated successfully");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${
-            drawerMode === "add" ? "adding" : "updating"
-          } product category`
-        );
-      }
 
-      onErrorOpen();
+      snackbar({
+        message: `Product Category ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        variant: "success",
+      });
+    } catch (error) {
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchProductCategoryStatus(selectedId).unwrap();
-      onArchiveClose();
-      setSnackbarMessage(
-        `Product Category ${status ? "archived" : "restored"} successfully`
-      );
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving product category");
-      }
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.productCategoryName}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () =>
+          patchProductCategoryStatus(selectedRowData?.id).unwrap(),
+      });
 
-      onErrorOpen();
+      snackbar({
+        message: `Product Category ${
+          status ? "archived" : "restored"
+        } successfully`,
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
     }
   };
 
@@ -149,14 +136,8 @@ function ProductCategory() {
     });
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     onDrawerClose();
-    setSelectedId("");
     reset();
   };
 
@@ -189,7 +170,7 @@ function ProductCategory() {
           mapData={data?.result}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          onArchive={onArchive}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -219,32 +200,6 @@ function ProductCategory() {
           helperText={errors?.productCategoryName?.message}
         />
       </CommonDrawer>
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.productCategoryName}
-        </span>
-        ?
-      </CommonDialog>
-
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }
