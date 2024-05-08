@@ -13,7 +13,6 @@ import ControlledAutocomplete from "../../components/ControlledAutocomplete";
 import { useLazyGetAllProductsQuery } from "../../features/setup/api/productsApi";
 import useSnackbar from "../../hooks/useSnackbar";
 import { NumericFormat } from "react-number-format";
-import CommonDialog from "../../components/CommonDialog";
 import {
   useDeletePriceModeItemMutation,
   useGetAllItemsByPriceModeIdQuery,
@@ -30,6 +29,7 @@ import {
   handleCatchErrorMessage,
 } from "../../utils/CustomFunctions";
 import axios from "axios";
+import useConfirm from "../../hooks/useConfirm";
 
 function PriceModeManagement() {
   const [search, setSearch] = useState("");
@@ -39,8 +39,10 @@ function PriceModeManagement() {
   const [exportDateTime, setExportDateTime] = useState(moment());
   const [isExportLoading, setIsExportLoading] = useState(false);
 
-  const selectedRowData = useSelector((state) => state.selectedRow.value);
+  //Hooks
+  const confirm = useConfirm();
   const snackbar = useSnackbar();
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //Disclosures
   const {
@@ -59,12 +61,6 @@ function PriceModeManagement() {
     isOpen: isPriceDetailsOpen,
     onOpen: onPriceDetailsOpen,
     onClose: onPriceDetailsClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
   } = useDisclosure();
 
   const {
@@ -121,8 +117,7 @@ function PriceModeManagement() {
     });
   const [postItemsToPriceMode, { isLoading: isTaggingLoading }] =
     usePostItemsToPriceModeMutation();
-  const [deletePriceModeItem, { isLoading: isDeleteLoading }] =
-    useDeletePriceModeItemMutation();
+  const [deletePriceModeItem] = useDeletePriceModeItemMutation();
 
   const [
     triggerProducts,
@@ -185,20 +180,22 @@ function PriceModeManagement() {
     }
   };
 
-  const handleDelete = async () => {
+  const onRemove = async () => {
     try {
-      await deletePriceModeItem({
-        id: selectedRowData?.priceModeItemId,
-      }).unwrap();
-      snackbar({ message: "Item deleted successfully", variant: "success" });
-      onDeleteClose();
+      await confirm({
+        children: "Are you sure you want to remove this item?",
+        question: false,
+        callback: () =>
+          deletePriceModeItem({
+            id: selectedRowData?.priceModeItemId,
+          }).unwrap(),
+      });
+
+      snackbar({ message: "Item removed successfully", variant: "success" });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error deleting item", variant: "error" });
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
-      onDeleteClose();
     }
   };
 
@@ -281,7 +278,7 @@ function PriceModeManagement() {
           <CommonTable
             evenLesserCompact
             mapData={priceModeItemsData?.priceModeItems}
-            onRemove={onDeleteOpen}
+            onRemove={onRemove}
             onPriceChange={onPriceChangeOpen}
             onViewMoreConstant={onPriceDetailsOpen}
             page={page}
@@ -425,15 +422,6 @@ function PriceModeManagement() {
         setDateTime={setExportDateTime}
         isExportLoading={isExportLoading}
       />
-
-      <CommonDialog
-        open={isDeleteOpen}
-        onClose={onDeleteClose}
-        onYes={handleDelete}
-        isLoading={isDeleteLoading}
-      >
-        Are you sure you want to remove this item?
-      </CommonDialog>
     </>
   );
 }

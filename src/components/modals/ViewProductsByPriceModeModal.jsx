@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -25,7 +25,7 @@ function ViewProductsByPriceModeModal({ ...props }) {
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   //RTK Query
-  const [triggerProducts, { data, isSuccess, isFetching }] =
+  const [triggerProducts, { data, isFetching }] =
     useLazyGetAllItemsByPriceModeIdQuery();
 
   //Functions
@@ -35,7 +35,7 @@ function ViewProductsByPriceModeModal({ ...props }) {
 
   //UseEffects
   useEffect(() => {
-    if (!!open) {
+    if (open) {
       triggerProducts(
         {
           PriceModeId: selectedRowData?.id,
@@ -48,7 +48,7 @@ function ViewProductsByPriceModeModal({ ...props }) {
     if (!open) {
       setSearch("");
     }
-  }, [open, search]);
+  }, [open, search, selectedRowData?.id, triggerProducts]);
 
   return (
     <CommonModal width="800px" closeTopRight {...props}>

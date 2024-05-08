@@ -6,9 +6,6 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   useGetAllUomsQuery,
@@ -19,17 +16,21 @@ import {
 import { uomSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
 import { SquareFoot } from "@mui/icons-material";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function UnitOfMeasurements() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -37,24 +38,6 @@ function UnitOfMeasurements() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   // Constants
@@ -83,52 +66,56 @@ function UnitOfMeasurements() {
     PageSize: rowsPerPage,
   });
   const [putUom, { isLoading: isUpdateLoading }] = usePutUomMutation();
-  const [patchUomStatus, { isLoading: isArchiveLoading }] =
-    usePatchUomStatusMutation();
+  const [patchUomStatus] = usePatchUomStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
         await postUom(data).unwrap();
-        setSnackbarMessage("UOM added successfully");
       } else if (drawerMode === "edit") {
         await putUom(data).unwrap();
-        setSnackbarMessage("UOM updated successfully");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
+      snackbar({
+        message: `UOM ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        variant: "success",
+      });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} UOM`
-        );
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
-
-      onErrorOpen();
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchUomStatus(selectedId).unwrap();
-      onArchiveClose();
-      setSnackbarMessage(
-        `UOM ${status ? "archived" : "restored"} successfully`
-      );
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving UOM");
-      }
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.uomCode}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () => patchUomStatus(selectedRowData?.id).unwrap(),
+      });
 
-      onErrorOpen();
+      snackbar({
+        message: `UOM ${status ? "archived" : "restored"} successfully`,
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
     }
   };
 
@@ -146,15 +133,9 @@ function UnitOfMeasurements() {
     });
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
 
   //UseEffect
@@ -186,7 +167,7 @@ function UnitOfMeasurements() {
           mapData={data?.uom}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          onArchive={onArchive}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -222,29 +203,6 @@ function UnitOfMeasurements() {
           error={errors?.uomDescription}
         />
       </CommonDrawer>
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.uomCode}
-        </span>
-        ?
-      </CommonDialog>
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }

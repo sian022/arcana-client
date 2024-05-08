@@ -7,9 +7,6 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { meatTypeSchema } from "../../schema/schema";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   useGetAllMeatTypesQuery,
@@ -19,17 +16,21 @@ import {
 } from "../../features/setup/api/meatTypeApi";
 import { useSelector } from "react-redux";
 import { RestaurantMenu } from "@mui/icons-material";
+import useConfirm from "../../hooks/useConfirm";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function MeatType() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  //Hooks
+  const confirm = useConfirm();
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -37,24 +38,6 @@ function MeatType() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   // Constants
@@ -84,52 +67,57 @@ function MeatType() {
   });
   const [putMeatType, { isLoading: isUpdateLoading }] =
     usePutMeatTypeMutation();
-  const [patchMeatTypeStatus, { isLoading: isArchiveLoading }] =
-    usePatchMeatTypeStatusMutation();
+  const [patchMeatTypeStatus] = usePatchMeatTypeStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
     try {
       if (drawerMode === "add") {
         await postMeatType(data).unwrap();
-        setSnackbarMessage("Meat Type added successfully");
       } else if (drawerMode === "edit") {
         await putMeatType(data).unwrap();
-        setSnackbarMessage("Meat Type updated successfully");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
+      snackbar({
+        message: `Meat Type ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        variant: "success",
+      });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} meat type`
-        );
-      }
-
-      onErrorOpen();
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchMeatTypeStatus(selectedId).unwrap();
-      onArchiveClose();
-      setSnackbarMessage(
-        `Meat Type ${status ? "archived" : "restored"} successfully`
-      );
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving meat type");
-      }
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.meatTypeName}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () => patchMeatTypeStatus(selectedRowData?.id).unwrap(),
+      });
 
-      onErrorOpen();
+      snackbar({
+        message: `Meat Type ${status ? "archived" : "restored"} successfully`,
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.isConfirmed) {
+        snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
+      }
     }
   };
 
@@ -147,15 +135,9 @@ function MeatType() {
     });
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
 
   //UseEffect
@@ -187,7 +169,7 @@ function MeatType() {
           mapData={data?.meatTypes}
           customOrderKeys={customOrderKeys}
           onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          onArchive={onArchive}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
@@ -215,29 +197,6 @@ function MeatType() {
           error={errors?.meatTypeName}
         />
       </CommonDrawer>
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        question={!status}
-        isLoading={isArchiveLoading}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.meatTypeName}
-        </span>
-        ?
-      </CommonDialog>
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }

@@ -6,7 +6,6 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CommonDialog from "../../components/CommonDialog";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { priceModeSetupSchema } from "../../schema/schema";
 import { useSelector } from "react-redux";
@@ -19,18 +18,20 @@ import {
 } from "../../features/setup/api/priceModeSetupApi";
 import ViewProductsByPriceModeModal from "../../components/modals/ViewProductsByPriceModeModal";
 import useSnackbar from "../../hooks/useSnackbar";
+import useConfirm from "../../hooks/useConfirm";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function PriceModeSetup() {
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
 
+  //Hooks
+  const confirm = useConfirm();
   const snackbar = useSnackbar();
-
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -38,12 +39,6 @@ function PriceModeSetup() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
   } = useDisclosure();
 
   const {
@@ -85,8 +80,7 @@ function PriceModeSetup() {
   });
   const [putPriceMode, { isLoading: isUpdateLoading }] =
     usePutPriceModeMutation();
-  const [patchPrideModeStatus, { isLoading: isArchiveLoading }] =
-    usePatchPriceModeStatusMutation();
+  const [patchPrideModeStatus] = usePatchPriceModeStatusMutation();
 
   //Drawer Functions
   const onDrawerSubmit = async (data) => {
@@ -121,21 +115,33 @@ function PriceModeSetup() {
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchPrideModeStatus(selectedId).unwrap();
-      onArchiveClose();
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.priceModeCode}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () => patchPrideModeStatus(selectedRowData?.id).unwrap(),
+      });
+
       snackbar({
         message: `Price Mode ${status ? "archived" : "restored"} successfully`,
         variant: "success",
       });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error archiving Price Mode", variant: "error" });
+      if (error.isConfirmed) {
+        snackbar({
+          message: handleCatchErrorMessage(error),
+          variant: "error",
+        });
       }
-      onArchiveClose();
     }
   };
 
@@ -152,15 +158,9 @@ function PriceModeSetup() {
     setValue("priceModeDescription", editData.priceModeDescription);
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
 
   //UseEffect
@@ -192,7 +192,7 @@ function PriceModeSetup() {
           evenLesserCompact
           mapData={data?.priceMode}
           onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          onArchive={onArchive}
           onViewMoreConstant={onViewProductsByPriceModeModalOpen}
           onViewMoreConstantDisabled={!status}
           page={page}
@@ -238,20 +238,6 @@ function PriceModeSetup() {
         open={isViewProductsByPriceModeModalOpen}
         onClose={onViewProductsByPriceModeModalClose}
       />
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.priceModeCode}
-        </span>
-        ?
-      </CommonDialog>
     </Box>
   );
 }
