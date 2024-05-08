@@ -207,7 +207,7 @@ function LoginPage() {
             <Box className="login__formWrapper__footer">
               <img src={MisLogo} alt="mis-logo" />
               <Typography>© 2023 Powered by</Typography>
-              <Typography>Management Information System</Typography>
+              <Typography>Management Information Systemm</Typography>
             </Box>
           </Box>
         </Box>
