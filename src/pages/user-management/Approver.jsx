@@ -7,8 +7,6 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { approversSchema } from "../../schema/schema";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { useSelector } from "react-redux";
 import ControlledAutocomplete from "../../components/ControlledAutocomplete";
@@ -28,6 +26,8 @@ import {
 import SecondaryButton from "../../components/SecondaryButton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { navigationData } from "../../navigation/navigationData";
+import useSnackbar from "../../hooks/useSnackbar";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function Approver() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -35,8 +35,9 @@ function Approver() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  //Hooks
+  const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   // Drawer Disclosures
@@ -44,18 +45,6 @@ function Approver() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   // Constants
@@ -109,7 +98,6 @@ function Approver() {
             level: approver.level,
           })),
         }).unwrap();
-        setSnackbarMessage("Approvers added successfully");
       } else if (drawerMode === "edit") {
         await putUpdateApproversPerModule({
           moduleName: moduleName.name,
@@ -119,21 +107,18 @@ function Approver() {
           })),
           // ...restData,
         }).unwrap();
-        setSnackbarMessage("Approver updated successfully");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
+      snackbar({
+        message: `Approver ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        variant: "success",
+      });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} approver`
-        );
-      }
-      onErrorOpen();
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
@@ -154,10 +139,11 @@ function Approver() {
 
   const handleApproverError = () => {
     if (fields.length === 1) {
-      setSnackbarMessage("Must have at least 1 approver");
+      snackbar({
+        message: "At least one approver is required",
+        variant: "error",
+      });
     }
-
-    onErrorOpen();
   };
 
   useEffect(() => {
@@ -165,7 +151,6 @@ function Approver() {
   }, [search, status, rowsPerPage]);
 
   useEffect(() => {
-    // if(!watch("approvers")?.[0]?.moduleName){}
     if (isDrawerOpen) {
       setValue("approvers[0].moduleName", selectedRowData?.moduleName);
     }
@@ -177,19 +162,9 @@ function Approver() {
         (item) => item?.name === selectedRowData?.moduleName
       );
       setValue("moduleName", foundModule);
-      // selectedRowData?.approvers?.forEach((item) => {
-      //   append({
-      //     // userId: item?.userId,
-      //     userId: data?.find((user) => user.userId === item.userId),
-      //     moduleName: item?.moduleName,
-      //     level: item?.level,
-      //   });
-      // });
+
       const editFields = selectedRowData?.approvers?.map((item, index) => ({
-        // userId: item?.userId,
         userId: data?.find((user) => user.userId === item.userId),
-        // moduleName:
-        // level: item?.level,
         level: index + 1,
       }));
 
@@ -199,12 +174,6 @@ function Approver() {
 
   return (
     <Box className="commonPageLayout">
-      {/* <PageHeaderSearch
-        pageTitle="Approver"
-        onOpen={handleAddOpen}
-        setSearch={setSearch}
-        setStatus={setStatus}
-      /> */}
       <PageHeaderAdd
         pageTitle={
           <>
@@ -378,17 +347,6 @@ function Approver() {
           Add Approver
         </SecondaryButton>
       </CommonDrawer>
-
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </Box>
   );
 }

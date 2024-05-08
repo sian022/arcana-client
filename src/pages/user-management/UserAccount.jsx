@@ -134,7 +134,6 @@ function UserAccount() {
       onDrawerClose();
       reset();
     } catch (error) {
-      console.log(error);
       snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
@@ -222,7 +221,6 @@ function UserAccount() {
 
   const handleDrawerClose = () => {
     reset();
-    // clearErrors();
     onDrawerClose();
   };
 

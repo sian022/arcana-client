@@ -6,9 +6,6 @@ import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userRoleSchema } from "../../schema/schema";
-import CommonDialog from "../../components/CommonDialog";
-import SuccessSnackbar from "../../components/SuccessSnackbar";
-import ErrorSnackbar from "../../components/ErrorSnackbar";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   usePatchUserRoleStatusMutation,
@@ -21,21 +18,21 @@ import RoleTable from "../../components/RoleTable";
 import RoleTaggingModal from "../../components/modals/RoleTaggingModal";
 import { useSelector } from "react-redux";
 import useSnackbar from "../../hooks/useSnackbar";
+import useConfirm from "../../hooks/useConfirm";
 import { SupervisorAccount } from "@mui/icons-material";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function UserRole() {
   const snackbar = useSnackbar();
-
+  const confirm = useConfirm();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
   const [drawerMode, setDrawerMode] = useState("");
-  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [checkedModules, setCheckedModules] = useState(["Dashboard"]);
   // const [checkedModules, setCheckedModules] = useState([]);
 
@@ -44,24 +41,6 @@ function UserRole() {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
   } = useDisclosure();
 
   const {
@@ -107,8 +86,7 @@ function UserRole() {
   });
   const [putUserRole, { isLoading: isUpdateLoading }] =
     usePutUserRoleMutation();
-  const [patchUserRoleStatus, { isLoading: isArchiveLoading }] =
-    usePatchUserRoleStatusMutation();
+  const [patchUserRoleStatus] = usePatchUserRoleStatusMutation();
   const [putTagUserRole, { isLoading: isTagLoading }] =
     usePutTagUserRoleMutation();
 
@@ -117,47 +95,47 @@ function UserRole() {
     try {
       if (drawerMode === "add") {
         await postUserRole(data).unwrap();
-        setSnackbarMessage("User Role added successfully");
       } else if (drawerMode === "edit") {
         await putUserRole(data).unwrap();
-        setSnackbarMessage("User Role updated successfully");
       }
 
       onDrawerClose();
       reset();
-      onSuccessOpen();
+      snackbar({
+        message: `User Role ${
+          drawerMode === "add" ? "added" : "updated"
+        } successfully`,
+        variant: "success",
+      });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage(
-          `Error ${drawerMode === "add" ? "adding" : "updating"} user role`
-        );
-      }
-
-      onErrorOpen();
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
-  const onArchiveSubmit = async () => {
+  const onArchive = async () => {
     try {
-      await patchUserRoleStatus(selectedId).unwrap();
-      onArchiveClose();
-      setSnackbarMessage(
-        `User Role ${status ? "archived" : "restored"} successfully`
-      );
-      // onSuccessOpen();
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to {status ? "archive" : "restore"}{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.roleName}
+            </span>
+            ?
+          </>
+        ),
+        question: !status,
+        callback: () => patchUserRoleStatus(selectedRowData?.id).unwrap(),
+      });
+
       snackbar({
         message: `User Role ${status ? "archived" : "restored"} successfully`,
         variant: "success",
       });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error archiving user role");
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
       }
-      onErrorOpen();
     }
   };
 
@@ -168,16 +146,13 @@ function UserRole() {
         permissions: checkedModules,
       }).unwrap();
       onTaggingClose();
-      setSnackbarMessage("User Role tagged successfully");
-      onSuccessOpen();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        setSnackbarMessage(error?.data?.error?.message);
-      } else {
-        setSnackbarMessage("Error tagging user role");
-      }
 
-      onErrorOpen();
+      snackbar({
+        message: `User Role tagged successfully`,
+        variant: "success",
+      });
+    } catch (error) {
+      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
     }
   };
 
@@ -195,15 +170,9 @@ function UserRole() {
     });
   };
 
-  const handleArchiveOpen = (id) => {
-    onArchiveOpen();
-    setSelectedId(id);
-  };
-
   const handleDrawerClose = () => {
     reset();
     onDrawerClose();
-    setSelectedId("");
   };
 
   //UseEffect
@@ -235,7 +204,7 @@ function UserRole() {
           mapData={data?.userRoles}
           excludeKeys={excludeKeys}
           onEdit={handleEditOpen}
-          onArchive={handleArchiveOpen}
+          onArchive={onArchive}
           onTag={onTaggingOpen}
           page={page}
           setPage={setPage}
@@ -264,28 +233,7 @@ function UserRole() {
           error={errors?.roleName}
         />
       </CommonDrawer>
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.roleName}
-        </span>
-        ?
-      </CommonDialog>
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
+
       <RoleTaggingModal
         checkedModules={checkedModules}
         setCheckedModules={setCheckedModules}
