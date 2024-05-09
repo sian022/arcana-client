@@ -6,6 +6,7 @@ function CommonModal({
   disablePadding,
   paddingCustom,
   width,
+  flex,
   overflow,
   ribbon,
   ribbonPadding,
@@ -32,6 +33,7 @@ function CommonModal({
           height: height && height,
           maxHeight: maxHeight && maxHeight,
           overflow: overflow && overflow,
+          flex: flex && flex,
         }}
         className="commonModal"
       >

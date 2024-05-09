@@ -273,6 +273,14 @@
   flex-direction: column;
   padding: 25px;
   gap: 20px;
+  flex: 1;
+
+  &__personalInfo,
+  &__termsAndConditions,
+  &__attachments,
+  &__listingFee {
+    flex: 1;
+  }
 
   &__headersTwo {
     flex: 1;
@@ -345,6 +353,8 @@
       flex-direction: column;
       align-items: center;
       gap: 30px;
+      max-height: calc(100% - 100px);
+      overflow: auto;
 
       & &__title {
         font-weight: bold;
