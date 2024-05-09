@@ -84,6 +84,7 @@ function Header() {
         <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <IconButton
             sx={{ color: "secondary.main" }}
+            aria-label="toggle sidebar"
             onClick={() => {
               if (window.innerWidth > 1024) {
                 dispatch(toggleSidebar());
