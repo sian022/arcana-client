@@ -199,7 +199,7 @@ function LoginPage() {
                 {isLoading ? (
                   <CircularProgress size="20px" color="white" />
                 ) : (
-                  "Sign In"
+                  "Sign On"
                 )}
               </SecondaryButton>
             </Box>
