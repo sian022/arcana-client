@@ -266,7 +266,7 @@ function AdvancePayment() {
   //   if (selectedRowData?.paymentMethod === "Online") {
   //     setValue("accountName", selectedRowData?.accountName);
   //     setValue("accountNo", selectedRowData?.accountNo);
-  //     setValue("referenceNumber", selectedRowData?.referenceNumber);
+  //     setValue("referenceNo", selectedRowData?.referenceNo);
   //   }
   // };
 
@@ -422,7 +422,7 @@ function AdvancePayment() {
                     } else if (value?.label !== "Online") {
                       setValue("accountName", "");
                       setValue("accountNo", "");
-                      setValue("referenceNumber", "");
+                      setValue("referenceNo", "");
                     }
                     return value;
                   }}
@@ -647,7 +647,7 @@ function AdvancePayment() {
                 />
 
                 <Controller
-                  name="referenceNumber"
+                  name="referenceNo"
                   control={control}
                   defaultValue=""
                   render={({ field }) => (
@@ -656,8 +656,8 @@ function AdvancePayment() {
                       size="small"
                       autoComplete="off"
                       {...field}
-                      helperText={errors?.referenceNumber?.message}
-                      error={errors?.referenceNumber}
+                      helperText={errors?.referenceNo?.message}
+                      error={errors?.referenceNo}
                       type="number"
                     />
                   )}
