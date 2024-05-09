@@ -324,7 +324,7 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
         // height="680px"
         // height="660px"
         height="90vh"
-        overflow="auto"
+        // overflow="auto"
         disablePadding
         ribbon
         customRibbonContent={customRibbonContent}

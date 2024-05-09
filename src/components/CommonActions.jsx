@@ -132,7 +132,17 @@ function CommonActions({
         <More />
       </IconButton>
 
-      <Menu open={isOpen} onClose={onClose} anchorEl={anchorRef.current}>
+      <Menu
+        open={isOpen}
+        onClose={onClose}
+        anchorEl={anchorRef.current}
+        sx={{
+          "& .MuiPaper-root": {
+            backgroundColor: "primary.main",
+            color: "white !important",
+          },
+        }}
+      >
         {onView && (
           <MenuItem
             className="actionsMenuItem"
