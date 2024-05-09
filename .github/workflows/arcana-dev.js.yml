@@ -1,0 +1,65 @@
+name: create-dev
+
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  build:
+    name: create-dev
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Setup Git Client
+        run: |
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+          git config --global user.email "github-actions@doesnotmatter.dev"
+          git config --global user.name "GitHub Actions"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Create .env file
+        run: |
+          echo "VITE_BASEURL=${{ secrets.PRETEST_BASE_URL }}" > .env
+          echo "VITE_SEDAR_BASE_URL=${{ secrets.SEDAR_BASE_URL }}" >> .env
+          echo "VITE_SEDAR_TOKEN=${{ secrets.SEDAR_TOKEN }}" >> .env
+          echo "VITE_RDF_SMS_BASE_URL=${{ secrets.RDF_SMS_BASE_URL }}" >> .env
+          echo "VITE_RDF_SMS_TOKEN=${{ secrets.RDF_SMS_TOKEN }}" >> .env
+          echo "VITE_GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
+
+
+      - name: Build Node.js source code
+        run: npm run build --if-present
+
+      - name: Test Node.js code
+        run: npm test --if-present
+
+      - name: Deploy
+        run: |
+          git clone --depth 1 --single-branch -b deploy-dev git@github.com:${{ github.repository }}.git deploy-dev
+          cd deploy-dev || exit 1
+          mkdir -p dist
+          cp -R ../dist/* dist/
+          git add -A
+          git diff --staged --quiet || git commit -m "Update pretest artifacts" && git push origin deploy-dev
+          git push
