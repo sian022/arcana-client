@@ -1,15 +1,27 @@
 /// <reference types="cypress" />
 import { formatPhoneNumber } from "../../../src/utils/CustomFunctions";
+import { faker } from "@faker-js/faker";
 
 describe("Register Prospect with CDO", () => {
   let prospect; // Declare a variable to hold the fixture data
 
   before(() => {
     // Load the fixture data before the tests start
-    cy.fixture("prospect.json").then((data) => {
-      prospect = data;
-    });
-    // cy.viewport(2000, 1200);
+    // cy.fixture("prospect.json").then((data) => {
+    //   prospect = data;
+    // });
+    prospect = {
+      successfulProspect: {
+        name: faker.person.fullName(),
+        phone: faker.phone.number(),
+        barangay: faker.location.street(),
+        city: faker.location.city(),
+        province: faker.location.state(),
+        businessName: faker.company.name(),
+        businessType: "Restaurant", // You can also generate random business types
+      },
+    };
+    cy.viewport(2000, 1200);
   });
 
   beforeEach(() => {
@@ -93,10 +105,17 @@ Cypress.Commands.add("login", (username, password) => {
 });
 
 Cypress.Commands.add("openProspectingPage", () => {
-  cy.get('button[aria-label="toggle sidebar"]').click();
-  cy.get('a[href="/customer-registration"]').click();
-  cy.get('a[href="/customer-registration/prospect"]').click();
-  cy.get(".sidebar__toggleRemove").click();
+  cy.get('a[href="/customer-registration"]').then(($link) => {
+    if ($link.is(":visible")) {
+      cy.get('a[href="/customer-registration"]').click();
+      cy.get('a[href="/customer-registration/prospect"]').click();
+    } else {
+      cy.get('button[aria-label="toggle sidebar"]').click();
+      cy.get('a[href="/customer-registration"]').click();
+      cy.get('a[href="/customer-registration/prospect"]').click();
+      cy.get(".sidebar__toggleRemove").click();
+    }
+  });
 });
 
 Cypress.Commands.add(
