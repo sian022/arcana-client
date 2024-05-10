@@ -201,6 +201,8 @@ function ForFreebies() {
 
       onErrorOpen();
     }
+
+    onConfirmClose();
   };
 
   const onArchiveSubmit = async () => {
@@ -405,6 +407,7 @@ function ForFreebies() {
                           <InputAdornment position="start">+63</InputAdornment>
                         ),
                       }}
+                      data-testid="phone-number"
                       inputRef={ref}
                       className="register__textField"
                       helperText={errors?.phoneNumber?.message}
@@ -663,6 +666,7 @@ function ForFreebies() {
                       required
                       helperText={errors?.storeTypeId?.message}
                       error={errors?.storeTypeId}
+                      data-testid="business-type"
                     />
                   )}
                 />

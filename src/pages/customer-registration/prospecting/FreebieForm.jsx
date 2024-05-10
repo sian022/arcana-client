@@ -324,6 +324,7 @@ function FreebieForm({
                   helperText={errors?.itemId?.message}
                   error={errors?.itemId}
                   sx={{ width: "200px" }}
+                  data-testid={`product-${index}`}
                 />
               )}
               onChange={(_, value) => {

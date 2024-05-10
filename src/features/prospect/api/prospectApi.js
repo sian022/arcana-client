@@ -74,6 +74,7 @@ const prospectApi = api
         },
         invalidatesTags: ["Prospecting", "Notification"],
       }),
+
       patchProspectStatus: builder.mutation({
         query: (id) => ({
           url: `/Prospecting/UpdateApprovedProspectStatus/${id}`,

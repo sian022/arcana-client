@@ -456,6 +456,7 @@ function ReleaseFreebieModal({ direct, ...otherProps }) {
                   onClick={() => {
                     fileUploadRef.current.click();
                   }}
+                  data-testid="upload-photo"
                 >
                   <Attachment />
                 </IconButton>
@@ -481,6 +482,7 @@ function ReleaseFreebieModal({ direct, ...otherProps }) {
           </DangerButton>
           <SecondaryButton
             onClick={onConfirmOpen}
+            type="submit"
             disabled={
               direct
                 ? !signatureDirect || !photoProofDirect
