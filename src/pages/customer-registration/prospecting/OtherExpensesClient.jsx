@@ -157,6 +157,7 @@ function OtherExpensesClient() {
                   helperText={errors?.otherExpenseId?.message}
                   error={errors?.otherExpenseId}
                   sx={{ width: "400px" }}
+                  data-testid={`expense-type-${index}`}
                 />
               )}
             />
@@ -182,6 +183,7 @@ function OtherExpensesClient() {
                   allowLeadingZeros={false}
                   prefix="₱"
                   sx={{ width: "180px" }}
+                  data-testid={`expense-amount-${index}`}
                 />
               )}
             />
@@ -200,6 +202,7 @@ function OtherExpensesClient() {
                   value={value || ""}
                   inputRef={ref}
                   sx={{ flex: 1 }}
+                  data-testid={`expense-remarks-${index}`}
                 />
               )}
             />

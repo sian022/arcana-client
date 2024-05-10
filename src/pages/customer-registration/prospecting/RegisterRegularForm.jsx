@@ -530,6 +530,8 @@ function RegisterRegularForm({ open, onClose }) {
   };
 
   const handleDisableNext = () => {
+    if (isValidateClientLoading) return true;
+
     if (activeTab === "Personal Info") {
       if (navigators[0].isValid === false) {
         return true;
@@ -929,6 +931,7 @@ function RegisterRegularForm({ open, onClose }) {
                     // setSameAsOwnersAddress((prev) => !prev);
                     handleSameAsOwnersAddress();
                   }}
+                  data-testid="sameAsOwnersAddress"
                 />
                 <Typography variant="subtitle2">
                   Same as owner&apos;s address

@@ -66,6 +66,7 @@ function AgreeTermsModal({ onRegister, isLoading, ...props }) {
           <Checkbox
             checked={isAgree}
             onChange={(e) => setIsAgree(e.target.checked)}
+            data-testid="agree-terms-checkbox"
           />
 
           <Typography>

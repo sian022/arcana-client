@@ -1,15 +1,16 @@
 /// <reference types="cypress" />
-import { formatPhoneNumber } from "../../../src/utils/CustomFunctions";
+import moment from "moment";
 import { faker } from "@faker-js/faker";
 
 describe("Register Prospect with CDO", () => {
-  let prospect; // Declare a variable to hold the fixture data
+  let prospect; // Declare a variable to hold the data
 
   before(() => {
     // Load the fixture data before the tests start
-    // cy.fixture("prospect.json").then((data) => {
-    //   prospect = data;
-    // });
+    // Calculate the maximum date (18 years before today)
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() - 18);
+
     prospect = {
       successfulProspect: {
         name: faker.person.fullName(),
@@ -19,6 +20,10 @@ describe("Register Prospect with CDO", () => {
         province: faker.location.state(),
         businessName: faker.company.name(),
         businessType: "Restaurant", // You can also generate random business types
+      },
+      regularRegistration: {
+        birthdate: faker.date.between({ from: new Date(0), to: maxDate }),
+        freezerTag: faker.number.bigInt().toString(),
       },
     };
     cy.viewport(2000, 1200);
@@ -80,6 +85,13 @@ describe("Register Prospect with CDO", () => {
               if (releaseInterception.response.statusCode === 200) {
                 //Continue to registration
                 cy.clickYes();
+
+                //Register as regular
+                cy.registerAsRegular(
+                  prospect.regularRegistration.birthdate,
+                  prospect.regularRegistration.freezerTag,
+                  prospect.successfulProspect.businessName
+                );
               }
             });
           }
@@ -113,6 +125,19 @@ Cypress.Commands.add("openProspectingPage", () => {
       cy.get('button[aria-label="toggle sidebar"]').click();
       cy.get('a[href="/customer-registration"]').click();
       cy.get('a[href="/customer-registration/prospect"]').click();
+      cy.get(".sidebar__toggleRemove").click();
+    }
+  });
+});
+
+Cypress.Commands.add("openRegistrationPage", () => {
+  cy.get('a[href="/customer-registration/registration"]').then(($link) => {
+    if ($link.is(":visible")) {
+      cy.get('a[href="/customer-registration/registration"]').click();
+    } else {
+      cy.get('button[aria-label="toggle sidebar"]').click();
+      // cy.get('a[href="/customer-registration"]').click();
+      cy.get('a[href="/customer-registration/registration"]').click();
       cy.get(".sidebar__toggleRemove").click();
     }
   });
@@ -182,6 +207,87 @@ Cypress.Commands.add("releaseFreebies", () => {
   cy.get("button[type=submit]").contains("Release").click();
   cy.clickYes();
 });
+
+Cypress.Commands.add(
+  "registerAsRegular",
+  (birthdate, freezerTag, businessName) => {
+    //Input date
+    cy.get("input[placeholder='MM/DD/YYYY']").type(
+      moment(birthdate).format("MM/DD/YYYY")
+    );
+
+    //Check same as owner's address for business address
+    cy.get('[data-testid="sameAsOwnersAddress"]').click();
+
+    //Click next
+    cy.contains("Next").click();
+
+    //Terms
+    cy.get('[data-testid="freezer-yes"]').click();
+    cy.get('input[type="number"]').type(freezerTag);
+    cy.contains("Submit").click();
+    cy.get('[data-testid="direct-delivery-yes"]').click();
+    cy.get('[data-testid="radio-f2"]').click();
+    cy.get('[data-testid="radio-cod"]').click();
+    cy.get('[data-testid="checkbox-cash"]').click();
+    cy.get('[data-testid="radio-variable"]').click();
+
+    //Signature
+    cy.contains("Sign here").click();
+    //Sign the react signature canvas with a straight line
+    cy.get("canvas")
+      .trigger("mousedown", { which: 1, force: true })
+      .trigger("mousemove", 100, 100, { force: true })
+      .trigger("mouseup", { force: true });
+    cy.contains("Confirm").click();
+
+    cy.contains("Next").click();
+
+    //Attachments if it is visible
+    // if (cy.contains("Attachments").should("be.visible")) {
+    // }
+
+    //Listing Fee
+    cy.contains("Add Product").click();
+
+    //Select product
+    cy.get('[data-testid="product-0"]').click();
+    cy.contains("li", "52320").click();
+    cy.get('[data-testid="unit-cost-0"]').type("2000");
+
+    //Add another row of listing fee
+    cy.contains("Add Product").click();
+
+    //Select another product
+    cy.get('[data-testid="product-1"]').click();
+    cy.contains("li", "52321").click();
+    cy.get('[data-testid="unit-cost-1"]').type("2000");
+
+    //Other Expenses
+    cy.contains("Add Expense").click();
+    cy.get('[data-testid="expense-type-0"]').click();
+    cy.contains("li", "ELECTRICITY").click();
+    cy.get('[data-testid="expense-amount-0"]').type("1000");
+    cy.get('[data-testid="expense-remarks-0"]').type("Electricity Expense");
+
+    //Add another row of other expenses
+    cy.contains("Add Expense").click();
+    cy.get('[data-testid="expense-type-1"]').click();
+    cy.contains("li", "MERCHANDISING ALLOWANCE").click();
+    cy.get('[data-testid="expense-amount-1"]').type("500");
+    cy.get('[data-testid="expense-remarks-1"]').type("Water Expense");
+
+    //Finally submit registration
+    cy.contains("Register").click();
+    cy.get('[data-testid="agree-terms-checkbox"]').click();
+    cy.contains("Register Client").click();
+
+    //Assert that the registration is successful
+    cy.openRegistrationPage();
+    cy.get("input[type='search']").type(businessName);
+    cy.get("td").contains(businessName.toUpperCase()).should("be.visible");
+  }
+);
 
 Cypress.Commands.add("clickYes", () => {
   cy.contains("Yes").click();
