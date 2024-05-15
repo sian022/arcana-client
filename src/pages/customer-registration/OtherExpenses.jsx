@@ -93,7 +93,7 @@ function OtherExpenses() {
   const tableHeads = [
     "Business Name",
     "Owner's Name",
-    "Transaction Number",
+    "Tx Number",
     "Total Amount",
     // "Requested By",
   ];

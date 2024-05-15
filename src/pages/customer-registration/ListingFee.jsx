@@ -102,7 +102,7 @@ function ListingFee() {
   const tableHeads = [
     "Business Name",
     "Business Name",
-    "Transaction Number",
+    "Tx Number",
     "Total Amount",
     // "Requested By",
   ];
