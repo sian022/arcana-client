@@ -1,19 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
+import { TextField, Tooltip } from "@mui/material";
 import CommonDrawer from "../CommonDrawer";
-import { useDispatch, useSelector } from "react-redux";
-import SecondaryButton from "../SecondaryButton";
-import useDisclosure from "../../hooks/useDisclosure";
-import CommonDialog from "../CommonDialog";
+import { useSelector } from "react-redux";
 import { priceChangeSchema } from "../../schema/schema";
 import useSnackbar from "../../hooks/useSnackbar";
 import { NumericFormat } from "react-number-format";
@@ -22,7 +12,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { usePostAddPriceChangeMutation } from "../../features/setup/api/priceModeItemsApi";
 
-function PriceChangeDrawer({ editMode, open, onClose }) {
+function PriceChangeDrawer({ open, onClose }) {
   const snackbar = useSnackbar();
 
   //Redux States
@@ -31,13 +21,11 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
   //React Hook Form
   const {
     handleSubmit,
-    formState: { errors, isValid, isDirty },
-    register,
+    formState: { errors, isValid },
     setValue,
     reset,
     control,
     watch,
-    getValues,
   } = useForm({
     resolver: yupResolver(priceChangeSchema.schema),
     mode: "onChange",
@@ -84,7 +72,7 @@ function PriceChangeDrawer({ editMode, open, onClose }) {
     if (open) {
       setValue("itemId", selectedRowData?.id);
     }
-  }, [open]);
+  }, [open, setValue, selectedRowData?.id]);
 
   return (
     <>
