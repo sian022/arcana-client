@@ -111,7 +111,7 @@ function UserAccount() {
     }
   };
 
-  // Functions: Open & Close
+  // Functions
   const handleAddOpen = () => {
     setEditMode(false);
     onDrawerOpen();

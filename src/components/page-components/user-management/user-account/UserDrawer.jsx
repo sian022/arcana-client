@@ -16,8 +16,8 @@ import { useGetAllClustersQuery } from "../../../../features/setup/api/clusterAp
 import { useSelector } from "react-redux";
 import useUserForm from "./useUserForm.hooks";
 
-const UserDrawer = ({ ...props }) => {
-  const { editMode, onClose, open } = props;
+const UserDrawer = ({ editMode, ...props }) => {
+  const { onClose, open } = props;
 
   // States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -60,6 +60,8 @@ const UserDrawer = ({ ...props }) => {
     matchFrom: "any",
     limit: 50,
   });
+
+  console.log("errors", errors);
 
   return (
     <CommonDrawer
@@ -173,11 +175,11 @@ const UserDrawer = ({ ...props }) => {
           // let format = "###-###-####";
           let format;
 
-          if (formattedValue.length <= 3) {
+          if (formattedValue?.length <= 3) {
             format = "####";
-          } else if (formattedValue.length <= 6) {
+          } else if (formattedValue?.length <= 6) {
             format = "###-####";
-          } else if (formattedValue.length <= 10) {
+          } else if (formattedValue?.length <= 10) {
             format = "###-###-####";
           }
 
@@ -189,10 +191,8 @@ const UserDrawer = ({ ...props }) => {
               size="small"
               customInput={TextField}
               autoComplete="off"
-              allowNegative={false}
-              decimalScale={0}
               valueIsNumericString
-              inputRef={ref}
+              getInputRef={ref}
               onValueChange={(e) => {
                 onChange(e.value);
               }}
@@ -236,7 +236,7 @@ const UserDrawer = ({ ...props }) => {
           options={clusterData?.cluster || []}
           getOptionLabel={(option) => option.cluster}
           disableClearable
-          isLoading={isClusterLoading}
+          loading={isClusterLoading}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
             <TextField
