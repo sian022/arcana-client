@@ -165,8 +165,7 @@ const UserDrawer = ({ editMode, ...props }) => {
         name="mobileNumber"
         render={({ field: { onChange, onBlur, value, ref } }) => {
           const formattedValue = value?.replace(/-/g, "");
-          // let format = "###-###-####";
-          let format;
+          let format = "";
 
           if (formattedValue?.length <= 3) {
             format = "####";
@@ -180,11 +179,10 @@ const UserDrawer = ({ editMode, ...props }) => {
             <PatternFormat
               format={format}
               label="Phone Number"
-              type="text"
+              type="tel"
               size="small"
               customInput={TextField}
               autoComplete="off"
-              valueIsNumericString
               getInputRef={ref}
               onValueChange={(e) => {
                 onChange(e.value);
