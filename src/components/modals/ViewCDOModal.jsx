@@ -1,108 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
 import CommonModal from "../CommonModal";
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  Step,
-  StepButton,
-  StepContent,
-  StepIcon,
-  StepLabel,
-  Stepper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import SecondaryButton from "../SecondaryButton";
-import {
-  Cancel,
-  Check,
-  CheckCircle,
-  Circle,
-  Clear,
-  Close,
-  Delete,
-  EventNote,
-  HowToReg,
-  RemoveCircle,
-} from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import TertiaryButton from "../TertiaryButton";
-import CommonDialog from "../CommonDialog";
-import useDisclosure from "../../hooks/useDisclosure";
-import useSnackbar from "../../hooks/useSnackbar";
-import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
-import { useDeleteUntagUserInClusterMutation } from "../../features/setup/api/clusterApi";
+import { Box, TextField, Typography } from "@mui/material";
+
+import { useSelector } from "react-redux";
 import NoData from "../../assets/images/no-data.jpg";
 
-function ViewCDOModal({ isFetching, data, ...otherProps }) {
-  const { onClose, ...noOnCloseProps } = otherProps;
-
-  const dispatch = useDispatch();
-
-  const [manageMode, setManageMode] = useState(false);
-  const [CDOIndex, setCDOIndex] = useState(0);
-
-  const snackbar = useSnackbar();
+function ViewCDOModal({ ...props }) {
+  const { onClose } = props;
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
-  const [deleteUntagUserInCluster, { isLoading: isDeleteLoading }] =
-    useDeleteUntagUserInClusterMutation();
-
-  //Disclosures
-  const {
-    isOpen: isArchiveOpen,
-    onOpen: onArchiveOpen,
-    onClose: onArchiveClose,
-  } = useDisclosure();
-
   const handleClose = () => {
-    setManageMode(false);
-    setCDOIndex(0);
     onClose();
   };
-
-  const onArchiveSubmit = async () => {
-    try {
-      await deleteUntagUserInCluster({
-        id: selectedRowData?.users?.[CDOIndex]?.userId,
-        clusterId: selectedRowData?.id,
-      }).unwrap();
-
-      // dispatch(setSelectedRow());
-      snackbar({ message: "CDO successfully untagged!", variant: "success" });
-
-      // if (!isFetching) {
-      //   dispatch(
-      //     setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
-      //   );
-      // }
-
-      onArchiveClose();
-    } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
-        snackbar({ message: "Error untagging CDO", variant: "error" });
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (!isFetching) {
-      dispatch(
-        setSelectedRow(data?.find((item) => item.id === selectedRowData?.id))
-      );
-    }
-  }, [isFetching]);
 
   return (
     <>
       <CommonModal
         width="400px"
-        {...otherProps}
+        {...props}
         closeTopRight
         customOnClose={handleClose}
       >
@@ -166,26 +81,6 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
                           {user.fullname}
                         </Typography>
                       </Box>
-
-                      {/* <IconButton
-                        // sx={{
-                        //   position: "absolute",
-                        //   right: 0,
-                        //   top: 0,
-                        // }}
-                        color="error"
-                        onClick={() => {
-                          onArchiveOpen();
-                          setCDOIndex(index);
-                        }}
-                      >
-                        <RemoveCircle />
-                      </IconButton> */}
-                      {/* {!user?.status ? (
-                        <CheckCircle sx={{ color: "success.main" }} />
-                      ) : (
-                        <RemoveCircle sx={{ color: "error.main" }} />
-                      )} */}
                     </Box>
                   </>
                 ))
@@ -194,20 +89,6 @@ function ViewCDOModal({ isFetching, data, ...otherProps }) {
           </Box>
         </Box>
       </CommonModal>
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isDeleteLoading}
-        // question={!status}
-      >
-        Are you sure you want to untag <br />
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.users?.[CDOIndex]?.fullname}
-        </span>
-        ?
-      </CommonDialog>
     </>
   );
 }
