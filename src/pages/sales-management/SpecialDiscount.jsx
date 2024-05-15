@@ -113,6 +113,7 @@ function SpecialDiscount() {
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsQuery({
       RegistrationStatus: "Approved",
+      PageSize: 1000,
     });
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
@@ -313,6 +314,7 @@ function SpecialDiscount() {
         (client) => client.id === selectedRowData?.clientId
       )
     );
+    console.log(clientData, "selectedRowData");
     setValue(
       "discount",
       selectedRowData?.discount
