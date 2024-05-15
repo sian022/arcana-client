@@ -65,7 +65,29 @@ Cypress.Commands.add("openApprovalPage", () => {
 });
 
 Cypress.Commands.add("approveRegistration", () => {
-  cy.get(".approval__table__row").first().click();
-  cy.get('button[type="button"]').contains("Approve").click();
-  cy.get('button[type="submit"]').click();
+  cy.get('[data-testid="actions"]').first().click();
+  cy.contains("View").click();
+
+  //Personal Info should be visible
+  cy.get(".viewRegistrationModal__personalInfo").should("be.visible");
+  cy.contains("Next").click();
+
+  //Terms and Conditions should be visible
+  cy.get(".viewRegistrationModal__termsAndConditions").should("be.visible");
+  cy.contains("Next").click();
+
+  //Freebies should be visible
+  cy.get(".viewRegistrationModal__listingFee").should("be.visible");
+  cy.contains("Next").click();
+
+  //Listing Fee should be visible
+  cy.get(".viewRegistrationModal__listingFee").should("be.visible");
+  cy.contains("Next").click();
+
+  //Other Expenses should be visible
+  cy.get(".viewRegistrationModal__listingFee").should("be.visible");
+
+  //Approve
+  cy.contains("Approve").click();
+  cy.contains("Yes").click();
 });

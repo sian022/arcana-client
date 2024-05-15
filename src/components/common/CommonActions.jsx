@@ -128,6 +128,7 @@ function CommonActions({
         onClick={onOpen}
         sx={{ color: "secondary.main", p: 0 }}
         ref={anchorRef}
+        data-testid="actions"
       >
         <More />
       </IconButton>
