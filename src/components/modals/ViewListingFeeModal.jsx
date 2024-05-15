@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import DangerButton from "../DangerButton";
-import CommonDialog from "../CommonDialog";
+import CommonDialog from "../common/CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import {

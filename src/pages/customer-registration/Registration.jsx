@@ -10,7 +10,7 @@ import {
 } from "../../features/registration/api/registrationApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import ViewRegistrationDetailsModal from "../../components/modals/view-registration-modal/ViewRegistrationDetailsModal";
-import CommonDialog from "../../components/CommonDialog";
+import CommonDialog from "../../components/common/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";

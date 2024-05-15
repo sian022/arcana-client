@@ -18,7 +18,7 @@ import SecondaryButton from "../../../components/SecondaryButton";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import useDisclosure from "../../../hooks/useDisclosure";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
-import CommonDialog from "../../../components/CommonDialog";
+import CommonDialog from "../../../components/common/CommonDialog";
 import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
 import { debounce } from "../../../utils/CustomFunctions";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";

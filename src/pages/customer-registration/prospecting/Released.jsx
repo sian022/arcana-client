@@ -11,7 +11,7 @@ import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 import useDisclosure from "../../../hooks/useDisclosure";
 import RegisterRegularForm from "./RegisterRegularForm";
 import PrintFreebiesModal from "../../../components/modals/PrintFreebiesModal";
-import CommonDialog from "../../../components/CommonDialog";
+import CommonDialog from "../../../components/common/CommonDialog";
 import useSnackbar from "../../../hooks/useSnackbar";
 import SearchVoidMixin from "../../../components/mixins/SearchVoidMixin";
 
@@ -106,7 +106,7 @@ function Released() {
   useEffect(() => {
     setCount(data?.totalCount);
     dispatch(setBadge({ ...badges, released: data?.totalCount }));
-  }, [data]);
+  }, [data, dispatch, badges]);
 
   return (
     <>

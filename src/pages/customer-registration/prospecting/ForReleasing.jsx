@@ -21,7 +21,7 @@ import {
 } from "../../../features/prospect/api/prospectApi";
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
 import { useDispatch, useSelector } from "react-redux";
-import CommonDialog from "../../../components/CommonDialog";
+import CommonDialog from "../../../components/common/CommonDialog";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import { debounce } from "../../../utils/CustomFunctions";

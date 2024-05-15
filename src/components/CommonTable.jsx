@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { transformKey } from "../utils/CustomFunctions";
-import CommonActions from "./CommonActions";
+import CommonActions from "./common/CommonActions";
 import NoData from "../assets/images/NoRecordsFound.svg";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";

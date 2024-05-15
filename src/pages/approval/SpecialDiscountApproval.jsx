@@ -15,7 +15,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { AppContext } from "../../context/AppContext";
-import CommonDialog from "../../components/CommonDialog";
+import CommonDialog from "../../components/common/CommonDialog";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 
 function SpecialDiscountApproval() {

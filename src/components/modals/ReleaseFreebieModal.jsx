@@ -24,7 +24,7 @@ import { usePutReleaseProspectMutation } from "../../features/prospect/api/prosp
 import { base64ToBlob, debounce } from "../../utils/CustomFunctions";
 import SuccessSnackbar from "../SuccessSnackbar";
 import ErrorSnackbar from "../ErrorSnackbar";
-import CommonDialog from "../CommonDialog";
+import CommonDialog from "../common/CommonDialog";
 import ViewPhotoModal from "./ViewPhotoModal";
 import RegisterRegularForm from "../../pages/customer-registration/prospecting/RegisterRegularForm";
 import { DirectReleaseContext } from "../../context/DirectReleaseContext";

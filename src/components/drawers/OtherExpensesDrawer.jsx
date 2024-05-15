@@ -10,7 +10,7 @@ import SecondaryButton from "../SecondaryButton";
 import ErrorSnackbar from "../ErrorSnackbar";
 import useDisclosure from "../../hooks/useDisclosure";
 import SuccessSnackbar from "../SuccessSnackbar";
-import CommonDialog from "../CommonDialog";
+import CommonDialog from "../common/CommonDialog";
 import { requestExpensesSchema } from "../../schema/schema";
 import { useGetAllClientsQuery } from "../../features/registration/api/registrationApi";
 import { NumericFormat } from "react-number-format";

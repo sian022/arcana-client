@@ -7,6 +7,7 @@ import {
   usePostUserMutation,
   usePutUserMutation,
 } from "../../../../features/user-management/api/userAccountApi";
+import useSnackbar from "../../../../hooks/useSnackbar";
 
 const useUserForm = ({
   editMode,
@@ -15,8 +16,9 @@ const useUserForm = ({
   clusterData,
   onClose,
   open,
-  snackbar,
 }) => {
+  const snackbar = useSnackbar();
+
   const {
     // React Hook Form: Form and Field State
     handleSubmit,

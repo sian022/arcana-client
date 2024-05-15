@@ -10,7 +10,6 @@ import {
   useGetAllListingFeeQuery,
 } from "../../features/listing-fee/api/listingFeeApi";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
@@ -20,6 +19,7 @@ import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import AddButtonSearchMixin from "../../components/mixins/AddButtonSearchMixin";
 import ListingFeeBalancesModal from "../../components/modals/registration/ListingFeeBalancesModal";
 import { Wallet } from "@mui/icons-material";
+import useConfirm from "../../hooks/useConfirm";
 
 function ListingFee() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -30,6 +30,7 @@ function ListingFee() {
   const [count, setCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
 
+  const confirm = useConfirm();
   const snackbar = useSnackbar();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
 
@@ -46,12 +47,6 @@ function ListingFee() {
     isOpen: isViewOpen,
     onOpen: onViewOpen,
     onClose: onViewClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
   } = useDisclosure();
 
   const {
@@ -75,8 +70,7 @@ function ListingFee() {
     PageSize: rowsPerPage,
   });
 
-  const [deleteCancelListingFee, { isLoading: isDeleteLoading }] =
-    useDeleteCancelListingFeeMutation();
+  const [deleteCancelListingFee] = useDeleteCancelListingFeeMutation();
 
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
@@ -129,17 +123,31 @@ function ListingFee() {
     onListingFeeOpen();
   };
 
-  const onDeleteSubmit = async () => {
+  const onCancel = async () => {
     try {
-      await deleteCancelListingFee(selectedRowData?.listingFeeId).unwrap();
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to cancel listing fee request for{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.businessName}
+            </span>
+            ?
+          </>
+        ),
+        question: false,
+        callback: () =>
+          deleteCancelListingFee(selectedRowData?.listingFeeId).unwrap(),
+      });
 
       snackbar({
         message: "Listing Fee cancelled successfully",
         variant: "success",
       });
-      onDeleteClose();
     } catch (error) {
-      snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      if (error.isConfirmed) {
+        snackbar({ message: handleCatchErrorMessage(error), variant: "error" });
+      }
     }
   };
 
@@ -214,7 +222,7 @@ function ListingFee() {
             onView={onViewOpen}
             onEdit={listingFeeStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
-            onCancel={listingFeeStatus === "Rejected" && onDeleteOpen}
+            onCancel={listingFeeStatus === "Rejected" && onCancel}
             mt={"-20px"}
           />
         )}
@@ -235,19 +243,6 @@ function ListingFee() {
         open={isViewOpen}
         onClose={onViewClose}
       />
-
-      <CommonDialog
-        open={isDeleteOpen}
-        onClose={onDeleteClose}
-        isLoading={isDeleteLoading}
-        onYes={onDeleteSubmit}
-      >
-        Are you sure you want to cancel listing fee request for{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.businessName}
-        </span>
-        ?
-      </CommonDialog>
 
       <ApprovalHistoryModal
         open={isHistoryOpen}

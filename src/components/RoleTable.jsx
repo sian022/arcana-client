@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { transformKey } from "../utils/CustomFunctions";
-import CommonActions from "./CommonActions";
+import CommonActions from "./common/CommonActions";
 import NoData from "../assets/images/NoRecordsFound.svg";
 import { useDispatch } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";

@@ -6,7 +6,6 @@ import CommonDrawer from "../../components/CommonDrawer";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CommonDialog from "../../components/CommonDialog";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import {
   useGetAllTermDaysQuery,
@@ -198,20 +197,6 @@ function OnlinePaymentPlatforms() {
           error={errors?.name}
         />
       </CommonDrawer>
-
-      <CommonDialog
-        open={isArchiveOpen}
-        onClose={onArchiveClose}
-        onYes={onArchiveSubmit}
-        isLoading={isArchiveLoading}
-        question={!status}
-      >
-        Are you sure you want to {status ? "archive" : "restore"}{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.days}
-        </span>
-        ?
-      </CommonDialog>
     </Box>
   );
 }

@@ -14,7 +14,7 @@ import AttachmentsTab from "./AttachmentsTab";
 import DangerButton from "../../DangerButton";
 import useDisclosure from "../../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
-import CommonDialog from "../../CommonDialog";
+import CommonDialog from "../../common/CommonDialog";
 import { Close } from "@mui/icons-material";
 import {
   useLazyGetListingFeeByClientIdQuery,
@@ -135,16 +135,6 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
             ? "viewRegistrationModal__headersFive"
             : "viewRegistrationModal__headers"
         }
-        // Removing freebies, listing fee, and other expenses in approval
-        // className={
-        //   clientStatus !== "Approved" && selectedRowData?.terms === "COD"
-        //     ? "viewRegistrationModal__headersThree"
-        //     : clientStatus !== "Approved" && selectedRowData?.terms !== "COD"
-        //     ? "viewRegistrationModal__headersFour"
-        //     : clientStatus === "Approved" && selectedRowData?.terms === "COD"
-        //     ? "viewRegistrationModal__headersFive"
-        //     : "viewRegistrationModal__headers"
-        // }
       >
         {navigators.map((item, i) => (
           <Button

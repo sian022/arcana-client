@@ -1,6 +1,5 @@
 import { Controller } from "react-hook-form";
 import CommonDrawer from "../../../CommonDrawer";
-import useSnackbar from "../../../../hooks/useSnackbar";
 import {
   Autocomplete,
   InputAdornment,
@@ -21,9 +20,6 @@ const UserDrawer = ({ editMode, ...props }) => {
 
   // States
   const selectedRowData = useSelector((state) => state.selectedRow.value);
-
-  // Hooks
-  const snackbar = useSnackbar();
 
   // RTK Query: Autocomplete Datas
   const { data: userRoleData } = useGetAllUserRolesQuery({
@@ -52,7 +48,6 @@ const UserDrawer = ({ editMode, ...props }) => {
     userRoleData,
     clusterData,
     onClose,
-    snackbar,
     open,
   });
 
@@ -61,8 +56,7 @@ const UserDrawer = ({ editMode, ...props }) => {
     limit: 50,
   });
 
-  console.log("errors", errors);
-
+  console.log(isSedarLoading, "isSedarLoading");
   return (
     <CommonDrawer
       {...props}

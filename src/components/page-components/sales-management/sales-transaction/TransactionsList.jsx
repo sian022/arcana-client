@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Box, Divider, IconButton, TextField, Typography } from "@mui/material";
 import { KeyboardDoubleArrowLeft, Search } from "@mui/icons-material";
-import CommonTable from "../CommonTable";
+import CommonTable from "../../../CommonTable";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import SecondaryButton from "../SecondaryButton";
-import useDisclosure from "../../hooks/useDisclosure";
-import ViewTransactionModal from "../modals/sales-management/ViewTransactionModal";
-import ViewAttachmentModal from "../modals/sales-management/ViewAttachmentModal";
-import { debounce } from "../../utils/CustomFunctions";
-import { useGetAllSalesTransactionQuery } from "../../features/sales-management/api/salesTransactionApi";
-import CommonTableSkeleton from "../CommonTableSkeleton";
+import SecondaryButton from "../../../SecondaryButton";
+import useDisclosure from "../../../../hooks/useDisclosure";
+import ViewTransactionModal from "../../../modals/sales-management/ViewTransactionModal";
+import ViewAttachmentModal from "../../../modals/sales-management/ViewAttachmentModal";
+import { debounce } from "../../../../utils/CustomFunctions";
+import { useGetAllSalesTransactionQuery } from "../../../../features/sales-management/api/salesTransactionApi";
+import CommonTableSkeleton from "../../../CommonTableSkeleton";
 import * as _ from "lodash";
 
 function TransactionsList({ setTransactionsMode }) {

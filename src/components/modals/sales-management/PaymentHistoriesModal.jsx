@@ -32,7 +32,7 @@ import {
   useLazyGetAllPaymentHistoriesQuery,
   useVoidPaymentTransactionMutation,
 } from "../../../features/sales-management/api/paymentTransactionApi";
-import CommonDialog from "../../CommonDialog";
+import CommonDialog from "../../common/CommonDialog";
 import useDisclosure from "../../../hooks/useDisclosure";
 
 function PaymentHistoriesModal({ clientId, ...props }) {
