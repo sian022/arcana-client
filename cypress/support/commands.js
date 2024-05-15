@@ -1,25 +1,40 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add("login", (username, password) => {
+  cy.get('input[name="username"]').type(username);
+  cy.get('input[name="password"]').type(password);
+  cy.get('button[type="submit"]').click();
+
+  // Ensure successful login
+  cy.url().should("equal", "http://localhost:5111/");
+  cy.get(".dashboard__top__greetingCard__greeting").should(
+    "contain",
+    "Fresh morning!"
+  );
+});
+
+Cypress.Commands.add("openApprovalPage", () => {
+  cy.get('a[href="/approval"]').then(($link) => {
+    if ($link.is(":visible")) {
+      cy.get('a[href="/approval"]').click();
+      cy.get('a[href="/approval/registration-approval"]').click();
+    } else {
+      cy.get('button[aria-label="toggle sidebar"]').click();
+      cy.get('a[href="/approval"]').click();
+      cy.get('a[href="/approval/registration-approval"]').click();
+      cy.get(".sidebar__toggleRemove").click();
+    }
+  });
+});
+
+Cypress.Commands.add("openRegistrationPage", () => {
+  cy.get('a[href="/customer-registration"]').then(($link) => {
+    if ($link.is(":visible")) {
+      cy.get('a[href="/customer-registration"]').click();
+      cy.get('a[href="/customer-registration/registration"]').click();
+    } else {
+      cy.get('button[aria-label="toggle sidebar"]').click();
+      cy.get('a[href="/customer-registration"]').click();
+      cy.get('a[href="/customer-registration/registration"]').click();
+      cy.get(".sidebar__toggleRemove").click();
+    }
+  });
+});
