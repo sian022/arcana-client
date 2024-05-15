@@ -391,7 +391,10 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                         Reject
                       </DangerButton>
 
-                      <SecondaryButton onClick={onApproveConfirmOpen}>
+                      <SecondaryButton
+                        onClick={onApproveConfirmOpen}
+                        data-testid="approve-registration"
+                      >
                         Approve
                       </SecondaryButton>
                     </Box>

@@ -88,6 +88,6 @@ Cypress.Commands.add("approveRegistration", () => {
   cy.get(".viewRegistrationModal__listingFee").should("be.visible");
 
   //Approve
-  cy.contains("Approve").click();
+  cy.get('[data-testid="approve-registration"]').click();
   cy.contains("Yes").click();
 });

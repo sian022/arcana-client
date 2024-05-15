@@ -88,6 +88,7 @@ function CommonTable({
   checkedArray,
   setCheckedArray,
   warning,
+  booleanDisplayOptions = [],
 }) {
   const dispatch = useDispatch();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -260,6 +261,24 @@ function CommonTable({
                   )}
 
                   {(customOrderKeys || dataToMapKeys).map((keys, k) => {
+                    if (
+                      booleanDisplayOptions.some(
+                        (option) => option.keyName === keys
+                      )
+                    ) {
+                      const foundOption = booleanDisplayOptions.find(
+                        (option) => option.keyName === keys
+                      );
+
+                      return (
+                        <TableCell key={k}>
+                          {item[keys]
+                            ? foundOption?.trueDisplay
+                            : foundOption?.falseDisplay}
+                        </TableCell>
+                      );
+                    }
+
                     if (item[keys] === true && keys !== attachKey) {
                       return (
                         <TableCell key={k}>

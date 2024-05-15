@@ -28,6 +28,9 @@ export const theme = createTheme({
     },
     tertiary: {
       main: colorSchemes.light.tertiary,
+      light: "#66CCCC",
+      dark: "#004C4C",
+      contrastText: "#fff",
     },
     accent: {
       main: colorSchemes.light.accent,
