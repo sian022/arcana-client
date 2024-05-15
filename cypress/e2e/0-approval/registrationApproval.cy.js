@@ -2,6 +2,7 @@
 
 describe("Registration Approval", () => {
   beforeEach(() => {
+    cy.visit("http://localhost:5111/login");
     cy.login("djjimenez", "1234");
 
     // Navigate to registration approval page
@@ -19,6 +20,24 @@ describe("Registration Approval", () => {
       // Wait for the response
       cy.wait("@approveRegistration").then((interception) => {
         //Go to approved tab and search
+        cy.contains("Approved Clients").click();
+        cy.get('input[type="search"]').type(businessName);
+
+        if (interception.response.statusCode === 200) {
+          cy.get("td").contains(businessName).should("be.visible");
+        } else {
+          cy.get("td").contains(businessName).should("not.be.visible");
+        }
+
+        // Logout
+        cy.logout();
+        cy.url().should("equal", "http://localhost:5111/login");
+        //Login as ADMIN
+        cy.login("admin", "admin");
+        // Navigate to registration  page
+        cy.openRegistrationPage();
+        cy.url().should("include", "/customer-registration/registration");
+        // Go to approved tab and search
         cy.contains("Approved Clients").click();
         cy.get('input[type="search"]').type(businessName);
 
@@ -49,6 +68,25 @@ describe("Registration Approval", () => {
         } else {
           cy.get("td").contains(businessName).should("not.be.visible");
         }
+
+        // Logout
+        cy.logout();
+        cy.url().should("equal", "http://localhost:5111/login");
+        // Login as ADMIN
+        cy.login("admin", "admin");
+        // Navigate to registration page
+        cy.openRegistrationPage();
+        cy.url().should("include", "/customer-registration/registration");
+
+        //Go to approved tab and search
+        cy.contains("Rejected Clients").click();
+        cy.get('input[type="search"]').type(businessName);
+
+        if (interception.response.statusCode === 200) {
+          cy.get("td").contains(businessName).should("be.visible");
+        } else {
+          cy.get("td").contains(businessName).should("not.be.visible");
+        }
       });
     });
   });
@@ -56,7 +94,6 @@ describe("Registration Approval", () => {
 
 // Define custom commands
 Cypress.Commands.add("login", (username, password) => {
-  cy.visit("http://localhost:5111/login");
   cy.get('input[name="username"]').type(username);
   cy.get('input[name="password"]').type(password);
   cy.get('button[type="submit"]').click();
@@ -78,6 +115,20 @@ Cypress.Commands.add("openApprovalPage", () => {
       cy.get('button[aria-label="toggle sidebar"]').click();
       cy.get('a[href="/approval"]').click();
       cy.get('a[href="/approval/registration-approval"]').click();
+      cy.get(".sidebar__toggleRemove").click();
+    }
+  });
+});
+
+Cypress.Commands.add("openRegistrationPage", () => {
+  cy.get('a[href="/customer-registration"]').then(($link) => {
+    if ($link.is(":visible")) {
+      cy.get('a[href="/customer-registration"]').click();
+      cy.get('a[href="/customer-registration/registration"]').click();
+    } else {
+      cy.get('button[aria-label="toggle sidebar"]').click();
+      cy.get('a[href="/customer-registration"]').click();
+      cy.get('a[href="/customer-registration/registration"]').click();
       cy.get(".sidebar__toggleRemove").click();
     }
   });
