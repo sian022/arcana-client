@@ -146,6 +146,7 @@ function Header() {
             sx={{ color: "secondary.main" }}
             onClick={onMenuOpen}
             ref={anchorRef}
+            data-testid="account-menu"
           >
             <AccountCircle />
           </IconButton>

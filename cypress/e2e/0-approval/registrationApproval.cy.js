@@ -1,36 +1,55 @@
 /// <reference types="cypress" />
 
-describe("Approve Registration", () => {
+describe("Registration Approval", () => {
   beforeEach(() => {
     cy.login("djjimenez", "1234");
-  });
 
-  it("should navigate to registration approval page, and approve a registration", () => {
     // Navigate to registration approval page
     cy.openApprovalPage();
     cy.url().should("include", "/approval/registration-approval");
+  });
 
+  it("should approve a registration", () => {
     // Approve a registration
-    cy.intercept("PUT", "/RegularClients/ApproveClientRegistration/*").as(
+    cy.intercept("PUT", "/api/RegularClients/ApproveClientRegistration/*").as(
       "approveRegistration"
     );
 
-    cy.approveRegistration();
+    cy.approveRegistration().then((businessName) => {
+      // Wait for the response
+      cy.wait("@approveRegistration").then((interception) => {
+        //Go to approved tab and search
+        cy.contains("Approved Clients").click();
+        cy.get('input[type="search"]').type(businessName);
 
-    // Wait for the response
-    cy.wait("@approveRegistration").then((interception) => {
-      const responseData = interception.response.body.value;
-      if (interception.response.statusCode === 200) {
-        cy.contains("Registration approved successfully").should(
-          "be.visible",
-          "Registration approved successfully"
-        );
-      } else {
-        cy.contains("Registration failed to approve").should(
-          "be.visible",
-          "failed"
-        );
-      }
+        if (interception.response.statusCode === 200) {
+          cy.get("td").contains(businessName).should("be.visible");
+        } else {
+          cy.get("td").contains(businessName).should("not.be.visible");
+        }
+      });
+    });
+  });
+
+  it("should reject a registration", () => {
+    // Reject a registration
+    cy.intercept("PUT", "/api/Clients/RejectClientRegistration/*").as(
+      "rejectRegistration"
+    );
+
+    cy.rejectRegistration().then((businessName) => {
+      // Wait for the response
+      cy.wait("@rejectRegistration").then((interception) => {
+        //Go to approved tab and search
+        cy.contains("Rejected Clients").click();
+        cy.get('input[type="search"]').type(businessName);
+
+        if (interception.response.statusCode === 200) {
+          cy.get("td").contains(businessName).should("be.visible");
+        } else {
+          cy.get("td").contains(businessName).should("not.be.visible");
+        }
+      });
     });
   });
 });
@@ -65,29 +84,86 @@ Cypress.Commands.add("openApprovalPage", () => {
 });
 
 Cypress.Commands.add("approveRegistration", () => {
-  cy.get('[data-testid="actions"]').first().click();
-  cy.contains("View").click();
+  return cy
+    .get('[data-testid="actions"]')
+    .first()
+    .click()
+    .then(() => {
+      const businessNamePosition = 1;
+      // Get the businessName of a column in the same row
+      return cy
+        .get('[data-testid="actions"]')
+        .first()
+        .parents("tr")
+        .find(`td:nth-child(${businessNamePosition})`)
+        .invoke("text")
+        .then(async (text) => {
+          cy.contains("View").click();
 
-  //Personal Info should be visible
+          cy.viewRegistrationDetails();
+
+          // Approve
+          cy.get('[data-testid="approve-registration"]').click();
+          cy.contains("Yes").click();
+          // Return the text
+          return text;
+        });
+    });
+});
+
+Cypress.Commands.add("rejectRegistration", () => {
+  return cy
+    .get('[data-testid="actions"]')
+    .first()
+    .click()
+    .then(() => {
+      const businessNamePosition = 1;
+      // Get the businessName of a column in the same row
+      return cy
+        .get('[data-testid="actions"]')
+        .first()
+        .parents("tr")
+        .find(`td:nth-child(${businessNamePosition})`)
+        .invoke("text")
+        .then(async (text) => {
+          cy.contains("View").click();
+
+          cy.viewRegistrationDetails();
+
+          // Reject
+          cy.get('[data-testid="reject-registration"]').click();
+          cy.get('[data-testid="reject-reason"]').type("Sample Reason");
+          cy.get('[data-testid="confirm-reason"]').click();
+          cy.contains("Yes").click();
+
+          // Return the text
+          return text;
+        });
+    });
+});
+
+Cypress.Commands.add("viewRegistrationDetails", () => {
+  // Personal Info should be visible
   cy.get(".viewRegistrationModal__personalInfo").should("be.visible");
   cy.contains("Next").click();
-
-  //Terms and Conditions should be visible
+  // Terms and Conditions should be visible
   cy.get(".viewRegistrationModal__termsAndConditions").should("be.visible");
   cy.contains("Next").click();
-
-  //Freebies should be visible
+  // Attachments should be visible only if attachments are present
+  cy.contains("Attachments");
+  cy.get(".viewRegistrationModal__attachments").should("be.visible");
+  cy.contains("Next").click();
+  // Freebies should be visible
   cy.get(".viewRegistrationModal__listingFee").should("be.visible");
   cy.contains("Next").click();
-
-  //Listing Fee should be visible
+  // Listing Fee should be visible
   cy.get(".viewRegistrationModal__listingFee").should("be.visible");
   cy.contains("Next").click();
-
-  //Other Expenses should be visible
+  // Other Expenses should be visible
   cy.get(".viewRegistrationModal__listingFee").should("be.visible");
+});
 
-  //Approve
-  cy.get('[data-testid="approve-registration"]').click();
-  cy.contains("Yes").click();
+Cypress.Commands.add("logout", () => {
+  cy.get('[data-testid="account-menu"]').click();
+  cy.contains("Logout").click();
 });

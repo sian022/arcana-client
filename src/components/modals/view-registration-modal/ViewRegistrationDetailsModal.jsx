@@ -387,7 +387,11 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                         gap: "10px",
                       }}
                     >
-                      <DangerButton contained onClick={onRejectConfirmOpen}>
+                      <DangerButton
+                        contained
+                        onClick={onRejectConfirmOpen}
+                        data-testid="reject-registration"
+                      >
                         Reject
                       </DangerButton>
 
@@ -449,6 +453,7 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                 }}
                 multiline
                 rows={3}
+                data-testid="reject-reason"
               />
               <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>
                 <Typography>Confirm reason</Typography>
@@ -458,6 +463,7 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                     setConfirmReason(e.target.checked);
                   }}
                   disabled={!reason.trim()}
+                  data-testid="confirm-reason"
                 />
               </Box>
             </Box>
