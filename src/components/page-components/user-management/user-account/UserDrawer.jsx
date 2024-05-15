@@ -56,7 +56,6 @@ const UserDrawer = ({ editMode, ...props }) => {
     limit: 50,
   });
 
-  console.log(isSedarLoading, "isSedarLoading");
   return (
     <CommonDrawer
       {...props}
