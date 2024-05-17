@@ -472,7 +472,7 @@ function SalesTransaction() {
                     onClick={onCashoutOpen}
                     endIcon={<ShoppingCartCheckout />}
                   >
-                    Cashout
+                    Complete Order
                   </SecondaryButton>
                 </Box>
               </Box>

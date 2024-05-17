@@ -179,7 +179,7 @@ function PaymentTransaction() {
         ) : (
           <>
             <PageHeaderTabs
-              pageTitle="Sales Invoices"
+              pageTitle="Invoices"
               setSearch={setSearch}
               tabsList={paymentNavigation}
               setTabViewing={setTabViewing}

@@ -152,7 +152,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   return (
     <CommonModalForm
       onSubmit={handleSubmit(onSubmit)}
-      title="Cashout"
+      title="Complete Order"
       // width="800px"
       width="600px"
       disableSubmit={!isValid || !isDirty}
@@ -320,7 +320,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
             defaultValue=""
             render={({ field }) => (
               <TextField
-                label="Charge Invoice No."
+                label="Invoice No."
                 size="small"
                 autoComplete="off"
                 type="number"

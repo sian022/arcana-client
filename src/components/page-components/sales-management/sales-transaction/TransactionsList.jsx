@@ -104,7 +104,7 @@ function TransactionsList({ setTransactionsMode }) {
             </IconButton>
 
             <Typography className="transactionsList__header__left__title">
-              Sales Invoices
+              Invoices
             </Typography>
           </Box>
         </Box>
