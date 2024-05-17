@@ -131,10 +131,12 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     if (open) {
       if (client?.variableDiscount) {
         setTimeout(() => {
+          discountRef.current.focus();
           discountRef.current.select();
         }, 0);
       } else {
         setTimeout(() => {
+          chargeInvoiceRef.current.focus();
           chargeInvoiceRef.current.select();
         }, 0);
       }
