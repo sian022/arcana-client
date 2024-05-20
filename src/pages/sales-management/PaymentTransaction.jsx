@@ -124,7 +124,10 @@ function PaymentTransaction() {
         ),
         question: false,
         callback: () =>
-          voidSalesTransaction({ id: selectedRowData?.transactionNo }).unwrap(),
+          voidSalesTransaction({
+            transactionId: [selectedRowData?.transactionNo],
+            reason: "test",
+          }).unwrap(),
       });
 
       snackbar({
@@ -201,7 +204,12 @@ function PaymentTransaction() {
                 mapData={transactionData?.transactions}
                 customOrderKeys={customOrderKeys}
                 tableHeads={tableHeads}
-                warning={{ key: "status", value: "Over due" }}
+                warning={
+                  transactionStatus === "Receivable" && {
+                    key: "status",
+                    value: "Over due",
+                  }
+                }
                 includeActions
                 lowerCompact
                 moveNoDataUp

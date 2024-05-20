@@ -400,7 +400,7 @@ function ListingFeeDrawer({
                 flexDirection: "column",
                 gap: "10px",
                 height: "270px",
-                overflowX: "hidden",
+                overflowX: "hidden !important",
                 overflowY: "auto",
               }}
               ref={parent}
