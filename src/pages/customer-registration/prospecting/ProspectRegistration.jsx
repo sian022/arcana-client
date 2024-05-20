@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AddArchiveSearchMixin from "../../../components/mixins/AddArchiveSearchMixin";
 import useDisclosure from "../../../hooks/useDisclosure";
 import {
   Autocomplete,
@@ -16,6 +17,7 @@ import ControlledAutocomplete from "../../../components/ControlledAutocomplete";
 import { useGetAllStoreTypesQuery } from "../../../features/setup/api/storeTypeApi";
 import {
   useGetAllApprovedProspectsQuery,
+  usePatchProspectStatusMutation,
   usePostProspectMutation,
   usePutProspectMutation,
 } from "../../../features/prospect/api/prospectApi";
@@ -26,26 +28,25 @@ import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import { debounce } from "../../../utils/CustomFunctions";
 import FreebieForm from "./FreebieForm";
-import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal";
-import AddSearchMixin from "../../../components/mixins/AddSearchMixin";
-import CancelFreebiesModal from "../../../components/modals/CancelFreebiesModal";
+import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import TertiaryButton from "../../../components/TertiaryButton";
 import { PatternFormat } from "react-number-format";
-import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import DangerButton from "../../../components/DangerButton";
 import SecondaryButton from "../../../components/SecondaryButton";
 
-function ForReleasing() {
+function ProspectRegistration() {
   const [drawerMode, setDrawerMode] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
-  const [newProspectName, setNewProspectName] = useState("");
   const [editMode, setEditMode] = useState(false);
 
   const dispatch = useDispatch();
+  const selectedRowData = useSelector((state) => state.selectedRow.value);
   const selectedStoreType = useSelector(
     (state) => state.selectedStoreType.value
   );
@@ -61,6 +62,12 @@ function ForReleasing() {
     isOpen: isFreebieFormOpen,
     onOpen: onFreebieFormOpen,
     onClose: onFreebieFormClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isArchiveOpen,
+    onOpen: onArchiveOpen,
+    onClose: onArchiveClose,
   } = useDisclosure();
 
   const {
@@ -93,19 +100,8 @@ function ForReleasing() {
     onClose: onFreebieConfirmClose,
   } = useDisclosure();
 
-  const {
-    isOpen: isFreebieReleaseOpen,
-    onOpen: onFreebieReleaseOpen,
-    onClose: onFreebieReleaseClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isFreebieCancelOpen,
-    onOpen: onFreebieCancelOpen,
-    onClose: onFreebieCancelClose,
-  } = useDisclosure();
-
-  //Constants
+  // Constants;
+  // const excludeKeys = [];
 
   const tableHeads = [
     "Business Name",
@@ -133,22 +129,26 @@ function ForReleasing() {
     clearErrors,
   } = useForm({
     resolver: yupResolver(prospectSchema.schema),
+    // resolver: yupResolver(prospectWithLocationsSchema.schema),
     mode: "onSubmit",
     defaultValues: prospectSchema.defaultValues,
+    // defaultValues: prospectWithLocationsSchema.defaultValues,
   });
 
   //RTK Query
   const [postProspect, { isLoading: isAddLoading }] = usePostProspectMutation();
   const { data, isFetching } = useGetAllApprovedProspectsQuery({
     Search: search,
+    Status: status,
     PageNumber: page + 1,
     PageSize: rowsPerPage,
     StoreType: selectedStoreType !== "Main" ? selectedStoreType : "",
-    FreebieStatus: "For Releasing",
   });
   const [putProspect, { isLoading: isEditLoading }] = usePutProspectMutation();
+  const [patchProspectStatus, { isLoading: isArchiveLoading }] =
+    usePatchProspectStatusMutation();
 
-  const { data: storeTypeData } = useGetAllStoreTypesQuery();
+  const { data: storeTypeData } = useGetAllStoreTypesQuery({ Status: true });
 
   //Drawer Handlers
   const onDrawerSubmit = async (data) => {
@@ -175,11 +175,10 @@ function ForReleasing() {
       }
 
       dispatch(setSelectedRow(response?.value));
-
+      onConfirmClose();
       handleDrawerClose();
 
       if (drawerMode === "add") {
-        setNewProspectName(watch("businessName"));
         debounce(onFreebieConfirmOpen(), 2000);
       }
 
@@ -200,6 +199,25 @@ function ForReleasing() {
     onConfirmClose();
   };
 
+  const onArchiveSubmit = async () => {
+    try {
+      await patchProspectStatus(selectedId).unwrap();
+      onArchiveClose();
+      setSnackbarMessage(
+        `Prospect ${status ? "archived" : "restored"} successfully`
+      );
+      onSuccessOpen();
+    } catch (error) {
+      if (error?.data?.error?.message) {
+        setSnackbarMessage(error?.data?.error?.message);
+      } else {
+        setSnackbarMessage("Error archiving prospect");
+      }
+
+      onErrorOpen();
+    }
+  };
+
   const handleAddOpen = () => {
     setDrawerMode("add");
     onDrawerOpen();
@@ -208,6 +226,7 @@ function ForReleasing() {
   const handleEditOpen = (editData) => {
     setDrawerMode("edit");
     onDrawerOpen();
+    clearErrors();
 
     setValue("id", editData.id);
     setValue("ownersName", editData.ownersName);
@@ -227,11 +246,18 @@ function ForReleasing() {
     );
   };
 
+  const handleArchiveOpen = (id) => {
+    onArchiveOpen();
+    setSelectedId(id);
+  };
+
   const handleDrawerClose = () => {
     reset();
     clearErrors();
     onDrawerClose();
+    setSelectedId("");
     onCancelConfirmClose();
+    setEditMode(false);
   };
 
   const handleFreebieFormYes = () => {
@@ -244,20 +270,26 @@ function ForReleasing() {
     setCount(data?.totalCount);
   }, [data]);
 
+  useEffect(() => {
+    if (isDrawerOpen && selectedStoreType !== "Main") {
+      setValue(
+        "storeTypeId",
+        storeTypeData?.storeTypes?.find(
+          (store) => store.storeTypeName === selectedStoreType
+        )
+      );
+    }
+  }, [isDrawerOpen, selectedStoreType, setValue, storeTypeData]);
+
   return (
     <>
       <Box>
-        <AddSearchMixin
-          addTitle="Prospect"
-          onAddOpen={handleAddOpen}
-          setSearch={setSearch}
-        />
-        {/* <AddArchiveSearchMixin
+        <AddArchiveSearchMixin
           addTitle="Prospect"
           onAddOpen={handleAddOpen}
           setStatus={setStatus}
           setSearch={setSearch}
-        /> */}
+        />
         {isFetching ? (
           <CommonTableSkeleton lowerCompact />
         ) : (
@@ -266,14 +298,14 @@ function ForReleasing() {
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
             onView={handleEditOpen}
-            onCancelFreebies={onFreebieCancelOpen}
-            onUpdateFreebies={onFreebieFormOpen}
-            onReleaseFreebie={onFreebieReleaseOpen}
+            onArchive={handleArchiveOpen}
+            onFreebie={onFreebieFormOpen}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             count={count}
+            status={status}
             lowerCompact
           />
         )}
@@ -357,13 +389,14 @@ function ForReleasing() {
                       }}
                       onBlur={onBlur}
                       value={value || ""}
-                      inputRef={ref}
                       required
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">+63</InputAdornment>
                         ),
                       }}
+                      data-testid="phone-number"
+                      inputRef={ref}
                       className="register__textField"
                       helperText={errors?.phoneNumber?.message}
                       error={!!errors?.phoneNumber}
@@ -372,23 +405,6 @@ function ForReleasing() {
                   );
                 }}
               />
-              {/* <TextField
-                disabled={!editMode && drawerMode === "edit"}
-                label="Phone Number"
-                size="small"
-                autoComplete="off"
-                required
-                type="number"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">+63</InputAdornment>
-                  ),
-                  onInput: handlePhoneNumberInput,
-                }}
-                {...register("phoneNumber")}
-                helperText={errors?.phoneNumber?.message}
-                error={errors?.phoneNumber}
-              /> */}
             </Box>
             <Box className="register__thirdRow__column">
               <Typography className="register__title">Email Address</Typography>
@@ -396,6 +412,7 @@ function ForReleasing() {
                 disabled={!editMode && drawerMode === "edit"}
                 label="Email Address"
                 size="small"
+                type="email"
                 autoComplete="off"
                 // required
                 {...register("emailAddress")}
@@ -447,6 +464,33 @@ function ForReleasing() {
                 )}
               />
 
+              {/* <ControlledAutocomplete
+                disabled={
+                  (!editMode && drawerMode === "edit") || !watch("city")
+                }
+                name={"barangayName"}
+                control={control}
+                options={
+                  barangayData?.filter(
+                    (barangay) =>
+                      barangay?.city_code === watch("barangayName")?.id
+                  ) || []
+                }
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                loading={isBarangayFetching}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Barangay"
+                    required
+                    helperText={errors?.city?.message}
+                    error={errors?.city}
+                  />
+                )}
+              /> */}
               <Controller
                 name="barangayName"
                 control={control}
@@ -468,6 +512,33 @@ function ForReleasing() {
               />
             </Box>
             <Box className="register__secondRow__content">
+              {/* <ControlledAutocomplete
+                disabled={
+                  (!editMode && drawerMode === "edit") || !watch("province")
+                }
+                name={"city"}
+                control={control}
+                options={
+                  cityData?.filter(
+                    (city) => city?.province_code === watch("province")?.id
+                  ) || []
+                }
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                loading={isCityFetching}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Municipality/City"
+                    required
+                    helperText={errors?.city?.message}
+                    error={errors?.city}
+                  />
+                )}
+              /> */}
+
               <Controller
                 name="city"
                 control={control}
@@ -487,6 +558,30 @@ function ForReleasing() {
                   />
                 )}
               />
+
+              {/* <ControlledAutocomplete
+                disabled={!editMode && drawerMode === "edit"}
+                name={"province"}
+                control={control}
+                options={provinceData || []}
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                // value={storeTypeData?.storeTypes?.find(
+                //   (store) => store.storeTypeName === selectedStoreType
+                // )}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                loading={isProvinceFetching}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label="Province"
+                    required
+                    helperText={errors?.province?.message}
+                    error={errors?.province}
+                  />
+                )}
+              /> */}
 
               <Controller
                 name="province"
@@ -559,6 +654,7 @@ function ForReleasing() {
                       required
                       helperText={errors?.storeTypeId?.message}
                       error={errors?.storeTypeId}
+                      data-testid="business-type"
                     />
                   )}
                 />
@@ -599,7 +695,7 @@ function ForReleasing() {
                 setEditMode(!editMode);
               }}
               variant="outlined"
-              sx={{ color: "tertiary !important" }}
+              sx={{ color: "tertiary" }}
             >
               Edit
             </TertiaryButton>
@@ -607,9 +703,7 @@ function ForReleasing() {
 
           <SecondaryButton
             onClick={onConfirmOpen}
-            disabled={
-              !isValid || (drawerMode === "edit" && !editMode) || !isDirty
-            }
+            disabled={!isValid || (drawerMode === "edit" && !editMode)}
           >
             Submit
           </SecondaryButton>
@@ -617,22 +711,22 @@ function ForReleasing() {
       </CommonDrawer>
 
       <FreebieForm
-        updateFreebies
         isFreebieFormOpen={isFreebieFormOpen}
         onFreebieFormClose={onFreebieFormClose}
-        onClose={onFreebieFormClose}
       />
 
-      <ReleaseFreebieModal
-        open={isFreebieReleaseOpen}
-        // open={true}
-        onClose={onFreebieReleaseClose}
-      />
-
-      <CancelFreebiesModal
-        open={isFreebieCancelOpen}
-        onClose={onFreebieCancelClose}
-      />
+      <CommonDialog
+        open={isArchiveOpen}
+        onClose={onArchiveClose}
+        onYes={onArchiveSubmit}
+        isLoading={isArchiveLoading}
+      >
+        Are you sure you want to set prospect{" "}
+        <span style={{ fontWeight: "bold" }}>
+          {selectedRowData?.businessName}
+        </span>{" "}
+        as {status ? "inactive" : "active"}?
+      </CommonDialog>
 
       <CommonDialog
         open={isConfirmOpen}
@@ -670,7 +764,11 @@ function ForReleasing() {
         onYes={handleFreebieFormYes}
         question
       >
-        Continue to add freebie for {newProspectName || "new prospect"}?
+        Continue to add freebie for{" "}
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {selectedRowData?.businessName || "new prospect"}
+        </span>
+        ?
       </CommonDialog>
 
       <SuccessSnackbar
@@ -687,4 +785,4 @@ function ForReleasing() {
   );
 }
 
-export default ForReleasing;
+export default ProspectRegistration;

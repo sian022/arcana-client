@@ -465,11 +465,11 @@ function CommonActions({
               handleAction("attach");
             }}
             disabled={
-              disableActions ? disableActions?.includes("printFreebies") : false
+              disableActions ? disableActions?.includes("onAttach") : false
             }
           >
             <Attachment />
-            CI Attachment
+            Invoice Attachment
           </MenuItem>
         )}
 

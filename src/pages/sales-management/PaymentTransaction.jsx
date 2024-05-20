@@ -100,7 +100,7 @@ function PaymentTransaction() {
     "Tx No.",
     "Business Name",
     // "Owner's Name",
-    "CI No.",
+    "Invoice No.",
     "Total Amount Due",
     // "Remaining Balance",
     ...(transactionStatus === "Pending" ? ["Remaining Balance"] : []),

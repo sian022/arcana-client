@@ -7,7 +7,6 @@ import {
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
 import CommonTable from "../../../components/CommonTable";
 import { useDispatch, useSelector } from "react-redux";
-import { setBadge } from "../../../features/prospect/reducers/badgeSlice";
 import useDisclosure from "../../../hooks/useDisclosure";
 import RegisterRegularForm from "./RegisterRegularForm";
 import PrintFreebiesModal from "../../../components/modals/PrintFreebiesModal";
@@ -105,7 +104,7 @@ function Released() {
   ///UseEffects
   useEffect(() => {
     setCount(data?.totalCount);
-    dispatch(setBadge({ ...badges, released: data?.totalCount }));
+    // dispatch(setBadge({ ...badges, released: data?.totalCount }));
   }, [data, dispatch, badges]);
 
   return (

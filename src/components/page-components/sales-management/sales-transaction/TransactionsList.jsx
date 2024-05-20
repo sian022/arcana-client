@@ -44,7 +44,7 @@ function TransactionsList({ setTransactionsMode }) {
     "Time",
     "Amount",
     "Business Name",
-    "CI No.",
+    "Invoice No.",
     "Upload Status",
   ];
   const customOrderKeys = [

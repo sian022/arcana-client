@@ -15,9 +15,9 @@ import rdfLogo from "../../assets/images/RDF-Logo.png";
 
 import { useSelector } from "react-redux";
 import moment from "moment";
-import SuccessButton from "../SuccessButton";
 import { useReactToPrint } from "react-to-print";
 import "../../assets/styles/print.styles.scss";
+import SecondaryButton from "../SecondaryButton";
 
 function PrintFreebiesModal({ ...otherProps }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -254,7 +254,7 @@ function PrintFreebiesModal({ ...otherProps }) {
         </Box>
         <Box className="releaseFreebieModal__actionsEnd">
           {/* <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton> */}
-          <SuccessButton
+          <SecondaryButton
             onClick={
               // onConfirmOpen
               handlePrint
@@ -267,7 +267,7 @@ function PrintFreebiesModal({ ...otherProps }) {
             ) : (
               "Print"
             )}
-          </SuccessButton>
+          </SecondaryButton>
         </Box>
       </CommonModal>
     </>

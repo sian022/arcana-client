@@ -6,8 +6,6 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import React from "react";
-import SuccessButton from "./SuccessButton";
 import DangerButton from "./DangerButton";
 import SecondaryButton from "./SecondaryButton";
 

@@ -843,11 +843,13 @@ export const salesTransactionSchema = {
 export const cashoutSchema = {
   schema: yup.object({
     chargeInvoiceNo: yup.string().required("Charge Invoice No. is required"),
+    invoiceType: yup.string().required("Invoice Type is required"),
     discount: yup.number().required("Discount is required").nullable(),
     specialDiscount: yup.number().nullable(),
   }),
   defaultValues: {
     chargeInvoiceNo: "",
+    invoiceType: "",
     discount: null,
     specialDiscount: null,
   },
