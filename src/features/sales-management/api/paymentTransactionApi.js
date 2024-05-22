@@ -73,6 +73,7 @@ export const {
   useGetAllSalesTransactionForPaymentsQuery,
   useLazyGetAllSalesTransactionForPaymentsQuery,
   useLazyGetAllPaymentHistoriesQuery,
+  useGetAllPaymentHistoriesQuery,
   useCreatePaymentTransactionMutation,
   useClearPaymentTransactionMutation,
   useVoidPaymentTransactionMutation,

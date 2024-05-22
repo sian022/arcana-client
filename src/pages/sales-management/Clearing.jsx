@@ -3,13 +3,16 @@ import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import CommonTable from "../../components/CommonTable";
-import { dummyPaymentData, dummyTransactionsData } from "../../utils/DummyData";
 import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
 import SearchActionMixin from "../../components/mixins/SearchActionMixin";
 import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
-import { useClearPaymentTransactionMutation } from "../../features/sales-management/api/paymentTransactionApi";
+import {
+  useClearPaymentTransactionMutation,
+  useGetAllPaymentHistoriesQuery,
+} from "../../features/sales-management/api/paymentTransactionApi";
+import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 
 function Clearing() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -63,6 +66,14 @@ function Clearing() {
   //RTK Query
   const [clearPaymentTransaction] = useClearPaymentTransactionMutation();
   const [patchReadNotification] = usePatchReadNotificationMutation();
+  const { data: paymentData, isFetching: isPaymentFetching } =
+    useGetAllPaymentHistoriesQuery({
+      // PaymentStatus: clearingStatus === "Cleared" ? "Cleared" : "Received",
+      PageNumber: page + 1,
+      PageSize: rowsPerPage,
+      Search: search,
+      Status: true,
+    });
 
   //Functions
   const onClear = async () => {
@@ -73,7 +84,7 @@ function Clearing() {
         callback: () =>
           clearPaymentTransaction({
             transactions: checkedArray?.map(
-              (item) => dummyTransactionsData?.[item]?.id
+              (item) => paymentData?.transactions?.[item]?.id
             ),
           }).unwrap(),
       });
@@ -94,8 +105,10 @@ function Clearing() {
 
   //UseEffect
   useEffect(() => {
-    setCount(dummyTransactionsData.length);
-  }, [dummyTransactionsData]);
+    if (paymentData) {
+      setCount(paymentData.totalCount);
+    }
+  }, [paymentData]);
 
   useEffect(() => {
     const foundItem = tabsList.find((item) => item.case === tabViewing);
@@ -132,22 +145,26 @@ function Clearing() {
         disableAction={checkedArray.length === 0}
       />
 
-      <CommonTable
-        mapData={dummyPaymentData}
-        customOrderKeys={customOrderKeys}
-        tableHeads={tableHeads}
-        pesoArray={pesoArray}
-        page={page}
-        setPage={setPage}
-        rowsPerPage={rowsPerPage}
-        setRowsPerPage={setRowsPerPage}
-        count={count}
-        lowerCompact
-        checkboxSelection={clearingStatus === "For Clearing"}
-        includeActions={false}
-        checkedArray={checkedArray}
-        setCheckedArray={setCheckedArray}
-      />
+      {isPaymentFetching ? (
+        <CommonTableSkeleton lowerCompact />
+      ) : (
+        <CommonTable
+          mapData={paymentData?.transactions}
+          customOrderKeys={customOrderKeys}
+          tableHeads={tableHeads}
+          pesoArray={pesoArray}
+          page={page}
+          setPage={setPage}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+          count={count}
+          lowerCompact
+          checkboxSelection={clearingStatus === "For Clearing"}
+          includeActions={false}
+          checkedArray={checkedArray}
+          setCheckedArray={setCheckedArray}
+        />
+      )}
     </Box>
   );
 }

@@ -205,7 +205,7 @@ function PaymentTransaction() {
                 customOrderKeys={customOrderKeys}
                 tableHeads={tableHeads}
                 warning={
-                  transactionStatus === "Receivable" && {
+                  transactionStatus === "Pending" && {
                     key: "status",
                     value: "Over due",
                   }
