@@ -139,16 +139,18 @@ function Clearing() {
 
       <SearchActionMixin
         setSearch={setSearch}
-        actionTitle="Clear"
-        actionCallback={onClear}
-        removeAction={clearingStatus === "Cleared"}
-        disableAction={checkedArray.length === 0}
+        removeAction
+        // // actionTitle="Clear"
+        // // actionCallback={onClear}
+        // removeAction={clearingStatus === "Cleared"}
+        // disableAction={checkedArray.length === 0}
       />
 
       {isPaymentFetching ? (
         <CommonTableSkeleton lowerCompact />
       ) : (
         <CommonTable
+          actionsHead={{ onClear: onClear }}
           mapData={paymentData?.transactions}
           customOrderKeys={customOrderKeys}
           tableHeads={tableHeads}
@@ -160,7 +162,8 @@ function Clearing() {
           count={count}
           lowerCompact
           checkboxSelection={clearingStatus === "For Clearing"}
-          includeActions={false}
+          includeActions
+          onVoid
           checkedArray={checkedArray}
           setCheckedArray={setCheckedArray}
         />

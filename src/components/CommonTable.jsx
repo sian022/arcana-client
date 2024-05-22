@@ -28,6 +28,8 @@ import { formatPhoneNumber } from "../utils/CustomFunctions";
 import moment from "moment";
 
 function CommonTable({
+  actionsHead,
+  actions,
   mt,
   mapData,
   tableHeads,
@@ -203,12 +205,19 @@ function CommonTable({
 
               {checkboxSelection && (
                 <TableCell>
-                  <Checkbox
-                    checked={isAllSelected}
-                    indeterminate={isIndeterminate}
-                    onChange={handleMasterCheckboxChange}
-                    sx={{ color: "white !important" }}
-                  />
+                  <Box sx={{ display: "flex", gap: "5px" }}>
+                    <CommonActions
+                      iconColor="white !important"
+                      {...actionsHead}
+                    />
+
+                    <Checkbox
+                      checked={isAllSelected}
+                      indeterminate={isIndeterminate}
+                      onChange={handleMasterCheckboxChange}
+                      sx={{ color: "white !important" }}
+                    />
+                  </Box>
                 </TableCell>
               )}
 
@@ -505,6 +514,7 @@ function CommonTable({
                         item={item}
                         status={status}
                         disableActions={disableActions}
+                        {...actions}
                       />
                     </TableCell>
                   )}

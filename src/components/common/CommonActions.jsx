@@ -4,6 +4,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import {
   Archive,
   Attachment,
+  Autorenew,
   Block,
   Cancel,
   CheckCircle,
@@ -28,6 +29,7 @@ import {
 } from "@mui/icons-material";
 
 function CommonActions({
+  iconColor,
   onEdit,
   onArchive,
   onView,
@@ -54,6 +56,7 @@ function CommonActions({
   onRemove,
   onApprove,
   onReject,
+  onClear,
   onPaymentHistories,
   disableActions,
   item,
@@ -117,6 +120,8 @@ function CommonActions({
       onReject();
     } else if (action === "paymentHistories") {
       onPaymentHistories();
+    } else if (action === "clear") {
+      onClear();
     }
 
     onClose();
@@ -126,7 +131,7 @@ function CommonActions({
     <>
       <IconButton
         onClick={onOpen}
-        sx={{ color: "secondary.main", p: 0 }}
+        sx={{ color: iconColor ? iconColor : "secondary.main", p: 0 }}
         ref={anchorRef}
         data-testid="actions"
       >
@@ -184,6 +189,21 @@ function CommonActions({
           >
             <Tag />
             Tagging
+          </MenuItem>
+        )}
+
+        {onClear && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("clear");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("clear") : false
+            }
+          >
+            <Autorenew />
+            Clear
           </MenuItem>
         )}
 
