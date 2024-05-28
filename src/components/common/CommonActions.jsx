@@ -61,6 +61,7 @@ function CommonActions({
   disableActions,
   item,
   status,
+  disabled,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const anchorRef = useRef();
@@ -134,6 +135,7 @@ function CommonActions({
         sx={{ color: iconColor ? iconColor : "secondary.main", p: 0 }}
         ref={anchorRef}
         data-testid="actions"
+        disabled={disabled}
       >
         <More />
       </IconButton>

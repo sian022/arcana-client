@@ -56,7 +56,7 @@ const paymentTransactionApi = api
 
       voidPaymentTransaction: builder.mutation({
         query: ({ id, ...body }) => ({
-          url: `/payment-transaction/${id}/void`,
+          url: `/payment-transaction/${id}/voidV2`,
           method: "PUT",
           body,
         }),
@@ -66,6 +66,19 @@ const paymentTransactionApi = api
           "",
         ],
       }),
+
+      // voidPaymentTransaction: builder.mutation({
+      //   query: ({ id, ...body }) => ({
+      //     url: `/payment-transaction/${id}/void`,
+      //     method: "PUT",
+      //     body,
+      //   }),
+      //   invalidatesTags: [
+      //     "Sales Transaction",
+      //     "Sales Transaction For Payments",
+      //     "",
+      //   ],
+      // }),
     }),
   });
 

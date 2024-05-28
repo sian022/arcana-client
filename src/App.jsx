@@ -8,7 +8,7 @@ import { AppProvider } from "./context/AppContext";
 import { AttachmentsProvider } from "./context/AttachmentsContext";
 import { DirectReleaseProvider } from "./context/DirectReleaseContext";
 import { ConfirmProvider } from "./context/ConfirmContext";
-import ReasonConfirmProvider from "./context/ReasonConfirmContext";
+import { ReasonConfirmProvider } from "./context/ReasonConfirmContext";
 
 function App() {
   return (

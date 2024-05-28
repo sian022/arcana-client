@@ -87,7 +87,7 @@ function CommonTable({
   disableActions,
   moveNoDataUp,
   checkboxSelection,
-  checkedArray,
+  checkedArray = [],
   setCheckedArray,
   warning,
   booleanDisplayOptions = [],
@@ -207,8 +207,13 @@ function CommonTable({
                 <TableCell>
                   <Box sx={{ display: "flex", gap: "5px" }}>
                     <CommonActions
-                      iconColor="white !important"
+                      iconColor={
+                        checkedArray.length === 0
+                          ? "#BDBDBD77 !important"
+                          : "white !important"
+                      }
                       {...actionsHead}
+                      disabled={checkedArray.length === 0}
                     />
 
                     <Checkbox
