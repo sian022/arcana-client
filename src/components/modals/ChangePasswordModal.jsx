@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CommonModal from "../CommonModal";
 import SecondaryButton from "../SecondaryButton";
 import DangerButton from "../DangerButton";
@@ -14,14 +14,14 @@ import { useForm } from "react-hook-form";
 import { changePasswordSchema } from "../../schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../hooks/useDisclosure";
-import CommonDialog from "../CommonDialog";
+import CommonDialog from "../common/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { usePatchChangePasswordMutation } from "../../features/user-management/api/userAccountApi";
 import { useSelector } from "react-redux";
 import { decryptString } from "../../utils/CustomFunctions";
 
 function ChangePasswordModal({ ...otherProps }) {
-  const { onClose, ...noOnClose } = otherProps;
+  const { onClose } = otherProps;
 
   const snackbar = useSnackbar();
 
@@ -45,7 +45,7 @@ function ChangePasswordModal({ ...otherProps }) {
   const {
     handleSubmit,
     register,
-    formState: { errors, isValid },
+    formState: { isValid },
     reset,
   } = useForm({
     resolver: yupResolver(changePasswordSchema.schema),

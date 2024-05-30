@@ -333,7 +333,7 @@ function PaymentPage({ setPaymentMode }) {
               <PaymentListSkeleton />
             ) : transactionsData?.transactions?.length === 0 ? (
               <Typography className="paymentPage__body__transactions__selectClientFirst">
-                No transactions found
+                No receivables found
               </Typography>
             ) : (
               <>

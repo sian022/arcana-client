@@ -738,7 +738,7 @@
     display: flex;
     gap: 50px;
     justify-content: space-between;
-    margin-top: 20px;
+    // margin-top: 20px;
 
     &__left {
       display: flex;
@@ -928,7 +928,7 @@
   flex: 1;
 
   & &__title {
-    font-size: 24px;
+    font-size: 1.3rem;
     font-weight: bold;
     text-align: center;
   }
@@ -991,7 +991,7 @@
     display: flex;
     gap: 50px;
     justify-content: space-between;
-    margin-top: 20px;
+    // margin-top: 20px;
 
     &__left {
       display: flex;
@@ -1119,6 +1119,8 @@
   &__input {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
   }
 }
 

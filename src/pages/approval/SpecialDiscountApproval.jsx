@@ -1,6 +1,13 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
-import { Box, Checkbox, TextField, Typography, debounce } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  Chip,
+  TextField,
+  Typography,
+  debounce,
+} from "@mui/material";
 import CommonTable from "../../components/CommonTable";
 import useConfirm from "../../hooks/useConfirm";
 import useSnackbar from "../../hooks/useSnackbar";
@@ -15,7 +22,7 @@ import useDisclosure from "../../hooks/useDisclosure";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
 import { AppContext } from "../../context/AppContext";
-import CommonDialog from "../../components/CommonDialog";
+import CommonDialog from "../../components/common/CommonDialog";
 import { useSendMessageMutation } from "../../features/misc/api/rdfSmsApi";
 
 function SpecialDiscountApproval() {
@@ -78,10 +85,21 @@ function SpecialDiscountApproval() {
     "Business Name",
     "Owner's Name",
     "Discount",
-    "One Time Only",
+    "Frequency",
     "Requested By",
   ];
   const percentageArray = ["discount"];
+  const booleanDisplayOptions = [
+    {
+      keyName: "isOneTime",
+      trueDisplay: (
+        <Chip label="One Time Only" color="tertiary" variant="outlined" />
+      ),
+      falseDisplay: (
+        <Chip label="Recurring" color="primary" variant="outlined" />
+      ),
+    },
+  ];
 
   const spDiscountNavigation = useMemo(() => {
     return [
@@ -259,6 +277,7 @@ function SpecialDiscountApproval() {
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
             percentageArray={percentageArray}
+            booleanDisplayOptions={booleanDisplayOptions}
             compact
             onApprove={approvalStatus === "Under review" ? onApprove : null}
             onReject={approvalStatus === "Under review" ? onRejectOpen : null}

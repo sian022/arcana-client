@@ -15,11 +15,11 @@ import {
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import DangerButton from "../DangerButton";
-import CommonDialog from "../CommonDialog";
+import CommonDialog from "../common/CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import useSnackbar from "../../hooks/useSnackbar";
-import SuccessButton from "../SuccessButton";
+import SecondaryButton from "../SecondaryButton";
 import {
   usePutApproveExpensesMutation,
   usePutRejectExpensesMutation,
@@ -196,9 +196,19 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
         disablePadding
         ribbon
         customRibbonContent={customRibbonContent}
+        ribbonPadding="15px"
         {...props}
       >
         <Box className="viewExpensesModal">
+          <Box className="viewExpensesModal__transactionNumber">
+            <Typography className="viewExpensesModal__transactionNumber__label">
+              Transaction Number:
+            </Typography>
+            <Typography className="viewExpensesModal__transactionNumber__value">
+              {selectedRowData?.id}
+            </Typography>
+          </Box>
+
           <Box className="viewExpensesModal__customerDetails">
             <Box className="viewExpensesModal__customerDetails__left">
               <Box
@@ -243,19 +253,11 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
             </Box>
           </Box>
 
-          <Box className="viewExpensesModal__transactionNumber">
-            <Typography className="viewExpensesModal__transactionNumber__label">
-              Transaction Number:
-            </Typography>
-            <Typography className="viewExpensesModal__transactionNumber__value">
-              {selectedRowData?.id}
-            </Typography>
-          </Box>
-
           <Box className="viewExpensesModal__table">
             <TableContainer
               sx={{
-                maxHeight: "300px",
+                // maxHeight: "300px",
+                maxHeight: "340px",
                 overflow: "auto",
                 width: "815px",
                 borderRadius: "10px",
@@ -315,9 +317,10 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
             display: "flex",
             position: "absolute",
             // right: "150px",
-            // right: "125px",
-            left: "550px",
-            bottom: "90px",
+            // right: "125px"
+            right: "40px",
+            // left: "550px",
+            bottom: "80px",
             gap: "20px",
           }}
         >
@@ -334,6 +337,7 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
             ₱ {totalAmount?.toLocaleString()}
           </Typography>
         </Box>
+
         {approval && expenseStatus === "Under review" && (
           <Box
             sx={{
@@ -349,12 +353,13 @@ function ViewExpensesModal({ approval, expenseStatus, ...props }) {
               Reject
             </DangerButton>
 
-            <SuccessButton onClick={onApproveConfirmOpen}>
+            <SecondaryButton onClick={onApproveConfirmOpen}>
               Approve
-            </SuccessButton>
+            </SecondaryButton>
           </Box>
         )}
       </CommonModal>
+
       {approval && (
         <>
           <CommonDialog

@@ -2,7 +2,15 @@ import { useEffect, useMemo, useRef } from "react";
 import CommonModalForm from "../../CommonModalForm";
 import { Controller, useForm } from "react-hook-form";
 import { cashoutSchema } from "../../../schema/schema";
-import { Box, Divider, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useSnackbar from "../../../hooks/useSnackbar";
 import useConfirm from "../../../hooks/useConfirm";
@@ -102,7 +110,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
 
     try {
       await confirm({
-        children: <>Confirm cashout of transaction?</>,
+        children: <>Confirm finalization of transaction?</>,
         question: true,
         callback: () => createSalesTransaction(combinedData).unwrap(),
       });
@@ -131,10 +139,12 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
     if (open) {
       if (client?.variableDiscount) {
         setTimeout(() => {
+          discountRef.current.focus();
           discountRef.current.select();
         }, 0);
       } else {
         setTimeout(() => {
+          chargeInvoiceRef.current.focus();
           chargeInvoiceRef.current.select();
         }, 0);
       }
@@ -152,7 +162,7 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
   return (
     <CommonModalForm
       onSubmit={handleSubmit(onSubmit)}
-      title="Cashout"
+      title="Complete Order"
       // width="800px"
       width="600px"
       disableSubmit={!isValid || !isDirty}
@@ -315,12 +325,31 @@ function CashoutModal({ total, resetTransaction, orderData, ...props }) {
 
         <Box className="cashoutModal__input">
           <Controller
+            control={control}
+            name="invoiceType"
+            render={({ field }) => (
+              <RadioGroup {...field} row>
+                <FormControlLabel
+                  value="charge"
+                  control={<Radio />}
+                  label="Charge"
+                />
+                <FormControlLabel
+                  value="sales"
+                  control={<Radio />}
+                  label="Sales"
+                />
+              </RadioGroup>
+            )}
+          />
+
+          <Controller
             name="chargeInvoiceNo"
             control={control}
             defaultValue=""
             render={({ field }) => (
               <TextField
-                label="Charge Invoice No."
+                label="Invoice No."
                 size="small"
                 autoComplete="off"
                 type="number"

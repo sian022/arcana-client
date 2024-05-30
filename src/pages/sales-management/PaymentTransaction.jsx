@@ -100,7 +100,7 @@ function PaymentTransaction() {
     "Tx No.",
     "Business Name",
     // "Owner's Name",
-    "CI No.",
+    "Invoice No.",
     "Total Amount Due",
     // "Remaining Balance",
     ...(transactionStatus === "Pending" ? ["Remaining Balance"] : []),
@@ -124,7 +124,10 @@ function PaymentTransaction() {
         ),
         question: false,
         callback: () =>
-          voidSalesTransaction({ id: selectedRowData?.transactionNo }).unwrap(),
+          voidSalesTransaction({
+            transactionId: [selectedRowData?.transactionNo],
+            reason: "test",
+          }).unwrap(),
       });
 
       snackbar({
@@ -179,7 +182,7 @@ function PaymentTransaction() {
         ) : (
           <>
             <PageHeaderTabs
-              pageTitle="Sales Invoices"
+              pageTitle="Invoices"
               setSearch={setSearch}
               tabsList={paymentNavigation}
               setTabViewing={setTabViewing}
@@ -201,7 +204,12 @@ function PaymentTransaction() {
                 mapData={transactionData?.transactions}
                 customOrderKeys={customOrderKeys}
                 tableHeads={tableHeads}
-                warning={{ key: "status", value: "Over due" }}
+                warning={
+                  transactionStatus === "Pending" && {
+                    key: "status",
+                    value: "Over due",
+                  }
+                }
                 includeActions
                 lowerCompact
                 moveNoDataUp

@@ -1,9 +1,9 @@
 import { createContext, useCallback, useState } from "react";
-import CommonDialog from "../components/CommonDialog";
+import CommonDialog from "../components/common/CommonDialog";
 
 const ConfirmContext = createContext();
 
-let confirmGlobal;
+// let confirmGlobal;
 
 const ConfirmProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -67,7 +67,7 @@ const ConfirmProvider = ({ children }) => {
     }
   }, [resolve, reject, callback, handleClose]);
 
-  confirmGlobal = confirm;
+  // confirmGlobal = confirm;
 
   return (
     <>
@@ -88,4 +88,4 @@ const ConfirmProvider = ({ children }) => {
 };
 
 export { ConfirmContext, ConfirmProvider };
-export { confirmGlobal as confirm };
+// export { confirmGlobal as confirm };

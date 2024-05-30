@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CommonModalForm from "../../CommonModalForm";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { paymentSchema } from "../../../schema/schema";
@@ -26,6 +26,8 @@ function PaymentModalForm({
   ...props
 }) {
   const { open, onClose } = props;
+
+  const [initialEditAmount, setInitialEditAmount] = useState(0);
 
   //Hooks
   const confirm = useConfirm();
@@ -73,6 +75,7 @@ function PaymentModalForm({
         paymentAmount: data.paymentAmount,
         accountName: data.accountName,
         accountNo: data.accountNo,
+        referenceNo: data.referenceNo,
       };
     } else {
       transformedData = {
@@ -128,6 +131,7 @@ function PaymentModalForm({
   useEffect(() => {
     if (!open) {
       reset();
+      setInitialEditAmount(0);
     }
   }, [open, reset]);
 
@@ -142,6 +146,8 @@ function PaymentModalForm({
         }
         setValue(key, paymentInfo[key]);
       });
+
+      setInitialEditAmount(paymentInfo.paymentAmount);
     }
   }, [open, editMode, selectedPayment, setValue]);
 
@@ -210,7 +216,7 @@ function PaymentModalForm({
                 if (value.label !== "Online") {
                   setValue("accountName", "");
                   setValue("accountNo", "");
-                  setValue("referenceNumber", "");
+                  setValue("referenceNo", "");
                 }
                 if (value.label !== "Offset") {
                   setValue("remarks", "");
@@ -239,9 +245,13 @@ function PaymentModalForm({
                   isAllowed={(values) => {
                     const { floatValue } = values;
 
+                    const balanceToCompare = editMode
+                      ? remainingBalance + initialEditAmount
+                      : remainingBalance;
+
                     if (
                       floatValue != null &&
-                      floatValue > remainingBalance &&
+                      floatValue > balanceToCompare &&
                       watch("paymentMethod").label !== "Cheque"
                     ) {
                       snackbar({
@@ -449,7 +459,7 @@ function PaymentModalForm({
             />
 
             <Controller
-              name="referenceNumber"
+              name="referenceNo"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -458,8 +468,8 @@ function PaymentModalForm({
                   size="small"
                   autoComplete="off"
                   {...field}
-                  helperText={errors?.referenceNumber?.message}
-                  error={errors?.referenceNumber}
+                  helperText={errors?.referenceNo?.message}
+                  error={errors?.referenceNo}
                   type="number"
                 />
               )}

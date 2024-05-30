@@ -36,7 +36,7 @@ function ViewAttachmentModal({ ...props }) {
       await confirm({
         children: (
           <>
-            Are you sure you want to upload CI attachment for CI No.{" "}
+            Are you sure you want to upload invoice attachment for Invoice No.{" "}
             <span style={{ fontWeight: "700" }}>
               {selectedRowData?.chargeInvoiceNo}
             </span>
@@ -52,7 +52,7 @@ function ViewAttachmentModal({ ...props }) {
       });
 
       snackbar({
-        message: "CI attachment uploaded successfully",
+        message: "Invoice attachment uploaded successfully",
         variant: "success",
       });
       onClose();
@@ -92,7 +92,7 @@ function ViewAttachmentModal({ ...props }) {
           </Typography>
 
           <Typography fontWeight="500" fontSize="1.2rem">
-            CI No. {selectedRowData?.chargeInvoiceNo}
+            Invoice No. {selectedRowData?.chargeInvoiceNo}
           </Typography>
         </Box>
 
@@ -141,7 +141,7 @@ function ViewAttachmentModal({ ...props }) {
             <>
               <FileUpload sx={{ fontSize: "5rem", color: "#33333361" }} />
               <Typography fontWeight="500" color="#333333A8" fontSize="1.1rem">
-                Upload CI attachment
+                Upload invoice attachment
               </Typography>
             </>
           )}

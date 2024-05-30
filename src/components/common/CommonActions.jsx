@@ -1,9 +1,10 @@
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import { useRef } from "react";
-import useDisclosure from "../hooks/useDisclosure";
+import useDisclosure from "../../hooks/useDisclosure";
 import {
   Archive,
   Attachment,
+  Autorenew,
   Block,
   Cancel,
   CheckCircle,
@@ -28,6 +29,7 @@ import {
 } from "@mui/icons-material";
 
 function CommonActions({
+  iconColor,
   onEdit,
   onArchive,
   onView,
@@ -54,10 +56,12 @@ function CommonActions({
   onRemove,
   onApprove,
   onReject,
+  onClear,
   onPaymentHistories,
   disableActions,
   item,
   status,
+  disabled,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const anchorRef = useRef();
@@ -117,6 +121,8 @@ function CommonActions({
       onReject();
     } else if (action === "paymentHistories") {
       onPaymentHistories();
+    } else if (action === "clear") {
+      onClear();
     }
 
     onClose();
@@ -126,8 +132,10 @@ function CommonActions({
     <>
       <IconButton
         onClick={onOpen}
-        sx={{ color: "secondary.main", p: 0 }}
+        sx={{ color: iconColor ? iconColor : "secondary.main", p: 0 }}
         ref={anchorRef}
+        data-testid="actions"
+        disabled={disabled}
       >
         <More />
       </IconButton>
@@ -183,6 +191,21 @@ function CommonActions({
           >
             <Tag />
             Tagging
+          </MenuItem>
+        )}
+
+        {onClear && (
+          <MenuItem
+            className="actionsMenuItem"
+            onClick={() => {
+              handleAction("clear");
+            }}
+            disabled={
+              disableActions ? disableActions?.includes("clear") : false
+            }
+          >
+            <Autorenew />
+            Clear
           </MenuItem>
         )}
 
@@ -464,11 +487,11 @@ function CommonActions({
               handleAction("attach");
             }}
             disabled={
-              disableActions ? disableActions?.includes("printFreebies") : false
+              disableActions ? disableActions?.includes("onAttach") : false
             }
           >
             <Attachment />
-            CI Attachment
+            Invoice Attachment
           </MenuItem>
         )}
 

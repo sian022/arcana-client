@@ -5,7 +5,6 @@ import AddSearchMixin from "../../components/mixins/AddSearchMixin";
 import CommonTable from "../../components/CommonTable";
 import useDisclosure from "../../hooks/useDisclosure";
 import CommonTableSkeleton from "../../components/CommonTableSkeleton";
-import CommonDialog from "../../components/CommonDialog";
 import useSnackbar from "../../hooks/useSnackbar";
 import { useSelector } from "react-redux";
 import ApprovalHistoryModal from "../../components/modals/ApprovalHistoryModal";
@@ -17,6 +16,7 @@ import {
 } from "../../features/otherExpenses/api/otherExpensesRegApi";
 import ViewExpensesModal from "../../components/modals/ViewExpensesModal";
 import { usePatchReadNotificationMutation } from "../../features/notification/api/notificationApi";
+import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 
 function OtherExpenses() {
   const [tabViewing, setTabViewing] = useState(1);
@@ -46,12 +46,6 @@ function OtherExpenses() {
   } = useDisclosure();
 
   const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isHistoryOpen,
     onOpen: onHistoryOpen,
     onClose: onHistoryClose,
@@ -67,8 +61,7 @@ function OtherExpenses() {
     PageSize: rowsPerPage,
   });
 
-  const [patchVoidExpenseRequest, { isLoading: isVoidLoading }] =
-    usePatchVoidExpenseRequestMutation();
+  const [patchVoidExpenseRequest] = usePatchVoidExpenseRequestMutation();
 
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
@@ -100,7 +93,7 @@ function OtherExpenses() {
   const tableHeads = [
     "Business Name",
     "Owner's Name",
-    "Transaction Number",
+    "Tx Number",
     "Total Amount",
     // "Requested By",
   ];
@@ -121,20 +114,31 @@ function OtherExpenses() {
     onListingFeeOpen();
   };
 
-  const onDeleteSubmit = async () => {
+  const onCancel = async () => {
     try {
-      await patchVoidExpenseRequest(selectedRowData?.requestId).unwrap();
-      onDeleteClose();
+      await confirm({
+        children: (
+          <>
+            Are you sure you want to cancel expenses request for{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {selectedRowData?.businessName}
+            </span>
+            ?
+          </>
+        ),
+        question: true,
+        callback: () =>
+          patchVoidExpenseRequest(selectedRowData?.requestId).unwrap(),
+      });
+
       snackbar({
         message: "Expense request cancelled successfully",
         variant: "success",
       });
     } catch (error) {
-      if (error?.data?.error?.message) {
-        snackbar({ message: error?.data?.error?.message, variant: "error" });
-      } else {
+      if (error.isConfirmed) {
         snackbar({
-          message: "Error voiding expense request",
+          message: handleCatchErrorMessage(error),
           variant: "error",
         });
       }
@@ -211,7 +215,7 @@ function OtherExpenses() {
             pesoArray={pesoArray}
             onEdit={expenseStatus !== "Approved" && handleOpenEdit}
             onHistory={onHistoryOpen}
-            onCancel={expenseStatus === "Rejected" && onDeleteOpen}
+            onCancel={expenseStatus === "Rejected" && onCancel}
             mt={"-20px"}
             moveNoDataUp
           />
@@ -231,47 +235,6 @@ function OtherExpenses() {
         open={isViewOpen}
         onClose={onViewClose}
       />
-
-      <CommonDialog
-        open={isDeleteOpen}
-        onClose={onDeleteClose}
-        isLoading={isVoidLoading}
-        onYes={onDeleteSubmit}
-        // disableYes={voidConfirmBox !== selectedRowData?.businessName}
-      >
-        Are you sure you want to cancel expenses request for{" "}
-        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-          {selectedRowData?.businessName}
-        </span>
-        ?
-        {/* <br />
-        <span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
-          (This action cannot be reversed)
-        </span>
-        <br />
-        <Box
-          sx={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
-        >
-          <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
-            To confirm, type "{selectedRowData?.businessName}" in the box below
-          </Typography>
-          <TextField
-            size="small"
-            // fullWidth
-            autoComplete="off"
-            onChange={(e) => {
-              setVoidConfirmBox(e.target.value);
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "error.main", // Set your desired border color here
-                },
-              },
-            }}
-          />
-        </Box> */}
-      </CommonDialog>
 
       <ApprovalHistoryModal
         open={isHistoryOpen}

@@ -1,4 +1,4 @@
-import { Box, Checkbox, TextField, Typography } from "@mui/material";
+import { Box, Checkbox, Chip, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useMemo, useState } from "react";
 import PageHeaderTabs from "../../components/PageHeaderTabs";
 import { AppContext } from "../../context/AppContext";
@@ -113,6 +113,7 @@ function SpecialDiscount() {
   const { data: clientData, isLoading: isClientLoading } =
     useGetAllClientsQuery({
       RegistrationStatus: "Approved",
+      PageSize: 1000,
     });
   const [patchReadNotification] = usePatchReadNotificationMutation();
 
@@ -129,9 +130,20 @@ function SpecialDiscount() {
     "Business Name",
     "Owner's Name",
     "Discount",
-    "One Time Only",
+    "Frequency",
   ];
   const percentageArray = ["discount"];
+  const booleanDisplayOptions = [
+    {
+      keyName: "isOneTime",
+      trueDisplay: (
+        <Chip label="One Time Only" color="tertiary" variant="outlined" />
+      ),
+      falseDisplay: (
+        <Chip label="Recurring" color="primary" variant="outlined" />
+      ),
+    },
+  ];
 
   //Functions: API
   const onSubmit = async (data) => {
@@ -302,6 +314,7 @@ function SpecialDiscount() {
         (client) => client.id === selectedRowData?.clientId
       )
     );
+    console.log(clientData, "selectedRowData");
     setValue(
       "discount",
       selectedRowData?.discount
@@ -377,6 +390,7 @@ function SpecialDiscount() {
             tableHeads={tableHeads}
             customOrderKeys={customOrderKeys}
             percentageArray={percentageArray}
+            booleanDisplayOptions={booleanDisplayOptions}
             lowerCompact
             count={count}
             rowsPerPage={rowsPerPage}

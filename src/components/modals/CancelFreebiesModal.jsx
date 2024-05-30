@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -8,8 +8,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
-  TextareaAutosize,
   Typography,
 } from "@mui/material";
 import DangerButton from "../DangerButton";
@@ -19,14 +17,12 @@ import moment from "moment";
 import { usePutRejectFreebiesMutation } from "../../features/prospect/api/prospectApi";
 import SuccessSnackbar from "../SuccessSnackbar";
 import ErrorSnackbar from "../ErrorSnackbar";
-import CommonDialog from "../CommonDialog";
-import AccentButton from "../AccentButton";
+import CommonDialog from "../common/CommonDialog";
 
 function CancelFreebiesModal({ ...otherProps }) {
   const { onClose } = otherProps;
 
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [reason, setReason] = useState("");
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
   const address = selectedRowData?.ownersAddress;
@@ -82,12 +78,6 @@ function CancelFreebiesModal({ ...otherProps }) {
     }
 
     onCancelConfirmClose();
-  };
-
-  //Misc Functions
-  const handleClose = () => {
-    onClose();
-    setReason("");
   };
 
   return (

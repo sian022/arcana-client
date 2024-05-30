@@ -26,7 +26,7 @@ import { directRegisterPersonalSchema } from "../../../schema/schema";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDisclosure from "../../../hooks/useDisclosure";
-import CommonDialog from "../../../components/CommonDialog";
+import CommonDialog from "../../../components/common/CommonDialog";
 import {
   useLazyGetAttachmentsByClientIdQuery,
   useLazyGetListingFeeByClientIdQuery,

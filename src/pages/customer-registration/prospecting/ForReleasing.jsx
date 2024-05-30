@@ -21,7 +21,7 @@ import {
 } from "../../../features/prospect/api/prospectApi";
 import CommonTableSkeleton from "../../../components/CommonTableSkeleton";
 import { useDispatch, useSelector } from "react-redux";
-import CommonDialog from "../../../components/CommonDialog";
+import CommonDialog from "../../../components/common/CommonDialog";
 import SuccessSnackbar from "../../../components/SuccessSnackbar";
 import ErrorSnackbar from "../../../components/ErrorSnackbar";
 import { debounce } from "../../../utils/CustomFunctions";
@@ -30,10 +30,10 @@ import ReleaseFreebieModal from "../../../components/modals/ReleaseFreebieModal"
 import AddSearchMixin from "../../../components/mixins/AddSearchMixin";
 import CancelFreebiesModal from "../../../components/modals/CancelFreebiesModal";
 import TertiaryButton from "../../../components/TertiaryButton";
-import SuccessButton from "../../../components/SuccessButton";
 import { PatternFormat } from "react-number-format";
 import { setSelectedRow } from "../../../features/misc/reducers/selectedRowSlice";
 import DangerButton from "../../../components/DangerButton";
+import SecondaryButton from "../../../components/SecondaryButton";
 
 function ForReleasing() {
   const [drawerMode, setDrawerMode] = useState("");
@@ -605,12 +605,14 @@ function ForReleasing() {
             </TertiaryButton>
           )}
 
-          <SuccessButton
+          <SecondaryButton
             onClick={onConfirmOpen}
-            disabled={!isValid || (drawerMode === "edit" && !editMode)}
+            disabled={
+              !isValid || (drawerMode === "edit" && !editMode) || !isDirty
+            }
           >
             Submit
-          </SuccessButton>
+          </SecondaryButton>
         </Box>
       </CommonDrawer>
 

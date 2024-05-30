@@ -1,0 +1,20 @@
+{
+  "successfulProspect": {
+    "name": "Jane Smith 25",
+    "phone": "9123456789",
+    "barangay": "Sample Barangay",
+    "city": "Sample City",
+    "province": "Sample Province",
+    "businessName": "Sample Business",
+    "businessType": "Restaurant"
+  },
+  "unsuccessfulProspect": {
+    "name": "John Doe",
+    "phone": "1234567890",
+    "barangay": "Sample Barangay",
+    "city": "Sample City",
+    "province": "Sample Province",
+    "businessName": "Sample Business",
+    "businessType": "Restaurant"
+  }
+}

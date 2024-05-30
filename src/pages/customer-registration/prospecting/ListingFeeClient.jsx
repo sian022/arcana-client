@@ -158,6 +158,7 @@ function ListingFeeClient() {
                   helperText={errors?.itemId?.message}
                   error={errors?.itemId}
                   sx={{ width: "180px" }}
+                  data-testid={`product-${index}`}
                 />
               )}
               onChange={(_, value) => {
@@ -247,6 +248,7 @@ function ListingFeeClient() {
                   allowNegative={false}
                   allowLeadingZeros={false}
                   prefix="₱"
+                  data-testid={`unit-cost-${index}`}
                 />
               )}
             />

@@ -32,8 +32,9 @@ import {
   useLazyGetAllPaymentHistoriesQuery,
   useVoidPaymentTransactionMutation,
 } from "../../../features/sales-management/api/paymentTransactionApi";
-import CommonDialog from "../../CommonDialog";
+import CommonDialog from "../../common/CommonDialog";
 import useDisclosure from "../../../hooks/useDisclosure";
+import PaymentHistoriesSkeleton from "../../skeletons/PaymentHistoriesSkeleton";
 
 function PaymentHistoriesModal({ clientId, ...props }) {
   const { open } = props;
@@ -42,7 +43,6 @@ function PaymentHistoriesModal({ clientId, ...props }) {
   const [confirmReason, setConfirmReason] = useState(false);
   const [reason, setReason] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const hasVoidable = true;
 
   //Hooks
   const snackbar = useSnackbar();
@@ -55,10 +55,17 @@ function PaymentHistoriesModal({ clientId, ...props }) {
   } = useDisclosure();
 
   //RTK Query
-  const [triggerHistories, { data: paymentHistoriesData }] =
-    useLazyGetAllPaymentHistoriesQuery();
+  const [
+    triggerHistories,
+    { data: paymentHistoriesData, isFetching: isPaymentHistoriesFetching },
+  ] = useLazyGetAllPaymentHistoriesQuery();
   const [voidPaymentTransaction, { isLoading: isVoidLoading }] =
     useVoidPaymentTransactionMutation();
+
+  //Constants
+  const hasVoidable = paymentHistoriesData?.transactions?.some(
+    (item) => moment(item.createdAt) > moment().subtract(1, "days")
+  );
 
   //Functions
   const getPaymentTypeIcon = (paymentType) => {
@@ -139,12 +146,15 @@ function PaymentHistoriesModal({ clientId, ...props }) {
 
   useEffect(() => {
     if (open) {
-      triggerHistories({
-        Status: true,
-        PageSize: 1000,
-        PageNumber: 1,
-        ClientId: clientId,
-      });
+      triggerHistories(
+        {
+          Status: true,
+          PageSize: 1000,
+          PageNumber: 1,
+          ClientId: clientId,
+        },
+        { preferCacheValue: true }
+      );
     }
   }, [open, triggerHistories, clientId]);
 
@@ -162,269 +172,286 @@ function PaymentHistoriesModal({ clientId, ...props }) {
             </Alert>
           )}
 
-          <Box className="paymentHistoriesModal__body">
-            <Stepper
-              orientation="vertical"
-              sx={{
-                "& .MuiStepConnector-root": {
-                  flex: "none",
-                  WebkitFlex: "none",
-                },
-              }}
-            >
-              {paymentHistoriesData?.transactions?.map((paymentTransaction) => (
-                <Step key={paymentTransaction.paymentRecordId} active expanded>
-                  <StepLabel StepIconProps={{ icon: "" }}>
-                    <span style={{ fontWeight: "600", marginRight: "5px" }}>
-                      {moment(paymentTransaction.createdAt).format(
-                        "MMMM D, YYYY"
-                      )}
-                    </span>
+          {isPaymentHistoriesFetching ? (
+            <PaymentHistoriesSkeleton />
+          ) : (
+            <Box className="paymentHistoriesModal__body">
+              <Stepper
+                orientation="vertical"
+                sx={{
+                  "& .MuiStepConnector-root": {
+                    flex: "none",
+                    WebkitFlex: "none",
+                  },
+                }}
+              >
+                {paymentHistoriesData?.transactions?.map(
+                  (paymentTransaction) => (
+                    <Step
+                      key={paymentTransaction.paymentRecordId}
+                      active
+                      expanded
+                    >
+                      <StepLabel StepIconProps={{ icon: "" }}>
+                        <span style={{ fontWeight: "600", marginRight: "5px" }}>
+                          {moment(paymentTransaction.createdAt).format(
+                            "MMMM D, YYYY"
+                          )}
+                        </span>
 
-                    <span>
-                      {moment(paymentTransaction.createdAt).format("hh:mm a")}
-                    </span>
+                        <span>
+                          {moment(paymentTransaction.createdAt).format(
+                            "hh:mm a"
+                          )}
+                        </span>
 
-                    {moment(paymentTransaction.createdAt).isAfter(
-                      moment().subtract(1, "days")
-                    ) &&
-                      (paymentTransaction.status === "Pending" ||
-                        paymentTransaction.status === "Over due") && (
-                        <Tooltip title="Void" followCursor>
-                          <IconButton
-                            color="error"
-                            sx={{ ml: 1, padding: 0 }}
+                        {moment(paymentTransaction.createdAt).isAfter(
+                          moment().subtract(1, "days")
+                        ) &&
+                          (paymentTransaction.status === "Received" ||
+                            paymentTransaction.status === "Over due") && (
+                            <Tooltip title="Void" followCursor>
+                              <IconButton
+                                color="error"
+                                sx={{ ml: 1, padding: 0 }}
+                                onClick={() =>
+                                  handleVoidOpen(
+                                    paymentTransaction.paymentRecordId
+                                  )
+                                }
+                              >
+                                <BlockOutlined />
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                      </StepLabel>
+
+                      <StepContent>
+                        <Box className="paymentHistoriesModal__body__stepContent">
+                          <Box className="paymentHistoriesModal__body__stepContent__total">
+                            <Typography className="paymentHistoriesModal__body__stepContent__total__label">
+                              Total:
+                            </Typography>
+
+                            <Typography className="paymentHistoriesModal__body__stepContent__total__value">
+                              {formatPesoAmount(
+                                paymentTransaction.paymentTransactions.reduce(
+                                  (total, transaction) =>
+                                    total + transaction.paymentAmount,
+                                  0
+                                )
+                              )}
+                            </Typography>
+                          </Box>
+
+                          <Box
+                            className="paymentHistoriesModal__body__stepContent__paymentTypes"
                             onClick={() =>
-                              handleVoidOpen(paymentTransaction.paymentRecordId)
+                              handlePaymentDropdown(
+                                paymentTransaction.paymentRecordId,
+                                !expandedPaymentType[
+                                  paymentTransaction.paymentRecordId
+                                ]
+                              )
                             }
                           >
-                            <BlockOutlined />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                  </StepLabel>
+                            <Typography className="paymentHistoriesModal__body__stepContent__paymentTypes__label">
+                              Payment Type(s):
+                            </Typography>
 
-                  <StepContent>
-                    <Box className="paymentHistoriesModal__body__stepContent">
-                      <Box className="paymentHistoriesModal__body__stepContent__total">
-                        <Typography className="paymentHistoriesModal__body__stepContent__total__label">
-                          Total:
-                        </Typography>
+                            <Box className="paymentHistoriesModal__body__stepContent__paymentTypes__chips">
+                              {paymentTransaction?.paymentTransactions?.map(
+                                (transaction, index) => (
+                                  <Chip
+                                    key={index}
+                                    label={transaction.paymentMethod}
+                                    variant="outlined"
+                                    color="primary"
+                                    icon={getPaymentTypeIcon(
+                                      transaction.paymentMethod
+                                    )}
+                                  />
+                                )
+                              )}
+                            </Box>
 
-                        <Typography className="paymentHistoriesModal__body__stepContent__total__value">
-                          {formatPesoAmount(
-                            paymentTransaction.paymentTransactions.reduce(
-                              (total, transaction) =>
-                                total + transaction.paymentAmount,
-                              0
-                            )
-                          )}
-                        </Typography>
-                      </Box>
+                            <IconButton>
+                              {expandedPaymentType[
+                                paymentTransaction.paymentRecordId
+                              ] ? (
+                                <KeyboardArrowUp color="secondary" />
+                              ) : (
+                                <KeyboardArrowDown color="secondary" />
+                              )}
+                            </IconButton>
+                          </Box>
 
-                      <Box
-                        className="paymentHistoriesModal__body__stepContent__paymentTypes"
-                        onClick={() =>
-                          handlePaymentDropdown(
-                            paymentTransaction.paymentRecordId,
-                            !expandedPaymentType[
-                              paymentTransaction.paymentRecordId
-                            ]
-                          )
-                        }
-                      >
-                        <Typography className="paymentHistoriesModal__body__stepContent__paymentTypes__label">
-                          Payment Type(s):
-                        </Typography>
+                          <Collapse
+                            in={
+                              expandedPaymentType[
+                                paymentTransaction.paymentRecordId
+                              ]
+                            }
+                          >
+                            <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed">
+                              {paymentTransaction?.paymentTransactions?.map(
+                                (paymentType, index) => (
+                                  <Box
+                                    key={index}
+                                    className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item"
+                                  >
+                                    <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title">
+                                      <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title__number">
+                                        {index + 1}.
+                                      </Typography>
 
-                        <Box className="paymentHistoriesModal__body__stepContent__paymentTypes__chips">
-                          {paymentTransaction?.paymentTransactions?.map(
-                            (transaction, index) => (
-                              <Chip
-                                key={index}
-                                label={transaction.paymentMethod}
-                                variant="outlined"
-                                color="primary"
-                                icon={getPaymentTypeIcon(
-                                  transaction.paymentMethod
-                                )}
-                              />
-                            )
-                          )}
-                        </Box>
+                                      <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title__label">
+                                        {paymentType.paymentMethod}
+                                      </Typography>
 
-                        <IconButton>
-                          {expandedPaymentType[
-                            paymentTransaction.paymentRecordId
-                          ] ? (
-                            <KeyboardArrowUp color="secondary" />
-                          ) : (
-                            <KeyboardArrowDown color="secondary" />
-                          )}
-                        </IconButton>
-                      </Box>
-
-                      <Collapse
-                        in={
-                          expandedPaymentType[
-                            paymentTransaction.paymentRecordId
-                          ]
-                        }
-                      >
-                        <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed">
-                          {paymentTransaction?.paymentTransactions?.map(
-                            (paymentType, index) => (
-                              <Box
-                                key={index}
-                                className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item"
-                              >
-                                <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title">
-                                  <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title__number">
-                                    {index + 1}.
-                                  </Typography>
-
-                                  <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__title__label">
-                                    {paymentType.paymentMethod}
-                                  </Typography>
-
-                                  {getPaymentTypeIcon(
-                                    paymentType.paymentMethod
-                                  )}
-                                </Box>
-
-                                <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content">
-                                  <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                    <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                      Amount:
-                                    </Typography>
-
-                                    <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                      {formatPesoAmount(
-                                        paymentType.paymentAmount
+                                      {getPaymentTypeIcon(
+                                        paymentType.paymentMethod
                                       )}
-                                    </Typography>
+                                    </Box>
+
+                                    <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content">
+                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                          Amount:
+                                        </Typography>
+
+                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                          {formatPesoAmount(
+                                            paymentType.paymentAmount
+                                          )}
+                                        </Typography>
+                                      </Box>
+
+                                      {/* Cheque Fields */}
+                                      {paymentType.paymentMethod?.toLowerCase() ===
+                                        "cheque" && (
+                                        <>
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Payee:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {paymentType.payee}
+                                            </Typography>
+                                          </Box>
+
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Cheque Date:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {moment(
+                                                paymentType.chequeDate
+                                              ).format("MMM D, YYYY")}
+                                            </Typography>
+                                          </Box>
+
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Bank:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {paymentType.bank}
+                                            </Typography>
+                                          </Box>
+
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Cheque Number:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {paymentType.chequeNo}
+                                            </Typography>
+                                          </Box>
+
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Date Received:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {moment(
+                                                paymentType.dateReceived
+                                              ).format("MMM D, YYYY")}
+                                            </Typography>
+                                          </Box>
+                                        </>
+                                      )}
+
+                                      {/* Online Fields */}
+                                      {paymentType.paymentMethod?.toLowerCase() ===
+                                        "online" && (
+                                        <>
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Account Name:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {paymentType.accountName}
+                                            </Typography>
+                                          </Box>
+
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Account Number:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {paymentType.accountNo}
+                                            </Typography>
+                                          </Box>
+
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Reference Number:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {paymentType.referenceNo}
+                                            </Typography>
+                                          </Box>
+                                        </>
+                                      )}
+
+                                      {/* Offset Fields */}
+                                      {paymentType.paymentMethod?.toLowerCase() ===
+                                        "offset" && (
+                                        <>
+                                          <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
+                                              Remarks:
+                                            </Typography>
+
+                                            <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
+                                              {paymentType.remarks}
+                                            </Typography>
+                                          </Box>
+                                        </>
+                                      )}
+                                    </Box>
                                   </Box>
-
-                                  {/* Cheque Fields */}
-                                  {paymentType.paymentType === "Cheque" && (
-                                    <>
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Payee:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {paymentType.payee}
-                                        </Typography>
-                                      </Box>
-
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Cheque Date:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {moment(
-                                            paymentType.chequeDate
-                                          ).format("MMM D, YYYY")}
-                                        </Typography>
-                                      </Box>
-
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Bank:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {paymentType.bank}
-                                        </Typography>
-                                      </Box>
-
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Cheque Number:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {paymentType.chequeNo}
-                                        </Typography>
-                                      </Box>
-
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Date Received:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {moment(
-                                            paymentType.dateReceived
-                                          ).format("MMM D, YYYY")}
-                                        </Typography>
-                                      </Box>
-                                    </>
-                                  )}
-
-                                  {/* Online Fields */}
-                                  {paymentType.paymentType === "Online" && (
-                                    <>
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Account Name:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {paymentType.accountName}
-                                        </Typography>
-                                      </Box>
-
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Account Number:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {paymentType.accountNumber}
-                                        </Typography>
-                                      </Box>
-
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Reference Number:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {paymentType.referenceNumber}
-                                        </Typography>
-                                      </Box>
-                                    </>
-                                  )}
-
-                                  {/* Offset Fields */}
-                                  {paymentType.paymentType === "Offset" && (
-                                    <>
-                                      <Box className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row">
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__label">
-                                          Remarks:
-                                        </Typography>
-
-                                        <Typography className="paymentHistoriesModal__body__stepContent__paymentsDetailed__item__content__row__value">
-                                          {paymentType.remarks}
-                                        </Typography>
-                                      </Box>
-                                    </>
-                                  )}
-                                </Box>
-                              </Box>
-                            )
-                          )}
+                                )
+                              )}
+                            </Box>
+                          </Collapse>
                         </Box>
-                      </Collapse>
-                    </Box>
-                  </StepContent>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
+                      </StepContent>
+                    </Step>
+                  )
+                )}
+              </Stepper>
+            </Box>
+          )}
         </Box>
       </CommonModal>
 

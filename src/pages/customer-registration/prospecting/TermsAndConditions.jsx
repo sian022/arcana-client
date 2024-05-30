@@ -292,11 +292,16 @@ function TermsAndConditions({ direct, editMode, storeType }) {
                       onAssetTagOpen();
                       // }
                     }}
+                    data-testid="freezer-yes"
                   />
                 }
                 label="Yes"
               />
-              <FormControlLabel value={false} control={<Radio />} label="No" />
+              <FormControlLabel
+                value={false}
+                control={<Radio data-testid="freezer-no" />}
+                label="No"
+              />
             </RadioGroup>
           </Box>
 
@@ -382,8 +387,16 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               );
             }}
           >
-            <FormControlLabel value={true} control={<Radio />} label="Yes" />
-            <FormControlLabel value={false} control={<Radio />} label="No" />
+            <FormControlLabel
+              value={true}
+              control={<Radio data-testid="direct-delivery-yes" />}
+              label="Yes"
+            />
+            <FormControlLabel
+              value={false}
+              control={<Radio data-testid="direct-delivery-no" />}
+              label="No"
+            />
           </RadioGroup>
         </Box>
 
@@ -404,10 +417,26 @@ function TermsAndConditions({ direct, editMode, storeType }) {
               );
             }}
           >
-            <FormControlLabel value={1} control={<Radio />} label="F1" />
-            <FormControlLabel value={2} control={<Radio />} label="F2" />
-            <FormControlLabel value={3} control={<Radio />} label="F3" />
-            <FormControlLabel value={4} control={<Radio />} label="F4" />
+            <FormControlLabel
+              value={1}
+              control={<Radio data-testid="radio-f1" />}
+              label="F1"
+            />
+            <FormControlLabel
+              value={2}
+              control={<Radio data-testid="radio-f2" />}
+              label="F2"
+            />
+            <FormControlLabel
+              value={3}
+              control={<Radio data-testid="radio-f3" />}
+              label="F3"
+            />
+            <FormControlLabel
+              value={4}
+              control={<Radio data-testid="radio-f4" />}
+              label="F4"
+            />
           </RadioGroup>
         </Box>
       </Box>
@@ -429,12 +458,17 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             }}
           >
             <Box className="terms__column__item__choices">
-              <FormControlLabel value={1} control={<Radio />} label="COD" />
+              <FormControlLabel
+                value={1}
+                control={<Radio data-testid="radio-cod" />}
+                label="COD"
+              />
               <FormControlLabel
                 value={2}
                 control={<Radio />}
                 label="1 up 1 down"
               />
+
               {termsAndConditions["terms"] === 2 && (
                 // && termDaysData
                 <Autocomplete
@@ -585,7 +619,12 @@ function TermsAndConditions({ direct, editMode, storeType }) {
             sx={{ marginY: "10px" }}
           >
             <FormControlLabel
-              control={<Checkbox sx={{ marginRight: "10px" }} />}
+              control={
+                <Checkbox
+                  sx={{ marginRight: "10px" }}
+                  data-testid="checkbox-cash"
+                />
+              }
               value={1}
               label="Cash"
               checked={termsAndConditions["modeOfPayments"]?.some(
@@ -642,7 +681,7 @@ function TermsAndConditions({ direct, editMode, storeType }) {
           >
             <FormControlLabel
               value={true}
-              control={<Radio />}
+              control={<Radio data-testid="radio-variable" />}
               label="Variable"
             />
             <FormControlLabel value={false} control={<Radio />} label="Fixed" />

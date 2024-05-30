@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeaderAdd from "../../components/PageHeaderAdd";
 import CommonTable from "../../components/CommonTable";
 import CommonDrawer from "../../components/CommonDrawer";
@@ -76,7 +76,7 @@ function Location() {
 
   //RTK Query
   const [postLocation, { isLoading: isAddLoading }] = usePostLocationMutation();
-  const { data, isLoading, isFetching } = useGetAllLocationsQuery({
+  const { data, isFetching } = useGetAllLocationsQuery({
     Search: search,
     Status: status,
     PageNumber: page + 1,

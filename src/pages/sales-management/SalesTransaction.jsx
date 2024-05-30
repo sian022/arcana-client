@@ -29,9 +29,9 @@ import NoProductFound from "../../assets/images/NoProductFound.svg";
 import AddItemModal from "../../components/modals/sales-management/AddItemModal";
 import useDisclosure from "../../hooks/useDisclosure";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
-import SwipeableItem from "../../components/sales-transaction/SwipeableItem";
+import SwipeableItem from "../../components/page-components/sales-management/sales-transaction/SwipeableItem";
 import CashoutModal from "../../components/modals/sales-management/CashoutModal";
-import TransactionsList from "../../components/sales-transaction/TransactionsList";
+import TransactionsList from "../../components/page-components/sales-management/sales-transaction/TransactionsList";
 import UnderConstruction from "../../assets/images/under-construction.svg";
 import { useGetAllClientsForPOSQuery } from "../../features/sales-management/api/salesTransactionApi";
 import { useGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
@@ -472,7 +472,7 @@ function SalesTransaction() {
                     onClick={onCashoutOpen}
                     endIcon={<ShoppingCartCheckout />}
                   >
-                    Cashout
+                    Complete Order
                   </SecondaryButton>
                 </Box>
               </Box>

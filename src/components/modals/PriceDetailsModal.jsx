@@ -14,7 +14,7 @@ import { Delete } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import TertiaryButton from "../TertiaryButton";
-import CommonDialog from "../CommonDialog";
+import CommonDialog from "../common/CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import useSnackbar from "../../hooks/useSnackbar";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";

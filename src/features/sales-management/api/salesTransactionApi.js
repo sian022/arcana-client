@@ -49,9 +49,11 @@ const salesTransactionApi = api
       }),
 
       voidSalesTransaction: builder.mutation({
-        query: ({ id }) => ({
-          url: `/sales-transaction/${id}/void`,
-          method: "PATCH",
+        query: (body) => ({
+          // url: `/sales-transaction/${id}/void`,
+          url: `/sales-transaction/voidV2`,
+          method: "PUT",
+          body,
         }),
         invalidatesTags: ["Sales Transaction"],
       }),

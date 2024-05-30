@@ -49,6 +49,7 @@ function CommonModal({
             <IconButton
               onClick={customOnClose ? customOnClose : onClose}
               disabled={disableCloseTopRight}
+              data-testid="common-modal-close-button"
             >
               <Close />
             </IconButton>

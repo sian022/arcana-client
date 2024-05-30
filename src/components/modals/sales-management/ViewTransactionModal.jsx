@@ -136,7 +136,7 @@ function ViewTransactionModal({ ...props }) {
 
               <Box className="viewTransactionSlipModal__details__right__row">
                 <Typography fontWeight="700" textTransform="uppercase">
-                  Charge Invoice No:{" "}
+                  Invoice No:{" "}
                 </Typography>
                 <Typography>{data?.chargeInvoiceNo}</Typography>
               </Box>
@@ -199,20 +199,24 @@ function ViewTransactionModal({ ...props }) {
                   <TableCell></TableCell>
                   <TableCell>
                     <span className="label">DISCOUNT</span>{" "}
-                    <span style={{ fontWeight: "400" }}>
-                      (
-                      {(data?.discountPercentage * 100)?.toLocaleString(
-                        undefined,
-                        {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }
-                      ) + "%" || ""}
-                      )
-                    </span>
+                    {data?.discountPercentage > 0 && (
+                      <span style={{ fontWeight: "400" }}>
+                        (
+                        {(data?.discountPercentage * 100)?.toLocaleString(
+                          undefined,
+                          {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          }
+                        ) + "%" || ""}
+                        )
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell>
-                    {formatPesoAmount(data?.discountAmount)}
+                    {data?.discountPercentage > 0
+                      ? formatPesoAmount(data?.discountAmount)
+                      : "-"}
                   </TableCell>
                 </TableRow>
 

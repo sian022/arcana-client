@@ -11,7 +11,7 @@ import SecondaryButton from "../SecondaryButton";
 import ErrorSnackbar from "../ErrorSnackbar";
 import useDisclosure from "../../hooks/useDisclosure";
 import SuccessSnackbar from "../SuccessSnackbar";
-import CommonDialog from "../CommonDialog";
+import CommonDialog from "../common/CommonDialog";
 import { requestListingFeeSchema } from "../../schema/schema";
 import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
 import { useGetAllClientsForListingFeeQuery } from "../../features/registration/api/registrationApi";
@@ -400,7 +400,7 @@ function ListingFeeDrawer({
                 flexDirection: "column",
                 gap: "10px",
                 height: "270px",
-                overflowX: "hidden",
+                overflowX: "hidden !important",
                 overflowY: "auto",
               }}
               ref={parent}

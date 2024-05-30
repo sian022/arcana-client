@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import DangerButton from "../DangerButton";
-import CommonDialog from "../CommonDialog";
+import CommonDialog from "../common/CommonDialog";
 import useDisclosure from "../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
 import {
@@ -201,9 +201,20 @@ function ViewListingFeeModal({
         disablePadding
         ribbon
         customRibbonContent={customRibbonContent}
+        ribbonPadding="15px"
         {...props}
       >
         <Box className="viewListingFeeModal">
+          <Box className="viewListingFeeModal__transactionNumber">
+            <Typography className="viewListingFeeModal__transactionNumber__label">
+              Transaction Number:
+            </Typography>
+
+            <Typography className="viewListingFeeModal__transactionNumber__value">
+              {selectedRowData?.listingFeeId}
+            </Typography>
+          </Box>
+
           <Box className="viewListingFeeModal__customerDetails">
             <Box className="viewListingFeeModal__customerDetails__left">
               <Box className="viewListingFeeModal__customerDetails__left__boxLabel">
@@ -233,16 +244,6 @@ function ViewListingFeeModal({
                 />
               </Box>
             </Box>
-          </Box>
-
-          <Box className="viewListingFeeModal__transactionNumber">
-            <Typography className="viewListingFeeModal__transactionNumber__label">
-              Transaction Number:
-            </Typography>
-
-            <Typography className="viewListingFeeModal__transactionNumber__value">
-              {selectedRowData?.listingFeeId}
-            </Typography>
           </Box>
 
           <TableContainer
@@ -328,7 +329,7 @@ function ViewListingFeeModal({
             // right: "150px",
             right: "40px",
             // left: "550px",
-            bottom: "50px",
+            bottom: "80px",
             gap: "20px",
           }}
         >

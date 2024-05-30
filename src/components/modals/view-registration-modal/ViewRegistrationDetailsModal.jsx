@@ -14,7 +14,7 @@ import AttachmentsTab from "./AttachmentsTab";
 import DangerButton from "../../DangerButton";
 import useDisclosure from "../../../hooks/useDisclosure";
 import { useSelector } from "react-redux";
-import CommonDialog from "../../CommonDialog";
+import CommonDialog from "../../common/CommonDialog";
 import { Close } from "@mui/icons-material";
 import {
   useLazyGetListingFeeByClientIdQuery,
@@ -135,16 +135,6 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
             ? "viewRegistrationModal__headersFive"
             : "viewRegistrationModal__headers"
         }
-        // Removing freebies, listing fee, and other expenses in approval
-        // className={
-        //   clientStatus !== "Approved" && selectedRowData?.terms === "COD"
-        //     ? "viewRegistrationModal__headersThree"
-        //     : clientStatus !== "Approved" && selectedRowData?.terms !== "COD"
-        //     ? "viewRegistrationModal__headersFour"
-        //     : clientStatus === "Approved" && selectedRowData?.terms === "COD"
-        //     ? "viewRegistrationModal__headersFive"
-        //     : "viewRegistrationModal__headers"
-        // }
       >
         {navigators.map((item, i) => (
           <Button
@@ -397,11 +387,18 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                         gap: "10px",
                       }}
                     >
-                      <DangerButton contained onClick={onRejectConfirmOpen}>
+                      <DangerButton
+                        contained
+                        onClick={onRejectConfirmOpen}
+                        data-testid="reject-registration"
+                      >
                         Reject
                       </DangerButton>
 
-                      <SecondaryButton onClick={onApproveConfirmOpen}>
+                      <SecondaryButton
+                        onClick={onApproveConfirmOpen}
+                        data-testid="approve-registration"
+                      >
                         Approve
                       </SecondaryButton>
                     </Box>
@@ -456,6 +453,7 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                 }}
                 multiline
                 rows={3}
+                data-testid="reject-reason"
               />
               <Box sx={{ display: "flex", justifyContent: "end", gap: "5x" }}>
                 <Typography>Confirm reason</Typography>
@@ -465,6 +463,7 @@ function ViewRegistrationDetailsModal({ approval, clientStatus, ...props }) {
                     setConfirmReason(e.target.checked);
                   }}
                   disabled={!reason.trim()}
+                  data-testid="confirm-reason"
                 />
               </Box>
             </Box>

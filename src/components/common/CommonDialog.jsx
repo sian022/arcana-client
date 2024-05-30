@@ -5,10 +5,10 @@ import {
   DialogActions,
   DialogTitle,
 } from "@mui/material";
-import SecondaryButton from "./SecondaryButton";
-import DangerButton from "./DangerButton";
-import ErrorAlert from "../assets/images/ErrorAlert.png";
-import QuestionAlert from "../assets/images/QuestionAlert.png";
+import SecondaryButton from "../SecondaryButton";
+import DangerButton from "../DangerButton";
+import ErrorAlert from "../../assets/images/ErrorAlert.png";
+import QuestionAlert from "../../assets/images/QuestionAlert.png";
 
 function CommonDialog({
   onClose,

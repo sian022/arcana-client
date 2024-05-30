@@ -710,7 +710,7 @@ export const advancePaymentSchema = {
       otherwise: (schema) => schema.nullable(),
     }),
 
-    referenceNumber: yup.string().when("paymentMethod.label", {
+    referenceNo: yup.string().when("paymentMethod.label", {
       is: "Online",
       then: (schema) => schema.required("Reference number is required"),
       otherwise: (schema) => schema.nullable(),
@@ -728,7 +728,7 @@ export const advancePaymentSchema = {
     // chequeAmount: "",
     accountName: "",
     accountNo: "",
-    referenceNumber: "",
+    referenceNo: "",
   },
 };
 
@@ -796,7 +796,7 @@ export const paymentSchema = {
       otherwise: (schema) => schema.nullable(),
     }),
 
-    referenceNumber: yup.string().when("paymentMethod.label", {
+    referenceNo: yup.string().when("paymentMethod.label", {
       is: "Online",
       then: (schema) => schema.required("Reference number is required"),
       otherwise: (schema) => schema.nullable(),
@@ -820,7 +820,7 @@ export const paymentSchema = {
     // chequeAmount: "",
     accountName: "",
     accountNo: "",
-    referenceNumber: "",
+    referenceNo: "",
     remarks: "",
   },
 };
@@ -843,11 +843,13 @@ export const salesTransactionSchema = {
 export const cashoutSchema = {
   schema: yup.object({
     chargeInvoiceNo: yup.string().required("Charge Invoice No. is required"),
+    invoiceType: yup.string().required("Invoice Type is required"),
     discount: yup.number().required("Discount is required").nullable(),
     specialDiscount: yup.number().nullable(),
   }),
   defaultValues: {
     chargeInvoiceNo: "",
+    invoiceType: "",
     discount: null,
     specialDiscount: null,
   },

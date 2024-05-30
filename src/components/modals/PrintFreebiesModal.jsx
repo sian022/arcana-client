@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import CommonModal from "../CommonModal";
 import {
   Box,
@@ -13,26 +13,13 @@ import {
 } from "@mui/material";
 import rdfLogo from "../../assets/images/RDF-Logo.png";
 
-import useDisclosure from "../../hooks/useDisclosure";
-import SignatureCanvasModal from "./SignatureCanvasModal";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import SuccessSnackbar from "../SuccessSnackbar";
-import ErrorSnackbar from "../ErrorSnackbar";
-import CommonDialog from "../CommonDialog";
-import ViewPhotoModal from "./ViewPhotoModal";
-import SuccessButton from "../SuccessButton";
 import { useReactToPrint } from "react-to-print";
 import "../../assets/styles/print.styles.scss";
+import SecondaryButton from "../SecondaryButton";
 
-function PrintFreebiesModal({ registration, ...otherProps }) {
-  const { onClose, ...noOnCloseProps } = otherProps;
-  const { open, ...noOpenProps } = otherProps;
-
-  const [signature, setSignature] = useState("");
-  const [photoProof, setPhotoProof] = useState(null);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-
+function PrintFreebiesModal({ ...otherProps }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -42,36 +29,6 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
   const { fullname } = useSelector((state) => state.login);
 
   const printRef = useRef(null);
-
-  const {
-    isOpen: isCanvasOpen,
-    onOpen: onCanvasOpen,
-    onClose: onCanvasClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isConfirmOpen,
-    onOpen: onConfirmOpen,
-    onClose: onConfirmClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isSuccessOpen,
-    onOpen: onSuccessOpen,
-    onClose: onSuccessClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isErrorOpen,
-    onOpen: onErrorOpen,
-    onClose: onErrorClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isViewPhotoOpen,
-    onOpen: onViewPhotoOpen,
-    onClose: onViewPhotoClose,
-  } = useDisclosure();
 
   //Functions
   const handlePrint = useReactToPrint({
@@ -297,7 +254,7 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
         </Box>
         <Box className="releaseFreebieModal__actionsEnd">
           {/* <DangerButton onClick={onCancelConfirmOpen}>Close</DangerButton> */}
-          <SuccessButton
+          <SecondaryButton
             onClick={
               // onConfirmOpen
               handlePrint
@@ -310,48 +267,9 @@ function PrintFreebiesModal({ registration, ...otherProps }) {
             ) : (
               "Print"
             )}
-          </SuccessButton>
+          </SecondaryButton>
         </Box>
       </CommonModal>
-
-      <SignatureCanvasModal
-        open={isCanvasOpen}
-        onClose={onCanvasClose}
-        signature={signature}
-        setSignature={setSignature}
-      />
-
-      <ViewPhotoModal
-        open={isViewPhotoOpen}
-        onClose={onViewPhotoClose}
-        currentViewPhoto={photoProof}
-        currentViewPhotoLabel={"Freebie Photo"}
-      />
-
-      <CommonDialog
-        open={isConfirmOpen}
-        onClose={onConfirmClose}
-        onYes={handlePrint}
-        question
-      >
-        Confirm printing of freebies for{" "}
-        <span style={{ fontWeight: "bold" }}>
-          {selectedRowData?.businessName}
-        </span>
-        ?
-      </CommonDialog>
-
-      <SuccessSnackbar
-        open={isSuccessOpen}
-        onClose={onSuccessClose}
-        message={snackbarMessage}
-      />
-
-      <ErrorSnackbar
-        open={isErrorOpen}
-        onClose={onErrorClose}
-        message={snackbarMessage}
-      />
     </>
   );
 }

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { transformKey } from "../utils/CustomFunctions";
-import CommonActions from "./CommonActions";
+import CommonActions from "./common/CommonActions";
 import NoData from "../assets/images/NoRecordsFound.svg";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setSelectedRow } from "../features/misc/reducers/selectedRowSlice";
@@ -28,6 +28,8 @@ import { formatPhoneNumber } from "../utils/CustomFunctions";
 import moment from "moment";
 
 function CommonTable({
+  actionsHead,
+  actions,
   mt,
   mapData,
   tableHeads,
@@ -85,9 +87,10 @@ function CommonTable({
   disableActions,
   moveNoDataUp,
   checkboxSelection,
-  checkedArray,
+  checkedArray = [],
   setCheckedArray,
   warning,
+  booleanDisplayOptions = [],
 }) {
   const dispatch = useDispatch();
   const selectedRowData = useSelector((state) => state.selectedRow.value);
@@ -202,12 +205,24 @@ function CommonTable({
 
               {checkboxSelection && (
                 <TableCell>
-                  <Checkbox
-                    checked={isAllSelected}
-                    indeterminate={isIndeterminate}
-                    onChange={handleMasterCheckboxChange}
-                    sx={{ color: "white !important" }}
-                  />
+                  <Box sx={{ display: "flex", gap: "5px" }}>
+                    <CommonActions
+                      iconColor={
+                        checkedArray.length === 0
+                          ? "#BDBDBD77 !important"
+                          : "white !important"
+                      }
+                      {...actionsHead}
+                      disabled={checkedArray.length === 0}
+                    />
+
+                    <Checkbox
+                      checked={isAllSelected}
+                      indeterminate={isIndeterminate}
+                      onChange={handleMasterCheckboxChange}
+                      sx={{ color: "white !important" }}
+                    />
+                  </Box>
                 </TableCell>
               )}
 
@@ -260,6 +275,24 @@ function CommonTable({
                   )}
 
                   {(customOrderKeys || dataToMapKeys).map((keys, k) => {
+                    if (
+                      booleanDisplayOptions.some(
+                        (option) => option.keyName === keys
+                      )
+                    ) {
+                      const foundOption = booleanDisplayOptions.find(
+                        (option) => option.keyName === keys
+                      );
+
+                      return (
+                        <TableCell key={k}>
+                          {item[keys]
+                            ? foundOption?.trueDisplay
+                            : foundOption?.falseDisplay}
+                        </TableCell>
+                      );
+                    }
+
                     if (item[keys] === true && keys !== attachKey) {
                       return (
                         <TableCell key={k}>
@@ -486,6 +519,7 @@ function CommonTable({
                         item={item}
                         status={status}
                         disableActions={disableActions}
+                        {...actions}
                       />
                     </TableCell>
                   )}
