@@ -45,7 +45,7 @@ const listingFeeApi = api
       getAllListingFeeBalances: builder.query({
         query: (params) => ({
           params,
-          url: "/listing-fee/balances",
+          url: "/ListingFee/GetAllListingFeeBalance",
           method: "GET",
         }),
         providesTags: ["Listing Fee Balances"],

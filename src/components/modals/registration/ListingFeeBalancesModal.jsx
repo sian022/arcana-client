@@ -91,6 +91,7 @@ function ListingFeeBalancesModal({ ...props }) {
                   <Box
                     key={item.clientId}
                     className="listingFeeBalancesModal__list__item"
+                    sx={{ mr: 1 }}
                   >
                     <Box className="listingFeeBalancesModal__list__item__clientInfo">
                       <Typography className="listingFeeBalancesModal__list__item__clientInfo__businessName">
@@ -98,12 +99,12 @@ function ListingFeeBalancesModal({ ...props }) {
                       </Typography>
 
                       <Typography className="listingFeeBalancesModal__list__item__clientInfo__ownersName">
-                        {item.fullname}
+                        {item.fullName}
                       </Typography>
                     </Box>
 
                     <Typography className="listingFeeBalancesModal__list__item__amount">
-                      {formatPesoAmount(item.balance)}
+                      {formatPesoAmount(item.remainingBalance)}
                     </Typography>
                   </Box>
                 ))}

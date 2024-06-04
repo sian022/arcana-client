@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import CommonModal from "../../CommonModal";
-import { Box, Divider, Input, Typography } from "@mui/material";
+import { Box, Divider, Input, Tooltip, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { FileUpload } from "@mui/icons-material";
 import SecondaryButton from "../../SecondaryButton";
@@ -72,7 +72,12 @@ function ViewAttachmentModal({ ...props }) {
       : currentAttachment?.name;
   }, [isLink, currentAttachment, selectedRowData]);
 
-  //UseEffect
+  // Check if attachment has been uploaded since 1 day
+  const isAttachmentEditable = useMemo(() => {
+    return moment().diff(selectedRowData?.ciAttachmentCreatedAt, "days") < 1;
+  }, [selectedRowData?.ciAttachmentCreatedAt]);
+
+  // UseEffect
   useEffect(() => {
     if (!open) {
       setCurrentAttachment(null);
@@ -108,44 +113,58 @@ function ViewAttachmentModal({ ...props }) {
           )}
         </Box>
 
-        <Box
-          className="viewAttachmentModal__canvas"
-          onClick={() => uploadRef.current.click()}
+        <Tooltip
+          title={
+            !isAttachmentEditable && "Attachment cannot be updated anymore"
+          }
+          followCursor
         >
-          <Input
-            type="file"
-            onChange={(e) => {
-              setCurrentAttachment(e.target.files[0]);
-              setIsLink(false);
-            }}
-            inputProps={{ accept: "image/jpeg, image/png, image/gif" }}
-            sx={{ display: "none" }}
-            inputRef={uploadRef}
-          />
+          <span>
+            <Box
+              className="viewAttachmentModal__canvas"
+              onClick={() => uploadRef.current.click()}
+              sx={{ pointerEvents: !isAttachmentEditable ? "none" : "auto" }}
+            >
+              <Input
+                type="file"
+                onChange={(e) => {
+                  setCurrentAttachment(e.target.files[0]);
+                  setIsLink(false);
+                }}
+                inputProps={{ accept: "image/jpeg, image/png, image/gif" }}
+                sx={{ display: "none" }}
+                inputRef={uploadRef}
+              />
 
-          {currentAttachment ? (
-            <img
-              src={
-                isLink
-                  ? currentAttachment
-                  : URL.createObjectURL(currentAttachment)
-              }
-              alt="attachment-preview"
-              style={{
-                borderRadius: "5px",
-                maxWidth: "100%",
-                maxHeight: "100%",
-              }}
-            />
-          ) : (
-            <>
-              <FileUpload sx={{ fontSize: "5rem", color: "#33333361" }} />
-              <Typography fontWeight="500" color="#333333A8" fontSize="1.1rem">
-                Upload invoice attachment
-              </Typography>
-            </>
-          )}
-        </Box>
+              {currentAttachment ? (
+                <img
+                  src={
+                    isLink
+                      ? currentAttachment
+                      : URL.createObjectURL(currentAttachment)
+                  }
+                  alt="attachment-preview"
+                  style={{
+                    borderRadius: "5px",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                  }}
+                />
+              ) : (
+                <>
+                  <FileUpload sx={{ fontSize: "5rem", color: "#33333361" }} />
+                  <Typography
+                    fontWeight="500"
+                    color="#333333A8"
+                    fontSize="1.1rem"
+                  >
+                    Upload invoice attachment
+                  </Typography>
+                </>
+              )}
+            </Box>
+          </span>
+        </Tooltip>
 
         <Box className="viewAttachmentModal__actions">
           <DangerButton onClick={onClose}>Close</DangerButton>
