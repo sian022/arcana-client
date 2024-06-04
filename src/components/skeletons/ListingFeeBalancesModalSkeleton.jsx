@@ -1,16 +1,8 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 
 const ListingFeeBalancesModalSkeleton = () => {
   return (
-    <Box className="listingFeeBalancesModal">
-      <Typography className="listingFeeBalancesModal__title">
-        Listing Fee Balances
-      </Typography>
-
-      <Box className="listingFeeBalancesModal__filters">
-        <Skeleton height="35px" width="100%" sx={{ transform: "none" }} />
-      </Box>
-
+    <>
       <Box className="listingFeeBalancesModal__list">
         {Array.from({ length: 5 }).map((_, index) => (
           <Box key={index} className="listingFeeBalancesModal__list__item">
@@ -25,10 +17,15 @@ const ListingFeeBalancesModalSkeleton = () => {
         ))}
       </Box>
 
-      <Box className="listingFeeBalancesModal__pagination">
-        <Skeleton sx={{ transform: "none" }} />
+      <Box
+        className="listingFeeBalancesModal__pagination"
+        sx={{ gap: "5px", alignItems: "center" }}
+      >
+        <Skeleton variant="circular" width="30px" height="30px" />
+        <Skeleton variant="circular" width="35px" height="35px" />
+        <Skeleton variant="circular" width="30px" height="30px" />
       </Box>
-    </Box>
+    </>
   );
 };
 
