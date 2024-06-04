@@ -44,6 +44,7 @@ import {
   Undo,
   CreditCard,
   Assignment,
+  AccountBalance,
 } from "@mui/icons-material";
 
 export const getIconElement = (iconName, color, fontSize) => {
@@ -398,6 +399,15 @@ export const getIconElement = (iconName, color, fontSize) => {
 
     Assignment: (
       <Assignment
+        sx={{
+          color: color && `${color} !important`,
+          fontSize: fontSize && `${fontSize} !important`,
+        }}
+      />
+    ),
+
+    AccountBalance: (
+      <AccountBalance
         sx={{
           color: color && `${color} !important`,
           fontSize: fontSize && `${fontSize} !important`,

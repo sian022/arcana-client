@@ -12,8 +12,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
-import ControlledAutocomplete from "../../components/ControlledAutocomplete";
-import SecondaryButton from "../../components/SecondaryButton";
+import ControlledAutocomplete from "../../components/ControlledAutocomplete.jsx";
+import SecondaryButton from "../../components/SecondaryButton.jsx";
 import {
   KeyboardDoubleArrowRight,
   NoPhotography,
@@ -21,20 +21,20 @@ import {
   Tune,
 } from "@mui/icons-material";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { salesTransactionSchema } from "../../schema/schema";
+import { salesTransactionSchema } from "../../schema/schema.js";
 import { useFieldArray, useForm } from "react-hook-form";
-import { debounce } from "../../utils/CustomFunctions";
+import { debounce } from "../../utils/CustomFunctions.js";
 import { useDispatch } from "react-redux";
 import NoProductFound from "../../assets/images/NoProductFound.svg";
-import AddItemModal from "../../components/modals/sales-management/AddItemModal";
-import useDisclosure from "../../hooks/useDisclosure";
-import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice";
-import SwipeableItem from "../../components/page-components/sales-management/sales-transaction/SwipeableItem";
-import CashoutModal from "../../components/modals/sales-management/CashoutModal";
-import TransactionsList from "../../components/page-components/sales-management/sales-transaction/TransactionsList";
+import AddItemModal from "../../components/modals/sales-management/AddItemModal.jsx";
+import useDisclosure from "../../hooks/useDisclosure.js";
+import { setSelectedRow } from "../../features/misc/reducers/selectedRowSlice.js";
+import SwipeableItem from "../../components/page-components/sales-management/sales-transaction/SwipeableItem.jsx";
+import CashoutModal from "../../components/modals/sales-management/CashoutModal.jsx";
+import TransactionsList from "../../components/page-components/sales-management/sales-transaction/TransactionsList.jsx";
 import UnderConstruction from "../../assets/images/under-construction.svg";
-import { useGetAllClientsForPOSQuery } from "../../features/sales-management/api/salesTransactionApi";
-import { useGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi";
+import { useGetAllClientsForPOSQuery } from "../../features/sales-management/api/salesTransactionApi.js";
+import { useGetAllItemsByPriceModeIdQuery } from "../../features/setup/api/priceModeItemsApi.js";
 
 function SalesTransaction() {
   const [search, setSearch] = useState("");

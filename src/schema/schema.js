@@ -808,6 +808,13 @@ export const paymentSchema = {
       then: (schema) => schema.required("Remarks is required"),
       otherwise: (schema) => schema.nullable(),
     }),
+
+    //Withholding
+    attachment: yup.mixed().when("paymentMethod.label", {
+      is: "Withholding Tax",
+      then: (schema) => schema.required("Attachment  is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
   }),
   defaultValues: {
     paymentMethod: null,
@@ -822,6 +829,7 @@ export const paymentSchema = {
     accountNo: "",
     referenceNo: "",
     remarks: "",
+    attachment: null,
   },
 };
 

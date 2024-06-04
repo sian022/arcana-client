@@ -42,6 +42,12 @@ export const paymentTypes = [
     uppercase: "ADVANCE PAYMENT",
     icon: "FastForward",
   },
+  {
+    label: "Withholding Tax",
+    value: "Withholding Tax",
+    uppercase: "WITHHOLDING TAX",
+    icon: "AccountBalance",
+  },
 ];
 
 export const paymentTypesAdvPayment = [
