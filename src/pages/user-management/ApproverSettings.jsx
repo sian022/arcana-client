@@ -30,6 +30,7 @@ import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import { getIconElement } from "../../components/GetIconElement";
 import { NumericFormat } from "react-number-format";
+import { useAddApproversByRangeMutation } from "../../features/user-management/api/approverSettingsApi";
 
 function ApproverSettings() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -77,9 +78,8 @@ function ApproverSettings() {
 
   //RTK Query
   const { data, isLoading } = useGetAllApproversQuery();
-
-  const [addApproversPerModule, { isLoading: isAddApproversLoading }] =
-    useAddApproversPerModuleMutation();
+  const [addApproversByRange, { isLoading: isAddApproversLoading }] =
+    useAddApproversByRangeMutation();
   const {
     data: approversPerModuleData,
     isFetching: isApproversPerModuleFetching,
@@ -92,12 +92,12 @@ function ApproverSettings() {
     const { moduleName, ...restData } = data;
     try {
       if (drawerMode === "add") {
-        await addApproversPerModule({
+        await addApproversByRange({
           moduleName: moduleName.name,
           approvers: data.approvers.map((approver) => ({
             userId: approver.userId.userId,
-            // moduleName: approver.moduleName,
-            level: approver.level,
+            maxValue: approver.maxValue,
+            minValue: approver.minValue,
           })),
         }).unwrap();
       } else if (drawerMode === "edit") {
@@ -314,24 +314,19 @@ function ApproverSettings() {
                       thousandSeparator=","
                       allowNegative={false}
                       allowLeadingZeros={false}
-                      prefix="₱"
-                      isAllowed={(values) => {
-                        const { floatValue } = values;
-                        // Check if the floatValue is greater than max value
-                        if (
-                          floatValue != null &&
-                          floatValue > watch(`approvers[${index}`).maxValue
-                        ) {
-                          snackbar({
-                            message:
-                              "Minimum value should be less than maximum value",
-                            variant: "error",
-                          });
-                          return false;
-                        }
-                        return true;
-                      }}
+                      prefix={
+                        watch("moduleName")?.name === "Listing Fee Approval" ||
+                        watch("moduleName")?.name === "Other Expenses Approval"
+                          ? "₱"
+                          : ""
+                      }
+                      suffix={
+                        watch("moduleName")?.name === "Sp. Discount Approval"
+                          ? "%"
+                          : ""
+                      }
                       sx={{ width: "180px" }}
+                      disabled={!watch("moduleName")}
                     />
                   )}
                 />
@@ -355,9 +350,20 @@ function ApproverSettings() {
                       thousandSeparator=","
                       allowNegative={false}
                       allowLeadingZeros={false}
-                      prefix="₱"
+                      prefix={
+                        watch("moduleName")?.name === "Listing Fee Approval" ||
+                        watch("moduleName")?.name === "Other Expenses Approval"
+                          ? "₱"
+                          : ""
+                      }
+                      suffix={
+                        watch("moduleName")?.name === "Sp. Discount Approval"
+                          ? "%"
+                          : ""
+                      }
                       min={watch(`approvers[${index}].minValue`) || 0}
                       sx={{ width: "180px" }}
+                      disabled={!watch("moduleName")}
                     />
                   )}
                 />
