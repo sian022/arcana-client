@@ -40,6 +40,13 @@ export const navigationData = [
       },
       {
         id: 4,
+        name: "Approver Settings",
+        path: "/user-management/approver-settings",
+        icon: "Settings",
+        description: "Manage minimum and maximum value for approvers",
+      },
+      {
+        id: 5,
         name: "Cluster",
         path: "/user-management/cluster",
         icon: "PinDrop",

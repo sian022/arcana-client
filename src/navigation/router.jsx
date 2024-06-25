@@ -38,6 +38,7 @@ import PriceModeManagement from "../pages/setup/PriceModeManagement";
 import PageNotFound from "../pages/PageNotFound";
 import Clearing from "../pages/sales-management/Clearing";
 import OnlinePaymentPlatforms from "../pages/customer-management/OnlinePaymentPlatforms";
+import ApproverSettings from "../pages/user-management/ApproverSettings";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
           {
             path: "approver",
             element: <Approver />,
+          },
+          {
+            path: "approver-settings",
+            element: <ApproverSettings />,
           },
           {
             path: "cluster",

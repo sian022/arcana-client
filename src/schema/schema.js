@@ -578,6 +578,29 @@ export const approversSchema = {
   },
 };
 
+export const approverSettingsSchema = {
+  schema: yup.object({
+    moduleName: yup.object().required("Module is required"),
+    approvers: yup.array().of(
+      yup.object({
+        userId: yup.object().required("User is required"),
+        minValue: yup.number().required("Minimum value is required"),
+        maxValue: yup.number().required("Maximum value is required"),
+      })
+    ),
+  }),
+  defaultValues: {
+    moduleName: "",
+    approvers: [
+      {
+        userId: null,
+        minValue: null,
+        maxValue: null,
+      },
+    ],
+  },
+};
+
 export const clusterSchema = {
   schema: yup.object({
     cluster: yup.string().required("Cluster is required"),

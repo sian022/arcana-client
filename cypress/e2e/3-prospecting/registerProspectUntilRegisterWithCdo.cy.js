@@ -30,7 +30,7 @@ describe("Register Prospect with CDO", () => {
   });
 
   beforeEach(() => {
-    cy.login("nbaylon", "1234");
+    cy.login("jbmanahan", "1234");
   });
 
   it("should login, navigate to prospect registration page, and register a prospect", () => {

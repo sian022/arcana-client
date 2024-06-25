@@ -61,18 +61,18 @@ function Clearing() {
   }, [notifications]);
 
   const customOrderKeys = [
-    "id",
+    "paymentRecordId",
     "businessName",
-    "date",
+    "createdAt",
     "amount",
-    "paymentType",
+    // "paymentType",
   ];
   const tableHeads = [
     "Tx Number",
     "Business Name",
     "Date",
     "Amount",
-    "Payment Type",
+    // "Payment Type",
   ];
   const pesoArray = ["amount"];
 
