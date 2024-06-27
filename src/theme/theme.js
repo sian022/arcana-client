@@ -1,17 +1,19 @@
 import { createTheme } from "@mui/material";
+import colors from "../assets/styles/colors.module.scss";
 
+console.log(colors);
 const colorSchemes = {
   light: {
-    primary: "#544d91",
-    primaryLight: "#EAE9F4",
-    primaryLightActive: "#dcd9e9",
-    secondary: "#243448",
-    tertiary: "#008080",
-    accent: "#766bb9",
-    error: "#BB0000",
-    warning: "#D89C00",
-    success: "#009c7a",
-    notification: "#F30737",
+    primary: colors.primary,
+    primaryLight: colors.primaryLight,
+    primaryLightActive: colors.primaryLightActive,
+    secondary: colors.secondary,
+    tertiary: colors.tertiary,
+    accent: colors.accent,
+    error: colors.error,
+    warning: colors.warning,
+    success: colors.success,
+    notification: colors.notification,
     // error: "#F30737",
   },
 };

@@ -15,7 +15,7 @@ const approverSettingsApi = api
 
       getApproversByRange: builder.query({
         query: (params) => ({
-          url: "/Approver/GetApproverByModule",
+          url: "/Approver/GetApproverByRange",
           method: "GET",
           params,
         }),

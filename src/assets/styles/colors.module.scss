@@ -1,0 +1,31 @@
+$primary: #544d91;
+$primary-light: #eae9f4;
+$primary-light-active: #dcd9e9;
+$primary-red: #ab4a49aa;
+$primary-green: #5e7c64cc;
+$secondary: #243448;
+$secondary-hover: #1c2a38;
+$accent: #766bb9;
+$tertiary: #008080;
+$error: #bb0000;
+$success: #009c7a;
+$warning: #d89c00;
+$notification: #f30737;
+$required: #f3f1ff;
+
+:export {
+  primary: $primary;
+  primaryLight: $primary-light;
+  primaryLightActive: $primary-light-active;
+  primaryRed: $primary-red;
+  primaryGreen: $primary-green;
+  secondary: $secondary;
+  secondaryHover: $secondary-hover;
+  accent: $accent;
+  tertiary: $tertiary;
+  error: $error;
+  success: $success;
+  warning: $warning;
+  notification: $notification;
+  required: $required;
+}

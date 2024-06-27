@@ -30,7 +30,10 @@ import useSnackbar from "../../hooks/useSnackbar";
 import { handleCatchErrorMessage } from "../../utils/CustomFunctions";
 import { getIconElement } from "../../components/GetIconElement";
 import { NumericFormat } from "react-number-format";
-import { useAddApproversByRangeMutation } from "../../features/user-management/api/approverSettingsApi";
+import {
+  useAddApproversByRangeMutation,
+  useGetApproversByRangeQuery,
+} from "../../features/user-management/api/approverSettingsApi";
 
 function ApproverSettings() {
   const [drawerMode, setDrawerMode] = useState("add");
@@ -80,10 +83,8 @@ function ApproverSettings() {
   const { data, isLoading } = useGetAllApproversQuery();
   const [addApproversByRange, { isLoading: isAddApproversLoading }] =
     useAddApproversByRangeMutation();
-  const {
-    data: approversPerModuleData,
-    isFetching: isApproversPerModuleFetching,
-  } = useGetApproversPerModuleQuery();
+  const { data: approversByRangeData, isFetching: isApproversByRangeFetching } =
+    useGetApproversByRangeQuery({ moduleName: "Listing Fee Approval" });
   const [putUpdateApproversPerModule, { isLoading: isUpdateApproversLoading }] =
     usePutUpdateApproversPerModuleMutation();
 
@@ -183,19 +184,19 @@ function ApproverSettings() {
         setStatus={setStatus}
         removeArchive
       />
-      {isApproversPerModuleFetching ? (
+      {isApproversByRangeFetching ? (
         <CommonTableSkeleton evenLesserCompact />
       ) : (
         <CommonTable
           evenLesserCompact
-          mapData={approversPerModuleData}
+          mapData={approversByRangeData}
           customOrderKeys={customOrderKeys}
           onManageApprovers={handleEditOpen}
           page={page}
           setPage={setPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
-          count={approversPerModuleData?.length}
+          count={approversByRangeData?.length}
           status={status}
         />
       )}
@@ -231,7 +232,7 @@ function ApproverSettings() {
           }
           getOptionLabel={(option) => option.name || ""}
           // getOptionDisabled={(option) => {
-          //   return approversPerModuleData.some(
+          //   return approversByRangeData.some(
           //     (item) => item?.moduleName === option.name
           //   );
           // }}
